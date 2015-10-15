@@ -37,4 +37,6 @@ if __name__ == "__main__":
     app = Application()
     app.listen("8888")
     print "start on port 8888..."
-    tornado.ioloop.IOLoop.instance().start()
+    instance = tornado.ioloop.IOLoop.instance()
+    tornado.autoreload.start(instance)
+    instance.start()
