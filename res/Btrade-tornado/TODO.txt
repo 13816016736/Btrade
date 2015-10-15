@@ -1,7 +1,7 @@
 tornado分布式session
 https://github.com/zs1621/tornado-redis-session
 
-config配置玩法
+config配置玩法 就是尼玛简单的定义几个常量，然后import一下，就能直接用了
 
 验证码
 

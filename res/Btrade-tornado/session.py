@@ -55,7 +55,6 @@ class SessionManager(object):
 	
 	def _fetch(self, session_id):
 		try:
-			print session_id
 			session_data = raw_data = self.redis.get(session_id)
 			if raw_data != None:
 				self.redis.setex(session_id, self.session_timeout, raw_data)
