@@ -1,0 +1,13 @@
+<html>
+<head></head>
+<body>
+<h1>login</h1>
+<form method="post" action="/login">
+    {% raw xsrf_form_html() %}
+    <input name="username"  type="text" />
+    <input name="password" type="password" />
+    <input name="next_url" type="hidden" value="{{ next_url }}"/>
+    <input name="submit" type="submit" value="submit" />
+</form>
+</body>
+</html>
