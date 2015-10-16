@@ -7,9 +7,6 @@ import ujson
 import hashlib
 import redis
 
-
-
-
 class SessionData(dict):
 	def __init__(self, session_id, hmac_key):
 		self.session_id = session_id
