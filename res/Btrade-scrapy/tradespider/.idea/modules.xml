@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../Btrade-tornado/.idea/Btrade-tornado.iml" filepath="$PROJECT_DIR$/../../Btrade-tornado/.idea/Btrade-tornado.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/tradespider.iml" filepath="$PROJECT_DIR$/.idea/tradespider.iml" />
+    </modules>
+  </component>
+</project>

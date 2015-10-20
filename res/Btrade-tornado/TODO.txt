@@ -5,6 +5,7 @@ config配置玩法，就是尼玛简单的定义几个常量，然后import一下，就能直接用了
 
 准备一些公共的uimodule，如验证码、分页等
 
+添加bootstrap
 
 参考demo
 https://github.com/tornadoweb/tornado/tree/master/demos
