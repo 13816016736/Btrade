@@ -3,6 +3,6 @@
 ### Code ###
 # 
 .idea/
-log/
+tradespider/log/
 *.pyc
 
