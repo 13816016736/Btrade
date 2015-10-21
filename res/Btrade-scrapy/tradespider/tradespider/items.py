@@ -18,4 +18,3 @@ class TradespiderItem(scrapy.Item):
     image = scrapy.Field()
     price = scrapy.Field()
     unit = scrapy.Field()
-    url = scrapy.Field()

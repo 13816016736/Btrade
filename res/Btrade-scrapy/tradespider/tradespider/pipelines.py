@@ -61,16 +61,15 @@ class MySQLStorePipeline(object):
         '''query = self.dbpool.runInteraction(self._conditional_insert, item)
         '''
         try:
-            self.cursor.execute("insert into purchaseInfo values (%s, %s, %s, %s, %s, %s, %s, %s)",
+            self.cursor.execute("insert into purchaseInfo values (%s, %s, %s, %s, %s, %s, %s)",
                            (item["title"], item["name"], item["specification"],
-                         item["origin"], item["image"], item["price"][0], item["unit"], item["url"]))
+                         item["origin"], item["image"], item["price"], item["unit"]))
 
             self.conn.commit()
         except MySQLdb.Error, e:
-            print '_______________'
-            print item['url']
-            print '_______________'
+            print "-----"
             print e
+            print "-----"
 
         return item
 

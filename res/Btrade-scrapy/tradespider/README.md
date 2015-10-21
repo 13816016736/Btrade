@@ -1,5 +1,6 @@
 TODO:
 1.搞清楚sracpy的rule规则
+https://github.com/chenguolin/orcinus_price/blob/master/crawl/spiders/amazonspider.py
 2.settings.py中配置pipline后面参数是什么意思
 分配给每个pipline的整型值，确定了他们运行的顺序，item按数字从低到高的顺序，通过pipeline，通常将这些数字定义在0-1000范围内。
 
