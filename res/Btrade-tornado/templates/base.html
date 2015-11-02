@@ -3,18 +3,8 @@
 {% include public/head.html %}
 <body>
 {% include public/header.html %}
-<div id="wrap" class="container">
-    {% block container %}
-        <div id="main" class="col-md-8 col-sm-7">
-            {% block main %}
-            {% end %}
-        </div>
-        <div id="side" class="col-md-4 col-sm-5">
-            {% block side %}
-            {% end %}
-        </div>
-    {% end %}
-</div>
+{% block container %}
+{% end %}
 <hr>
 {% include public/footer.html %}
 </body>

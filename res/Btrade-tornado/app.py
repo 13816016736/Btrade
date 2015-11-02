@@ -16,7 +16,7 @@ class Application(tornado.web.Application):
 
 if __name__ == "__main__":
     app = Application()
-    app.listen("8888")
+    app.listen("8888", address='0.0.0.0')
     print "start on port 8888..."
     instance = tornado.ioloop.IOLoop.instance()
     tornado.autoreload.start(instance)
