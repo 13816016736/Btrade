@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+{% block container %}
+<style>
+    .page-header .border_left{
+        background: #F0AD4E;
+        display:inline-block;
+        width:8px;
+        height:24px;
+        margin-right:10px;
+        vertical-align:middle;
+    }
+    .tag-this {
+        border-radius: 4px;
+        margin-top: 0px;
+        width: 210px;
+    }
+</style>
+<div class="container">
+    <div class="alert alert-warning" role="alert">
+        <h3>极速找货 <small>饮片厂、药厂发布采购计划，经营公司、经营户发布找货需求，海量产地供应商跟你极速报价</small></h3>
+        <h3>发布采购计划 <small>></small> 精准匹配推送 <small>></small> 供应商报价 <small>></small> 选择意向供应商洽谈 <small>></small> 安心交易</h3>
+    </div>
+
+    <form action="/purchase" class="form-horizontal" method="post">
+    {% raw xsrf_form_html() %}
+    <h3 class="page-header"><i class="border_left"></i>采购单位/采购人</h3>
+        {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
+        <h4>严飞  亳州市沪谯药业有限公司</h4>
+        <p>13545002092</p>
+        <p style="color:#44b549"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> 已通过实名认证</p>
+        {% else %}
+        <div class="form-group">
+            <label class="control-label col-md-2">* 联系人</label>
+            <div class="col-md-2">
+                <input type="text" name="text" class="form-control" placeholder="请填写本人真实">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">* 手机号</label>
+            <div class="col-md-2">
+                <input type="text" name="text" class="form-control" placeholder="请填写您的手机号">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">* 手机验证码</label>
+            <div class="col-md-9  form-inline">
+                <input type="text" name="text" class="form-control">
+                <button type="button" class="btn btn-primary">获取短信验证码</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">单位全称</label>
+            <div class="col-md-6">
+                <input type="text" name="text" class="form-control" placeholder="请填写您的单位全称，如亳州市沪谯药业有限公司；若为个人经营，请填写真实姓名">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">经营类型</label>
+            <div class="form-inline">
+                <label class="radio-inline">
+                    <input type="radio" name="type">饮片厂
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type">药厂
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type">药材贸易公司
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type">其他类型公司
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type">个体经营（有营业执照）
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type">个人经营（无营业执照）
+                </label>
+            </div>
+        </div>
+        {% end %}
+        <h3 class="page-header"><i class="border_left"></i>采购药材清单</h3>
+        <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>药材品种*</th>
+            <th>规格等级*</th>
+            <th>采购数量</th>
+            <th>质量要求</th>
+            <th>产地要求</th>
+            <th>封顶价</th>
+            <th>合格样例照</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);"></span></th>
+            <td><input type="text" name="text" style="width:80px" class="form-control" value="三七"/></td>
+            <td>
+                <select name="" style="width:120px" class="form-control">
+                    <option value="1">十头</option>
+                    <option value="2">十头</option>
+                    <option value="3">五头</option>
+                </select>
+            </td>
+            <td>
+                <div class="form-inline">
+                <input type="text" name="text" style="width:70px" class="form-control" value="500"/>
+                <select name="" style="width:80px" class="form-control">
+                    <option value="1">公斤</option>
+                    <option value="2">吨</option>
+                </select>
+                </div>
+            </td>
+            <td><input type="text" name="simple-tags"></td>
+            <td><input type="text" name="simple-tags"></td>
+            <td><div class="form-inline"><input type="text" name="text" style="width:50px" class="form-control" value="10"/> 元/公斤</div></td>
+            <td>
+                <div class="relative" style="position:relative;">
+                    <input type="file" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
+                    <span class="glyphicon glyphicon-camera" style="font-size:18px;position:absolute; left:0; top:0;"></span>
+                </div>
+            </td>
+          </tr>
+          <tr>
+            <th><span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);"></span></th>
+            <td><input type="text" name="text" style="width:80px" class="form-control"/></td>
+            <td>
+                <select name="" style="width:120px" class="form-control">
+                    <option value="1">十头</option>
+                    <option value="2">十头</option>
+                    <option value="3">五头</option>
+                </select>
+            </td>
+            <td>
+                <div class="form-inline">
+                <input type="text" name="text" style="width:70px" class="form-control"/>
+                <select name="" style="width:80px" class="form-control">
+                    <option value="1">公斤</option>
+                    <option value="2">吨</option>
+                </select>
+                </div>
+            </td>
+            <td><input type="text" name="simple-tags"></td>
+            <td><input type="text" name="simple-tags"></td>
+            <td><div class="form-inline"><input type="text" name="text" style="width:50px" class="form-control" /> 元/公斤</div></td>
+            <td>
+                <div class="relative" style="position:relative;">
+                    <input type="file" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
+                    <span class="glyphicon glyphicon-camera" style="font-size:18px;position:absolute; left:0; top:0;"></span>
+                </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="form-inline">
+          <button type="button" class="btn btn-primary" id="addline">增加一行</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">从EXCEL导入</button>
+      </div>
+      <h3 class="page-header"><i class="border_left"></i>交收要求</h3>
+      <div class="form-group">
+          <label class="control-label col-md-2">* 交货地</label>
+          <div class="col-md-9  form-inline">
+              <select name="" class="form-control">
+                  <option value="1">省</option>
+                  <option value="2">湖北</option>
+              </select>
+              <select name="" class="form-control">
+                  <option value="1">市/县</option>
+                  <option value="2">武汉</option>
+              </select>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">发票要求</label>
+          <div class="form-inline">
+              <label class="radio-inline">
+                  <input type="radio" name="type">无需发票
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="type">普通发票
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="type">增值税发票
+              </label>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">交易及付款</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">药采购"安心交易"(预付全款)
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">双方直接交易，验收合格后<input type="text" name="text" style="width:46px;height:22px" class="form-control" />天内付款
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">其他  <input type="text" name="text" style="width:120px;height:22px" class="form-control" />
+              </label>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">寄样</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">报价必须寄样
+              </label>
+          </div>
+          <label class="control-label col-md-2"></label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" class="form-control">接收地址:
+                接收人:
+                联系电话:
+                寄样要求:</textarea>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">验收及包装要求</label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" class="form-control"></textarea>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">补充说明</label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" class="form-control"></textarea>
+          </div>
+      </div>
+      <h3 class="page-header"><span class="glyphicon glyphicon-minus" aria-hidden="true" style="float:right;"></span><i class="border_left"></i>供应商要求</h3>
+      <div id="supplier" class="form-group">
+      <div class="form-group">
+          <label class="control-label col-md-2">供应商资质</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">必须有营业执照（公司/合作社/经营户），不接受个人
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">具备GSP资质
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">具备GMP资质
+              </label>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">其他要求</label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" class="form-control"></textarea>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">有效期</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="">有限期报价
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="type">3天
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="type">7天
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="type">15天
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="type">30天
+              </label>
+          </div>
+          <label class="control-label col-md-2"></label>
+          <div class="form-inline">
+            <label class="checkbox-inline">
+                  <input type="checkbox" name="">常年采购
+            </label>
+          </div>
+      </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2"></label>
+          <button type="submit" class="btn btn-primary" data-loading-text="正在发布...">立即发布</button>
+      </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">批量导入</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-1">
+                <p><span class="label label-warning">1</span>&nbsp;&nbsp;</p>
+                <p><span class="label label-warning">2</span>&nbsp;&nbsp;</p>
+                <p><span class="label label-warning">3</span>&nbsp;&nbsp;</p>
+            </div>
+            <div class="col-sm-11">
+                <p><a href="#">下载Excel模板</a></p>
+                <p>填写并保存Excel文件</p>
+                <p><input type="file" /></p>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    $(".page-header .glyphicon").click(function(){
+        var cs = $(this);
+        if(cs.attr("class").indexOf("minus") !=-1){
+            cs.attr("class", "glyphicon glyphicon-plus");
+            $("#supplier").hide();
+        }else{
+            cs.attr("class", "glyphicon glyphicon-minus");
+            $("#supplier").show();
+        };
+    });
+    var tr = $("tr:last").html();
+    $("#addline").click(function(){
+        $(".table").find("tbody").append("<tr>"+tr+"</tr>");
+        $("tr:last").find("input[name='simple-tags']").tagThis();
+    });
+    $("input[name='simple-tags']").tagThis();
+    function removeSelf(obj){
+        if($("tr").length == 2){
+            alert("至少填写一个采购品种!");
+        }else{
+            $(obj).parents("tr").remove();
+        }
+    }
+</script>
+{% end %}

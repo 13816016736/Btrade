@@ -21,3 +21,5 @@ http://old.sebug.net/paper/books/tornado/
 3.redis
 4.ujson（安装ujson，参考https://pypi.python.org/simple/ujson/）
 5.jinja2（模板引擎）
+
+tornado模板中get_template_namespace方法自动将变量加载到全局命名空间，所以模板中可以直接使用，也可以重写get_template_namespace方法，加入业务中需要的变量

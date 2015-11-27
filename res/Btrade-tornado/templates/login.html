@@ -1,25 +1,74 @@
-<!DOCTYPE html>
-<html>
-{% include public/head.html %}
-<link href="{{ static_url('bootstrap/css/signin.css') }}" rel="stylesheet" media="screen">
-<body>
+{% extends "base.html" %}
+{% block container %}
+<style>
+  .btn-default {
+      color: #fff;
+      background-color: #aea79f;
+      border-color: #aea79f;
+  }
+</style>
 <div class="container">
-  <form class="form-signin" method="post" action="/login">
-    <h2 class="form-signin-heading">Please sign in</h2>
-    {% raw xsrf_form_html() %}
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input name="username" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    <input name="next_url" type="hidden" value="{{ next_url }}"/>
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" value="remember-me"> Remember me
-      </label>
+	<div class="row">
+		<div class="col-xs-12 col-sm-8 col-md-8">
+            <center><img src="{{ static_url('images/login-banner.jpg') }}" class="img-polaroid" /></center>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-4">
+			<h3 class="center-block">登录</h3>
+            <br>
+			<form role="form" id="loginform" action="/login" method="post">
+				<div class="input-group input-group-lg">
+				  <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+			      <input type="text" id="username" name="username" class="form-control validate[required,custom[email]]" placeholder="用户名或手机号">
+			    </div>
+                <br>
+				<div class="input-group input-group-lg">
+				  <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+			      <input type="password" id="password" name="password" class="form-control validate[required]" placeholder="输入密码">
+			    </div>
+                <br>
+			    <div class="btn-group btn-group-lg btn-block">
+					<button type="submit" style="width:50%" class="btn btn-warning ladda-button" id="logonbtn" title="" data-style="expand-right" data-original-title="登录">
+						<span class="ladda-label">
+							{% raw xsrf_form_html() %}
+    						<input name="next_url" type="hidden" value="{{ next_url }}"/>
+							<span class="glyphicon glyphicon-log-in"></span> &nbsp; 登录极客
+						</span>
+					</button>
+					<button data-autosave="0" style="width:50%" type="button" class="btn btn-default ladda-button" id="autolog" title="" data-style="expand-right" data-original-title="记住密码">
+						<span class="ladda-label">
+							<span class="glyphicon glyphicon-unchecked"></span> &nbsp; 记住密码
+						</span>
+					</button>
+				</div>
+				<div class="input-group input-group-lg"></div>
+				<div id="logalert" class="alert alert-danger hidden" style="margin-bottom:0;">
+					<span class="glyphicon glyphicon-exclamation-sign"></span>
+					<span id="loginfo">&nbsp;登录失败，请检查邮件或密码是否正确</span>
+				</div>
+			</form>
+			<hr>
+			<div>
+		    	<a href="/register" class="btn btn-success pull-left">
+		    		<span class="glyphicon glyphicon-registration-mark"></span>&nbsp;注册
+		    	</a>
+		    	<a href="#" class="btn btn-default pull-right">
+		    		<span class="glyphicon glyphicon-search"></span>&nbsp;找回密码
+		    	</a>
+		    	<div class="clearfix"></div>
+			</div>
+        </div>
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-  </form>
 </div>
-{% include public/footer.html %}
-</body>
-</html>
+<script>
+  $("#autolog").click(function(){
+    if($(this).attr("class") == "btn ladda-button btn-warning"
+      && $(this).find("span").find("span").attr("class") == "glyphicon glyphicon-check"){
+      $(this).attr("class", "btn ladda-button btn-default");
+      $(this).find("span").find("span").attr("class", "glyphicon glyphicon-unchecked");
+    }else{
+      $(this).attr("class", "btn ladda-button btn-warning");
+      $(this).find("span").find("span").attr("class", "glyphicon glyphicon-check");
+    }
+  });
+</script>
+{% end %}

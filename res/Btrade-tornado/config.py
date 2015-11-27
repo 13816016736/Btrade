@@ -2,6 +2,9 @@
 import os.path
 from handler.main import *
 from handler.login import *
+from handler.purchase import *
+from handler.register import *
+from handler.dashboard import *
 
 #显示设置
 app = {
@@ -32,6 +35,12 @@ settings = {
 handlers = [
     (r"/", MainHandler),
     (r"/login", LoginHandler),
+    (r"/logout", LogoutHandler),
+    (r"/register", RegisterHandler),
+    (r"/purchase", PurchaseHandler),
+    (r"/dashboard", DashboardHandler),
+    (r"/mypurchase", MyPurchaseHandler),
+    (r"/mypurchase/info/(\d{1,3})", MyPurchaseInfoHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 

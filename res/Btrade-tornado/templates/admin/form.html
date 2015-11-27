@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block container %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>会员管理</h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 操作中心</a>
+            </li>
+            <li><a href="#">公共系统</a>
+            </li>
+            <li><a href="#">前台会员管理</a>
+            </li>
+            <li><a href="#">会员管理</a>
+            </li>
+            <li class="active">会员</li>
+        </ol>
+    </section>
+    <!--<section class="content">
+        <div class="row">
+            <div class="col-md-5">
+                <form id="defaultForm" novalidate="novalidate">
+                    <div class="form-group has-feedback">
+                        <label for="userid">会员名（必填）</label>
+                        <input type="text" class="form-control" name="userid" id="userid" data-bv-field="userid">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">登录密码（必填）</label>
+                        <input type="password" class="form-control" name="password" id="password" data-bv-field="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">公司/姓名（必填）</label>
+                        <input type="text" class="form-control" name="username" id="username" data-bv-field="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">手机（必填）</label>
+                        <input type="text" class="form-control" name="phone" id="phone" data-bv-field="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="note">备注</label>
+                        <textarea class="form-control" name="note" id="note" rows="3" data-bv-field="note"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-query" id="validateBtn">添加</button>
+                    <button type="reset" class="btn btn-default" id="resetBtn">清空</button>
+                </form>
+            </div>
+        </div>
+    </section>-->
+    <section class="content">
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr>
+                    <th>流水号：</th>
+                    <td>201506171001133500</td>
+                    <th>订单号：</td>
+                    <td>201506171001133500</td>
+                </tr>
+                <tr>
+                    <th>分润金额：</th>
+                    <td>0.9</td>
+                    <th>平台应得金额：</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>买方应得金额：</th>
+                    <td></td>
+                    <th>卖方应得金额：</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>支付渠道：</th>
+                    <td>招行</td>
+                    <th>状态：</td>
+                    <td>划账成功</td>
+                </tr>
+                <tr>
+                    <th>买方收款（银行）名称：</th>
+                    <td>0.9</td>
+                    <th>买方收款账户：</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>卖方收款（银行）名称：</th>
+                    <td>0.9</td>
+                    <th>卖方收款账户：</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>买方付款回单：</th>
+                    <td></td>
+                    <th>卖方付款回单：</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>分润完成时间：</th>
+                    <td colspan="3">2015-06-08 15:15:13</td>
+                </tr>
+                <tr>
+                    <th>备注：</th>
+                    <td colspan="3"><textarea class="form-control" name="note" id="note" rows="3" data-bv-field="note"></textarea></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td colspan="3"><button type="reset" class="btn btn-default" id="resetBtn">返回</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
