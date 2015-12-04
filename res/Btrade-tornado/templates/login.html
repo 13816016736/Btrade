@@ -16,18 +16,26 @@
 			<h3 class="center-block">登录</h3>
             <br>
 			<form role="form" id="loginform" action="/login" method="post">
+				<div class="form-group">
 				<div class="input-group input-group-lg">
 				  <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-			      <input type="text" id="username" name="username" class="form-control validate[required,custom[email]]" placeholder="用户名或手机号">
+			      <input type="text" id="username" name="username" class="form-control" placeholder="用户名或手机号"
+					  {% if 'username' in globals() %}
+						value="{{username}}"
+					  {% end %}
+						  >
 			    </div>
+				</div>
                 <br>
+				<div class="form-group">
 				<div class="input-group input-group-lg">
 				  <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-			      <input type="password" id="password" name="password" class="form-control validate[required]" placeholder="输入密码">
+			      <input type="password" id="password" name="password" class="form-control" placeholder="输入密码">
 			    </div>
+				</div>
                 <br>
 			    <div class="btn-group btn-group-lg btn-block">
-					<button type="submit" style="width:50%" class="btn btn-warning ladda-button" id="logonbtn" title="" data-style="expand-right" data-original-title="登录">
+					<button type="submit" style="width:50%" class="btn btn-warning ladda-button" id="loginbtn" title="" data-style="expand-right" data-original-title="登录">
 						<span class="ladda-label">
 							{% raw xsrf_form_html() %}
     						<input name="next_url" type="hidden" value="{{ next_url }}"/>
@@ -40,11 +48,14 @@
 						</span>
 					</button>
 				</div>
-				<div class="input-group input-group-lg"></div>
-				<div id="logalert" class="alert alert-danger hidden" style="margin-bottom:0;">
-					<span class="glyphicon glyphicon-exclamation-sign"></span>
-					<span id="loginfo">&nbsp;登录失败，请检查邮件或密码是否正确</span>
-				</div>
+				  {% if 'error' in globals() %}
+					<br>
+					<br>
+					<div id="logalert" class="alert alert-danger" style="margin-bottom:0;">
+						<span class="glyphicon glyphicon-exclamation-sign"></span>
+						<span id="loginfo">&nbsp;{{error}}</span>
+					</div>
+				  {% end %}
 			</form>
 			<hr>
 			<div>
@@ -60,6 +71,7 @@
     </div>
 </div>
 <script>
+$(document).ready(function() {
   $("#autolog").click(function(){
     if($(this).attr("class") == "btn ladda-button btn-warning"
       && $(this).find("span").find("span").attr("class") == "glyphicon glyphicon-check"){
@@ -70,5 +82,39 @@
       $(this).find("span").find("span").attr("class", "glyphicon glyphicon-check");
     }
   });
+  $('#loginform').bootstrapValidator({
+        message: 'This value is not valid',
+        /*feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },*/
+        fields: {
+            username: {
+                validators: {
+                    notEmpty: {
+                        message: '用户名不能为空'
+                    }
+                }
+            },
+            password: {
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    }
+                }
+            },
+		},
+	});
+	// Validate the form manually 点击按钮就做验证，适合ajax提交
+    //$('#loginbtn').click(function() {
+    //    $('#loginform').bootstrapValidator('validate');
+    //});
+
+	//重置验证的状态
+    $('#resetBtn').click(function() {
+        $('#defaultForm').data('bootstrapValidator').resetForm(true);
+    });
+});
 </script>
 {% end %}

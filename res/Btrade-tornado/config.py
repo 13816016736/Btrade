@@ -9,9 +9,9 @@ from handler.dashboard import *
 #显示设置
 app = {
     #应用名称
-    'name': 'Btrade',
+    'name': '药采购',
     #应用附加信息(简短的说明)
-    'title': 'a Btrade website',
+    'title': '药材买卖的专业助手',
     #联系邮箱
     'email': '2011zhouhang@gmail.com',
 }
@@ -37,6 +37,7 @@ handlers = [
     (r"/login", LoginHandler),
     (r"/logout", LogoutHandler),
     (r"/register", RegisterHandler),
+    (r"/register/checkphone", CheckPhoneHandler),
     (r"/purchase", PurchaseHandler),
     (r"/dashboard", DashboardHandler),
     (r"/mypurchase", MyPurchaseHandler),
@@ -60,3 +61,6 @@ conf = {
 log = False
 #日志记录位置
 log_file = 'log/tornado.log'
+
+#用户密码的salt
+salt = "ycg20151012"

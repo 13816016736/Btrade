@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from base import BaseHandler
+from utils import *
+import config
 
 class LoginHandler(BaseHandler):
     def get(self):
@@ -10,10 +12,23 @@ class LoginHandler(BaseHandler):
 
     def post(self):
         # self.set_secure_cookie("user", self.get_argument("username"))
-        self.session["user"] = self.get_argument("username")
-        self.session.save()
-        #self.success('成功的提示')
-        self.redirect(self.get_argument('next_url', '/'))
+        username = self.get_argument("username","")
+        password = self.get_argument("password","")
+        if username == "" or password == "":
+            msg = "用户名或密码不能为空"
+            self.render("login.html", error="用户名或邮箱不能为空", next_url=self.get_argument("next", "/"))
+            return
+        author = self.db.get("SELECT * FROM users WHERE username = %s", username)
+        if not author:
+            self.render("login.html", error="用户名不存在", next_url=self.get_argument("next", "/")
+                        , username=username)
+            return
+        if md5(str(password+config.salt)) == author.password:
+            self.session["user"] = self.get_argument("username")
+            self.session.save()
+            self.redirect(self.get_argument("next", "/"))
+        else:
+            self.render("login.html", error="用户名或密码错误", next_url=self.get_argument("next", "/"))
 
 class LogoutHandler(BaseHandler):
     def get(self):
