@@ -21,7 +21,7 @@
         <h3>发布采购计划 <small>></small> 精准匹配推送 <small>></small> 供应商报价 <small>></small> 选择意向供应商洽谈 <small>></small> 安心交易</h3>
     </div>
 
-    <form action="/purchase" class="form-horizontal" method="post">
+    <form  id="purchase" action="/purchase" class="form-horizontal" method="post">
     {% raw xsrf_form_html() %}
     <h3 class="page-header"><i class="border_left"></i>采购单位/采购人</h3>
         {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
@@ -32,48 +32,48 @@
         <div class="form-group">
             <label class="control-label col-md-2">* 联系人</label>
             <div class="col-md-2">
-                <input type="text" name="text" class="form-control" placeholder="请填写本人真实">
+                <input type="text" name="nickname" class="form-control" placeholder="请填写本人真实姓名">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-md-2">* 手机号</label>
             <div class="col-md-2">
-                <input type="text" name="text" class="form-control" placeholder="请填写您的手机号">
+                <input type="text" name="phone" class="form-control" placeholder="请填写您的手机号">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-md-2">* 手机验证码</label>
             <div class="col-md-9  form-inline">
-                <input type="text" name="text" class="form-control">
-                <button type="button" class="btn btn-primary">获取短信验证码</button>
+                <input type="text" name="verifycode" class="form-control">
+                <button type="button" class="btn btn-primary" onclick="time(this)">获取短信验证码</button>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-md-2">单位全称</label>
             <div class="col-md-6">
-                <input type="text" name="text" class="form-control" placeholder="请填写您的单位全称，如亳州市沪谯药业有限公司；若为个人经营，请填写真实姓名">
+                <input type="text" name="name" class="form-control" placeholder="请填写您的单位全称，如亳州市沪谯药业有限公司；若为个人经营，请填写真实姓名">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-md-2">经营类型</label>
             <div class="form-inline">
                 <label class="radio-inline">
-                    <input type="radio" name="type">饮片厂
+                    <input type="radio" name="type" value="0">饮片厂
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type">药厂
+                    <input type="radio" name="type" value="1">药厂
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type">药材贸易公司
+                    <input type="radio" name="type" value="2">药材贸易公司
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type">其他类型公司
+                    <input type="radio" name="type" value="3">其他类型公司
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type">个体经营（有营业执照）
+                    <input type="radio" name="type" value="4">个体经营（有营业执照）
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type">个人经营（无营业执照）
+                    <input type="radio" name="type" value="5">个人经营（无营业执照）
                 </label>
             </div>
         </div>
@@ -95,9 +95,9 @@
         <tbody>
           <tr>
             <th><span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);"></span></th>
-            <td><input type="text" name="text" style="width:80px" class="form-control" value="三七"/></td>
+            <td><input type="text" name="purchase[name]" style="width:80px" class="form-control" value="三七"/></td>
             <td>
-                <select name="" style="width:120px" class="form-control">
+                <select name="purchase[specification]" style="width:120px" class="form-control">
                     <option value="1">十头</option>
                     <option value="2">十头</option>
                     <option value="3">五头</option>
@@ -105,16 +105,16 @@
             </td>
             <td>
                 <div class="form-inline">
-                <input type="text" name="text" style="width:70px" class="form-control" value="500"/>
-                <select name="" style="width:80px" class="form-control">
+                <input type="text" name="purchase[quantity]" style="width:70px" class="form-control" value="500"/>
+                <select name="purchase[unit]" style="width:80px" class="form-control">
                     <option value="1">公斤</option>
                     <option value="2">吨</option>
                 </select>
                 </div>
             </td>
-            <td><input type="text" name="simple-tags"></td>
-            <td><input type="text" name="simple-tags"></td>
-            <td><div class="form-inline"><input type="text" name="text" style="width:50px" class="form-control" value="10"/> 元/公斤</div></td>
+            <td><input type="text" name="purchase[quality]"></td>
+            <td><input type="text" name="purchase[origin]"></td>
+            <td><div class="form-inline"><input type="text" name="purchase[price]" style="width:50px" class="form-control" value="10"/> 元/公斤</div></td>
             <td>
                 <div class="relative" style="position:relative;">
                     <input type="file" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
@@ -124,9 +124,9 @@
           </tr>
           <tr>
             <th><span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);"></span></th>
-            <td><input type="text" name="text" style="width:80px" class="form-control"/></td>
+            <td><input type="text" name="purchase[name]" style="width:80px" class="form-control"/></td>
             <td>
-                <select name="" style="width:120px" class="form-control">
+                <select name="purchase[specification]" style="width:120px" class="form-control">
                     <option value="1">十头</option>
                     <option value="2">十头</option>
                     <option value="3">五头</option>
@@ -134,16 +134,16 @@
             </td>
             <td>
                 <div class="form-inline">
-                <input type="text" name="text" style="width:70px" class="form-control"/>
-                <select name="" style="width:80px" class="form-control">
+                <input type="text" name="purchase[quantity]" style="width:70px" class="form-control"/>
+                <select name="purchase[unit]" style="width:80px" class="form-control">
                     <option value="1">公斤</option>
                     <option value="2">吨</option>
                 </select>
                 </div>
             </td>
-            <td><input type="text" name="simple-tags"></td>
-            <td><input type="text" name="simple-tags"></td>
-            <td><div class="form-inline"><input type="text" name="text" style="width:50px" class="form-control" /> 元/公斤</div></td>
+            <td><input type="text" name="purchase[quality]"></td>
+            <td><input type="text" name="purchase[origin]"></td>
+            <td><div class="form-inline"><input type="text" name="purchase[price]" style="width:50px" class="form-control" /> 元/公斤</div></td>
             <td>
                 <div class="relative" style="position:relative;">
                     <input type="file" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
@@ -161,13 +161,14 @@
       <div class="form-group">
           <label class="control-label col-md-2">* 交货地</label>
           <div class="col-md-9  form-inline">
-              <select name="" class="form-control">
-                  <option value="1">省</option>
-                  <option value="2">湖北</option>
+              <select id="province" name="province" class="form-control">
+                  <option value="">省</option>
+                  {% for province in provinces %}
+                  <option value="{{province.id}}">{{province.areaname}}</option>
+                  {% end %}
               </select>
-              <select name="" class="form-control">
-                  <option value="1">市/县</option>
-                  <option value="2">武汉</option>
+              <select id="city" name="city" class="form-control">
+                  <option value="">市/县</option>
               </select>
           </div>
       </div>
@@ -175,13 +176,13 @@
           <label class="control-label col-md-2">发票要求</label>
           <div class="form-inline">
               <label class="radio-inline">
-                  <input type="radio" name="type">无需发票
+                  <input type="radio" name="invoice" value="0">无需发票
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="type">普通发票
+                  <input type="radio" name="invoice" value="1">普通发票
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="type">增值税发票
+                  <input type="radio" name="invoice" value="2">增值税发票
               </label>
           </div>
       </div>
@@ -189,13 +190,13 @@
           <label class="control-label col-md-2">交易及付款</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">药采购"安心交易"(预付全款)
+                  <input type="checkbox" name="pay" value="0">药采购"安心交易"(预付全款)
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">双方直接交易，验收合格后<input type="text" name="text" style="width:46px;height:22px" class="form-control" />天内付款
+                  <input type="checkbox" id="pay-1" name="pay" value="1">双方直接交易，验收合格后<input type="text" name="payday" style="width:46px;height:22px" class="form-control" />天内付款
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">其他  <input type="text" name="text" style="width:120px;height:22px" class="form-control" />
+                  <input type="checkbox" id="pay-2" name="pay" value="2">其他  <input type="text" name="payinfo" style="width:120px;height:22px" class="form-control" />
               </label>
           </div>
       </div>
@@ -203,12 +204,12 @@
           <label class="control-label col-md-2">寄样</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">报价必须寄样
+                  <input type="checkbox" name="send">报价必须寄样
               </label>
           </div>
           <label class="control-label col-md-2"></label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" class="form-control">接收地址:
+            <textarea rows="4" style="width:75%" name="receive" class="form-control">接收地址:
                 接收人:
                 联系电话:
                 寄样要求:</textarea>
@@ -217,13 +218,13 @@
       <div class="form-group">
           <label class="control-label col-md-2">验收及包装要求</label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" class="form-control"></textarea>
+            <textarea rows="4" style="width:75%" name="accept" class="form-control"></textarea>
           </div>
       </div>
       <div class="form-group">
           <label class="control-label col-md-2">补充说明</label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" class="form-control"></textarea>
+            <textarea rows="4" style="width:75%" name="other" class="form-control"></textarea>
           </div>
       </div>
       <h3 class="page-header"><span class="glyphicon glyphicon-minus" aria-hidden="true" style="float:right;"></span><i class="border_left"></i>供应商要求</h3>
@@ -232,45 +233,45 @@
           <label class="control-label col-md-2">供应商资质</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">必须有营业执照（公司/合作社/经营户），不接受个人
+                  <input type="checkbox" name="supplier">必须有营业执照（公司/合作社/经营户），不接受个人
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">具备GSP资质
+                  <input type="checkbox" name="supplier">具备GSP资质
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">具备GMP资质
+                  <input type="checkbox" name="supplier">具备GMP资质
               </label>
           </div>
       </div>
       <div class="form-group">
           <label class="control-label col-md-2">其他要求</label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" class="form-control"></textarea>
+            <textarea rows="4" style="width:75%" name="remark" class="form-control"></textarea>
           </div>
       </div>
       <div class="form-group">
           <label class="control-label col-md-2">有效期</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="">有限期报价
+                  <input type="checkbox" id="limited-0" name="limited" value="0">有限期报价
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="type">3天
+                  <input type="radio" name="term">3天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="type">7天
+                  <input type="radio" name="term">7天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="type">15天
+                  <input type="radio" name="terme">15天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="type">30天
+                  <input type="radio" name="term">30天
               </label>
           </div>
           <label class="control-label col-md-2"></label>
           <div class="form-inline">
             <label class="checkbox-inline">
-                  <input type="checkbox" name="">常年采购
+                  <input type="checkbox" name="limited" value="1">常年采购
             </label>
           </div>
       </div>
@@ -311,6 +312,40 @@
   </div>
 </div>
 <script type="text/javascript">
+     $.fn.serializeObject = function(){
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function() {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+     };
+     var wait = 60;
+     function time(o) {
+        if (wait == 60) {
+        //ajax发送短信
+        }
+        if (wait == 0) {
+            o.removeAttribute("disabled");
+            o.innerHTML="获取短信验证码";
+            wait = 60;
+        } else {
+            o.setAttribute("disabled", true);
+            o.innerHTML="重新发送(" + wait + ")";
+            wait--;
+            setTimeout(function() {
+                time(o)
+            },
+            1000)
+        }
+    }
     $(".page-header .glyphicon").click(function(){
         var cs = $(this);
         if(cs.attr("class").indexOf("minus") !=-1){
@@ -324,9 +359,11 @@
     var tr = $("tr:last").html();
     $("#addline").click(function(){
         $(".table").find("tbody").append("<tr>"+tr+"</tr>");
-        $("tr:last").find("input[name='simple-tags']").tagThis();
+        $("tr:last").find("input[name='purchase[quality]']").tagThis();
+        $("input[name='purchase[origin]']").tagThis();
     });
-    $("input[name='simple-tags']").tagThis();
+    $("input[name='purchase[quality]']").tagThis();
+    $("input[name='purchase[origin]']").tagThis();
     function removeSelf(obj){
         if($("tr").length == 2){
             alert("至少填写一个采购品种!");
@@ -334,5 +371,181 @@
             $(obj).parents("tr").remove();
         }
     }
+
+    $('#purchase').bootstrapValidator({
+        message: 'This value is not valid',
+        fields: {
+            nickname: {
+                validators: {
+                    notEmpty: {
+                        message: '联系人不能为空'
+                    }
+                }
+            },
+            phone: {
+                validators: {
+                    notEmpty: {
+                        message: '手机号不能为空'
+                    },
+                    regexp : {
+                        regexp : /^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$/,
+                        message : '手机号码为11位数字'
+                    }
+                },
+            },
+            verifycode: {
+                validators: {
+                    notEmpty: {
+                        message: '验证码不能为空'
+                    }
+                }
+            },
+            provinces: {
+                validators: {
+                    notEmpty: {
+                        message: '省份不能为空'
+                    }
+                },
+            },
+            city: {
+                validators: {
+                    notEmpty: {
+                        message: '城市不能为空'
+                    }
+                }
+            }
+		},
+	})
+	.on('success.form.bv', function(e) {
+         e.preventDefault();
+         var $form = $(e.target);
+         var bv = $form.data('bootstrapValidator');
+         // 提交至form标签中的action，result自定义
+         var form = $(this).serializeObject();
+         //这是一个把"质量要求"这一栏的tag填写到总的post json里的实例,其他的照搬,都放到purchase的这个大json里即可
+         var purchases = {};
+         $("input[name='purchase[name]']").each(function(index, element){
+            purchases[index] = {};
+            purchases[index]["name"] = $(this).val();
+            delete form['purchase[name]'];
+         });
+         $("input[name='purchase[quantity]']").each(function(index, element){
+            purchases[index]["quantity"] = $(this).val();
+            delete form['purchase[quantity]'];
+         });
+         $("input[name='purchase[origin]']").each(function(index, element){
+            var tags = $(this).data('tags');
+            if(tags){
+                var tagArray = new Array();
+                for(var i=0;i<tags.length;i++){
+                    tagArray.push(tags[i].text);
+                }
+                purchases[index]["origin"] = eval(tagArray);
+                delete form['purchase[origin]'];
+            }
+         });
+         $("input[name='purchase[price]']").each(function(index, element){
+            purchases[index]["price"] = $(this).val();
+            delete form['purchase[price]'];
+         });
+         $("input[name='purchase[quality]']").each(function(index, element){
+            if(tags){
+                var tags = $(this).data('tags');
+                var tagArray = new Array();
+                for(var i=0;i<tags.length;i++){
+                    tagArray.push(tags[i].text);
+                }
+                purchases[index]["quality"] = eval(tagArray);
+                delete form['purchase[quality]'];
+            }
+         });
+         $("select[name='purchase[specification]']").each(function(index, element){
+            purchases[index]["specification"] = $(this).val();
+            delete form['purchase[specification]'];
+         });
+         $("select[name='purchase[unit]']").each(function(index, element){
+            purchases[index]["unit"] = $(this).val();
+            delete form['purchase[unit]'];
+         });
+         form["purchases"] = purchases;
+         $.ajax({
+            url: $(this).attr('action'),
+            data: JSON.stringify(form),
+            dataType: 'json',
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if(data.status == "success"){
+                    $("#step2").hide();
+                    $("#step3").show();
+                    $("#username").html(data.data.username);
+                }else{
+                    $("#regalert").show();
+                    $("#reginfo").html(data.message);
+                }
+            },
+            error: function(data) {
+                alert("出现异常，请刷新页面再试");
+            }
+         });
+     });
+
+     $("#province").change(function(){
+        var provinceid = $("#province").val();
+        var _xsrf = document.cookie.match("\\b_xsrf=([^;]*)\\b")[1];
+        if(provinceid == "")
+            return;
+        $.ajax({
+            url: "/getcity",
+            data: "&_xsrf=" + _xsrf + "&provinceid=" + provinceid,
+            dataType: 'json',
+            type: 'POST',
+            success: function(data) {
+                if(data.status == "success"){
+                    $("#city").empty();
+                    cities = eval(data.data);
+                    for(var i=0; i<cities.length; i++){
+                       $("#city").append("<option value=\"" + cities[i].id +"\">" + cities[i].areaname + "</option>");
+                    }
+                }
+            },
+            error: function(data) {
+                alert("出现异常，请刷新页面再试");
+            }
+         });
+     });
+     $("input[name='pay'][value=1]").click(function(){
+        if(document.getElementById("pay-1").checked){
+            $('#purchase').bootstrapValidator('addField', 'payday', {
+                validators: {
+                    notEmpty: {
+                        message: '勾选直接交易，必须填写多少天内付款'
+                    }
+                }
+            });
+        }else{
+            $('#purchase').bootstrapValidator('removeField', 'payday');
+            $("#pay-1").parent().parent().parent().attr("class","form-group");
+            $("#pay-2").parent().parent().parent().find("small").remove();
+        }
+     });
+     $("input[name='pay'][value=2]").click(function(){
+        if(document.getElementById("pay-2").checked){
+            $('#purchase').bootstrapValidator('addField', 'payinfo', {
+                validators: {
+                    notEmpty: {
+                        message: '勾选其他，必须填写交收方式'
+                    }
+                }
+            });
+        }else{
+            $('#purchase').bootstrapValidator('removeField', 'payinfo');
+            $("#pay-2").parent().parent().parent().attr("class","form-group");
+            $("#pay-2").parent().parent().parent().find("small").remove();
+        }
+     });
 </script>
 {% end %}

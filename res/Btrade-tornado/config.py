@@ -41,6 +41,7 @@ handlers = [
     (r"/purchase", PurchaseHandler),
     (r"/dashboard", DashboardHandler),
     (r"/mypurchase", MyPurchaseHandler),
+    (r"/getcity", GetCityHandler),
     (r"/mypurchase/info/(\d{1,3})", MyPurchaseInfoHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
