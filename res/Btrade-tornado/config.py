@@ -24,7 +24,7 @@ settings = {
     "login_url": "/login",
     "cookie_secret": "e446976943b4e8442f099fed1f3fea28462d5832f483a0ed9a3d5d3859f==78d",
     "session_secret": "3cdcb1f00803b6e78ab50b466a40b9977db396840c28307f428b25e2277f1bcc",
-    "session_timeout": 60,
+    "session_timeout": 60*60,
     "store_options": {
         'redis_host': 'localhost',
         'redis_port': 6379,
@@ -39,10 +39,17 @@ handlers = [
     (r"/register", RegisterHandler),
     (r"/register/checkphone", CheckPhoneHandler),
     (r"/purchase", PurchaseHandler),
+    (r"/getcity", GetCityHandler),
+    (r"/uploadfile", UploadFileHandler),
+    (r"/getvarietyinfo", GetVarietyInfoHandler),
+    (r"/purchasesuccess", PurchaseSuccessHandler),
     (r"/dashboard", DashboardHandler),
     (r"/mypurchase", MyPurchaseHandler),
-    (r"/getcity", GetCityHandler),
     (r"/mypurchase/info/(\d{1,3})", MyPurchaseInfoHandler),
+    (r"/account", AccountHandler),
+    (r"/updateuser", UpdateUserHandler),
+    (r"/updateusername", UpdateUserNameHandler),
+    (r"/updateuserinfo", UpdateUserInfoHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 

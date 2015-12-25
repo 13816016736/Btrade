@@ -15,6 +15,7 @@
         width: 210px;
     }
 </style>
+<script src="{{ static_url('js/ajaxfileupload.js') }}"></script>
 <div class="container">
     <div class="alert alert-warning" role="alert">
         <h3>极速找货 <small>饮片厂、药厂发布采购计划，经营公司、经营户发布找货需求，海量产地供应商跟你极速报价</small></h3>
@@ -25,8 +26,8 @@
     {% raw xsrf_form_html() %}
     <h3 class="page-header"><i class="border_left"></i>采购单位/采购人</h3>
         {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
-        <h4>严飞  亳州市沪谯药业有限公司</h4>
-        <p>13545002092</p>
+        <h4>{{ users.nickname }}  {{ users.name }}</h4>
+        <p>{{ users.phone }}</p>
         <p style="color:#44b549"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> 已通过实名认证</p>
         {% else %}
         <div class="form-group">
@@ -58,22 +59,22 @@
             <label class="control-label col-md-2">经营类型</label>
             <div class="form-inline">
                 <label class="radio-inline">
-                    <input type="radio" name="type" value="0">饮片厂
+                    <input type="radio" name="type" value="1">饮片厂
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type" value="1">药厂
+                    <input type="radio" name="type" value="2">药厂
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type" value="2">药材贸易公司
+                    <input type="radio" name="type" value="3">药材贸易公司
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type" value="3">其他类型公司
+                    <input type="radio" name="type" value="4">其他类型公司
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type" value="4">个体经营（有营业执照）
+                    <input type="radio" name="type" value="5">个体经营（有营业执照）
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="type" value="5">个人经营（无营业执照）
+                    <input type="radio" name="type" value="6">个人经营（无营业执照）
                 </label>
             </div>
         </div>
@@ -93,35 +94,6 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th><span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);"></span></th>
-            <td><input type="text" name="purchase[name]" style="width:80px" class="form-control" value="三七"/></td>
-            <td>
-                <select name="purchase[specification]" style="width:120px" class="form-control">
-                    <option value="1">十头</option>
-                    <option value="2">十头</option>
-                    <option value="3">五头</option>
-                </select>
-            </td>
-            <td>
-                <div class="form-inline">
-                <input type="text" name="purchase[quantity]" style="width:70px" class="form-control" value="500"/>
-                <select name="purchase[unit]" style="width:80px" class="form-control">
-                    <option value="1">公斤</option>
-                    <option value="2">吨</option>
-                </select>
-                </div>
-            </td>
-            <td><input type="text" name="purchase[quality]"></td>
-            <td><input type="text" name="purchase[origin]"></td>
-            <td><div class="form-inline"><input type="text" name="purchase[price]" style="width:50px" class="form-control" value="10"/> 元/公斤</div></td>
-            <td>
-                <div class="relative" style="position:relative;">
-                    <input type="file" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
-                    <span class="glyphicon glyphicon-camera" style="font-size:18px;position:absolute; left:0; top:0;"></span>
-                </div>
-            </td>
-          </tr>
           <tr>
             <th><span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);"></span></th>
             <td><input type="text" name="purchase[name]" style="width:80px" class="form-control"/></td>
@@ -145,10 +117,13 @@
             <td><input type="text" name="purchase[origin]"></td>
             <td><div class="form-inline"><input type="text" name="purchase[price]" style="width:50px" class="form-control" /> 元/公斤</div></td>
             <td>
-                <div class="relative" style="position:relative;">
-                    <input type="file" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
+                <center></center>
+                <center>
+                <div class="relative" style="position:relative;width:18px">
+                    <input type="file" class="fileclass" accept="image/gif, image/jpeg, image/png" name="filename" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
                     <span class="glyphicon glyphicon-camera" style="font-size:18px;position:absolute; left:0; top:0;"></span>
                 </div>
+                </center>
             </td>
           </tr>
         </tbody>
@@ -176,13 +151,13 @@
           <label class="control-label col-md-2">发票要求</label>
           <div class="form-inline">
               <label class="radio-inline">
-                  <input type="radio" name="invoice" value="0">无需发票
+                  <input type="radio" name="invoice" value="1">无需发票
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="invoice" value="1">普通发票
+                  <input type="radio" name="invoice" value="2">普通发票
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="invoice" value="2">增值税发票
+                  <input type="radio" name="invoice" value="3">增值税发票
               </label>
           </div>
       </div>
@@ -190,13 +165,13 @@
           <label class="control-label col-md-2">交易及付款</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="pay" value="0">药采购"安心交易"(预付全款)
+                  <input type="checkbox" name="pay" value="1">药采购"安心交易"(预付全款)
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" id="pay-1" name="pay" value="1">双方直接交易，验收合格后<input type="text" name="payday" style="width:46px;height:22px" class="form-control" />天内付款
+                  <input type="checkbox" id="pay-1" name="pay" value="2">双方直接交易，验收合格后<input type="text" name="payday" style="width:46px;height:22px" class="form-control" />天内付款
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" id="pay-2" name="pay" value="2">其他  <input type="text" name="payinfo" style="width:120px;height:22px" class="form-control" />
+                  <input type="checkbox" id="pay-2" name="pay" value="3">其他  <input type="text" name="payinfo" style="width:120px;height:22px" class="form-control" />
               </label>
           </div>
       </div>
@@ -204,7 +179,7 @@
           <label class="control-label col-md-2">寄样</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="send">报价必须寄样
+                  <input type="checkbox" name="send" value="1">报价必须寄样
               </label>
           </div>
           <label class="control-label col-md-2"></label>
@@ -233,13 +208,13 @@
           <label class="control-label col-md-2">供应商资质</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="supplier">必须有营业执照（公司/合作社/经营户），不接受个人
+                  <input type="checkbox" name="supplier" value="1">必须有营业执照（公司/合作社/经营户），不接受个人
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="supplier">具备GSP资质
+                  <input type="checkbox" name="supplier" value="2">具备GSP资质
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="supplier">具备GMP资质
+                  <input type="checkbox" name="supplier" value="3">具备GMP资质
               </label>
           </div>
       </div>
@@ -253,25 +228,25 @@
           <label class="control-label col-md-2">有效期</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" id="limited-0" name="limited" value="0">有限期报价
+                  <input type="checkbox" id="limited-0" name="limited" value="1">有限期报价
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="term">3天
+                  <input type="radio" name="term" value="3">3天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="term">7天
+                  <input type="radio" name="term" value="7">7天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="terme">15天
+                  <input type="radio" name="term" value="15">15天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="term">30天
+                  <input type="radio" name="term" value="30">30天
               </label>
           </div>
           <label class="control-label col-md-2"></label>
           <div class="form-inline">
             <label class="checkbox-inline">
-                  <input type="checkbox" name="limited" value="1">常年采购
+                  <input type="checkbox" name="limited" value="2">常年采购
             </label>
           </div>
       </div>
@@ -298,10 +273,10 @@
                 <p><span class="label label-warning">2</span>&nbsp;&nbsp;</p>
                 <p><span class="label label-warning">3</span>&nbsp;&nbsp;</p>
             </div>
-            <div class="col-sm-11">
+            <div class="col-sm-11" id="uploadexcel">
                 <p><a href="#">下载Excel模板</a></p>
                 <p>填写并保存Excel文件</p>
-                <p><input type="file" /></p>
+                <p><input type="file" name="excel" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/></p>
             </div>
         </div>
       </div>
@@ -360,7 +335,7 @@
     $("#addline").click(function(){
         $(".table").find("tbody").append("<tr>"+tr+"</tr>");
         $("tr:last").find("input[name='purchase[quality]']").tagThis();
-        $("input[name='purchase[origin]']").tagThis();
+        $("tr:last").find("input[name='purchase[origin]']").tagThis();
     });
     $("input[name='purchase[quality]']").tagThis();
     $("input[name='purchase[origin]']").tagThis();
@@ -441,23 +416,27 @@
                     tagArray.push(tags[i].text);
                 }
                 purchases[index]["origin"] = eval(tagArray);
-                delete form['purchase[origin]'];
+            }else{
+                purchases[index]["origin"] = "";
             }
+            delete form['purchase[origin]'];
          });
          $("input[name='purchase[price]']").each(function(index, element){
             purchases[index]["price"] = $(this).val();
             delete form['purchase[price]'];
          });
          $("input[name='purchase[quality]']").each(function(index, element){
+            var tags = $(this).data('tags');
             if(tags){
-                var tags = $(this).data('tags');
                 var tagArray = new Array();
                 for(var i=0;i<tags.length;i++){
                     tagArray.push(tags[i].text);
                 }
                 purchases[index]["quality"] = eval(tagArray);
-                delete form['purchase[quality]'];
+            }else{
+                purchases[index]["quality"] = "";
             }
+            delete form['purchase[quality]'];
          });
          $("select[name='purchase[specification]']").each(function(index, element){
             purchases[index]["specification"] = $(this).val();
@@ -466,6 +445,10 @@
          $("select[name='purchase[unit]']").each(function(index, element){
             purchases[index]["unit"] = $(this).val();
             delete form['purchase[unit]'];
+         });
+         $("input[name='purchase[varietyid]']").each(function(index, element){
+            purchases[index]["varietyid"] = $(this).val();
+            delete form['purchase[varietyid]'];
          });
          form["purchases"] = purchases;
          $.ajax({
@@ -479,16 +462,13 @@
             },
             success: function(data) {
                 if(data.status == "success"){
-                    $("#step2").hide();
-                    $("#step3").show();
-                    $("#username").html(data.data.username);
+                    window.location.href='/purchasesuccess';
                 }else{
-                    $("#regalert").show();
-                    $("#reginfo").html(data.message);
+                    alert("提交失败，请刷新页面重试");
                 }
             },
-            error: function(data) {
-                alert("出现异常，请刷新页面再试");
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown);
             }
          });
      });
@@ -512,8 +492,8 @@
                     }
                 }
             },
-            error: function(data) {
-                alert("出现异常，请刷新页面再试");
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
             }
          });
      });
@@ -545,6 +525,68 @@
             $('#purchase').bootstrapValidator('removeField', 'payinfo');
             $("#pay-2").parent().parent().parent().attr("class","form-group");
             $("#pay-2").parent().parent().parent().find("small").remove();
+        }
+     });
+     $('table').on('change','.fileclass',function(){
+        var num = $("table").find("tr").index($(this).parents("tr"));
+        var numid = "file-"+num;
+        $(this).attr("id",numid);
+        $.ajaxFileUpload({
+            url: '/uploadfile', //用于文件上传的服务器端请求地址
+            secureuri: false, //是否需要安全协议，一般设置为false
+            fileElementId: numid, //文件上传域的ID
+            data: {'num':num,'_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]},
+            success: function (data, status)  //服务器成功响应处理函数
+            {
+                var str = $(data).find("body").text();
+                var result = $.parseJSON(str);
+                if(result.status == "success"){
+                    $("table tr:eq("+num+")").find("center:eq(0)").append("<img width=\"60\" height=\"68\" src=\"static/" + result.path.split("\\static\\")[1] + "\" />");
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown)//服务器响应失败处理函数
+            {
+                alert(errorThrown);
+            }
+        })
+     });
+     $('#uploadexcel').on('change','input[name=excel]',function(){
+        alert($(this).val());
+        $('#myModal').modal('hide');
+     });
+     var str;
+     $("table").on('keyup',"input[name='purchase[name]']",function(){
+        var _xsrf = document.cookie.match("\\b_xsrf=([^;]*)\\b")[1];
+        var num = $("table").find("tr").index($(this).parents("tr"));
+        var reg = /^[u4E00-u9FA5]+$/;
+        if(!reg.test($(this).val()) && str != $(this).val()) {
+            str = $(this).val();
+            $.ajax({
+                url: "/getvarietyinfo",
+                data: "&_xsrf=" + _xsrf + "&variety=" + str,
+                dataType: 'json',
+                type: 'POST',
+                success: function(data) {
+                    if(data.status == "success"){
+                        var obj = $("table tr:eq("+num+")").find("select[name='purchase[specification]']");
+                        obj.empty();
+                        for(var i=0; i<data.specifications.length; i++){
+                            obj.append("<option value=\"" + data.specifications[i].id +"\">" + data.specifications[i].specification + "</option>");
+                        }
+                        var originobj = $("table tr:eq("+num+")").find("input[name='purchase[origin]']");
+                        originobj.clearAllTags();
+                        $("table tr:eq("+num+")").find(".glyphicon-remove").empty();
+                        $("table tr:eq("+num+")").find(".glyphicon-remove").append("<input name=\"purchase[varietyid]\" type=\"hidden\" value=\"" + data.varietyinfo.id + "\" />");
+                        var origins = data.varietyinfo.origin.split(",");
+                        for(var j=0; j<origins.length; j++){
+                            originobj.addTag(origins[j]);
+                        }
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+             });
         }
      });
 </script>

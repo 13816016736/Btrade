@@ -41,7 +41,7 @@ class RegisterHandler(BaseHandler):
         if account is None:
             self.api_response({'status':'fail','message':'经营主体不能为空'})
         name = self.get_argument("company") if account == 1 else self.get_argument("name")
-        if account is None:
+        if name is None:
             self.api_response({'status':'fail','message':'真实姓名或单位名称不能为空'})
         nickname = self.get_argument("nickname")
         if nickname is None:

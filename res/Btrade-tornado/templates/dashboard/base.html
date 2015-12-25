@@ -11,6 +11,10 @@
     <link href="{{ static_url('css/sb-admin.css')}}" rel="stylesheet">
     <link href="{{ static_url('css/plugins/morris.css')}}" rel="stylesheet">
     <link href="{{ static_url('font-awesome/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{ static_url('bootstrap/css/bootstrapValidator.css') }}" rel="stylesheet" media="screen">
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ static_url('bootstrap/js/bootstrapValidator.js') }}"></script>
     <style>
         body {
             font-family: Microsoft YaHei;
@@ -34,7 +38,7 @@
                             <a href="#">
                                 <div class="media">
                                     <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     </span>
                                     <div class="media-body">
                                         <h5 class="media-heading"><strong>代雷</strong>
@@ -103,7 +107,7 @@
                         <a href="#"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> 通知</a>
                     </li>
                     <li {% if request.uri.split('/')[1] == "account" %} class="active" {% end %}>
-                        <a href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 账户</a>
+                        <a href="/account"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 账户</a>
                     </li>
                     <!--<li>
                         <a href="bootstrap-grid.html"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Bootstrap Grid</a>
@@ -131,13 +135,9 @@
             {% end %}
         </div>
     </div>
-    <!-- jQuery -->
-    <script src="{{ static_url('js/jquery.min.js') }}"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{{ static_url('bootstrap/js/bootstrap.min.js') }}"></script>
-    <!-- Morris Charts JavaScript -->
+    <!-- Morris Charts JavaScript
     <script src="{{ static_url('js/plugins/morris/raphael.min.js') }}"></script>
     <script src="{{ static_url('js/plugins/morris/morris.min.js') }}"></script>
-    <script src="{{ static_url('js/plugins/morris/morris-data.js') }}"></script>
+    <script src="{{ static_url('js/plugins/morris/morris-data.js') }}"></script> -->
 </body>
 </html>

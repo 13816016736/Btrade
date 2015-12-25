@@ -24,6 +24,7 @@ class LoginHandler(BaseHandler):
                         , username=username)
             return
         if md5(str(password+config.salt)) == author.password:
+            self.session["userid"] = author.id
             self.session["user"] = self.get_argument("username")
             self.session.save()
             self.redirect(self.get_argument("next", "/"))
@@ -32,6 +33,7 @@ class LoginHandler(BaseHandler):
 
 class LogoutHandler(BaseHandler):
     def get(self):
+        self.session["userid"] = ""
         self.session["user"] = ""
         self.session.save()
         self.redirect('/login')
