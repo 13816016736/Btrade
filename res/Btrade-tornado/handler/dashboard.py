@@ -23,8 +23,12 @@ class AccountHandler(BaseHandler):
             users[0].update(user_info[0])
         else:
             users[0]["name"] = ""
-        print users[0]
-        self.render("dashboard/account.html", user=users[0], provinces=provinces)
+        if users[0].has_key("areaid"):
+            area = self.db.query("SELECT id,parentid FROM area WHERE id = %s", users[0].get("areaid"))
+            city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area[0].get("parentid"))
+        if users[0].has_key("varietyids"):
+            varietyids = self.db.query("SELECT id,name FROM variety WHERE id in ("+users[0].get("varietyids")+")")
+        self.render("dashboard/account.html", user=users[0], provinces=provinces, city=city, area=area[0], varietyids=varietyids)
 
 class UpdateUserHandler(BaseHandler):
 
@@ -86,8 +90,26 @@ class UpdateUserInfoHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
-        if self.get_argument("name", None) is None:
-            self.api_response({'status':'fail','message':'经营主体必填'})
-        else:
-            self.db.query("UPDATE user_info SET name = %s  WHERE id = %s", self.get_argument("name"), self.session.get("userid"))
-            self.api_response({'status':'success','message':'更新成功'})
+        sql = []
+        varietyids = []
+        varietyname = []
+        for variety in self.get_arguments("varietyid"):
+            if variety == "":
+                break
+            varietyid = self.db.query("SELECT id FROM variety WHERE name = %s", variety)
+            if varietyid:
+                varietyids.append(str(varietyid[0].id))
+            else:
+                varietyname.append(variety)
+        print varietyname
+        if varietyname:
+            self.api_response({'status':'fail','message':u'不存在的品种'+','.join(varietyname)})
+            return
+        if self.get_argument("type"):
+            sql.append("type = "+self.get_argument("type"))
+        if varietyids:
+            sql.append("varietyids = \""+",".join(varietyids)+"\"")
+        if self.get_argument("city"):
+            sql.append("areaid = "+self.get_argument("city"))
+        self.db.query("UPDATE users SET "+",".join(sql)+" WHERE id = %s", self.session.get("userid"))
+        self.api_response({'status':'success','message':'更新成功'})
