@@ -45,7 +45,7 @@
                     <label class="control-label col-md-2"></label>
                     <div class="form-inline">
                     <button type="submit" class="btn btn-warning">保存基础信息</button>
-                    <span style="display:none"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 提示信息</span>
+                    <span id="usermsg" style="display:none"></span>
                     </div>
                 </div>
             </form>
@@ -62,7 +62,8 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-2"></label>
-                    <button type="submit" class="btn btn-warning">立即认证</button>
+                    <button type="submit" class="btn btn-warning">保存经营主体信息</button>
+                    <span id="usernamemsg" style="display:none"></span>
                 </div>
             </form>
         </div>
@@ -115,8 +116,14 @@
                 <div class="form-group">
                     <label class="control-label col-md-2">关注品种</label>
                     <div class="form-inline">
+                        {% if len(varietyids) != 0 %}
                         {% for varietyid in varietyids %}
                         <input class="form-control" name="varietyid" value="{{ varietyid.name }}">
+                        {% end %}
+                        {% else %}
+                        <input class="form-control" name="varietyid">
+                        <input class="form-control" name="varietyid">
+                        <input class="form-control" name="varietyid">
                         {% end %}
                     </div>
                 </div>
@@ -134,7 +141,7 @@
                         {% end %}
                         </select>
                         <select id="city" name="city" class="form-control" data-bv-field="city">
-                        {% if user.has_key('areaid') %}
+                        {% if user.has_key('areaid') and area%}
                         {% for c in city %}
                         <option value="{{c.id}}"{% if area.id == c.id%} selected {%end%}>{{c.areaname}}</option>
                         {% end %}
@@ -193,9 +200,11 @@ $(document).ready(function(){
             },
             success: function(data) {
                 if(data.status == "success"){
-
+                    $("#usermsg").html("<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span>"+data.message);
+                    $("#usermsg").show();
                 }else{
-                    alert("提交失败，请刷新页面重试");
+                    $("#usermsg").html("<span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span>"+data.message);
+                    $("#usermsg").show();
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -215,9 +224,11 @@ $(document).ready(function(){
             },
             success: function(data) {
                 if(data.status == "success"){
-
+                    $("#usernamemsg").html("<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span>"+data.message);
+                    $("#usernamemsg").show();
                 }else{
-                    alert("提交失败，请刷新页面重试");
+                    $("#usernamemsg").html("<span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span>"+data.message);
+                    $("#usernamemsg").show();
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

@@ -7,6 +7,7 @@ from utils import *
 from config import *
 import random
 import time
+from collections import defaultdict
 
 class PurchaseHandler(BaseHandler):
 
@@ -50,7 +51,7 @@ class PurchaseHandler(BaseHandler):
         data['payday'] = data['payday'] if data.has_key('payday') and data['payday'] != "" else "0"
         data['send'] = data['send'] if data.has_key('send') and data['send'] != "" else "0"
         data['supplier'] = data['supplier'] if data.has_key('supplier') and data['supplier'] != "" else "0"
-        data['limited'] = ",".join(data['limited']) if data.has_key("limited") else ""
+        data['limited'] = data['limited'] if data.has_key("limited") else "0"
         data['term'] = data['term'] if data.has_key('term') and data['term'] != "" else "0"
         #存储采购主体信息
         if data.has_key("city"):
@@ -77,13 +78,35 @@ class PurchaseHandler(BaseHandler):
                                           "value(%s, %s)", purchase_infoid, attachment)
             self.api_response({'status':'success','message':'请求成功'})
         else:
-            self.api_response({'status':'faile','message':'必须选择收货地'})
+            self.api_response({'status':'fail','message':'必须选择收货地'})
 
 class MyPurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
-        self.render("dashboard/mypurchase.html")
+        purchases = self.db.query("select * from purchase where userid = %s limit 10", self.session.get("userid"))
+        purchaseids = [str(purchase["id"]) for purchase in purchases]
+        purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
+        purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
+        purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+        purchaseinf = defaultdict(list)
+        for attachment in  purchaseattachments:
+            for purchaseinfo in purchaseinfos:
+                if purchaseinfo["id"] == attachment["purchase_infoid"]:
+                    purchaseinfo["attachments"] = attachment
+                    purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
+                    break
+        for purchase in purchases:
+            purchase["purchaseinfo"] = purchaseinf[purchase["id"]]
+            purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
+            if purchase["limited"] == 1:
+                purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
+        nav = {
+            'model': 'mypurchase',
+            'num': len(purchases),
+        }
+        self.render("dashboard/mypurchase.html", purchases=purchases, nav=nav)
 
     def post(self):
         pass
@@ -93,7 +116,24 @@ class MyPurchaseInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, id):
         print id
-        self.render("dashboard/mypurchaseinfo.html")
+        purchaseinfo = self.db.query("select tn.*,pa.attachment from (select n.*,sp.specification from (select t.*,a.areaname from "
+        "(select p.id,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
+        "pi.name,pi.price,pi.quantity,pi.quality,pi.specificationid from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
+        "where p.userid = %s and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
+        "specification sp on n.specificationid = sp.id) tn,purchase_attachment pa where tn.pid = pa.purchase_infoid",
+                                     self.session.get("userid"), id)
+        if purchaseinfo:
+            purchaseinfo[0]["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo[0]["createtime"])))
+            if purchaseinfo[0]["limited"] == 1:
+                purchaseinfo[0]["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo[0]["createtime"])) + datetime.timedelta(purchaseinfo[0]["term"])
+                purchaseinfo[0]["timedelta"] = (purchaseinfo[0]["expire"] - datetime.datetime.now()).days
+            purchaseinfo[0]["attachment"] = "\\static"+purchaseinfo[0]["attachment"] .split("static")[1]
+            print purchaseinfo
+            others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
+                                          purchaseinfo[0]["id"], purchaseinfo[0]["pid"])
+            self.render("dashboard/mypurchaseinfo.html", purchase=purchaseinfo[0], others=len(others))
+        else:
+            self.error("此采购订单不属于你", "/mypurchase")
 
     def post(self):
         pass
@@ -132,16 +172,17 @@ class UploadFileHandler(BaseHandler):
             filepath = os.path.join(upload_path,filename)
             #有些文件需要已二进制的形式存储，实际中可以更改
             with open(filepath,'wb') as up:
-                up.write(meta['body'])
-                self.finish(json.dumps({'status':'success','message':'上传成功','path':filepath}))
-                uploadfiles = self.session.get("uploadfiles")
+                uploadfiles = self.session.get("uploadfiles", {})
                 if uploadfiles and uploadfiles.has_key(num):
-                    uploadfiles[num].append(filepath)
+                    #uploadfiles[num].append(filepath)
+                    self.finish(json.dumps({'status':'fail','message':'一个采购单只能传一张图片'}))
                 else:
-                    uploadfiles = {}
+                    up.write(meta['body'])
                     uploadfiles[num] = [filepath]
-                self.session["uploadfiles"] = uploadfiles
-                self.session.save()
+                    self.session["uploadfiles"] = uploadfiles
+                    self.session.save()
+                    self.finish(json.dumps({'status':'success','message':'上传成功','path':filepath}))
+                print self.session["uploadfiles"]
                 return
         self.finish({'status':'fail','message':'上传失败'})
 
@@ -166,6 +207,63 @@ class PurchaseSuccessHandler(BaseHandler):
 
     def get(self):
         self.render("success.html")
+
+    def post(self):
+        pass
+
+class RemovePurchaseHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def post(self):
+        if self.db.query("SELECT count(*) FROM purchase WHERE userid = %s and id = %s", self.session.get("userid"), self.get_argument("pid")):
+            self.db.execute("UPDATE purchase SET status = 0 WHERE userid = %s and id = %s", self.session.get("userid"), self.get_argument("pid"))
+            self.api_response({'status':'success','message':'请求成功'})
+        else:
+            self.api_response({'status':'fail','message':'请求失败，此采购订单不属于你'})
+
+class MyPurchaseUpdateHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self, id):
+        purchases = self.db.query("select * from purchase where userid = %s and id = %s", self.session.get("userid"), id)
+        purchaseids = [str(purchase["id"]) for purchase in purchases]
+        purchaseinfos = self.db.query("select * from purchase_info where purchaseid in ("+",".join(purchaseids)+")")
+        purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
+        varietyids = [str(purchaseinfo["varietyid"]) for purchaseinfo in purchaseinfos]
+        purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+        purchaseinf = defaultdict(list)
+        for attachment in  purchaseattachments:
+            attachment["attachment"] = "\\static"+attachment["attachment"] .split("static")[1]
+            for purchaseinfo in purchaseinfos:
+                if purchaseinfo["id"] == attachment["purchase_infoid"]:
+                    purchaseinfo["attachments"] = attachment
+                    purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
+                    break
+        for purchase in purchases:
+            purchase["purchaseinfo"] = purchaseinf[purchase["id"]]
+
+        if self.session.get("uploadfiles"):
+            self.session["uploadfiles"] = {}
+            self.session.save()
+        provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 0")
+        area = self.db.query("SELECT id,parentid FROM area WHERE id = %s", purchase["areaid"])
+        city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area[0].get("parentid"))
+        users = self.db.query("SELECT id,nickname,phone FROM users WHERE id = %s", self.session.get("userid"))
+        user_info = self.db.query("SELECT name FROM user_info WHERE userid = %s", self.session.get("userid"))
+        specifications = self.db.query("select * from specification where varietyid in ("+",".join(varietyids)+")")
+        specificationinf = defaultdict(list)
+        for specification in specifications:
+            specificationinf[specification["varietyid"]].append(specification)
+        for purchaseinfo in purchase["purchaseinfo"]:
+            for index,spec in specificationinf.items():
+                if index == purchaseinfo["varietyid"]:
+                    purchaseinfo["specification"] = spec
+                    break
+        if users:
+            users[0]["name"] = user_info[0]["name"] if user_info else ""
+            self.render("updatepurchase.html", purchase=purchase, provinces=provinces, city=city, area=area[0], users=users[0])
+        else:
+            self.error("此用户不存在", "/login")
 
     def post(self):
         pass

@@ -45,6 +45,8 @@ handlers = [
     (r"/purchasesuccess", PurchaseSuccessHandler),
     (r"/dashboard", DashboardHandler),
     (r"/mypurchase", MyPurchaseHandler),
+    (r"/mypurchase/update/(\d{1,3})", MyPurchaseUpdateHandler),
+    (r"/removepurchase", RemovePurchaseHandler),
     (r"/mypurchase/info/(\d{1,3})", MyPurchaseInfoHandler),
     (r"/account", AccountHandler),
     (r"/updateuser", UpdateUserHandler),

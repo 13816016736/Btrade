@@ -4,6 +4,7 @@ import tornado.web
 from base import BaseHandler
 from utils import *
 import config
+from collections import defaultdict
 
 class DashboardHandler(BaseHandler):
 
@@ -23,10 +24,13 @@ class AccountHandler(BaseHandler):
             users[0].update(user_info[0])
         else:
             users[0]["name"] = ""
-        if users[0].has_key("areaid"):
+        city = []
+        varietyids = []
+        area = defaultdict(list)
+        if users[0].has_key("areaid") and users[0].get("areaid") != 0:
             area = self.db.query("SELECT id,parentid FROM area WHERE id = %s", users[0].get("areaid"))
             city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area[0].get("parentid"))
-        if users[0].has_key("varietyids"):
+        if users[0].has_key("varietyids") and users[0].get("varietyids") != "":
             varietyids = self.db.query("SELECT id,name FROM variety WHERE id in ("+users[0].get("varietyids")+")")
         self.render("dashboard/account.html", user=users[0], provinces=provinces, city=city, area=area[0], varietyids=varietyids)
 
@@ -64,16 +68,16 @@ class UpdateUserHandler(BaseHandler):
                 phone = self.get_argument("phone")
 
         if password and phone:
-            self.db.query("UPDATE users SET nickname = %s, password = %s, phone = %s  WHERE id = %s", nickname, password, phone, userid)
+            self.db.update("UPDATE users SET nickname = %s, password = %s, phone = %s  WHERE id = %s", nickname, password, phone, userid)
             self.api_response({'status':'success','message':'更新成功'})
         elif password:
-            self.db.query("UPDATE users SET nickname = %s, password = %s  WHERE id = %s", nickname, password, userid)
+            self.db.update("UPDATE users SET nickname = %s, password = %s  WHERE id = %s", nickname, password, userid)
             self.api_response({'status':'success','message':'更新成功'})
         elif phone:
-            self.db.query("UPDATE users SET nickname = %s, phone = %s  WHERE id = %s", nickname, phone, userid)
+            self.db.update("UPDATE users SET nickname = %s, phone = %s  WHERE id = %s", nickname, phone, userid)
             self.api_response({'status':'success','message':'更新成功'})
         else:
-            self.db.query("UPDATE users SET nickname = %s  WHERE id = %s", nickname, userid)
+            self.db.update("UPDATE users SET nickname = %s  WHERE id = %s", nickname, userid)
             self.api_response({'status':'success','message':'更新成功'})
 
 class UpdateUserNameHandler(BaseHandler):
@@ -83,7 +87,10 @@ class UpdateUserNameHandler(BaseHandler):
         if self.get_argument("name", None) is None:
             self.api_response({'status':'fail','message':'经营主体必填'})
         else:
-            self.db.query("UPDATE user_info SET name = %s  WHERE id = %s", self.get_argument("name"), self.session.get("userid"))
+            if self.db.query("select * from user_info where userid = %s", self.session.get("userid")):
+                self.db.update("update user_info SET name = %s where userid = %s", self.get_argument("name"), self.session.get("userid"))
+            else:
+                self.db.update("insert into user_info (userid, name)value(%s, %s)", self.session.get("userid"), self.get_argument("name"))
             self.api_response({'status':'success','message':'更新成功'})
 
 class UpdateUserInfoHandler(BaseHandler):
@@ -111,5 +118,5 @@ class UpdateUserInfoHandler(BaseHandler):
             sql.append("varietyids = \""+",".join(varietyids)+"\"")
         if self.get_argument("city"):
             sql.append("areaid = "+self.get_argument("city"))
-        self.db.query("UPDATE users SET "+",".join(sql)+" WHERE id = %s", self.session.get("userid"))
+        self.db.update("UPDATE users SET "+",".join(sql)+" WHERE id = %s", self.session.get("userid"))
         self.api_response({'status':'success','message':'更新成功'})

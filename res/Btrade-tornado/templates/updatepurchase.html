@@ -106,30 +106,37 @@
           </tr>
         </thead>
         <tbody>
+          {% for purchaseinfo in purchase.purchaseinfo %}
           <tr>
             <th><span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);"></span></th>
-            <td><input type="text" name="purchase[name]" style="width:80px" class="form-control"/></td>
+            <td><input type="text" name="purchase[name]" style="width:80px" class="form-control" value="{{purchaseinfo.name}}" /></td>
             <td>
                 <select name="purchase[specification]" style="width:120px" class="form-control">
-                    <option value="1">十头</option>
-                    <option value="2">十头</option>
-                    <option value="3">五头</option>
+                    {% for specification in purchaseinfo.specification %}
+                    <option {% if specification.id == purchaseinfo.specificationid %}selected{% end %} value="{{specification.id}}">
+                        {{specification.specification}}
+                    </option>
+                    {% end %}
                 </select>
             </td>
             <td>
                 <div class="form-inline">
-                <input type="text" name="purchase[quantity]" style="width:70px" class="form-control"/>
+                <input type="text" name="purchase[quantity]" style="width:70px" class="form-control" value="{{purchaseinfo.quantity}}"/>
                 <select name="purchase[unit]" style="width:80px" class="form-control">
-                    <option value="1">公斤</option>
-                    <option value="2">吨</option>
+                    <option {%if purchaseinfo.unit == 1%}selected{% end %} value="1">公斤</option>
+                    <option {%if purchaseinfo.unit == 2%}selected{% end %} value="2">吨</option>
                 </select>
                 </div>
             </td>
-            <td><input type="text" name="purchase[quality]"></td>
-            <td><input type="text" name="purchase[origin]"></td>
-            <td><div class="form-inline"><input type="text" name="purchase[price]" style="width:50px" class="form-control" /> 元/公斤</div></td>
+            <td><input type="text" name="purchase[quality]" /></td>
+            <td><input type="text" name="purchase[origin]" /></td>
+            <td><div class="form-inline"><input type="text" name="purchase[price]" style="width:50px" class="form-control" value="{{purchaseinfo.price}}"/> 元/公斤</div></td>
             <td>
-                <center></center>
+                <center>
+                    {% if purchaseinfo.attachments %}
+                    <img width="60" height="68" src="{{ purchaseinfo.attachments.attachment }}" />
+                    {% end %}
+                </center>
                 <center>
                 <div class="relative" style="position:relative;width:18px">
                     <input type="file" class="fileclass" accept="image/gif, image/jpeg, image/png" name="filename" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
@@ -138,6 +145,7 @@
                 </center>
             </td>
           </tr>
+          {% end %}
         </tbody>
       </table>
       <div class="form-inline">
@@ -151,11 +159,13 @@
               <select id="province" name="province" class="form-control">
                   <option value="">省</option>
                   {% for province in provinces %}
-                  <option value="{{province.id}}">{{province.areaname}}</option>
+                  <option value="{{province.id}}"{% if area and (area.parentid == province.id)%} selected {%end%}>{{province.areaname}}</option>
                   {% end %}
               </select>
               <select id="city" name="city" class="form-control">
-                  <option value="">市/县</option>
+                  {% for c in city %}
+                  <option value="{{c.id}}"{% if area.id == c.id%} selected {%end%}>{{c.areaname}}</option>
+                  {% end %}
               </select>
           </div>
       </div>
@@ -163,13 +173,13 @@
           <label class="control-label col-md-2">发票要求</label>
           <div class="form-inline">
               <label class="radio-inline">
-                  <input type="radio" name="invoice" value="1">无需发票
+                  <input type="radio" name="invoice" {% if purchase.invoice == 1 %}checked{% end %} value="1">无需发票
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="invoice" value="2">普通发票
+                  <input type="radio" name="invoice" {% if purchase.invoice == 2 %}checked{% end %} value="2">普通发票
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="invoice" value="3">增值税发票
+                  <input type="radio" name="invoice" {% if purchase.invoice == 3 %}checked{% end %} value="3">增值税发票
               </label>
           </div>
       </div>
@@ -177,13 +187,13 @@
           <label class="control-label col-md-2">交易及付款</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="pay" value="1">药采购"安心交易"(预付全款)
+                  <input type="checkbox" name="pay" {% if purchase.pay == 1 %}checked{% end %} value="1">药采购"安心交易"(预付全款)
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" id="pay-1" name="pay" value="2">双方直接交易，验收合格后<input type="text" name="payday" style="width:46px;height:22px" class="form-control" />天内付款
+                  <input type="checkbox" id="pay-1" name="pay" {% if purchase.pay == 2 %}checked{% end %} value="2">双方直接交易，验收合格后<input type="text" name="payday" style="width:46px;height:22px" value="{{purchase.payday}}" class="form-control" />天内付款
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" id="pay-2" name="pay" value="3">其他  <input type="text" name="payinfo" style="width:120px;height:22px" class="form-control" />
+                  <input type="checkbox" id="pay-2" name="pay" {% if purchase.pay == 3 %}checked{% end %} value="3">其他  <input type="text" name="payinfo" style="width:120px;height:22px" value="{{ purchase.payinfo }}" class="form-control" />
               </label>
           </div>
       </div>
@@ -191,27 +201,30 @@
           <label class="control-label col-md-2">寄样</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="send" value="1">报价必须寄样
+                  <input type="checkbox" name="send" {% if purchase.send == 1 %}checked{% end %} value="1">报价必须寄样
               </label>
           </div>
           <label class="control-label col-md-2"></label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" name="receive" class="form-control">接收地址:
-                接收人:
-                联系电话:
-                寄样要求:</textarea>
+            <textarea rows="4" style="width:75%" name="receive" class="form-control">
+                {{ purchase.receive }}
+            </textarea>
           </div>
       </div>
       <div class="form-group">
           <label class="control-label col-md-2">验收及包装要求</label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" name="accept" class="form-control"></textarea>
+            <textarea rows="4" style="width:75%" name="accept" class="form-control">
+                {{ purchase.accept }}
+            </textarea>
           </div>
       </div>
       <div class="form-group">
           <label class="control-label col-md-2">补充说明</label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" name="other" class="form-control"></textarea>
+            <textarea rows="4" style="width:75%" name="other" class="form-control">
+                {{ purchase.other }}
+            </textarea>
           </div>
       </div>
       <h3 class="page-header"><span class="glyphicon glyphicon-minus" aria-hidden="true" style="float:right;"></span><i class="border_left"></i>供应商要求</h3>
@@ -220,45 +233,47 @@
           <label class="control-label col-md-2">供应商资质</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" name="supplier" value="1">必须有营业执照（公司/合作社/经营户），不接受个人
+                  <input type="checkbox" name="supplier" {% if purchase.supplier == 1 %}checked{% end %} value="1">必须有营业执照（公司/合作社/经营户），不接受个人
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="supplier" value="2">具备GSP资质
+                  <input type="checkbox" name="supplier" {% if purchase.supplier == 2 %}checked{% end %} value="2">具备GSP资质
               </label>
               <label class="checkbox-inline">
-                  <input type="checkbox" name="supplier" value="3">具备GMP资质
+                  <input type="checkbox" name="supplier" {% if purchase.supplier == 3 %}checked{% end %} value="3">具备GMP资质
               </label>
           </div>
       </div>
       <div class="form-group">
           <label class="control-label col-md-2">其他要求</label>
           <div class="form-inline">
-            <textarea rows="4" style="width:75%" name="remark" class="form-control"></textarea>
+            <textarea rows="4" style="width:75%" name="remark" class="form-control">
+                {{ purchase.remark }}
+            </textarea>
           </div>
       </div>
       <div class="form-group">
           <label class="control-label col-md-2">有效期</label>
           <div class="form-inline">
               <label class="checkbox-inline">
-                  <input type="checkbox" id="limited-0" name="limited" value="1">有限期报价
+                  <input type="checkbox" id="limited-0" name="limited" {% if purchase.limited == 1 %}checked{% end %} value="1">有限期报价
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="term" value="3">3天
+                  <input type="radio" name="term" {% if purchase.term == 3 %}checked{% end %} value="3">3天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="term" value="7">7天
+                  <input type="radio" name="term" {% if purchase.term == 7 %}checked{% end %} value="7">7天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="term" value="15">15天
+                  <input type="radio" name="term" {% if purchase.term == 15 %}checked{% end %} value="15">15天
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="term" value="30">30天
+                  <input type="radio" name="term" {% if purchase.term == 30 %}checked{% end %} value="30">30天
               </label>
           </div>
           <label class="control-label col-md-2"></label>
           <div class="form-inline">
             <label class="checkbox-inline">
-                  <input type="checkbox" name="limited" value="2">常年采购
+                  <input type="checkbox" name="limited" {% if purchase.limited == 2 %}checked{% end %} value="2">常年采购
             </label>
           </div>
       </div>
@@ -602,5 +617,21 @@
              });
         }
      });
+     function initdata(num, quantity, origins){
+         num = num + 1;
+         var quantityobj = $("table tr:eq("+num+")").find("input[name='purchase[quality]']");
+         var quantity = quantity.split(",");
+         for(var i=0; i<quantity.length; i++){
+            quantityobj.addTag(quantity[i]);
+         }
+         var originobj = $("table tr:eq("+num+")").find("input[name='purchase[origin]']");
+         var origins = origins.split(",");
+         for(var j=0; j<origins.length; j++){
+            originobj.addTag(origins[j]);
+         }
+     }
+     {% for index,purchaseinfo in enumerate(purchase.purchaseinfo) %}
+     initdata({{index}},"{{purchaseinfo.quantity}}","{{purchaseinfo.origin}}");
+     {% end %}
 </script>
 {% end %}
