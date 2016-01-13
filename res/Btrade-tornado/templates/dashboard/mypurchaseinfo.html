@@ -22,7 +22,7 @@
             </ol>
         </div>
     </div>
-    <h5><a href="/mypurchase">返回我的采购</a></h5>
+    <h5><a href="#"onclick="javascript:history.back(-1);">返回我的采购</a></h5>
     <br>
     <div class="alert alert-warning" style="color:#000">
         <div class="row">
@@ -82,7 +82,9 @@
             <div class="form-group">
                 <label class="control-label">合格样例：</label>
                 <div class="form-inline">
+                {% if purchase.attachment != ""%}
                 <img width="60" height="68" src="{{ purchase.attachment }}" />
+                {% end %}
                 </div>
             </div>
           </div>
@@ -140,7 +142,9 @@
             <span style="float:right">
                 <span class="glyphicon glyphicon-edit" style="color:#f0ad4e;" onclick="purchaseinfo({{purchase.id}})"></span>&nbsp;&nbsp;
                 <span class="glyphicon glyphicon-share" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                {% if purchase.status == 1%}
                 <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;" data-toggle="modal" data-target="#myModal"></span>&nbsp;&nbsp;
+                {% end %}
             </span>
         </p>
     </div>
@@ -279,7 +283,7 @@ $(document).ready(function(){
 })
 
 function purchaseinfo(pid){
-    window.location = "/purchase/"+pid;
+    window.location = "/mypurchase/update/"+pid;
 }
 
 function removepurchase(pid){

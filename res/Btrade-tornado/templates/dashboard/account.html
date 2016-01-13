@@ -73,43 +73,43 @@
         <hr>
         <div class="col-lg-10">
             <form role="form" id="user_info_form" action="/updateuserinfo">
-                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in ['1','2','3','4','5']) %}
+                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in range(1,5)) %}
                 <div class="form-group">
                     <label class="control-label col-md-2">经营类型（企业）</label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="1" %} checked {% end %}value="1">饮片厂/饮片生产、加工
+                        <input type="radio" name="type"{% if user.type==1 %} checked {% end %}value="1">饮片厂/饮片生产、加工
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="2" %} checked {% end %}value="2">药厂/制药企业
+                        <input type="radio" name="type"{% if user.type==2 %} checked {% end %}value="2">药厂/制药企业
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="3" %} checked {% end %}value="3">药材贸易经营公司
+                        <input type="radio" name="type"{% if user.type==3 %} checked {% end %}value="3">药材贸易经营公司
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="4" %} checked {% end %}value="4">种植合作社/种植基地
+                        <input type="radio" name="type"{% if user.type==4 %} checked {% end %}value="4">种植合作社/种植基地
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="5" %} checked {% end %}value="5">其他类型公司
+                        <input type="radio" name="type"{% if user.type==5 %} checked {% end %}value="5">其他类型公司
                     </label>
                 </div>
                 {% end %}
-                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in ['6','7','8','9','10']) %}
+                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in range(6,10)) %}
                 <div class="form-group">
                     <label class="control-label col-md-2">经营类型（个人）</label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="6" %} checked {% end %}value="6">个人经营
+                        <input type="radio" name="type"{% if user.type==6 %} checked {% end %}value="6">个人经营
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="7" %} checked {% end %}value="7">企业采购经理/业务员
+                        <input type="radio" name="type"{% if user.type==7 %} checked {% end %}value="7">企业采购经理/业务员
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="8" %} checked {% end %}value="8">采购药材为主
+                        <input type="radio" name="type"{% if user.type==8 %} checked {% end %}value="8">采购药材为主
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="9" %} checked {% end %}value="9">销售药材为主
+                        <input type="radio" name="type"{% if user.type==9 %} checked {% end %}value="9">销售药材为主
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="type"{% if user.type=="10" %} checked {% end %}value="10">既采购也销售药材
+                        <input type="radio" name="type"{% if user.type==10 %} checked {% end %}value="10">既采购也销售药材
                     </label>
                 </div>
                 {% end %}

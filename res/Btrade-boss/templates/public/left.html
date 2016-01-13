@@ -1,0 +1,51 @@
+<aside class="main-sidebar">
+    <section class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="#">
+                    <i class="fa fa-tachometer"></i> <span>操作中心</span>
+                </a>
+            </li>
+            <li class="treeview {% if request.uri.split('/')[1] == "users" %}active{% end %}">
+                <a href="#">
+                    <i class="fa fa-th"></i> <span>会员管理</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu menu-open">
+                    <li {% if request.uri.split('/')[2] == "userlist" %}class="active"{% end %}>
+                    <a href="/users/userlist">
+                        <i class="fa fa-circle-o"></i> 前台会员管理
+                    </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="treeview {% if request.uri.split('/')[1] == "purchase" %}active{% end %}">
+                <a href="#">
+                    <i class="fa fa-cart-plus"></i> <span>采购管理</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu {% if request.uri.split('/')[1] == "purchase" %}menu-open{% end %}">
+                    <li {% if request.uri.split('/')[2] == "purchaselist" %}class="active"{% end %}><a href="/purchase/purchaselist"><i class="fa fa-circle-o"></i> 订单查询</a>
+                    </li>
+                </ul>
+            </li>
+            <!--<li class="treeview">
+                <a href="#">
+                    <i class="fa fa-credit-card"></i> <span>支付系统</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li>
+                        <a href="#"><i class="fa fa-circle-o"></i> 资金管理 <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-circle-o"></i> 资金流水查询</a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i> 线下支付管理</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>-->
+        </ul>
+    </section>
+</aside>

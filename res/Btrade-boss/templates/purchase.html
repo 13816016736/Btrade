@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block container %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>订单管理</h1>
+    </section>
+    <section class="filter">
+        <form class="form-inline">
+            <div class="form-group">
+                <span class="label label-warning">全部（5）</span>
+            </div>
+            <div class="form-group">
+                <span class="label label-default">等待报价（1）</span>
+            </div>
+            <div class="form-group">
+                <span class="label label-default">甄选供应商（2）</span>
+            </div>
+            <div class="form-group">
+                <span class="label label-default">关闭（3）</span>
+            </div>
+            <div class="form-group">
+                <label >发布时间：</label>
+                <div class="input-group date form_datetime">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control">
+                </div>
+                至
+                <div class="input-group date form_datetime">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-query">查询</button>
+            </div>
+            <div class="form-group">
+                <button type="reset" class="btn btn-default">清空</button>
+            </div>
+        </form>
+    </section>
+    <section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr class="warning">
+                            <th style="text-align:center;">采购批号</th>
+                            <th style="text-align:center;">品种</th>
+                            <th style="text-align:center;">报价</th>
+                            <th style="text-align:center;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for purchase in purchases%}
+                        <tr class="success">
+                            <td style="text-align:center;">{{ purchase.id }}</td>
+                            <td style="text-align:center;">
+                                <span style="color:#939393;">发布时间：</span>
+                                {{ purchase.datetime }}
+                            </td>
+                            <td style="text-align:center;">
+                                {% if purchase.status == 0%}
+                                <span style="color:#939393;">关闭</span>
+                                {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                                <b style="color:#286090;">
+                                    等待报价
+                                </b>
+                                <span style="color:#939393;">
+                                    {% if purchase.limited == 1%}
+                                    剩余{{purchase.timedelta}}天（{{purchase.expire}} 截止）
+                                    {% else%}
+                                    常年采购
+                                    {% end %}
+                                </span>
+                                {% else %}
+                                <b style="color:#563d7c;">报价结束，甄选供应商</b>
+                                {% end %}
+                            </td>
+                            <td style="text-align:center;">
+                                {% if purchase.status == 0 %}
+                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
+                                {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                                <span class="glyphicon glyphicon-share" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;" onclick="removepurchase({{purchase.id}})"></span>&nbsp;&nbsp;
+                                {% else %}
+                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
+                                {% end %}
+                            </td>
+                        </tr>
+                        {% for index,purchaseinfo in enumerate(purchase.purchaseinfo)%}
+                        <tr>
+                            {% if index == 0 %}
+                            <td rowspan="{{len(purchase.purchaseinfo)}}"></td>
+                            {% end %}
+                            <td style="text-align:center;"><a href="/purchase/purchaseinfo/{{purchaseinfo.id}}">{{purchaseinfo.name}}</a>  {{purchaseinfo.specification}}</td>
+                            <td style="text-align:center;">
+                                5个报价<span class="badge" style="background-color:#f0ad4e;">4</span>
+                                最低价23（裸价）
+                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">1</b>家意向供应商</span>
+                            </td>
+                            <td style="text-align:center;"></td>
+                        </tr>
+                        {% end %}
+                        {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% module PageNav(nav=nav, show=True) %}
+    </section>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+
+})
+
+function removepurchase(pid){
+    if(!confirm('确定要关闭当前采购订单？'))return false;
+    $.ajax({
+        url: "/removepurchase",
+        data: "pid="+pid,
+        dataType: 'json',
+        type: 'POST',
+        beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
+        success: function(data) {
+            if(data.status == "success"){
+                window.location.reload();
+            }else{
+                alert("提交失败，请刷新页面重试");
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(errorThrown);
+        }
+     });
+}
+</script>
+{% end %}

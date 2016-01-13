@@ -47,10 +47,11 @@ class RegisterHandler(BaseHandler):
         if nickname is None:
             self.api_response({'status':'fail','message':'个人称呼不能为空'})
 
-        lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, nickname, createtime)"
-                             "value(%s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), self.session.get("phone")
-                             , account, nickname, int(time.time()))
-        result = self.db.execute("insert into user_info (userid, name)value(%s, %s)", lastrowid, name)
+        lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, createtime)"
+                             "value(%s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), self.session.get("phone")
+                             , account, name, nickname, 1, int(time.time()))
+        #因为去掉了user_info表,所以name字段直接放在users表了
+        # result = self.db.execute("insert into user_info (userid, name)value(%s, %s)", lastrowid, name)
         self.api_response({'status':'success','message':'注册成功','data':{'username':username}})
 
 class CheckPhoneHandler(BaseHandler):

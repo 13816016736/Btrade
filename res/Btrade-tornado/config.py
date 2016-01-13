@@ -45,9 +45,10 @@ handlers = [
     (r"/purchasesuccess", PurchaseSuccessHandler),
     (r"/dashboard", DashboardHandler),
     (r"/mypurchase", MyPurchaseHandler),
-    (r"/mypurchase/update/(\d{1,3})", MyPurchaseUpdateHandler),
+    (r"/mypurchase/page/([0-9]+)", MyPurchaseHandler),
+    (r"/mypurchase/update/([0-9]+)", MyPurchaseUpdateHandler),
     (r"/removepurchase", RemovePurchaseHandler),
-    (r"/mypurchase/info/(\d{1,3})", MyPurchaseInfoHandler),
+    (r"/mypurchase/info/([0-9]+)", MyPurchaseInfoHandler),
     (r"/account", AccountHandler),
     (r"/updateuser", UpdateUserHandler),
     (r"/updateusername", UpdateUserNameHandler),
@@ -59,7 +60,7 @@ handlers = [
 #如果设置为0则不现实，此处的更改为全局设置，但仍然可以单独设置某处的显示选项
 conf = {
     #主页显示的文章数目
-    'POST_NUM': 5,
+    'POST_NUM': 10,
 }
 
 """日志设置

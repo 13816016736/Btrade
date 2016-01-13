@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+{% include public/head.html %}
+<body class="skin-blue sidebar-mini">
+{% include public/header.html %}
+{% include public/left.html %}
+{% block container %}
+{% end %}
+{% include public/footer.html %}
+<script src="{{ static_url('js/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('bootstrap/js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('dist/js/app.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('plugins/datetimepicker/datetimepicker.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('bootstrap/js/bootstrapValidator.js') }}"></script>
+</body>
+</html>

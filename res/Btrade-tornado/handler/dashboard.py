@@ -18,21 +18,21 @@ class AccountHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 0")
-        users = self.db.query("SELECT * FROM users WHERE id = %s", self.session.get("userid"))
-        user_info = self.db.query("SELECT * FROM user_info WHERE userid = %s", self.session.get("userid"))
-        if users and user_info:
-            users[0].update(user_info[0])
-        else:
-            users[0]["name"] = ""
+        user = self.db.get("SELECT * FROM users WHERE id = %s", self.session.get("userid"))
+        # user_info = self.db.get("SELECT * FROM user_info WHERE userid = %s", self.session.get("userid"))
+        # if users and user_info:
+        #     user.update(user_info)
+        # else:
+        #     user["name"] = ""
         city = []
         varietyids = []
         area = defaultdict(list)
-        if users[0].has_key("areaid") and users[0].get("areaid") != 0:
-            area = self.db.query("SELECT id,parentid FROM area WHERE id = %s", users[0].get("areaid"))
-            city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area[0].get("parentid"))
-        if users[0].has_key("varietyids") and users[0].get("varietyids") != "":
-            varietyids = self.db.query("SELECT id,name FROM variety WHERE id in ("+users[0].get("varietyids")+")")
-        self.render("dashboard/account.html", user=users[0], provinces=provinces, city=city, area=area[0], varietyids=varietyids)
+        if user.has_key("areaid") and user.get("areaid") != 0:
+            area = self.db.get("SELECT id,parentid FROM area WHERE id = %s", user.get("areaid"))
+            city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+        if user.has_key("varietyids") and user.get("varietyids") != "" and user.get("varietyids") is not None:
+            varietyids = self.db.query("SELECT id,name FROM variety WHERE id in ("+user.get("varietyids")+")")
+        self.render("dashboard/account.html", user=user, provinces=provinces, city=city, area=area, varietyids=varietyids)
 
 class UpdateUserHandler(BaseHandler):
 
@@ -87,10 +87,11 @@ class UpdateUserNameHandler(BaseHandler):
         if self.get_argument("name", None) is None:
             self.api_response({'status':'fail','message':'经营主体必填'})
         else:
-            if self.db.query("select * from user_info where userid = %s", self.session.get("userid")):
-                self.db.update("update user_info SET name = %s where userid = %s", self.get_argument("name"), self.session.get("userid"))
-            else:
-                self.db.update("insert into user_info (userid, name)value(%s, %s)", self.session.get("userid"), self.get_argument("name"))
+            # if self.db.query("select * from user_info where userid = %s", self.session.get("userid")):
+            #     self.db.update("update users_info SET name = %s where userid = %s", self.get_argument("name"), self.session.get("userid"))
+            # else:
+            #     self.db.update("insert into user_info (userid, name)value(%s, %s)", self.session.get("userid"), self.get_argument("name"))
+            self.db.update("update users SET name = %s where id = %s", self.get_argument("name"), self.session.get("userid"))
             self.api_response({'status':'success','message':'更新成功'})
 
 class UpdateUserInfoHandler(BaseHandler):
@@ -103,9 +104,9 @@ class UpdateUserInfoHandler(BaseHandler):
         for variety in self.get_arguments("varietyid"):
             if variety == "":
                 break
-            varietyid = self.db.query("SELECT id FROM variety WHERE name = %s", variety)
+            varietyid = self.db.get("SELECT id FROM variety WHERE name = %s", variety)
             if varietyid:
-                varietyids.append(str(varietyid[0].id))
+                varietyids.append(str(varietyid.id))
             else:
                 varietyname.append(variety)
         print varietyname

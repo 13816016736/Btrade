@@ -27,7 +27,7 @@ class LoginHandler(BaseHandler):
             self.session["userid"] = author.id
             self.session["user"] = self.get_argument("username")
             self.session.save()
-            self.redirect(self.get_argument("next", "/"))
+            self.redirect(self.get_argument("next_url", "/"))
         else:
             self.render("login.html", error="用户名或密码错误", next_url=self.get_argument("next", "/"))
 
