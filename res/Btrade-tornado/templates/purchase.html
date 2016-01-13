@@ -25,9 +25,9 @@
     <form  id="purchase" action="/purchase" class="form-horizontal" method="post">
     {% raw xsrf_form_html() %}
     <h3 class="page-header"><i class="border_left"></i>采购单位/采购人</h3>
-        {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
-        <h4>{{ users.nickname }}  {{ users.name }}</h4>
-        <p>{{ users.phone }}</p>
+        {% if user and handler.session.has_key('user') and handler.session.get('user') != ""  %}
+        <h4>{{ user.nickname }}  {% if user.get("name")%}{{ user.name }}{% end %}</h4>
+        <p>{{ user.phone }}</p>
         <p style="color:#44b549"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> 已通过实名认证</p>
         {% else %}
         <div class="form-group">

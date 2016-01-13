@@ -17,11 +17,10 @@ class PurchaseHandler(BaseHandler):
             self.session["uploadfiles"] = {}
             self.session.save()
         if self.session.get("userid"):
-            users = self.db.query("SELECT id,nickname,phone FROM users WHERE id = %s", self.session.get("userid"))
-            user_info = self.db.query("SELECT name FROM user_info WHERE userid = %s", self.session.get("userid"))
-            if users:
-                users[0]["name"] = user_info[0]["name"] if user_info else ""
-                self.render("purchase.html", provinces=provinces, users=users[0])
+            user = self.db.get("SELECT id,nickname,phone FROM users WHERE id = %s", self.session.get("userid"))
+            if user:
+                user["name"] = user.get("name")
+                self.render("purchase.html", provinces=provinces, user=user)
             else:
                 self.render("purchase.html", provinces=provinces)
         else:
@@ -36,10 +35,9 @@ class PurchaseHandler(BaseHandler):
             #   self.api_response({'status':'fail','message':'短信验证码不正确','data':data['phone']})
             username = "ycg_" + datetime.datetime.today().strftime("%Y%m%d%H%M%S")
             password = str(random.randint(100000, 999999))
-            lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, nickname, createtime)"
-                             "value(%s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), data['phone']
-                             , data['type'], data['nickname'], int(time.time()))
-            result = self.db.execute("insert into user_info (userid, name)value(%s, %s)", lastrowid, data['name'])
+            lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, createtime)"
+                             "value(%s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), data['phone']
+                             , data['type'], data['name'], data['nickname'], int(time.time()))
             self.session["userid"] = lastrowid
             self.session["user"] = username
             self.session.save()
@@ -251,7 +249,6 @@ class MyPurchaseUpdateHandler(BaseHandler):
         area = self.db.get("SELECT id,parentid FROM area WHERE id = %s", purchase["areaid"])
         city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
         user = self.db.get("SELECT id,nickname,phone FROM users WHERE id = %s", self.session.get("userid"))
-        # user_info = self.db.get("SELECT name FROM user_info WHERE userid = %s", self.session.get("userid"))
         specifications = self.db.query("select * from specification where varietyid in ("+",".join(varietyids)+")")
         specificationinf = defaultdict(list)
         for specification in specifications:
