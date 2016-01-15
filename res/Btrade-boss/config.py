@@ -34,6 +34,7 @@ handlers = [
     (r"/", MainHandler),
     (r"/users/userlist", UserListHandler),
     (r"/users/userlist/page/([0-9]+)", UserListHandler),
+    (r"/users/userinfo", UserInfoHandler),
     (r"/users/userinfo/([0-9]+)", UserInfoHandler),
     (r"/users/recover/([0-9]+)", UserRecoverHandler),
     (r"/users/remove/([0-9]+)", UserRemoveHandler),

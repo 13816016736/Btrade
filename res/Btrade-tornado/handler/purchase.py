@@ -86,7 +86,7 @@ class MyPurchaseHandler(BaseHandler):
             'model': 'mypurchase',
             'num': self.db.execute_rowcount("select id from purchase where userid = %s", self.session.get("userid")),
         }
-        purchases = self.db.query("select * from purchase where userid = %s limit %s,%s", self.session.get("userid"), page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        purchases = self.db.query("select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id where p.userid = %s limit %s,%s", self.session.get("userid"), page * config.conf['POST_NUM'], config.conf['POST_NUM'])
         purchaseids = [str(purchase["id"]) for purchase in purchases]
         purchaseinf = defaultdict(list)
         if purchaseids:

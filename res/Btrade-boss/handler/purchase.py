@@ -89,7 +89,7 @@ class PurchaseHandler(BaseHandler):
             'num': self.db.execute_rowcount("select id from purchase"),
         }
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select * from purchase limit %s,%s", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id limit %s,%s) t left join area a on t.areaid = a.id", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
             purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
@@ -107,6 +107,7 @@ class PurchaseHandler(BaseHandler):
             if purchase["limited"] == 1:
                 purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
+        print purchases
         self.render("purchase.html", purchases=purchases, nav=nav)
 
     def post(self):

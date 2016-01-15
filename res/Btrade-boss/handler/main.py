@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import tornado.web
 from base import BaseHandler
 import config
 
 class MainHandler(BaseHandler):
     def get(self):
-        self.render("main.html")
+        self.redirect('/users/userlist')
+        # self.render("main.html")
 
 class UserListHandler(BaseHandler):
     @tornado.web.authenticated
@@ -18,10 +21,21 @@ class UserListHandler(BaseHandler):
         self.render("userlist.html", users=users, nav=nav)
 
 class UserInfoHandler(BaseHandler):
+
     @tornado.web.authenticated
     def get(self, userid):
         user = self.db.get("SELECT * FROM users where id = %s", userid)
         self.render("userinfo.html", user=user)
+
+    @tornado.web.authenticated
+    def post(self):
+        if self.get_argument("userid") is None or self.get_argument("nickname") is None or self.get_argument("type") is None or self.get_argument("name") is None or self.get_argument("phone") is None:
+            self.api_response({'status':'fail','message':'请完整填写表单'})
+        else:
+            self.db.execute("update users set nickname=%s,type=%s,name=%s,phone=%s where id = %s",
+                            self.get_argument("nickname"), self.get_argument("type"), self.get_argument("name"),
+                            self.get_argument("phone"), self.get_argument("userid"))
+            self.api_response({'status':'success','message':'提交成功'})
 
 class UserRecoverHandler(BaseHandler):
     @tornado.web.authenticated

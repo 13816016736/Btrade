@@ -18,14 +18,18 @@
     <section class="content">
         <div class="row">
             <div class="col-md-10">
-                <form id="defaultForm" novalidate="novalidate">
+                <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
                     <div class="form-group has-feedback">
                         <label>会员ID</label>
-                        <input type="text" class="form-control" name="userid" value="{{user.id}}" disabled>
+                        <input type="text" class="form-control" name="userid" data-bv-field="userid" value="{{user.id}}" readonly>
                     </div>
                     <div class="form-group has-feedback">
                         <label for="username">会员名（必填）</label>
-                        <input type="text" class="form-control" name="username" id="username" data-bv-field="userid" value="{{user.username}}">
+                        <input type="text" class="form-control" name="username" id="username" data-bv-field="username" value="{{user.username}}" readonly>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label for="nickname">个人称呼（必填）</label>
+                        <input type="text" class="form-control" name="nickname" id="nickname" data-bv-field="nickname" value="{{user.nickname}}">
                     </div>
                     <div class="form-group">
                         <label>个人/企业（必填）</label>
@@ -74,7 +78,7 @@
                         <label for="phone">手机（必填）</label>
                         <input type="text" class="form-control" name="phone" id="phone" data-bv-field="phone" value="{{user.phone}}">
                     </div>
-                    <button type="button" class="btn btn-primary btn-query" id="validateBtn">提交</button>
+                    <button type="submit" class="btn btn-primary btn-query" id="validateBtn">提交</button>
                     <button type="reset" class="btn btn-default" id="resetBtn" onclick="javascript:history.back(-1);">返回</button>
                 </form>
             </div>
@@ -141,4 +145,91 @@
         </table>
     </section>-->
 </div>
+<script>
+$(document).ready(function(){
+    $('#userinfo').bootstrapValidator({
+        message: 'This value is not valid',
+        fields: {
+            name: {
+                validators: {
+                    notEmpty: {
+                        message: '公司/姓名不能为空'
+                    }
+                }
+            },
+            nickname: {
+                validators: {
+                    notEmpty: {
+                        message: '个人称呼不能为空'
+                    }
+                }
+            },
+            type: {
+                validators: {
+                    notEmpty: {
+                        message: '个人/企业不能为空'
+                    }
+                }
+            },
+            phone: {
+                validators: {
+                    notEmpty: {
+                        message: '手机号不能为空'
+                    },
+                    regexp : {
+                        regexp : /^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$/,
+                        message : '手机号码为11位数字'
+                    }
+                },
+            },
+            verifycode: {
+                validators: {
+                    notEmpty: {
+                        message: '验证码不能为空'
+                    }
+                }
+            },
+            provinces: {
+                validators: {
+                    notEmpty: {
+                        message: '省份不能为空'
+                    }
+                },
+            },
+            city: {
+                validators: {
+                    notEmpty: {
+                        message: '城市不能为空'
+                    }
+                }
+            }
+		},
+	})
+	.on('success.form.bv', function(e) {
+         e.preventDefault();
+         var $form = $(e.target);
+         var bv = $form.data('bootstrapValidator');
+         $.ajax({
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            type: 'POST',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if(data.status == "success"){
+                    window.location.href='/users/userlist';
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+         });
+    });
+
+})
+</script>
 {% end %}

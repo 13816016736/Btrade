@@ -53,16 +53,14 @@
                             <th style="text-align:center;">品种</th>
                             <th style="text-align:center;">报价</th>
                             <th style="text-align:center;">操作</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for purchase in purchases%}
                         <tr class="success">
                             <td style="text-align:center;">{{ purchase.id }}</td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">发布时间：</span>
-                                {{ purchase.datetime }}
-                            </td>
+                            <td style="text-align:center;">{{ purchase.name }}</td>
                             <td style="text-align:center;">
                                 {% if purchase.status == 0%}
                                 <span style="color:#939393;">关闭</span>
@@ -85,10 +83,53 @@
                                 {% if purchase.status == 0 %}
                                 <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
                                 {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
-                                <span class="glyphicon glyphicon-share" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
                                 <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;" onclick="removepurchase({{purchase.id}})"></span>&nbsp;&nbsp;
                                 {% else %}
                                 <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
+                                {% end %}
+                            </td>
+                            <td style="text-align:center;">
+                                <span style="color:#939393;">发布时间：</span>
+                                {{ purchase.datetime }}
+                            </td>
+                        </tr>
+                        <tr class="info">
+                            <td></td>
+                            <td colspan="2">
+                                交货地：{{purchase.areaname}}<br>
+                                发票要求：
+                                {% if purchase.invoice == 1 %}
+                                无需发票
+                                {% elif purchase.invoice == 2 %}
+                                普通发票
+                                {% elif purchase.invoice == 3 %}
+                                增值税发票
+                                {% end %}<br>
+                                交易及付款：
+                                {% if purchase.pay == 1 %}
+                                预付全款
+                                {% elif purchase.pay == 2 %}
+                                双方直接交易，验收合格后{{purchase.payday}}天内付款
+                                {% elif purchase.pay == 3 %}
+                                {{purchase.payinfo}}
+                                {% end %}
+                                <br>
+                                验收及包装：{{purchase.accept}}
+                            </td>
+                            <td colspan="2">
+                                寄样：
+                                {% if purchase.send == 1 %}
+                                报价必须寄样&nbsp;&nbsp;
+                                {% end %}
+                                {{purchase.receive}}<br>
+                                补充说明：{{purchase.other}}<br>
+                                供应商要求：
+                                {% if purchase.supplier == 1 %}
+                                必须有营业执照（公司/合作社/经营户），不接受个人
+                                {% elif purchase.supplier == 2 %}
+                                具备GSP资质
+                                {% elif purchase.supplier == 3 %}
+                                具备GMP资质
                                 {% end %}
                             </td>
                         </tr>
@@ -103,7 +144,10 @@
                                 最低价23（裸价）
                                 <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">1</b>家意向供应商</span>
                             </td>
-                            <td style="text-align:center;"></td>
+                            <td style="text-align:center;">
+                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}公斤，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：http://ycg.cn/buy/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                            </td>
+                            <td></td>
                         </tr>
                         {% end %}
                         {% end %}
@@ -115,9 +159,43 @@
     {% module PageNav(nav=nav, show=True) %}
     </section>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">邀请报价</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="bs-example">
+                    <h5><img width="30" src="{{ static_url('images/wechat.jpg') }}" />  微信邀请朋友报价</h5>
+                    <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
+                    <center><img src="{{ static_url('images/qrcode.jpg') }}" width="180"/></center>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
+                <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
+                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder="严飞采购黄连1000公斤，鸡爪连，产地重庆，符合2010药典标准。请速报价：http://ycg.cn/buy/10499"></textarea>
+                <br>
+                <button style="width:250px" type="button" class="btn btn-default">复制</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script type="text/javascript">
 $(document).ready(function(){
-
+    $(".glyphicon-share").click(function() {
+        var id = $(this).attr('rel');
+        var share = $(this).attr('sharerel');
+        $("#sharemsg").attr("placeholder", share);
+        $("#share").modal();
+    });
 })
 
 function removepurchase(pid){
