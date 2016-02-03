@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>修改经营类型</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="yc-body-nofoot">
+    <header class="yc-header">
+        <div class="yc-header-back">
+            <a href="javascript:history.back();">
+                <i class="iconfont icon-back"></i>
+            </a>
+        </div>
+        <div class="yc-header-title">修改经营类型</div>
+    </header><!-- /yc-header -->
+
+    <section class="yc-content">
+        <div class="yc-form yc-form-l">
+            <div class="item current">
+                <span>饮片厂/饮片生产、加工</span>
+                <i class="iconfont icon-radio-yes"></i>
+            </div>
+            <div class="item">
+                <span>药厂/制药企业</span>
+                <i class="iconfont icon-radio-yes"></i>
+            </div>
+            <div class="item">
+                <span>药材贸易经营公司</span>
+                <i class="iconfont icon-radio-yes"></i>
+            </div>
+            <div class="item">
+                <span>种植合作社/种植基地</span>
+                <i class="iconfont icon-radio-yes"></i>
+            </div>
+            <div class="item">
+                <span>个体工商户</span>
+                <i class="iconfont icon-radio-yes"></i>
+            </div>
+            <div class="item">
+                <span>其它类型公司</span>
+                <i class="iconfont icon-radio-yes"></i>
+            </div>
+        </div>
+    </section><!-- /yc-content -->
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    !(function($) {
+        $('.yc-form').on('click', '.item', function() {
+            $(this).addClass('current').siblings().removeClass('current');
+            location.href = history.back(); // 返回
+        })
+    }(jQuery));
+    </script>
+</body>
+</html>

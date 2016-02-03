@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>消息中心</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="yc-body-nofoot">
+    <header class="yc-header">
+        <div class="yc-header-back">
+            <a href="javascript:history.back();">
+                <i class="iconfont icon-back"></i>
+            </a>
+        </div>
+        <div class="yc-header-title">消息中心</div>
+    </header><!-- /yc-header -->
+
+    <section class="yc-content">
+        <div class="yc-tab-tit">
+            <ul>
+                <li class="current"><a href="#none"><span>卖货消息</span></a></li>
+                <li><a href="#none"><span>采购消息</span></a></li>
+                <li><a href="#none"><span>成长任务</span></a></li>
+                <li><a class="new-msg" href="#none"><span>系统通知</span></a></li>
+            </ul>
+        </div>
+        <div class="yc-tab-cont">
+            <div class="item">
+                <ul class="yc-news-list">
+                    <li>
+                        <a class="unread" href="#none">
+                            <i class="iconfont icon-envelope status"></i>
+                            <span>亳州永刚中药饮片有限公司查看了您的报价【黄连 65元（含税费）】</span>
+                            <span class="time">2012-12-12 12:30</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#none">
+                            <i class="iconfont icon-face status"></i>
+                            <span>亳州永刚中药饮片有限公司查看了您的报价【黄连 65元（含税费）】</span>
+                            <span class="time">2012-12-12 12:30</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#none">
+                            <i class="iconfont icon-frown status"></i>
+                            <span>亳州永刚中药饮片有限公司查看了您的报价【黄连 65元（含税费）】</span>
+                            <span class="time">2012-12-12 12:30</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="item">
+                <div class="yc-news-none">
+                    <i class="iconfont icon-face"></i>
+                    <span>暂时没有消息</span>
+                </div>
+            </div>
+            <div class="item">
+                <ul class="yc-news-list">
+                    <li>
+                        <a class="unread" href="article.html">
+                            <i class="iconfont icon-github status"></i>
+                            <span>购小妹：采购经理成长营001期开班啦，赶紧报名，混圈子</span>
+                            <span class="time">1天前</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="article.html">
+                            <i class="iconfont icon-github status"></i>
+                            <span>购小妹：亲，你的加入，让我倍感惊喜！无论卖药材、买药材，请花一分钟看看药材购介绍，立即上手~</span>
+                            <span class="time">2012-12-12 12:30</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="item">
+                <ul class="yc-news-list">
+                    <li>
+                        <a class="unread" href="article.html">
+                            <i class="iconfont icon-envelope status"></i>
+                            <span>【安心交易】即将上线，为您的交易保驾护航</span>
+                            <span class="time">2012-12-12 12:30</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="article.html">
+                            <i class="iconfont icon-envelope status"></i>
+                            <span>药材购1.3，随时随地跟TA【聊一聊】</span>
+                            <span class="time">2012-12-12 12:30</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section><!-- /yc-content -->
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+    $('.yc-tab-tit').on('click', 'li', function() {
+        var index = $(this).index();
+        $(this).addClass('current').siblings().removeClass('current');
+        $('.yc-tab-cont .item').eq(index).show().siblings().hide();
+    });
+
+    // 高亮显示
+    var newsType = getQueryStringArgs();
+    if (newsType.type) {
+        var index = parseInt(newsType.type, 10);
+        if (typeof index === 'number' && $('.yc-tab-tit li').length >= index ) {
+            index > 1 && $('.yc-tab-tit li').eq(index - 1).trigger('click');
+        }
+    }
+    </script>
+</body>
+</html>

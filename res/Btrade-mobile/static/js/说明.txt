@@ -1,0 +1,6 @@
+1、相关js的源码文件在plug文件夹里
+
+2、dropload.js,swipeSlide.js已并入app.js里面
+
+3、mobileBUGFix.mini.js已并入uploads.js里面
+

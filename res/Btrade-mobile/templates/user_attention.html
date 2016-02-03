@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>设置关注品种</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="yc-body-nofoot">
+    <header class="yc-header">
+        <div class="yc-header-back">
+            <a href="javascript:history.back();">
+                <i class="iconfont icon-back"></i>
+            </a>
+        </div>
+        <div class="yc-header-title">设置关注品种</div>
+        <div class="yc-header-right">
+            <a class="button" id="jSave" href="#none">完成</a>
+        </div>
+    </header><!-- /yc-header -->
+
+    <section class="yc-content">
+        <div class="yc-attention">
+            <div class="title">
+                <span>已关注品种</span>
+                <a class="edit" href="#none">编辑</a>
+            </div>
+            <ul id="jMyTags">
+                <li><span>黄芪<i></i></span></li>
+                <li><span>当归<i></i></span></li>
+                <li><span>白芍<i></i></span></li>
+                <li><span>浙贝母<i></i></span></li>
+                <li><span>景天红花<i></i></span></li>
+                <li><span>白芍<i></i></span></li>
+                <li><span>浙贝母<i></i></span></li>
+                <li><span>景天红花散<i></i></span></li>
+                <li><span>最多容纳六字<i></i></span></li>
+            </ul>
+        </div>
+
+        <div class="yc-attention">
+            <div class="search">
+                <form action="">
+                    <i class="iconfont icon-plussquare"></i>
+                    <input class="keywords" type="text" placeholder="输入品种名，添加新品种" />
+                </form>
+            </div>
+            <div class="list">
+                <div class="item">黄连</div>
+                <div class="item">黄芪</div>
+            </div>
+        </div>
+    </section><!-- /yc-content -->
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+    !(function(){
+        // 编辑品种
+        var isEdit = false;
+        $('.yc-attention .title .edit').on('click', function() {
+            isEdit = !isEdit;
+            $(this).html(isEdit ? '确定' : '编辑');
+            $('.yc-attention').find('ul').toggleClass('edit');
+        })
+        // 删除品种
+        $('.yc-attention').on('click', 'i', function() {
+            $(this).closest('li').remove();
+        });
+
+        // 保存
+        $('#jSave').on('click', function() {
+            
+        });
+
+        // 搜索品种
+        function getKeywords() {
+            var keywords = $('.search .keywords').val();
+            $.ajax({
+                url: 'json/keywords.json',
+                dataType: 'json',
+                data: {key: keywords},
+                success: function(data) {
+                    toHtml(data, keywords);
+                },
+                error: function() {
+                    lpPopover('网络连接超时，请您稍后重试!');
+                }
+            })
+        }
+        function toHtml(json, keywords) {
+            var html = [];
+            $.each(json, function(i, v){
+                html.push('<div class="item">' + v + '</div>');
+            });
+            $('.yc-attention .list').html(!html.length ? '<div class="none">很抱歉，没有找到与“' + keywords + '”相关的品种。</div>' : html.join(''));
+        }
+        var lazyAjax = debounce(getKeywords, 400);
+        $('.search .keywords').on('input', lazyAjax);
+
+        // 添加新品种
+        $('.list').on('click', '.item', function() {
+            $('#jMyTags').append('<li><span>' + $(this).html() + '<i></i></span></li>')
+        });
+
+    }(jQuery));
+    </script>
+</body>
+</html>

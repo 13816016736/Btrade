@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>拍照</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="yc-body">
+    <header class="yc-header">
+        <div class="yc-header-back">
+            <a href="javascript:history.back();">
+                <i class="iconfont icon-back"></i>
+            </a>
+        </div>
+        <div class="yc-header-title">拍照</div>
+    </header><!-- /yc-header -->
+
+    <section class="yc-content">
+        <div class="yc-uploads">
+            <div class="title">
+                可参考如下示例图及说明拍摄
+            </div>
+            
+            <div class="pic">
+                <div class="tab">
+                    <ul>
+                        <li class="current">手捧照</li>
+                        <li>细节照</li>
+                        <li>剖面照</li>
+                        <li>混货照</li>
+                    </ul>
+                </div>
+                <div class="cont">
+                    <div class="item">
+                        <div class="tit">
+                            <span>药材放手心，用于展现规格、外形、颜色的表象</span>
+                        </div>
+                        <div class="preview">
+                            <img src="uploads/u1.png" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="tit">
+                            <span>清晰展现药材细节，如大小、性状、色泽等</span>
+                        </div>
+                        <div class="preview">
+                            <img src="uploads/u2.png" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="tit">
+                            <span>展现药材断面细节</span>
+                        </div>
+                        <div class="preview">
+                            <img src="uploads/u3.png" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="tit">
+                            <span>展现大货整体质量情况</span>
+                        </div>
+                        <div class="preview">
+                            <img src="uploads/u4.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- /yc-content -->
+
+
+    <footer class="yc-footer">
+        <div class="yc-uploads-op">
+            <form method="post" action="upImg.php" target="up" enctype="multipart/form-data">
+                <div class="file po">
+                    <i class="iconfont icon-folder"></i>
+                    <span>上传</span>
+                    <input type="file" accept="image/gif,image/jpeg,image/png" id="jUpload" />
+                </div>
+                <div class="file camera">
+                    <i class="iconfont icon-camera"></i>
+                    <span>拍照</span>
+                    <input type="file" capture="camera" id="jCamera">
+                </div>
+            </form>
+            <iframe name="up" style="display:none;"></iframe> 
+        </div>
+    </footer>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/uploads.js"></script>
+    <script>
+    $('.tab').on('click', 'li', function() {
+        var index = $(this).index();
+        $(this).addClass('current').siblings().removeClass('current');
+        $('.cont .item').eq(index).show().siblings().hide();
+    });
+
+    $('#jUpload').on('change', function(ev) {
+        var index = $('.tab .current').index();
+        var $preview = $('.cont .item').eq(index).find('.preview');
+
+        new UploadPic({
+            el: ev,
+            $preview: $preview,
+            maxWidth: 196,
+            maxHeight: 196
+        });
+    })
+    </script>
+</body>
+</html>
