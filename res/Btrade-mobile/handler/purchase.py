@@ -82,14 +82,35 @@ from collections import defaultdict
 class PurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
-    def get(self, page=0):
-        page = (int(page) - 1) if page > 0 else 0
-        nav = {
-            'model': 'purchase/purchaselist',
-            'num': self.db.execute_rowcount("select id from purchase"),
-        }
+    def get(self, number=0):
+        pass
+        # number = int(number) if number > 0 else 0
+        # purchaseinf = defaultdict(list)
+        # purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id limit %s,%s) t left join area a on t.areaid = a.id", number, config.conf['POST_NUM'])
+        # if purchases:
+        #     purchaseids = [str(purchase["id"]) for purchase in purchases]
+        #     purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
+        #     purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
+        #     purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+        #     attachments = defaultdict(list)
+        #     for attachment in purchaseattachments:
+        #         attachments[attachment["purchase_infoid"]] = attachment
+        #     for purchaseinfo in purchaseinfos:
+        #         purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
+        #         purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
+        # for purchase in purchases:
+        #     purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
+        #     purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
+        #     if purchase["limited"] == 1:
+        #         purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+        #         purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
+        # print purchases
+        # self.render("purchase.html", purchases=purchases)
+
+    def post(self, number=0):
+        number = int(number) if number > 0 else 0
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id limit %s,%s) t left join area a on t.areaid = a.id", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id order by p.createtime desc limit %s,%s) t left join area a on t.areaid = a.id", number, config.conf['POST_NUM'])
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
             purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
@@ -101,41 +122,40 @@ class PurchaseHandler(BaseHandler):
             for purchaseinfo in purchaseinfos:
                 purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
                 purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
-        for purchase in purchases:
-            purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
-            purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
-            if purchase["limited"] == 1:
-                purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-                purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
-        print purchases
-        self.render("purchase.html", purchases=purchases, nav=nav)
-
-    def post(self):
-        pass
+            for purchase in purchases:
+                purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
+                purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
+                if purchase["limited"] == 1:
+                    # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                    expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                    purchase["timedelta"] = (expire - datetime.datetime.now()).days
+            print purchases
+            self.api_response({'status':'success', 'list':purchases, 'message':'请求成功'})
+        else:
+            self.api_response({'status':'nomore','message':'没有更多的采购订单'})
 
 class PurchaseInfoHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, id):
         print id
-        purchaseinfo = self.db.query("select tn.*,pa.attachment from (select n.*,sp.specification from (select t.*,a.areaname from "
-        "(select p.id,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.quality,pi.specificationid from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
+        purchaseinfo = self.db.get("select tn.*,pa.attachment from (select n.*,sp.specification from (select t.*,a.areaname from "
+        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specificationid from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
         "specification sp on n.specificationid = sp.id) tn left join purchase_attachment pa on tn.pid = pa.purchase_infoid",
                                      id)
-        if purchaseinfo:
-            purchaseinfo[0]["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo[0]["createtime"])))
-            if purchaseinfo[0]["limited"] == 1:
-                purchaseinfo[0]["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo[0]["createtime"])) + datetime.timedelta(purchaseinfo[0]["term"])
-                purchaseinfo[0]["timedelta"] = (purchaseinfo[0]["expire"] - datetime.datetime.now()).days
-            purchaseinfo[0]["attachment"] = "\\static"+purchaseinfo[0]["attachment"] .split("static")[1] if purchaseinfo[0].get("attachment") else ""
-            print purchaseinfo
-            others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
-                                          purchaseinfo[0]["id"], purchaseinfo[0]["pid"])
-            self.render("purchaseinfo.html", purchase=purchaseinfo[0], others=len(others))
-        else:
-            self.error("此采购订单不属于你", "/purchase")
+
+        user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
+        purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
+        if purchaseinfo["limited"] == 1:
+            purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+            purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
+        purchaseinfo["attachment"] = "\\static"+purchaseinfo["attachment"] .split("static")[1] if purchaseinfo.get("attachment") else ""
+        print purchaseinfo
+        others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
+                                      purchaseinfo["id"], purchaseinfo["pid"])
+        self.render("purchaseinfo.html", user=user, purchase=purchaseinfo, others=len(others))
 
     def post(self):
         pass
@@ -188,22 +208,36 @@ class PurchaseInfoHandler(BaseHandler):
 #                 return
 #         self.finish({'status':'fail','message':'上传失败'})
 #
-# class GetVarietyInfoHandler(BaseHandler):
-#
-#     def get(self):
-#         pass
-#
-#     def post(self):
-#         variety = self.get_argument("variety")
-#         if variety == "":
-#             self.api_response({'status':'fail','message':'请填写品种'})
-#         else:
-#             varietyinfo = self.db.query("SELECT id,origin FROM variety WHERE name = %s", variety)
-#             if len(varietyinfo) == 0:
-#                 self.api_response({'status':'fail','message':'没有该品种'})
-#             else:
-#                 specifications = self.db.query("SELECT id,specification FROM specification WHERE varietyid = %s", varietyinfo[0]["id"])
-#                 self.api_response({'status':'success','message':'请求成功','varietyinfo':varietyinfo[0],'specifications':specifications})
+class GetVarietyInfoHandler(BaseHandler):
+
+    def get(self):
+        pass
+
+    def post(self):
+        variety = self.get_argument("variety")
+        if variety == "":
+            self.api_response({'status':'fail','message':'请填写品种'})
+        else:
+            varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name = %s", variety)
+            if len(varietyinfo) == 0:
+                self.api_response({'status':'fail','message':'没有该品种'})
+            else:
+                specifications = self.db.query("SELECT id,specification FROM specification WHERE varietyid = %s", varietyinfo[0]["id"])
+                self.api_response({'status':'success','message':'请求成功','list':varietyinfo,'specifications':specifications})
+
+class SaveVarietyHandler(BaseHandler):
+
+    def post(self):
+        varietyids = self.get_argument("varietyids")
+        if varietyids == "":
+            self.api_response({'status':'fail','message':'请填写品种'})
+        else:
+            print
+            result = self.db.execute("update users set varietyids = %s where id = %s", varietyids, self.session.get("userid"))
+            if result:
+                self.api_response({'status':'fail','message':'没有该品种'})
+            else:
+                self.api_response({'status':'success','message':'请求成功'})
 #
 # class PurchaseSuccessHandler(BaseHandler):
 #

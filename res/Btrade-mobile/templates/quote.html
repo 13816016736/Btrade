@@ -9,7 +9,7 @@
     <title>报价</title>
     <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/app.css?id=22">
 </head>
 <body class="yc-body-nofoot">
     <header class="yc-header">
@@ -36,7 +36,7 @@
                     <div class="pic pic-fold">
                         <ul>
                             <li>
-                                <a href="uploads_pic.html">
+                                <a href="uploads_pic.html?type=1">
                                     <div class="mid">
                                         <i class="iconfont icon-plus"></i>
                                         <span>手捧照，看外观</span>
@@ -47,18 +47,19 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="uploads_pic.html">
+                                <a href="uploads_pic.html?type=2">
                                     <div class="mid">
                                         <i class="iconfont icon-plus"></i>
                                         <span>细节照 ，看断面</span>
                                     </div>
                                     <div class="in">
                                         <img src="uploads/u1.png" />
+                                        <i class="iconfont icon-remove remove"></i>
                                     </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="uploads_pic.html">
+                                <a href="uploads_pic.html?type=3">
                                     <div class="mid">
                                         <i class="iconfont icon-plus"></i>
                                         <span>混货照，看大货</span>
@@ -69,10 +70,32 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="uploads_pic.html">
+                                <a href="uploads_pic.html?type=4">
                                     <div class="mid">
                                         <i class="iconfont icon-plus"></i>
-                                        <span>剖面照，看大货</span>
+                                        <span>质检报告</span>
+                                    </div>
+                                    <div class="in">
+                                        <img src="images/default_img.png" alt="">
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="uploads_pic.html?type=5">
+                                    <div class="mid">
+                                        <i class="iconfont icon-plus"></i>
+                                        <span>其它照片</span>
+                                    </div>
+                                    <div class="in">
+                                        <img src="images/default_img.png" alt="">
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="uploads_pic.html?type=6">
+                                    <div class="mid">
+                                        <i class="iconfont icon-plus"></i>
+                                        <span>其它照片</span>
                                     </div>
                                     <div class="in">
                                         <img src="images/default_img.png" alt="">
@@ -107,14 +130,10 @@
                         <i class="iconfont icon-calc"></i> 3 报价格 
                     </div>
                     <div class="price">
-                        <div class="unit">
-                            <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="78">
-                            元/公斤
-                        </div>
-                        <div class="cbx">
-                            <input class="iconfont ipt-checkbox" id="price" type="checkbox" checked="" />
-                            <label for="price">裸价</label>
-                        </div>
+                        <i class="iconfont icon-check-yes"></i>
+                        <span>裸价</span>
+                        <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="78">
+                        <span>元/公斤</span>
                     </div>
                     <div class="msg" id="jPriceMsg">
                         <i class="iconfont icon-exclamation"></i>
@@ -147,7 +166,10 @@
 
                 <div class="submit">
                     <button class="button" id="jSumnit" type="button">提交</button>
-                    <p class="agreement">提交即表示您同意<a href="#">《药材购撮合交易规则》</a></p>
+                </div>
+
+                <div class="agreement">
+                    提交即表示您同意<a href="#">《药材购撮合交易规则》</a>
                 </div>
             </form>
         </div>
@@ -248,13 +270,18 @@
         });
 
         // placeholder
-        $('.describe .mul').on('input', function() {
-            var val = $(this).val();
-            if (val) {
-                $(this).prev().hide();
-            } else {
-                $(this).prev().show();
+        $('.describe .mul').each(function() {
+            var $this = $(this);
+            var _placeholder = function() {
+                var val = $this.val();
+                if (val) {
+                    $this.prev().hide();
+                } else {
+                    $this.prev().show();
+                }
             }
+            _placeholder();
+            $this.on('input', _placeholder);
         });
 
         // 表单验证
@@ -334,6 +361,13 @@
 
         $submit.on('click', function() {
             return checkIpt();
+        });
+
+        // 删除图片
+        $('body').on('click', '.remove', function() {
+            $(this).prev().attr('src', 'images/default_img.png');
+            $(this).remove();
+            return false;
         });
     }(jQuery));
     </script>

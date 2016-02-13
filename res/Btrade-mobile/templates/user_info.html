@@ -1,83 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>账户资料</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
-<body class="yc-body-nofoot">
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="javascript:history.back();">
-                <i class="iconfont icon-back"></i>
+{% extends "base.html" %}
+{% block container %}
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="javascript:history.back();">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">账户资料</div>
+</header><!-- /yc-header -->
+
+<section class="yc-content">
+    <div class="yc-form yc-form-r">
+        <div class="title">
+            <span>基础信息</span>
+        </div>
+        <div class="item">
+            <label class="txt">会员名</label>
+            <span class="ipt">{{user.username}}</span>
+        </div>
+        <div class="item">
+            <label class="txt">密码</label>
+            <a class="ipt" href="update_password.html">修改密码<i class="iconfont icon-more"></i></a>
+        </div>
+        <div class="item">
+            <label class="txt">绑定手机</label>
+            <a class="ipt" href="#none">{{user.phone[0:3]}}****{{user.phone[-4:]}}</a>
+        </div>
+        <div class="item">
+            <label class="txt">个人称呼</label>
+            <a class="ipt" href="update_name.html">{{user.nickname}}<i class="iconfont icon-more"></i></a>
+        </div>
+        <div class="item">
+            <label class="txt">绑定微信</label>
+            <a class="ipt" href="#none"><img src="uploads/avatar_9527.png" alt="">boyyafee<i class="iconfont icon-more"></i></a>
+        </div>
+        <div class="title">
+            <span>经营主体</span>
+        </div>
+        <div class="item">
+            <label class="txt">经营主体</label>
+            <span class="ipt">{{user.nickname}}</span>
+            <span class="ipt"><a class="btn-verify" href="#none">立即认证</a></span>
+        </div>
+        <div class="title">
+            <span>经营信息</span>
+        </div>
+        <div class="item">
+            <label class="txt">经营类型</label>
+            <a class="ipt" href="category.html">未设定<i class="iconfont icon-more"></i></a>
+        </div>
+        <div class="item">
+            <label class="txt">关注品种</label>
+            <a class="tag" href="/userattention">
+                {% for variety in varieties %}
+                <b>{{ variety.name }}</b>
+                {% end %}
+                <i class="iconfont icon-more"></i>
             </a>
         </div>
-        <div class="yc-header-title">账户资料</div>
-    </header><!-- /yc-header -->
-
-    <section class="yc-content">
-        <div class="yc-form yc-form-r">
-            <div class="title">
-                <span>基础信息</span>
-            </div>
-            <div class="item">
-                <label class="txt">会员名</label>
-                <span class="ipt">boyyafee</span>
-            </div>
-            <div class="item">
-                <label class="txt">密码</label>
-                <a class="ipt" href="update_password.html">修改密码<i class="iconfont icon-more"></i></a>
-            </div>
-            <div class="item">
-                <label class="txt">绑定手机</label>
-                <a class="ipt" href="#none">135****1258<i class="iconfont icon-more"></i></a>
-            </div>
-            <div class="item">
-                <label class="txt">个人称呼</label>
-                <a class="ipt" href="update_name.html">严飞<i class="iconfont icon-more"></i></a>
-            </div>
-            <div class="item">
-                <label class="txt">绑定微信</label>
-                <a class="ipt" href="#none"><img src="uploads/avatar_9527.png" alt="">boyyafee<i class="iconfont icon-more"></i></a>
-            </div>
-            <div class="title">
-                <span>经营主体</span>
-            </div>
-            <div class="item">
-                <label class="txt">经营主体</label>
-                <span class="ipt">亳州永刚中药饮片有限公司</span>
-                <span class="ipt"><a class="btn-verify" href="#none">立即认证</a></span>
-            </div>
-            <div class="title">
-                <span>经营信息</span>
-            </div>
-            <div class="item">
-                <label class="txt">经营内型</label>
-                <a class="ipt" href="category.html">未设定<i class="iconfont icon-more"></i></a>
-            </div>
-            <div class="item">
-                <label class="txt">关注品种</label>
-                <a class="tag" href="user_attention.html">
-                    <b>黄芪</b>
-                    <b>当归</b>
-                    <b>白芍</b>
-                    <b>黄芪</b>
-                    <b>当归</b>
-                    <b>白芍</b>
-                    <i class="iconfont icon-more"></i>
-                </a>
-            </div>
-        </div>
-    </section><!-- /yc-content -->
-
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
-</body>
-</html>
+    </div>
+</section><!-- /yc-content -->
+{% end %}

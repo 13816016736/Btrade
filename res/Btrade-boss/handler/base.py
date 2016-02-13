@@ -26,8 +26,7 @@ class BaseHandler(tornado.web.RequestHandler):
           self.write('error:' + str(status_code))
 
   def get_current_user(self):
-       # return self.get_secure_cookie("user")
-      return self.session.get("admin")
+       return self.session.get("admin")
 
   def success(self, message='操作成功', url=''):
         """操作成功提示

@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>注册</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "base.html" %}
+{% block container %}
 <body class="yc-body-nofoot">
     <header class="yc-header">
         <div class="yc-header-back">
@@ -20,7 +9,7 @@
         </div>
         <div class="yc-header-title">注册</div>
         <div class="yc-header-right">
-            <a href="login.html">已有账号，直接登录</a>
+            <a href="/login">已有账号，直接登录</a>
         </div>
     </header><!-- /yc-header -->
 
@@ -47,8 +36,8 @@
                 <div class="item">
                     <label class="txt">验证码</label>
                     <input class="ipt" type="text" value="" id="jCode" placeholder="请输入验证码" />
-                    <button class="btn-send" id="jSendCode" type="button">获取验证码</button>
                     <span class="error"></span>
+                    <button class="btn-send" id="jSendCode" type="button">获取验证码</button>
                 </div>
                 <div class="item">
                     <label class="txt">会员名</label>
@@ -111,10 +100,6 @@
             </form>
         </div>
     </section><!-- /yc-content -->
-
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
     <script>
     !(function($){
         // 表单内容tab切换
@@ -132,7 +117,7 @@
             $name = $('#jName'),
             $pwd = $('#jPwd'),
             $repPwd = $('#jRepPwd'),
-            $realName = $('#jjRealName'),
+            $realName = $('#jRealName'),
             $compName = $('#jCompName'),
             $nickName = $('#jNickName');
 
@@ -157,6 +142,7 @@
                 $code.next().html('').hide();
                 return true;
             }
+            $code.focus();
             return false;
         }
         function checkName() {
@@ -169,6 +155,7 @@
                 $name.next().html('').hide();
                 return true;
             }
+            $name.focus();
             return false;
         }
         function checkPwd() {
@@ -181,18 +168,20 @@
                 $pwd.next().html('').hide();
                 return true;
             }
+            $pwd.focus();
             return false;
         }
         function checkRepPwd() {
             var val = $repPwd.val();
             if (!val) {
                 $repPwd.next().html('请输入确认密码').show();
-            } else if (val !== $newPwd.val()) {
+            } else if (val !== $pwd.val()) {
                 $repPwd.next().html('两次输入的密码不一致').show();
             } else {
                 $repPwd.next().html('').hide();
                 return true;
             }
+            $repPwd.focus();
             return false;
         }
         function checkRealName() {
@@ -203,16 +192,18 @@
                 $realName.next().html('').hide();
                 return true;
             }
+            $realName.focus();
             return false;
         }
         function checkCompName() {
-            var val = $checkCompName.val();
+            var val = $compName.val();
             if (!val) {
-                $checkCompName.next().html('请输入单位名称').show();
+                $compName.next().html('请输入单位名称').show();
             } else {
-                $checkCompName.next().html('').hide();
+                $compName.next().html('').hide();
                 return true;
             }
+            $compName.focus();
             return false;
         }
         function checkNickName() {
@@ -223,11 +214,12 @@
                 $nickName.next().html('').hide();
                 return true;
             }
+            $nickName.focus();
             return false;
         }
         function checkIpt() {
             if (checkMobile() && checkCode() && checkName() && checkPwd() && checkRepPwd()) {
-                if ($('.rdo radio:checked').val() === 'jPersonal') {
+                if ($('.rdo input:radio:checked').val() === 'Personal') {
                     if (checkRealName() && checkNickName()) {
                         return true;
                     }
@@ -279,7 +271,14 @@
                 sendMessageCode.send();
             }
         })
+
+        // 填充个人称呼
+        $realName.on('blur', function() {
+            var val = $(this).val();
+            val && $nickName.val(val);
+        })
+
     }(jQuery));
     </script>
 </body>
-</html>
+{% end %}

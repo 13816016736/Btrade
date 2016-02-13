@@ -7,7 +7,7 @@ import config
 class LoginHandler(BaseHandler):
     def get(self):
         if self.current_user:
-            self.redirect('/users/userlist')
+            self.redirect('/')
         self.render("login.html", next_url=self.get_argument("next", "/"))
 
     def post(self):
@@ -23,8 +23,8 @@ class LoginHandler(BaseHandler):
                         , username=username)
             return
         if md5(str(password+config.salt)) == author.password:
-            self.session["adminid"] = author.id
-            self.session["admin"] = self.get_argument("username")
+            self.session["userid"] = author.id
+            self.session["user"] = self.get_argument("username")
             self.session.save()
             self.redirect(self.get_argument("next_url", "/"))
         else:
@@ -32,8 +32,8 @@ class LoginHandler(BaseHandler):
 
 class LogoutHandler(BaseHandler):
     def get(self):
-        self.session["adminid"] = ""
-        self.session["admin"] = ""
+        self.session["userid"] = ""
+        self.session["user"] = ""
         self.session.save()
         self.redirect('/login')
 

@@ -2,6 +2,7 @@
 import os.path
 from handler.main import *
 from handler.login import *
+from handler.register import *
 from handler.purchase import *
 
 #显示设置
@@ -32,22 +33,29 @@ settings = {
 
 handlers = [
     (r"/", MainHandler),
+    (r"/purchase/purchaselist", PurchaseHandler),
+    (r"/purchase/purchaselist/number/([0-9]+)", PurchaseHandler),
+    (r"/purchase/purchaseinfo/([0-9]+)", PurchaseInfoHandler),
+    (r"/yaocaigou", YaocaigouHandler),
+    (r"/center", CenterHandler),
+    (r"/user/attention", UserAttentionHandler),
+    (r"/userinfo", UserInfoHandler),
+    (r"/news/type/([0-9]+)", NewsHandler),
+
     (r"/users/userlist", UserListHandler),
     (r"/users/userlist/page/([0-9]+)", UserListHandler),
-    (r"/users/userinfo", UserInfoHandler),
     (r"/users/userinfo/([0-9]+)", UserInfoHandler),
     (r"/users/recover/([0-9]+)", UserRecoverHandler),
     (r"/users/remove/([0-9]+)", UserRemoveHandler),
+
     (r"/login", LoginHandler),
     (r"/logout", LogoutHandler),
-    (r"/purchase/purchaselist", PurchaseHandler),
-    (r"/purchase/purchaselist/page/([0-9]+)", PurchaseHandler),
-    (r"/purchase/purchaseinfo/([0-9]+)", PurchaseInfoHandler),
-    # (r"/register", RegisterHandler),
+    (r"/register", RegisterHandler),
     # (r"/register/checkphone", CheckPhoneHandler),
     # (r"/getcity", GetCityHandler),
     # (r"/uploadfile", UploadFileHandler),
-    # (r"/getvarietyinfo", GetVarietyInfoHandler),
+    (r"/getvarietyinfo", GetVarietyInfoHandler),
+    (r"/savevariety", SaveVarietyHandler),
     # (r"/purchasesuccess", PurchaseSuccessHandler),
     # (r"/dashboard", DashboardHandler),
     # (r"/mypurchase", PurchaseHandler),
@@ -64,7 +72,7 @@ handlers = [
 #如果设置为0则不现实，此处的更改为全局设置，但仍然可以单独设置某处的显示选项
 conf = {
     #主页显示的文章数目
-    'POST_NUM': 10,
+    'POST_NUM': 5,
 }
 
 """日志设置

@@ -1,0 +1,24 @@
+<footer class="yc-footer">
+    <nav class="yc-nav">
+        <ul>
+            <li>
+                <a {% if request.uri =="/" %}class="current"{% end %} href="/">
+                    <i class="iconfont icon-plane"></i>
+                    <span>去报价</span>
+                </a>
+            </li>
+            <li>
+                <a {% if request.uri =="/yaocaigou" %}class="current"{% end %} href="/yaocaigou">
+                    <i class="iconfont icon-car"></i>
+                    <span>发采购</span>
+                </a>
+            </li>
+            <li>
+                <a {% if request.uri =="/center" %}class="current"{% end %} class="new-msg" href="/center">
+                    <i class="iconfont icon-center"></i>
+                    <span>我的工作台</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</footer>

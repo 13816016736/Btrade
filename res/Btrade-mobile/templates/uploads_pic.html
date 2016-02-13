@@ -32,8 +32,10 @@
                     <ul>
                         <li class="current">手捧照</li>
                         <li>细节照</li>
-                        <li>剖面照</li>
                         <li>混货照</li>
+                        <li>质检报告</li>
+                        <li>其它照片</li>
+                        <li>其它照片</li>
                     </ul>
                 </div>
                 <div class="cont">
@@ -59,6 +61,22 @@
                         </div>
                         <div class="preview">
                             <img src="uploads/u3.png" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="tit">
+                            <span>展现大货整体质量情况</span>
+                        </div>
+                        <div class="preview">
+                            <img src="uploads/u4.png" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="tit">
+                            <span>展现大货整体质量情况</span>
+                        </div>
+                        <div class="preview">
+                            <img src="uploads/u4.png" alt="">
                         </div>
                     </div>
                     <div class="item">
@@ -106,15 +124,27 @@
 
     $('#jUpload').on('change', function(ev) {
         var index = $('.tab .current').index();
-        var $preview = $('.cont .item').eq(index).find('.preview');
+        // var $preview = $('.cont .item').eq(index).find('.preview');
 
         new UploadPic({
             el: ev,
-            $preview: $preview,
+            // $preview: $preview, // 不需要预览功能
             maxWidth: 196,
-            maxHeight: 196
+            maxHeight: 196,
+            callback: function() {
+                location.href = 'quote.html';
+            }
         });
     })
+
+    // 高亮显示
+    var newsType = getQueryStringArgs();
+    if (newsType.type) {
+        var index = parseInt(newsType.type, 10);
+        if (typeof index === 'number' && $('.tab li').length >= index ) {
+            index > 1 && $('.tab li').eq(index - 1).trigger('click');
+        }
+    }
     </script>
 </body>
 </html>

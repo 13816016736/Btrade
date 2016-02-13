@@ -21,7 +21,8 @@ function JPEGEncoder(a){function I(a){var c,i,j,k,l,m,n,o,p,b=[16,11,10,16,24,40
             'jpg': 'image/jpeg',
             'jpeg': 'image/jpeg',
             'bmp': 'image/bmp'
-    	}
+    	},
+    	callback: function() {} 	// 回调
     }
 	function UploadPic(options) {
 		this.settings = $.extend({}, defaults, options);
@@ -152,6 +153,8 @@ function JPEGEncoder(a){function I(a){var c,i,j,k,l,m,n,o,p,b=[16,11,10,16,24,40
                 dataType: 'json',
                 success: function(i) {
                     // alert(i.url)
+                    // console.log(_this.settings.callback)
+                    _this.settings.callback(); 
                 }
             })
 	    }
