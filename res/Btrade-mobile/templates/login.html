@@ -39,6 +39,10 @@
 <script>
 !(function($){
 
+    {% if 'error' in globals() %}
+    lpPopover('{{error}}');
+    {% end %}
+
     var $username = $('#jUsername'),
         $pwd = $('#jPwd');
 

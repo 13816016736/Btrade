@@ -2,11 +2,10 @@
 
 import tornado.web
 from base import BaseHandler
-import json, os, datetime
+import json, os, datetime, time, base64
 from utils import *
 from config import *
 import random
-import time
 from collections import defaultdict
 
 # class PurchaseHandler(BaseHandler):
@@ -141,7 +140,7 @@ class PurchaseInfoHandler(BaseHandler):
         print id
         purchaseinfo = self.db.get("select tn.*,pa.attachment from (select n.*,sp.specification from (select t.*,a.areaname from "
         "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specificationid from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
+        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specificationid,pi.views from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
         "specification sp on n.specificationid = sp.id) tn left join purchase_attachment pa on tn.pid = pa.purchase_infoid",
                                      id)
@@ -155,7 +154,26 @@ class PurchaseInfoHandler(BaseHandler):
         print purchaseinfo
         others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
                                       purchaseinfo["id"], purchaseinfo["pid"])
-        self.render("purchaseinfo.html", user=user, purchase=purchaseinfo, others=len(others))
+
+        #此采购商成功采购单数
+        purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
+        #此采购单报价数
+        quotes = self.db.execute_rowcount("select * from quote where purchaseinfoid = %s", purchaseinfo["pid"])
+        #此采购商回复供应商比例
+        purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
+            "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
+                "on p.id = t.purchaseid where p.userid = %s", user["id"])
+        reply = 0
+        print purchaser_quotes
+        for purchaser_quote in purchaser_quotes:
+            if purchaser_quote.state is not None and purchaser_quote.state != 0:
+                reply = reply + 1
+
+        #浏览数加1
+        self.db.execute("update purchase_info set views = views + 1 where id = %s", purchaseinfo["pid"])
+
+        self.render("purchaseinfo.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,
+                    quotes=quotes, reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0))
 
     def post(self):
         pass
@@ -172,42 +190,54 @@ class PurchaseInfoHandler(BaseHandler):
 #         else:
 #             cities = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", provinceid)
 #             self.api_response({'status':'success','message':'请求成功','data':cities})
-#
-# class UploadFileHandler(BaseHandler):
-#
-#     def get(self):
-#         pass
-#
-#     def post(self):
-#         num = self.get_argument("num")
-#         now = datetime.date.today().strftime("%Y%m%d")
-#         #文件的暂存路径
-#         root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-#         upload_path = os.path.join(root_path, 'static\\uploadfiles\\' + now)
-#         if os.path.exists(upload_path) == False:
-#             os.makedirs(upload_path)
-#         #提取表单中‘name’为‘file’的文件元数据
-#         file_metas = self.request.files['filename']
-#         for meta in file_metas:
-#             name, ext = os.path.splitext(meta['filename'])
-#             filename = md5(name.encode('utf-8') + now)+ext
-#             filepath = os.path.join(upload_path,filename)
-#             #有些文件需要已二进制的形式存储，实际中可以更改
-#             with open(filepath,'wb') as up:
-#                 uploadfiles = self.session.get("uploadfiles", {})
-#                 if uploadfiles and uploadfiles.has_key(num):
-#                     #uploadfiles[num].append(filepath)
-#                     self.finish(json.dumps({'status':'fail','message':'一个采购单只能传一张图片'}))
-#                 else:
-#                     up.write(meta['body'])
-#                     uploadfiles[num] = [filepath]
-#                     self.session["uploadfiles"] = uploadfiles
-#                     self.session.save()
-#                     self.finish(json.dumps({'status':'success','message':'上传成功','path':filepath}))
-#                 print self.session["uploadfiles"]
-#                 return
-#         self.finish({'status':'fail','message':'上传失败'})
-#
+
+class UploadFileHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self):
+        pass
+
+    @tornado.web.authenticated
+    def post(self):
+        type = self.get_argument("type")
+        base64_string = self.get_argument("base64_string")
+        imgData = base64.b64decode(base64_string)
+        now = datetime.date.today().strftime("%Y%m%d")
+        #文件的暂存路径
+        root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+        upload_path = os.path.join(root_path, 'static\\uploadfiles\\' + now)
+        name = str(int(time.time())) + str(self.session.get("userid")) + type
+        ext = ".png"
+        filename = md5(str(name))+ext
+        filepath = os.path.join(upload_path,filename)
+        with open(filepath,'wb') as up:
+            uploadfiles = self.session.get("uploadfiles", {})
+            up.write(imgData)
+            uploadfiles[type] = filepath
+            self.session["uploadfiles"] = uploadfiles
+            self.session.save()
+            self.api_response({'status':'success','message':'上传成功','path':filepath})
+            return
+
+        self.api_response({'status':'fail','message':'上传失败'})
+
+class DeleteFileHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self):
+        pass
+
+    @tornado.web.authenticated
+    def post(self):
+        type = self.get_argument("type")
+        uploadfiles = self.session.get("uploadfiles")
+        if uploadfiles.has_key(type):
+            del uploadfiles[type]
+            self.session["uploadfiles"] = uploadfiles
+            self.session.save()
+
+        self.api_response({'status':'success','message':'删除成功'})
+
 class GetVarietyInfoHandler(BaseHandler):
 
     def get(self):

@@ -4,6 +4,7 @@ from handler.main import *
 from handler.login import *
 from handler.register import *
 from handler.purchase import *
+from handler.quote import *
 
 #显示设置
 app = {
@@ -39,8 +40,19 @@ handlers = [
     (r"/yaocaigou", YaocaigouHandler),
     (r"/center", CenterHandler),
     (r"/user/attention", UserAttentionHandler),
+    (r"/user/updatepassword", UserUpdatePasswordHandler),
+    (r"/user/updatenickname", UserUpdateNicknameHandler),
+    (r"/user/category", UserCategoryHandler),
     (r"/userinfo", UserInfoHandler),
     (r"/news/type/([0-9]+)", NewsHandler),
+    (r"/news/articleid/([0-9]+)", ArticleHandler),
+    (r"/quote", QuoteHandler),
+    (r"/quote/purchaseinfoid/([0-9]+)", QuoteHandler),
+    (r"/quote/upload/purchaseinfoid/([0-9]+)/type/([0-9]+)", QuoteUploadHandler),
+    (r"/quotesuccess", QuoteSuccessHandler),
+    (r"/weixin", WeixinHandler),
+    (r"/uploadfile", UploadFileHandler),
+    (r"/delfile", DeleteFileHandler),
 
     (r"/users/userlist", UserListHandler),
     (r"/users/userlist/page/([0-9]+)", UserListHandler),
@@ -53,7 +65,6 @@ handlers = [
     (r"/register", RegisterHandler),
     # (r"/register/checkphone", CheckPhoneHandler),
     # (r"/getcity", GetCityHandler),
-    # (r"/uploadfile", UploadFileHandler),
     (r"/getvarietyinfo", GetVarietyInfoHandler),
     (r"/savevariety", SaveVarietyHandler),
     # (r"/purchasesuccess", PurchaseSuccessHandler),
@@ -73,6 +84,8 @@ handlers = [
 conf = {
     #主页显示的文章数目
     'POST_NUM': 5,
+    #每周能报价的次数
+    'QUOTE_NUM': 5,
 }
 
 """日志设置

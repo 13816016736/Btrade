@@ -40,3 +40,77 @@ http://www.iconfont.cn/
 1.index页面底部三个tab，缺“current”和“newmsg”同时出现的状态
 2.index页面一个采购单,多个采购品种的页面暂时
 3.index下拉加载对于服务端返回status为nomore的状态处理有问题
+
+TODO:
+首页列表每个采购品种有几个报价
+列表下滑加载的数据有问题：1.加载的有相同数据 2.加载数据的剩余天数是undefined
+
+
+20160215
+
+purchase 采购表
+status 0关闭 1等待报价 2报价结束 3成功采购
+
+通知表设计
+
+notification
+
+id type（1：卖货消息，2：采购消息，3：成长任务，4：系统通知）  title content status（0：未读，1：已读） createtime
+如果通知是对报价有回复消息的通知既type=1，则content填写quoteid
+
+CREATE TABLE IF NOT EXISTS notification (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender` int(10) NOT NULL,
+  `receiver` int(10) NOT NULL,
+  `type` int(10) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `content` text NOT NULL,
+  `status` int(10) NOT NULL DEFAULT '0',
+  `createtime` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+
+insert into notification(sender,receiver,type,title,content,status,createtime)value(3,1,1,'test title','test content',0,'1452665820');
+
+
+报价表
+
+在报价表里加采购商的消息回复  
+
+quote
+id userid purchaseinfoid quality price explain status（0：默认，1：成功） message state（1：接受报价，2：拒绝） createtime updatetime
+
+CREATE TABLE IF NOT EXISTS quote (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userid` int(10) NOT NULL,
+  `purchaseinfoid` int(10) NOT NULL,
+  `quality` text NOT NULL,
+  `price` varchar(10) NOT NULL,
+  `explain` text NOT NULL,
+  `status` int(10) NOT NULL,
+  `message` text NOT NULL,
+  `state` int(10) NOT NULL DEFAULT '0',
+  `createtime` varchar(100) NOT NULL,
+  `updatetime` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+quote_attachment
+id quoteid attachment type 
+
+CREATE TABLE IF NOT EXISTS quote_attachment (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `quoteid` int(10) NOT NULL,
+  `attachment` varchar(200) NOT NULL,
+  `type` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+
+
+
+
+insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
+
+

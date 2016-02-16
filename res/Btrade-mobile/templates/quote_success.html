@@ -1,45 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>报价成功</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
-<body>
-    <section class="yc-content">
-        <div class="yc-message">
-            <div class="head">
-                <h1 class="title"><i class="iconfont icon-face"></i>报价成功</h1>
-                <!-- <h1 class="title"><i class="iconfont icon-frown"></i>报价失败</h1> -->
-                <div class="text">
-                    <p>药材购已通知采购商尽快评估，祝您做成这单</p>
-                </div>
-            </div>
-            <div class="main">
-                <div class="thank">
-                    <i class="iconfont icon-radio-yes"></i>
-                    <p>感谢您，在药材购提交了第一个报价</p>
-                    <p>我们深知，每一个报价，代表着一份期待，药材购将竭力祝您促成交易</p>
-                </div>
-
-                <div class="weixin">
-                    <i class="iconfont icon-weixin"></i>
-                    <p>关注【药材购】微信公众平台，查看药厂、饮片厂实时采购单，随时跟进报价</p>
-                    <a class="go" href="weixin.html">立即前往</a>
-                </div>
-
-                <div class="user">
-                    <p>可在【我的工作台】看到和管理报价</p>
-                    <a class="back" href="index.html">关闭</a>
-                </div>
+{% extends "basenofoot.html" %}
+{% block container %}
+<section class="yc-content">
+    <div class="yc-message">
+        <div class="head">
+            <h1 class="title"><i class="iconfont icon-face"></i>报价成功</h1>
+            <!-- <h1 class="title"><i class="iconfont icon-frown"></i>报价失败</h1> -->
+            <div class="text">
+                <p>药材购已通知采购商尽快评估，祝您做成这单</p>
             </div>
         </div>
-    </section><!-- /yc-content -->
-</body>
-</html>
+        <div class="main">
+            <div class="thank">
+                <i class="iconfont icon-radio-yes"></i>
+                <p>感谢您，在药材购提交了第一个报价</p>
+                <p>我们深知，每一个报价，代表着一份期待，药材购将竭力祝您促成交易</p>
+            </div>
+
+            <div class="weixin">
+                <i class="iconfont icon-weixin"></i>
+                <p>关注【药材购】微信公众平台，查看药厂、饮片厂实时采购单，随时跟进报价</p>
+                <a class="go" href="/weixin">立即前往</a>
+            </div>
+
+            <div class="user">
+                <p>可在【我的工作台】看到和管理报价</p>
+                <a class="back" href="#">关闭</a>
+            </div>
+        </div>
+    </div>
+</section><!-- /yc-content -->
+{% end %}

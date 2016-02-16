@@ -1,0 +1,78 @@
+{% extends "basenofoot.html" %}
+{% block container %}
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="javascript:" onclick="self.location=document.referrer;">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">修改称呼</div>
+    <div class="yc-header-right">
+        <a class="button" id="jSave" href="#none">完成</a>
+    </div>
+</header><!-- /yc-header -->
+
+<section class="yc-content">
+    <div class="yc-form">
+        <form action="">
+            <div class="item">
+                <label class="txt">个人称呼</label>
+                <input class="ipt" type="text" value="{{user.nickname}}" id="j_name" />
+                <span class="error"></span>
+            </div>
+        </form>
+    </div>
+</section><!-- /yc-content -->
+
+<script>
+!(function(){
+    var $name = $('#j_name');
+
+    function checkName() {
+        var val = $name.val();
+        if (!val) {
+            $name.next().html('称呼不能为空').show();
+        } else {
+            $name.next().html('').hide();
+            return true;
+        }
+        return false;
+    }
+    function checkIpt() {
+        if (checkName()) {
+            return true;
+        }
+        return false;
+    }
+    // 保存
+    $('#jSave').on('click', function() {
+        if(checkIpt()){
+            $.ajax({
+                url: '/user/updatenickname',
+                dataType: 'json',
+                data: {"nickname":$name.val()},
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        lpPopover('保存成功!');
+                        self.location=document.referrer;
+                    } else {
+                        lpPopover(data.message);;
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    lpPopover('网络连接超时，请您稍后重试!');
+                }
+            })
+        }
+    });
+
+    $('body').on('click', function() {
+        $('.error').html('').hide();
+    })
+}(jQuery));
+</script>
+{% end %}

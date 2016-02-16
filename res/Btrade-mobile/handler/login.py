@@ -23,8 +23,10 @@ class LoginHandler(BaseHandler):
                         , username=username)
             return
         if md5(str(password+config.salt)) == author.password:
+            notification = self.db.query("select id from notification where receiver = %s", author.id)
             self.session["userid"] = author.id
             self.session["user"] = self.get_argument("username")
+            self.session["notification"] = len(notification)
             self.session.save()
             self.redirect(self.get_argument("next_url", "/"))
         else:

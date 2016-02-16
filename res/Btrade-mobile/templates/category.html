@@ -1,64 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>修改经营类型</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
-<body class="yc-body-nofoot">
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="javascript:history.back();">
-                <i class="iconfont icon-back"></i>
-            </a>
-        </div>
-        <div class="yc-header-title">修改经营类型</div>
-    </header><!-- /yc-header -->
+{% extends "basenofoot.html" %}
+{% block container %}
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="javascript:" onclick="self.location=document.referrer;">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">修改经营类型</div>
+</header><!-- /yc-header -->
 
-    <section class="yc-content">
-        <div class="yc-form yc-form-l">
-            <div class="item current">
-                <span>饮片厂/饮片生产、加工</span>
-                <i class="iconfont icon-radio-yes"></i>
-            </div>
-            <div class="item">
-                <span>药厂/制药企业</span>
-                <i class="iconfont icon-radio-yes"></i>
-            </div>
-            <div class="item">
-                <span>药材贸易经营公司</span>
-                <i class="iconfont icon-radio-yes"></i>
-            </div>
-            <div class="item">
-                <span>种植合作社/种植基地</span>
-                <i class="iconfont icon-radio-yes"></i>
-            </div>
-            <div class="item">
-                <span>个体工商户</span>
-                <i class="iconfont icon-radio-yes"></i>
-            </div>
-            <div class="item">
-                <span>其它类型公司</span>
-                <i class="iconfont icon-radio-yes"></i>
-            </div>
+<section class="yc-content">
+    <div class="yc-form yc-form-l">
+        <div class="item {% if user.type==1 %} current {% end %}">
+            <span>饮片厂/饮片生产、加工</span>
+            <i class="iconfont icon-radio-yes"></i>
         </div>
-    </section><!-- /yc-content -->
+        <div class="item {% if user.type==2 %} current {% end %}">
+            <span>药厂/制药企业</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+        <div class="item {% if user.type==3 %} current {% end %}">
+            <span>药材贸易经营公司</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+        <div class="item {% if user.type==4 %} current {% end %}">
+            <span>种植合作社/种植基地</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+        <div class="item {% if user.type==5 %} current {% end %}">
+            <span>其它类型公司</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script>
-    !(function($) {
-        $('.yc-form').on('click', '.item', function() {
-            $(this).addClass('current').siblings().removeClass('current');
-            location.href = history.back(); // 返回
+        <div class="item {% if user.type==6 %} current {% end %}">
+            <span>个人经营</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+        <div class="item {% if user.type==7 %} current {% end %}">
+            <span>企业采购经理/业务员</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+        <div class="item {% if user.type==8 %} current {% end %}">
+            <span>采购药材为主</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+        <div class="item {% if user.type==9 %} current {% end %}">
+            <span>销售药材为主</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+        <div class="item {% if user.type==10 %} current {% end %}">
+            <span>既采购也销售药材</span>
+            <i class="iconfont icon-radio-yes"></i>
+        </div>
+    </div>
+</section><!-- /yc-content -->
+<script>
+!(function($) {
+    $('.yc-form').on('click', '.item', function() {
+        $(this).addClass('current').siblings().removeClass('current');
+        var type = $(".yc-form div").index(this)+1;
+        $.ajax({
+            url: '/user/category',
+            dataType: 'json',
+            data: {"type":type},
+            type: 'POST',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if (data.status === 'success') {
+                    lpPopover('保存成功!');
+                    self.location=document.referrer;
+                    //location.href = history.back(); // 返回
+                } else {
+                    lpPopover(data.message);;
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                lpPopover('网络连接超时，请您稍后重试!');
+            }
         })
-    }(jQuery));
-    </script>
-</body>
-</html>
+    })
+}(jQuery));
+</script>
+{% end %}

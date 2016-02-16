@@ -1,375 +1,452 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>报价</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css?id=22">
-</head>
-<body class="yc-body-nofoot">
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="javascript:history.back();">
-                <i class="iconfont icon-back"></i>
-            </a>
+{% extends "basenofoot.html" %}
+{% block container %}
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="/purchase/purchaseinfo/{{purchase.pid}}">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">报价</div>
+</header><!-- /yc-header -->
+
+<section class="yc-content">
+    <div class="yc-quote-form">
+        <div class="title">
+            <a class="read" href="#none"><i class="iconfont icon-download"></i>读入上次黄连报价</a>
+            <span>轻松三步，立即报价</span>
         </div>
-        <div class="yc-header-title">报价</div>
-    </header><!-- /yc-header -->
-
-    <section class="yc-content">
-        <div class="yc-quote-form">
-            <div class="title">
-                <a class="read" href="#none"><i class="iconfont icon-download"></i>读入上次黄连报价</a>
-                <span>轻松三步，立即报价</span>
-            </div>
-            <form action="">
-                <div class="item">
-                    <div class="hd">
-                        <span class="ext">有图有真相，信任感倍增</span>
-                        <i class="iconfont icon-camera"></i> 1 拍货源照片
-                    </div>
-                    <div class="pic pic-fold">
-                        <ul>
-                            <li>
-                                <a href="uploads_pic.html?type=1">
-                                    <div class="mid">
-                                        <i class="iconfont icon-plus"></i>
-                                        <span>手捧照，看外观</span>
-                                    </div>
-                                    <div class="in">
-                                        <img src="images/default_img.png" alt="">
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="uploads_pic.html?type=2">
-                                    <div class="mid">
-                                        <i class="iconfont icon-plus"></i>
-                                        <span>细节照 ，看断面</span>
-                                    </div>
-                                    <div class="in">
-                                        <img src="uploads/u1.png" />
-                                        <i class="iconfont icon-remove remove"></i>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="uploads_pic.html?type=3">
-                                    <div class="mid">
-                                        <i class="iconfont icon-plus"></i>
-                                        <span>混货照，看大货</span>
-                                    </div>
-                                    <div class="in">
-                                        <img src="images/default_img.png" alt="">
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="uploads_pic.html?type=4">
-                                    <div class="mid">
-                                        <i class="iconfont icon-plus"></i>
-                                        <span>质检报告</span>
-                                    </div>
-                                    <div class="in">
-                                        <img src="images/default_img.png" alt="">
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="uploads_pic.html?type=5">
-                                    <div class="mid">
-                                        <i class="iconfont icon-plus"></i>
-                                        <span>其它照片</span>
-                                    </div>
-                                    <div class="in">
-                                        <img src="images/default_img.png" alt="">
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="uploads_pic.html?type=6">
-                                    <div class="mid">
-                                        <i class="iconfont icon-plus"></i>
-                                        <span>其它照片</span>
-                                    </div>
-                                    <div class="in">
-                                        <img src="images/default_img.png" alt="">
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="pic-extend">
-                        <i class="iconfont icon-fold"></i>
-                        <span>请至少上传一张，越多成交机率越大</span>
-                    </div>
+        <form action="/quotesuccess" method="post">
+            {% raw xsrf_form_html() %}
+            <div class="item">
+                <div class="hd">
+                    <span class="ext">有图有真相，信任感倍增</span>
+                    <i class="iconfont icon-camera"></i> 1 拍货源照片
                 </div>
-
-                <div class="item">
-                    <div class="hd">
-                        <span class="ext">简单直接的阐述货源优势</span>
-                        <i class="iconfont icon-menu"></i> 2 描述货源质量 
-                    </div>
-                    <div class="describe">
-                        <div class="tips">
-                            <p>示例：鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、碎渣，含量1.5左右</p>
-                            <p>请对照采购要求，简明扼要的阐述您货源的质量情况</p>
-                        </div>
-                        <textarea class="mul" id="jQualityDesc" name="" rows="10" cols="5"></textarea>
-                    </div>
+                <div class="pic pic-fold">
+                    <ul>
+                        <li>
+                            <a href="/quote/upload/purchaseinfoid/{{purchase.pid}}/type/1">
+                                <div class="mid">
+                                    <i class="iconfont icon-plus"></i>
+                                    <span>手捧照，看外观</span>
+                                </div>
+                                {% if uploadfiles.has_key('1') %}
+                                <div class="in">
+                                    <img src="{{uploadfiles['1']}}" alt="">
+                                    <i class="iconfont icon-remove remove" type="1"></i>
+                                </div>
+                                {% end %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/quote/upload/purchaseinfoid/{{purchase.pid}}/type/2">
+                                <div class="mid">
+                                    <i class="iconfont icon-plus"></i>
+                                    <span>细节照 ，看断面</span>
+                                </div>
+                                {% if uploadfiles.has_key('2') %}
+                                <div class="in">
+                                    <img src="{{uploadfiles['2']}}" alt="">
+                                    <i class="iconfont icon-remove remove" type="2"></i>
+                                </div>
+                                {% end %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/quote/upload/purchaseinfoid/{{purchase.pid}}/type/3">
+                                <div class="mid">
+                                    <i class="iconfont icon-plus"></i>
+                                    <span>混货照，看大货</span>
+                                </div>
+                                {% if uploadfiles.has_key('3') %}
+                                <div class="in">
+                                    <img src="{{uploadfiles['3']}}" alt="">
+                                    <i class="iconfont icon-remove remove" type="3"></i>
+                                </div>
+                                {% end %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/quote/upload/purchaseinfoid/{{purchase.pid}}/type/4">
+                                <div class="mid">
+                                    <i class="iconfont icon-plus"></i>
+                                    <span>质检报告</span>
+                                </div>
+                                {% if uploadfiles.has_key('4') %}
+                                <div class="in">
+                                    <img src="{{uploadfiles['4']}}" alt="">
+                                    <i class="iconfont icon-remove remove" type="4"></i>
+                                </div>
+                                {% end %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/quote/upload/purchaseinfoid/{{purchase.pid}}/type/5">
+                                <div class="mid">
+                                    <i class="iconfont icon-plus"></i>
+                                    <span>其它照片</span>
+                                </div>
+                                {% if uploadfiles.has_key('5') %}
+                                <div class="in">
+                                    <img src="{{uploadfiles['5']}}" alt="">
+                                    <i class="iconfont icon-remove remove" type="5"></i>
+                                </div>
+                                {% end %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/quote/upload/purchaseinfoid/{{purchase.pid}}/type/6">
+                                <div class="mid">
+                                    <i class="iconfont icon-plus"></i>
+                                    <span>其它照片</span>
+                                </div>
+                                {% if uploadfiles.has_key('6') %}
+                                <div class="in">
+                                    <img src="{{uploadfiles['6']}}" alt="">
+                                    <i class="iconfont icon-remove remove" type="6"></i>
+                                </div>
+                                {% end %}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-
-                <div class="item">
-                    <div class="hd">
-                        <span class="ext">给出您的诚意价</span>
-                        <i class="iconfont icon-calc"></i> 3 报价格 
-                    </div>
-                    <div class="price">
-                        <i class="iconfont icon-check-yes"></i>
-                        <span>裸价</span>
-                        <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="78">
-                        <span>元/公斤</span>
-                    </div>
-                    <div class="msg" id="jPriceMsg">
-                        <i class="iconfont icon-exclamation"></i>
-                        <span>报价高于采购商预期（74元/公斤 封顶），请酌情控制，更利于达成交易</span>
-                    </div>
-                    <div class="txt">价格说明</div>
-                    <div class="describe">
-                        <div class="tips">
-                            <p>示例：若现款可考虑低3块。由于量大，需要分两次发货</p>
-                            <p>可对报价及交收中的细节问题做说明</p>
-                        </div>
-                        <textarea class="mul" id="jPriceDesc" name="" rows="10" cols="5"></textarea>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <div class="hd">
-                        <i class="iconfont icon-heart"></i> 诚信宣言 
-                    </div>
-                    <div class="cbx">
-                        <input class="iconfont ipt-checkbox" id="jStandard" type="checkbox" />
-                        <label for="jStandard">已认真阅读、了解采购商要求，我的货源质量达标</label>
-                    </div>
-                    <div class="cbx">
-                        <input class="iconfont ipt-checkbox" id="jReal" type="checkbox" />
-                        <label for="jReal">照片、药材描述真实有效，与大货一致</label>
-                    </div>
-                    <div class="txt">您本周还有<b>5</b>次报价机会，诚信创造价值<i class="iconfont icon-question"></i></div>
-                </div>
-
-                <div class="submit">
-                    <button class="button" id="jSumnit" type="button">提交</button>
-                </div>
-
-                <div class="agreement">
-                    提交即表示您同意<a href="#">《药材购撮合交易规则》</a>
-                </div>
-            </form>
-        </div>
-    </section><!-- /yc-content -->
-
-    <section class="yc-content">
-        <div class="yc-purchase-desc">
-            <div class="cf">
-                <div class="fl">采购编码：<span>HJ283M001</span></div>
-                <div class="fr"><time data-time="2016/01/28 10:28:59">2016/01/28 10:28:59</time></div>
-            </div>
-            <div class="cf">
-                <div class="fl"><span class="blue">等待报价</span>(剩余<b>12</b>天)</div>
-                <div class="fr">已有<b>332</b>热门浏览，<b>5</b>个报价</div>
-            </div>
-        </div>
-
-        <div class="yc-purchase-detail">
-            <h3>采购品种及要求</h3>
-            <div class="bd">
-                <h4 class="name">黄连</h4>
-                <div class="tag">鸡爪统 重庆</div>
-                <div class="weight">3000公斤</div>
-                <div class="desc">
-                    <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                    <p><span>意向价格</span> 74元/公斤 封顶</p>
-                    <p><span>合格品样例照</span></p>
-                    <p class="thumb"><img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt=""><img src="uploads/001.jpeg" data-src="uploads/bing-2.jpg" alt=""><img src="uploads/001.jpeg" data-src="uploads/bing-3.jpg" alt=""><img src="uploads/001.jpeg" data-src="uploads/bing-4.jpg" alt=""></p>
+                <div class="pic-extend">
+                    <i class="iconfont icon-fold"></i>
+                    <span>请至少上传一张，越多成交机率越大</span>
                 </div>
             </div>
-        </div>
 
-        <div class="yc-purchase-detail">
-            <h3>采购商</h3>
-            <div class="bd">
-                <h4 class="company">
-                    <span>亳州永刚中药饮片有限公司</span>
-                    <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
-                </h4>
-                <div class="category">饮片公司</div>
-                <div class="total">
-                    <span class="yc-star yc-star-4">
-                        <i></i><i></i><i></i><i></i><i></i>
-                    </span>
-                    <span class="txt">成功采购：<b>34单</b></span>
-                    <span class="txt">报价答复率：<b>83%</b></span>
+            <div class="item">
+                <div class="hd">
+                    <span class="ext">简单直接的阐述货源优势</span>
+                    <i class="iconfont icon-menu"></i> 2 描述货源质量
+                </div>
+                <div class="describe">
+                    <div class="tips">
+                        <p>示例：鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、碎渣，含量1.5左右</p>
+                        <p>请对照采购要求，简明扼要的阐述您货源的质量情况</p>
+                    </div>
+                    <textarea class="mul" id="jQualityDesc" name="" rows="10" cols="5"></textarea>
                 </div>
             </div>
-        </div>
 
-        <div class="yc-purchase-detail">
+            <div class="item">
+                <div class="hd">
+                    <span class="ext">给出您的诚意价</span>
+                    <i class="iconfont icon-calc"></i> 3 报价格
+                </div>
+                <div class="price">
+                    <i class="iconfont icon-check-yes"></i>
+                    <span>裸价</span>
+                    <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="78">
+                    <span>元/公斤</span>
+                </div>
+                <div class="msg" id="jPriceMsg">
+                    <i class="iconfont icon-exclamation"></i>
+                    <span>报价高于采购商预期（74元/公斤 封顶），请酌情控制，更利于达成交易</span>
+                </div>
+                <div class="txt">价格说明</div>
+                <div class="describe">
+                    <div class="tips">
+                        <p>示例：若现款可考虑低3块。由于量大，需要分两次发货</p>
+                        <p>可对报价及交收中的细节问题做说明</p>
+                    </div>
+                    <textarea class="mul" id="jPriceDesc" name="" rows="10" cols="5"></textarea>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="hd">
+                    <i class="iconfont icon-heart"></i> 诚信宣言
+                </div>
+                <div class="cbx">
+                    <input class="iconfont ipt-checkbox" id="jStandard" type="checkbox" />
+                    <label for="jStandard">已认真阅读、了解采购商要求，我的货源质量达标</label>
+                </div>
+                <div class="cbx">
+                    <input class="iconfont ipt-checkbox" id="jReal" type="checkbox" />
+                    <label for="jReal">照片、药材描述真实有效，与大货一致</label>
+                </div>
+                <div class="txt">您本周还有<b>{{quotechances}}</b>次报价机会，诚信创造价值<i class="iconfont icon-question"></i></div>
+            </div>
+
+            <div class="submit">
+                <button class="button" id="jSumnit" type="button">提交</button>
+            </div>
+
+            <div class="agreement">
+                提交即表示您同意<a href="#">《药材购撮合交易规则》</a>
+            </div>
+        </form>
+    </div>
+</section><!-- /yc-content -->
+
+<section class="yc-content">
+    <div class="yc-purchase-desc">
+        <div class="cf">
+            <div class="fl">采购编码：<span>{{ purchase.id }}</span></div>
+            <div class="fr"><time data-time="{{ purchase.datetime }}">{{ purchase.datetime }}</time></div>
+        </div>
+        <div class="cf">
+            {% if purchase.status == 0%}
+            <div class="fl"><span class="red">关闭</span></div>
+            {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+            <div class="fl">
+                <span class="blue">等待报价</span>
+                {% if purchase.limited == 1%}
+                （剩余<b>{{purchase.timedelta}}</b>天）
+                {% else%}
+                常年采购
+                {% end %}
+            </div>
+            <div class="fr">已有<b>{{purchase.views}}</b>热门浏览，<b>{{quotes}}</b>个报价</div>
+            {% else %}
+            <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            {% end %}
+        </div>
+    </div>
+
+    <div class="yc-purchase-detail">
+        <h3>采购品种及要求</h3>
+        <div class="bd">
+            <h4 class="name">{{ purchase.name }}</h4>
+            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
+            <div class="weight">{{ purchase.quantity }}公斤</div>
+            <div class="desc">
+                <p>{{ purchase.quantity }}</p>
+                <p><span>意向价格</span> {{ purchase.price }}元/公斤 封顶</p>
+                <p><span>合格品样例照</span></p>
+                <p class="thumb"><img src="{{ purchase.attachment }}" data-src="{{ purchase.attachment }}" alt=""></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="yc-purchase-detail">
+        <h3>采购商</h3>
+        <div class="bd">
+            <h4 class="company">
+                <span>{{purchaser.nickname}}</span>
+                <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
+            </h4>
+            <div class="category">{% if purchaser.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
+            <div class="total">
+                <span class="yc-star yc-star-4">
+                    <i></i><i></i><i></i><i></i><i></i>
+                </span>
+                <span class="txt">成功采购：<b>{{purchases}}单</b></span>
+                <span class="txt">报价答复率：<b>{{reply}}%</b></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="yc-purchase-detail">
             <h3>交收要求</h3>
             <dl class="yc-demand">
                 <dt>交货地：</dt>
-                <dd>湖北 武汉</dd>
+                <dd>{{ purchase.areaname }}</dd>
                 <dt>发票要求：</dt>
-                <dd>普通发票</dd>
+                <dd>
+                    {% if purchase.invoice == 1%}
+                    无需发票
+                    {% elif purchase.invoice == 2%}
+                    普通发票
+                    {% elif purchase.invoice == 3 %}
+                    增值税发票
+                    {% end %}
+                </dd>
                 <dt>交易及付款：</dt>
-                <dd>双方直接交易，验收合格后<b>45</b>天付款</dd>
+                <dd>
+                    {% if purchase.pay == 1%}
+                    药采购"安心交易"(预付全款)
+                    {% elif purchase.pay == 2%}
+                    双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
+                    {% else %}
+                    {{purchase.payinfo}}
+                    {% end %}
+                </dd>
                 <dt>验证及包装：</dt>
                 <dd>
                     <ol>
-                        <li>1、我公司对中药材的水分做严格的限度要求，经检测超出要求的，公司根据实际情况折扣处理。</li>
-                        <li>2、中药饮片需提供合格的检验报告书</li>
-                        <li>3、中药饮片必须双层包装严密，包装袋（箱）应干净、结实、无破损、封口严密，每袋配挂标准吊签，方便识别、储存、运输和使用。</li>
+                        <li>{{ purchase.accept }}</li>
                     </ol>
                 </dd>
                 <dt>寄样：</dt>
-                <dd>要求报价后必须寄样<span>报价后会告知详细的寄样要求</span></dd>
+                <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span>{{ purchase.receive }}</span></dd>
                 <dt>补充说明：</dt>
-                <dd>无</dd>
+                <dd>{{ purchase.other }}</dd>
             </dl>
         </div>
 
+    <div class="yc-purchase-detail">
+        <h3>供应商要求</h3>
+        <dl class="yc-demand">
+            <dt>供应商资质：</dt>
+            <dd>
+                {% if purchase.supplier == 1 %}
+                必须有营业执照（公司、合作社、经营户），不接收个人
+                {% elif purchase.supplier == 2 %}
+                具备GSP资质
+                {% elif purchase.supplier == 3 %}
+                具备GMP资质
+                {% end %}
+            </dd>
+            <dt>其它要求：</dt>
+            <dd>{{purchase.remark}}</dd>
+        </dl>
+    </div>
 
-        <div class="yc-purchase-detail">
-            <h3>供应商要求</h3>
-            <dl class="yc-demand">
-                <dt>供应商资质：</dt>
-                <dd>必须有营业执照（公司/合作社供/经营户），不接受个人</dd>
-                <dt>其它要求：</dt>
-                <dd>无</dd>
-            </dl>
-        </div>
+</section><!-- /yc-content -->
+<script>
+!(function(){
+    {% if uploadfiles.has_key("4") or uploadfiles.has_key("5") or uploadfiles.has_key("6") %}
+    $('.pic-extend .icon-fold').toggleClass('icon-unfold').parent().prev().toggleClass('pic-fold');
+    {% end %}
+    // 折叠菜单
+    $('.pic-extend .icon-fold').on('click', function() {
+        $(this).toggleClass('icon-unfold').parent().prev().toggleClass('pic-fold');
+    });
 
-    </section><!-- /yc-content -->
+    // placeholder
+    $('.describe .mul').each(function() {
+        var $this = $(this);
+        var _placeholder = function() {
+            var val = $this.val();
+            if (val) {
+                $this.prev().hide();
+            } else {
+                $this.prev().show();
+            }
+        }
+        _placeholder();
+        $this.on('input', _placeholder);
+    });
 
+    // 表单验证
+    var $qualityDesc = $('#jQualityDesc'),
+        $price = $('#jPrice'),
+        $priceMsg = $('#jPriceMsg'),
+        $priceDesc = $('#jPriceDesc'),
+        $standard = $('#jStandard'),
+        $real = $('#jReal'),
+        $submit = $('#jSumnit');
 
+    // 价格输入控制
+    $price.on('input', function() {
+        var val = this.value,
+            max = parseFloat($(this).data('maxprice'));
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
-    <script>
-    !(function(){
-        // 折叠菜单
-        $('.pic-extend .icon-fold').on('click', function() {
-            $(this).toggleClass('icon-unfold').parent().prev().toggleClass('pic-fold');
-        });
+        if (!/^\d+\.?\d*$/.test(val)) {
+            val = Math.abs(parseFloat(val));
+            this.value = isNaN(val) ? "" : val;
+        }
 
-        // placeholder
-        $('.describe .mul').each(function() {
-            var $this = $(this);
-            var _placeholder = function() {
-                var val = $this.val();
-                if (val) {
-                    $this.prev().hide();
-                } else {
-                    $this.prev().show();
+        if (!isNaN(val)) {
+            val > max ? $priceMsg.show() : $priceMsg.hide();
+        }
+    })
+
+    var checkQuality = function() {
+        var val = $qualityDesc.val();
+        if (!val) {
+            lpPopover('请描述货源质量');
+            $qualityDesc.focus();
+            return false;
+        }
+        return true;
+    }
+    var checkPrice = function() {
+        var val = $price.val();
+        if (!val) {
+            lpPopover('请输入价格');
+            $price.focus();
+            return false;
+        }
+        return true;
+    }
+    var checkQualityDesc = function() {
+        var val = $qualityDesc.val();
+        if (!val) {
+            lpPopover('请输入价格说明');
+            $qualityDesc.focus();
+            return false;
+        }
+        return true;
+    }
+    var checkStandard = function() {
+        var val = $standard.prop('checked');
+        if (!val) {
+            lpPopover('请勾选诚信宣言');
+            return false;
+        }
+        return true;
+    }
+    var checkReal = function() {
+        var val = $real.prop('checked');
+        if (!val) {
+            lpPopover('请勾选诚信宣言');
+            return false;
+        }
+        return true;
+    }
+
+    function checkIpt() {
+        if (checkQuality() && checkPrice() && checkQualityDesc() && checkStandard() && checkReal()) {
+            return true;
+        }
+        return false;
+    }
+
+    $submit.on('click', function() {
+        if(checkIpt()){
+            $.ajax({
+                url: '/quote',
+                dataType: 'json',
+                data: {"purchaseinfoid":{{purchase.pid}},"quality":$qualityDesc.val(),"price":$price.val(),"explain":$priceDesc.val()},
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        $("form").submit();
+                    } else {
+                        lpPopover(data.message);;
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    lpPopover('网络连接超时，请您稍后重试!');
                 }
+            })
+        }
+    });
+
+    // 删除图片
+    $('body').on('click', '.remove', function() {
+        $this = $(this);
+        var type = $this.attr("type");
+        $.ajax({
+            url: '/delfile',
+            dataType: 'json',
+            data: {"type":type},
+            type: 'POST',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if (data.status === 'success') {
+                    $this.prev().attr('src', '/static/images/default_img.png');
+                    $this.remove();
+                } else {
+                    lpPopover(data.message);;
+                }
+                return ;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                lpPopover('网络连接超时，请您稍后重试!');
             }
-            _placeholder();
-            $this.on('input', _placeholder);
-        });
-
-        // 表单验证
-        var $qualityDesc = $('#jQualityDesc'),  
-            $price = $('#jPrice'),
-            $priceMsg = $('#jPriceMsg'),
-            $qualityDesc = $('#jQualityDesc'),
-            $standard = $('#jStandard'),
-            $real = $('#jReal'),
-            $submit = $('#jSumnit');
-
-        // 价格输入控制
-        $price.on('input', function() {
-            var val = this.value,
-                max = parseFloat($(this).data('maxprice'));
-
-            if (!/^\d+\.?\d*$/.test(val)) {
-                val = Math.abs(parseFloat(val));
-                this.value = isNaN(val) ? "" : val;
-            }
-
-            if (!isNaN(val)) {
-                val > max ? $priceMsg.show() : $priceMsg.hide();
-            } 
         })
-
-        var checkQuality = function() {
-            var val = $qualityDesc.val();
-            if (!val) {
-                lpPopover('请描述货源质量');
-                $qualityDesc.focus();
-                return false;
-            }
-            return true;
-        }
-        var checkPrice = function() {
-            var val = $price.val();
-            if (!val) {
-                lpPopover('请输入价格');
-                $price.focus();
-                return false;
-            } 
-            return true;
-        }
-        var checkQualityDesc = function() {
-            var val = $qualityDesc.val();
-            if (!val) {
-                lpPopover('请输入价格说明');
-                $qualityDesc.focus();
-                return false;
-            } 
-            return true;
-        }
-        var checkStandard = function() {
-            var val = $standard.prop('checked');
-            if (!val) {
-                lpPopover('请勾选诚信宣言');
-                return false;
-            } 
-            return true;
-        }
-        var checkReal = function() {
-            var val = $real.prop('checked');
-            if (!val) {
-                lpPopover('请勾选诚信宣言');
-                return false;
-            } 
-            return true;
-        }
-
-        function checkIpt() {
-            if (checkQuality() && checkPrice() && checkQualityDesc() && checkStandard() && checkReal()) {
-                return true;
-            } 
-            return false;
-        }
-
-        $submit.on('click', function() {
-            return checkIpt();
-        });
-
-        // 删除图片
-        $('body').on('click', '.remove', function() {
-            $(this).prev().attr('src', 'images/default_img.png');
-            $(this).remove();
-            return false;
-        });
-    }(jQuery));
-    </script>
-</body>
-</html>
+        return false;
+    });
+}(jQuery));
+</script>
+{% end %}

@@ -2,7 +2,7 @@
 {% block container %}
     <header class="yc-header">
         <div class="yc-header-back">
-            <a href="javascript:history.back();">
+            <a href="/">
                 <i class="iconfont icon-back"></i>
             </a>
         </div>
@@ -17,20 +17,20 @@
             </div>
             <div class="cf">
                 {% if purchase.status == 0%}
-                    <div class="fl"><span class="red">关闭</span></div>
-                    {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
-                    <div class="fl">
-                        <span class="blue">等待报价</span>
-                        {% if purchase.limited == 1%}
-                        （剩余<b>{{purchase.timedelta}}</b>天）
-                        {% else%}
-                        常年采购
-                        {% end %}
-                    </div>
-                    <div class="fr">已有<b>332</b>热门浏览，<b>5</b>个报价</div>
-                    {% else %}
-                    <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+                <div class="fl"><span class="red">关闭</span></div>
+                {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                <div class="fl">
+                    <span class="blue">等待报价</span>
+                    {% if purchase.limited == 1%}
+                    （剩余<b>{{purchase.timedelta}}</b>天）
+                    {% else%}
+                    常年采购
                     {% end %}
+                </div>
+                <div class="fr">已有<b>{{purchase.views}}</b>热门浏览，<b>{{quotes}}</b>个报价</div>
+                {% else %}
+                <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+                {% end %}
             </div>
         </div>
 
@@ -61,8 +61,8 @@
                     <span class="yc-star yc-star-4">
                         <i></i><i></i><i></i><i></i><i></i>
                     </span>
-                    <span class="txt">成功采购：<b>34单</b></span>
-                    <span class="txt">报价答复率：<b>83%</b></span>
+                    <span class="txt">成功采购：<b>{{purchases}}单</b></span>
+                    <span class="txt">报价答复率：<b>{{reply}}%</b></span>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
 	
     <footer class="yc-footer">
         <div class="yc-quote">
-            <a href="quote.html"><i class="iconfont icon-plane"></i>立即报价</a>
+            <a href="/quote/purchaseinfoid/{{purchase.pid}}"><i class="iconfont icon-plane"></i>立即报价</a>
         </div>
     </footer>
 {% end %}

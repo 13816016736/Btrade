@@ -2,7 +2,7 @@
 {% block container %}
 <header class="yc-header">
     <div class="yc-header-back">
-        <a href="javascript:history.back();">
+        <a href="/center">
             <i class="iconfont icon-back"></i>
         </a>
     </div>
@@ -20,7 +20,7 @@
         </div>
         <div class="item">
             <label class="txt">密码</label>
-            <a class="ipt" href="update_password.html">修改密码<i class="iconfont icon-more"></i></a>
+            <a class="ipt" href="/user/updatepassword">修改密码<i class="iconfont icon-more"></i></a>
         </div>
         <div class="item">
             <label class="txt">绑定手机</label>
@@ -28,7 +28,7 @@
         </div>
         <div class="item">
             <label class="txt">个人称呼</label>
-            <a class="ipt" href="update_name.html">{{user.nickname}}<i class="iconfont icon-more"></i></a>
+            <a class="ipt" href="/user/updatenickname">{{user.nickname}}<i class="iconfont icon-more"></i></a>
         </div>
         <div class="item">
             <label class="txt">绑定微信</label>
@@ -47,11 +47,35 @@
         </div>
         <div class="item">
             <label class="txt">经营类型</label>
-            <a class="ipt" href="category.html">未设定<i class="iconfont icon-more"></i></a>
+            <a class="ipt" href="/user/category">
+                {% if user.type==1 %}
+                饮片厂/饮片生产、加工
+                {% elif user.type==2 %}
+                药厂/制药企业
+                {% elif user.type==3 %}
+                药材贸易经营公司
+                {% elif user.type==4 %}
+                种植合作社/种植基地
+                {% elif user.type==5 %}
+                其它类型公司
+                {% elif user.type==6 %}
+                个人经营
+                {% elif user.type==7 %}
+                企业采购经理/业务员
+                {% elif user.type==8 %}
+                采购药材为主
+                {% elif user.type==9 %}
+                销售药材为主
+                {% elif user.type==10 %}
+                既采购也销售药材
+                {% else %}
+                未设定
+                {% end %}
+                <i class="iconfont icon-more"></i></a>
         </div>
         <div class="item">
             <label class="txt">关注品种</label>
-            <a class="tag" href="/userattention">
+            <a class="tag" href="/user/attention">
                 {% for variety in varieties %}
                 <b>{{ variety.name }}</b>
                 {% end %}

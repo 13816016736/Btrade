@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>拍照</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
-<body class="yc-body">
+{% extends "base.html" %}
+{% block container %}
     <header class="yc-header">
         <div class="yc-header-back">
             <a href="javascript:history.back();">
@@ -110,11 +98,7 @@
             <iframe name="up" style="display:none;"></iframe> 
         </div>
     </footer>
-
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/uploads.js"></script>
+    <script src="{{ static_url('js/uploads.js') }}"></script>
     <script>
     $('.tab').on('click', 'li', function() {
         var index = $(this).index();
@@ -128,12 +112,13 @@
 
         new UploadPic({
             el: ev,
+            type: {{type}},
             // $preview: $preview, // 不需要预览功能
             maxWidth: 196,
             maxHeight: 196,
             callback: function() {
-                location.href = 'quote.html';
-            }
+                location.href = '/quote/purchaseinfoid/{{purchaseinfoid}}';
+            },
         });
     })
 
@@ -146,5 +131,4 @@
         }
     }
     </script>
-</body>
-</html>
+{% end %}

@@ -14,9 +14,9 @@
     <div class="yc-tag-list">
         <h2 class="hd"><i class="iconfont icon-plane"></i>我报过价</h2>
         <ul class="bd">
-            <li><span>黄芪</span></li>
-            <li><span>当归</span></li>
-            <li><span>白芍</span></li>
+            {% for variety in quotevariety %}
+            <li><span>{{variety.name}}</span></li>
+            {% end %}
         </ul>
     </div>
 

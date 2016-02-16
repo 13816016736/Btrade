@@ -3,7 +3,7 @@
 <body class="yc-body-nofoot">
     <header class="yc-header">
         <div class="yc-header-back">
-            <a href="javascript:history.back();">
+            <a href="javascript:" onclick="self.location=document.referrer;">
                 <i class="iconfont icon-back"></i>
             </a>
         </div>
@@ -54,24 +54,25 @@
         // 保存
         $('#jSave').on('click', function() {
             $.ajax({
-                    url: '/savevariety',
-                    dataType: 'json',
-                    data: {"varietyids":attentionArr.join(',')},
-                    type: 'POST',
-                    beforeSend: function(jqXHR, settings) {
-                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-                    },
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            lpPopover('保存成功!');
-                        } else {
-                            $('.yc-attention .list').html(data.msg);
-                        }
-                    },
-                    error: function(XMLHttpRequest, textStatus, errorThrown) {
-                        lpPopover('网络连接超时，请您稍后重试!');
+                url: '/savevariety',
+                dataType: 'json',
+                data: {"varietyids":attentionArr.join(',')},
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        lpPopover('保存成功!');
+                        self.location=document.referrer;
+                    } else {
+                        $('.yc-attention .list').html(data.msg);
                     }
-                })
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    lpPopover('网络连接超时，请您稍后重试!');
+                }
+            })
         });
 
         // 搜索品种

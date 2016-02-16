@@ -14,7 +14,8 @@ function JPEGEncoder(a){function I(a){var c,i,j,k,l,m,n,o,p,b=[16,11,10,16,24,40
     	maxWidth: 800, 				// 图片最大宽
     	maxHeight: 800,				// 图片最大高
     	maxSize: 5 * 1024 *1024, 	// 图片不大于5M
-    	el: null,					
+    	el: null,
+    	type: null,
     	$preview: null,				// 预览区
     	accept: {					// 图片类型
     		'png': 'image/png',
@@ -145,9 +146,11 @@ function JPEGEncoder(a){function I(a){var c,i,j,k,l,m,n,o,p,b=[16,11,10,16,24,40
 	    _po: function(base64) {
 	    	var _this = this;
 			$.ajax({
-                url: "php/upImg.php",
+                url: "/uploadfile",
                 data: {
-                    base64_string: base64
+                    base64_string: base64,
+                    'type': this.settings.type,
+                    '_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]
                 },
                 type: 'post',
                 dataType: 'json',
