@@ -38,16 +38,16 @@
         </div>
         <div class="bd">
             <div class="total">
-                <a href="quote_list.html">
+                <a href="/quotelist">
                     <p>最近一周共发出</p>
-                    <p class="sum"><span>13</span>个报价</p>
+                    <p class="sum"><span>{{quotecount}}</span>个报价</p>
                 </a>
             </div>
             <div class="list">
                 <ul>
                     {% for s in sell %}
                     <li>
-                        <a href="quote_detail.html">
+                        <a href="/quotedetail/quoteid/{{s.content}}">
                             <i class="iconfont {% if faces.has_key(s.content) and faces[s.content] == 1 %}icon-face{% elif faces.has_key(s.content) and faces[s.content] == 2 %}icon-frown{% else %}icon-envelope{% end %} status"></i>
                             <span>{{s.title}}</span>
                             <span class="time">{{s.datetime}}</span>

@@ -16,10 +16,14 @@ class MainHandler(BaseHandler):
         varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
 
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name,u.type from purchase p left join users u on p.userid = u.id order by p.createtime desc limit 0,5) t left join area a on t.areaid = a.id")
+        purchases = self.db.query("select t.*,a.areaname from "
+                                  "(select p.*,u.nickname,u.name,u.type from purchase p left join users u on p.userid = u.id order by p.createtime desc limit 0,5) t"
+                                  " left join area a on t.areaid = a.id")
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
-            purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
+            purchaseinfos = self.db.query("select pis.*,count(q.id) quotecount from (select p.*,s.specification from purchase_info p "
+                                          "left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")"
+                                          ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id")
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
@@ -41,6 +45,10 @@ class MainHandler(BaseHandler):
                       " left join variety v on t.varietyid = v.id group by name", userid)
 
         self.render("index.html", varieties=varieties, purchases=purchases, quotevariety=quotevariety)
+
+    @tornado.web.authenticated
+    def post(self):
+        pass
 
 class YaocaigouHandler(BaseHandler):
     @tornado.web.authenticated
@@ -80,7 +88,14 @@ class CenterHandler(BaseHandler):
         for result in results:
             faces[str(result["id"])] = int(result["state"])
         print faces
-        self.render("center.html", user=user, unread=unread, sell=sell, purchase=purchase, faces=faces)
+        #最近一周报价次数
+        t = time.time()
+        week_begin = get_week_begin(t,0)
+        week_end = get_week_begin(t,1)
+        quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
+                                 , self.session.get("userid"), week_begin,week_end)
+
+        self.render("center.html", user=user, unread=unread, sell=sell, purchase=purchase, faces=faces, quotecount=quotecount)
 
     @tornado.web.authenticated
     def post(self):

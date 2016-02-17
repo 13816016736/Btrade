@@ -37,16 +37,34 @@ http://www.iconfont.cn/
 1.登录页面缺服务端提示，如用户名和密码不正确
 
 20160211：
-1.index页面底部三个tab，缺“current”和“newmsg”同时出现的状态
+1.update_password客户端提示不显示,如请填写密码
 2.index页面一个采购单,多个采购品种的页面暂时
 3.index下拉加载对于服务端返回status为nomore的状态处理有问题
 
 TODO:
-首页列表每个采购品种有几个报价
-列表下滑加载的数据有问题：1.加载的有相同数据 2.加载数据的剩余天数是undefined
+下拉翻页bug
+上拉刷新
+价格说明 非必填
+照片至少传一张
+报价时有一个报价高于采购单意向价格的提示
+消息已阅
+密码修改  旧密码不对(要用md5)
+采购单多品种页面
+一个采购单多品种拆分
+采购单图片浏览
+客户端图片压缩等比例缩放
+邮件雄军做页面修改
 
+下周
+根据雄军做页面修改
+微信开发
+boss系统完善
 
-20160215
+3月5日 微信公众号申请
+3月7日 短信，服务器购置 部署+域名  并提交ICP备案
+之后短信通道接入
+微信公众号切入
+
 
 purchase 采购表
 status 0关闭 1等待报价 2报价结束 3成功采购
@@ -57,6 +75,7 @@ notification
 
 id type（1：卖货消息，2：采购消息，3：成长任务，4：系统通知）  title content status（0：未读，1：已读） createtime
 如果通知是对报价有回复消息的通知既type=1，则content填写quoteid
+如果通知是对采购进行报价既type=2，则content填写purchaseinfoid
 
 CREATE TABLE IF NOT EXISTS notification (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -112,5 +131,3 @@ CREATE TABLE IF NOT EXISTS quote_attachment (
 
 
 insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
-
-

@@ -83,6 +83,12 @@ class QuoteHandler(BaseHandler):
         if quote is not None:
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
+        #不能对自己的采购单进行报价
+        mypurchase = self.db.get("select id from purchase_info pi,purchase p where p.userid = %s and p.id = pi.purchaseid and pi.id = %s",
+                    self.session.get("userid"), self.get_argument("purchaseinfoid"))
+        if mypurchase is not None:
+            self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
+            return
 
         quoteid = self.db.execute_lastrowid("insert into quote(userid,purchaseinfoid,quality,price,`explain`,createtime)value"
                                             "(%s,%s,%s,%s,%s,%s)", self.session.get("userid"),self.get_argument("purchaseinfoid"),
@@ -97,6 +103,16 @@ class QuoteHandler(BaseHandler):
             uploadfiles = {}
             self.session["uploadfiles"] = uploadfiles
             self.session.save()
+
+        #给采购商发送通知
+        #获得采购商userid
+        purchase = self.db.get("select u.nickname,t.* from (select p.userid,pi.name from purchase_info pi,purchase p where pi.purchaseid = p.id and pi.id = %s) "
+                               "t,user u where u.id = t.userid",
+                               self.get_argument("purchaseinfoid"))
+        title = purchase["nickname"] + "对您的采购品种【" + purchase["name"] + "】进行了报价"
+
+        self.db.execute("insert into notification(sender,receiver,type,title,content,status,createtime)value(%s, %s, %s, %s, %s, %s, %s)",
+                        self.session.get("userid"),purchase["userid"],2,title,self.get_argument("purchaseinfoid"),0,int(time.time()))
 
         self.api_response({'status':'success','message':'请求成功'})
 
@@ -128,6 +144,103 @@ class WeixinHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         self.render("weixin.html")
+
+    @tornado.web.authenticated
+    def post(self):
+        pass
+
+class QuoteDetailHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, quoteid):
+        quote = self.db.get("select * from quote where id = %s", quoteid)
+        quote["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(quote["createtime"])))
+        quoteattachment = self.db.query("select * from quote_attachment where quoteid = %s", quoteid)
+        for qa in quoteattachment:
+            qa["attachment"] = "\\static"+qa["attachment"] .split("static")[1]
+
+        #查询采购单信息
+        purchaseinfo = self.db.get("select tn.*,pa.attachment from (select n.*,sp.specification from (select t.*,a.areaname from "
+        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specificationid,pi.views from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
+        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
+        "specification sp on n.specificationid = sp.id) tn left join purchase_attachment pa on tn.pid = pa.purchase_infoid",
+                                     quote["purchaseinfoid"])
+
+        user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
+        purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
+        if purchaseinfo["limited"] == 1:
+            purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+            purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
+        purchaseinfo["attachment"] = "\\static"+purchaseinfo["attachment"] .split("static")[1] if purchaseinfo.get("attachment") else ""
+        print purchaseinfo
+        others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
+                                      purchaseinfo["id"], purchaseinfo["pid"])
+
+        #此采购商成功采购单数
+        purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
+        #此采购单报价数
+        quotes = self.db.query("select * from quote where purchaseinfoid = %s", purchaseinfo["pid"])
+        acceptuserid = []
+        for q in quotes:
+            if q.state == 1:
+                acceptuserid.append(str(q.userid))
+        acceptuser = self.db.query("select nickname from users where id in (" + ",".join(acceptuserid) + ")")
+        #此采购商回复供应商比例
+        purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
+            "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
+                "on p.id = t.purchaseid where p.userid = %s", user["id"])
+        reply = 0
+        print purchaser_quotes
+        for purchaser_quote in purchaser_quotes:
+            if purchaser_quote.state is not None and purchaser_quote.state != 0:
+                reply = reply + 1
+
+        self.render("quote_detail.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,
+                    quotes=quotes, acceptuser=acceptuser, reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),
+                    quote=quote, quoteattachment=quoteattachment)
+
+    @tornado.web.authenticated
+    def post(self):
+        pass
+
+class QuoteListHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        userid = self.session.get("userid")
+        myquotes = self.db.query("select mq.*,u.nickname,u.type from (select t.*,s.specification from "
+                                 "(select ta.*,p.createtime purchasetime,p.term from ("
+                                 "select q.*,pi.purchaseid,pi.name,pi.specificationid,pi.origin,pi.quantity,pi.unit "
+                                 "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s"
+                                 ") ta,purchase p where ta.purchaseid = p.id) "
+                                 "t,specification s where t.specificationid = s.id) mq,users u where mq.userid = u.id", userid)
+        quoteids = []
+        over = 0
+        unreply = 0
+        for myquote in myquotes:
+            quoteids.append(str(myquote.id))
+            expire = datetime.datetime.utcfromtimestamp(float(myquote["purchasetime"])) + datetime.timedelta(myquote["term"])
+            myquote["timedelta"] = (expire - datetime.datetime.now()).days
+            myquote["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(myquote["purchasetime"])))
+            if myquote["timedelta"] <= 0:
+                over =+ 1
+            if myquote.state == 0:
+                unreplay =+ 1
+
+        #取报价图片
+        quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
+        myquoteattachments = {}
+        for quoteattachment in quoteattachments:
+            if myquoteattachments.has_key(quoteattachment.quoteid):
+                myquoteattachments[quoteattachment.quoteid].append(quoteattachment.attachment)
+            else:
+                myquoteattachments[quoteattachment.quoteid] = [quoteattachment.attachment]
+        for mq in myquotes:
+            if myquoteattachments.has_key(mq.id):
+                mq["attachments"] = myquoteattachments[mq.id]
+            else:
+                mq["attachments"] = []
+
+        self.render("quote_list.html", myquotes=myquotes, over=over, unreplay=unreplay)
 
     @tornado.web.authenticated
     def post(self):

@@ -50,91 +50,20 @@
                         <div class="status">关闭</div>
                         {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
                         {% if purchase.limited == 1%}
-                        <div class="status"><span class="blue">等待报价</span>（已有<b>5</b>个报价）</div>
+                        <div class="status"><span class="blue">等待报价</span>（已有<b>{{purchaseinfo.quotecount}}</b>个报价）</div>
                         <div class="time"><i class="iconfont icon-time"></i>剩余<b>{{purchase.timedelta}}</b>天</div>
                         {% else %}
                         <div class="status"><span class="blue">常年采购</span></div>
                         {% end %}
                         {% else %}
-                        <div class="status"><span class="red">报价完成</span>（已有<b>5</b>个报价）</div>
-                        <div class="time high"><i class="iconfont icon-time"></i>剩余<b>{{purchase.timedelta}}</b>天</div>
+                        <div class="status"><span class="red">报价完成</span>（已有<b>{{purchaseinfo.quotecount}}</b>个报价）</div>
+                        <!--<div class="time high"><i class="iconfont icon-time"></i>剩余<b>{{purchase.timedelta}}</b>天</div>-->
                         {% end %}
                     </div>
                     </a>
                     {% end %}
                 </li>
                 {% end %}
-                <li>
-                    <a href="/purchase">
-                        <div class="hd">
-                            <h3 class="company">
-                                <i class="iconfont icon-user"></i>
-                                <span>王老板</span>
-                            </h3>
-                            <div class="category">个人采购</div>
-                        </div>
-                        <div class="bd">
-                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>黄连</h4>
-                            <div class="tag">鸡爪统 重庆</div>
-                            <div class="weight">3000公斤</div>
-                            <div class="desc">
-                                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                            </div>
-                        </div>
-                        <div class="ft">
-                            <div class="status"><span class="red">报价完成</span>（已有<b>5</b>个报价）</div>
-                            <div class="time high"><i class="iconfont icon-time"></i>剩余<b>1</b>天</div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="/purchase">
-                        <div class="hd">
-                            <h3 class="company">
-                                <i class="iconfont icon-user"></i>
-                                <span>葵花药业</span>
-                            </h3>
-                            <div class="category">药厂采购</div>
-                        </div>
-                        <div class="bd">
-                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>黄连</h4>
-                            <div class="tag">鸡爪统 重庆</div>
-                            <div class="weight">3000公斤</div>
-                            <div class="desc">
-                                <p class="thumb"><img src="static/uploads/001.jpeg" data-src="static/uploads/bing-1.jpg" alt=""></p>
-                                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                            </div>
-                        </div>
-                        <div class="ft">
-                            <div class="status"><span class="blue">等待报价</span>（已有<b>5</b>个报价）</div>
-                            <div class="time"><i class="iconfont icon-time"></i>剩余<b>30</b>天</div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="/purchase">
-                        <div class="hd">
-                            <h3 class="company">
-                                <i class="iconfont icon-user"></i>
-                                <span>葵花药业</span>
-                            </h3>
-                            <div class="category">药厂采购</div>
-                        </div>
-                        <div class="bd">
-                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>黄连</h4>
-                            <div class="tag">鸡爪统 重庆</div>
-                            <div class="weight">3000公斤</div>
-                            <div class="desc">
-                                <p class="thumb"><img src="static/uploads/001.jpeg" data-src="static/uploads/bing-2.jpg" alt=""></p>
-                                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                            </div>
-                        </div>
-                        <div class="ft">
-                            <div class="status"><span class="blue">等待报价</span></div>
-                            <div class="time"><i class="iconfont icon-time"></i>剩余<b>30</b>天</div>
-                        </div>
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
@@ -156,7 +85,7 @@ $(function(){
             temp.push(         '<i class="iconfont icon-user"></i>');
             temp.push(         '<span>' + data[i].nickname + '</span>');
             temp.push(     '</h3>');
-            temp.push( '<div class="category">' + (data[i].type == 1) ? " 个人采购." : " 饮片厂采购" + '</div>');
+            temp.push( '<div class="category">' + (data[i].type == 1 ? " 个人采购" : " 饮片厂采购") + '</div>');
             temp.push( '</div>');
 
             for (var j = 0; j < data[i].purchaseinfo.length; j++) {
@@ -174,14 +103,14 @@ $(function(){
                 if(data[i].purchaseinfo[j].status == 0){
                     temp.push(         '<div class="status">');
                     temp.push(              '<span class="' + getStatus.col[data[i].status] + '">' + getStatus.txt[data[i].status] + '</span>');
-                    temp.push( '（已有<b>5</b>个报价）');
+                    temp.push( '（已有<b>' + data[i].purchaseinfo[j].quotecount + '</b>个报价）');
                     temp.push(         '</div>');
                     temp.push(         '<div class="time' + (data[i].time === 1 ? ' high' : '') + '"><i class="iconfont icon-time"></i>剩余<b>' + data[i].time + '</b>天</div>');
                 }else if((data[i].purchaseinfo[j].limited == 1 && data[i].purchaseinfo[j].hasOwnProperty("timedelta") && data[i].purchaseinfo[j].timedelta > 0) || data[i].purchaseinfo[j].limited == 2){
                     if(data[i].purchaseinfo[j].limited == 1){
                         temp.push(         '<div class="status">');
                         temp.push(              '<span class="blue">等待报价</span>');
-                        temp.push( '（已有<b>5</b>个报价）');
+                        temp.push( '（已有<b>' + data[i].purchaseinfo[j].quotecount + '</b>个报价）');
                         temp.push(         '</div>');
                         temp.push(         '<div class="time' + (data[i].purchaseinfo[j].timedelta === 1 ? ' high' : '') + '"><i class="iconfont icon-time"></i>剩余<b>' + data[i].purchaseinfo[j].timedelta + '</b>天</div>');
                     }else{
@@ -192,9 +121,9 @@ $(function(){
                 }else{
                     temp.push(         '<div class="status">');
                     temp.push(              '<span class="red">报价完成</span>');
-                    temp.push( '（已有<b>5</b>个报价）');
+                    temp.push( '（已有<b>' + data[i].purchaseinfo[j].quotecount + '</b>个报价）');
                     temp.push(         '</div>');
-                    temp.push(         '<div class="time' + (data[i].purchaseinfo[j].timedelta === 1 ? ' high' : '') + '"><i class="iconfont icon-time"></i>剩余<b>' + data[i].purchaseinfo[j].timedelta + '</b>天</div>');
+                    //temp.push(         '<div class="time' + (data[i].purchaseinfo[j].timedelta === 1 ? ' high' : '') + '"><i class="iconfont icon-time"></i>剩余<b>' + data[i].purchaseinfo[j].timedelta + '</b>天</div>');
                 }
                 temp.push(     '</div>');
                 temp.push( '</a>');

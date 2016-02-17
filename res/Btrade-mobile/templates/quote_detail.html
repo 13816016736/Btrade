@@ -1,150 +1,173 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>报价详情</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
-<body class="yc-body">
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="javascript:history.back();">
-                <i class="iconfont icon-back"></i>
-            </a>
+{% extends "base.html" %}
+{% block container %}
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="javascript:history.back();">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">报价详情</div>
+</header><!-- /yc-header -->
+
+<section class="yc-content">
+
+
+    <div class="yc-purchase-desc">
+        <div class="cf">
+            <div class="fl">采购编码：<span>{{ purchase.id }}</span></div>
+            <div class="fr"><time data-time="{{ purchase.datetime }}">{{ purchase.datetime }}</time></div>
         </div>
-        <div class="yc-header-title">报价详情</div>
-    </header><!-- /yc-header -->
-
-    <section class="yc-content">
-
-        
-        <div class="yc-purchase-desc">
-            <div class="cf">
-                <div class="fl">采购编码：<span>HJ283M001</span></div>
-                <div class="fr"><time data-time="2016/01/28 10:28:59">2016/01/28 10:28:59</time></div>
+        <div class="cf">
+            {% if purchase.status == 0%}
+            <div class="fl"><span class="red">关闭</span></div>
+            {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+            <div class="fl">
+                <span class="blue">等待报价</span>
+                {% if purchase.limited == 1%}
+                （剩余<b>{{purchase.timedelta}}</b>天）
+                {% else%}
+                常年采购
+                {% end %}
             </div>
-            <div class="cf">
-                <div class="fl"><span class="blue">等待报价</span>(剩余<b>12</b>天)</div>
-                <div class="fr">已有<b>332</b>热门浏览，<b>5</b>个报价</div>
-            </div>
+            <div class="fr">已有<b>{{purchase.views}}</b>热门浏览，<b>{{quotes}}</b>个报价</div>
+            {% else %}
+            <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            {% end %}
         </div>
-        
-        <div class="yc-purchase-detail yc-purchase-bg">
-            <h3>我的报价<time class="time" data-time="2012/12/23 08:32">2012-12-23 08:32</time></h3>
-            <dl class="yc-demand">
-                <dt>含税含运费价：</dt>
-                <dd>78 元 / 公斤</dd>
-                <dt>裸价：</dt>
-                <dd>76 元 / 公斤</dd>
-                <dt>价格说明：</dt>
-                <dd>若现款可考虑低3块。由于量大，需要分两次发货</dd>
-                <dt>货源质量：</dt>
-                <dd>鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、碎渣，含量1.5左右</dd>
-            </dl>
-            <div class="thumb">
-                <img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt="">
-                <img src="uploads/001.jpeg" data-src="uploads/bing-2.jpg" alt="">
-                <img src="uploads/001.jpeg" data-src="uploads/bing-3.jpg" alt="">
-            </div>
-            <div class="status">采购商已查看</div>
-            <div class="status status-finish">采购已结束，采购商未答复</div>
-            <div class="status status-refuse"><i class="iconfont icon-frown"></i>采购商回绝了您的报价，原因：价格偏高</div>
-            <div class="status status-accept"><i class="iconfont icon-face"></i>采购商认可了您的报价</div>
-        </div>
+    </div>
 
-        <div class="yc-purchase-detail yc-purchase-bg">
-            <h3>采购结果</h3>
-            <dl class="yc-result">
-                <dt>采购商从<b>13</b>个报价中甄选了以下2家洽谈</dt>
-                <dd><i class="iconfont icon-arrow-right"></i>重庆****公司</dd>
-                <dd><i class="iconfont icon-arrow-right"></i>秦**</dd>
-            </dl>
+    <div class="yc-purchase-detail yc-purchase-bg">
+        <h3>我的报价<time class="time" data-time="{{quote.datetime}}">{{quote.datetime}}</time></h3>
+        <dl class="yc-demand">
+            <!--<dt>含税含运费价：</dt>
+            <dd>78 元 / 公斤</dd>-->
+            <dt>裸价：</dt>
+            <dd>{{quote.price}} 元 / 公斤</dd>
+            <dt>价格说明：</dt>
+            <dd>{{quote.explain}}</dd>
+            <dt>货源质量：</dt>
+            <dd>{{quote.quality}}</dd>
+        </dl>
+        <div class="thumb">
+            {% for qa in quoteattachment %}
+            <img src="{{qa.attachment}}" data-src="{{qa.attachment}}" alt="">
+            {% end %}
         </div>
+        <!--<div class="status">采购商已查看</div>
+        <div class="status status-finish">采购已结束，采购商未答复</div>-->
+        {% if quote.state == 2 %}
+        <div class="status status-refuse"><i class="iconfont icon-frown"></i>采购商回绝了您的报价，原因：{{quote.message}}</div>
+        {% elif quote.state == 1 %}
+        <div class="status status-accept"><i class="iconfont icon-face"></i>采购商认可了您的报价</div>
+        {% end %}
+    </div>
 
-        <div class="yc-purchase-detail">
-            <h3>采购品种及要求</h3>
-            <div class="bd">
-                <h4 class="name">黄连</h4>
-                <div class="tag">鸡爪统 重庆</div>
-                <div class="weight">3000公斤</div>
-                <div class="desc">
-                    <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                    <p><span>意向价格</span> 74元/公斤 封顶</p>
-                    <p><span>合格品样例照</span></p>
-                    <p class="thumb"><img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt=""><img src="uploads/001.jpeg" data-src="uploads/bing-2.jpg" alt=""><img src="uploads/001.jpeg" data-src="uploads/bing-3.jpg" alt=""><img src="uploads/001.jpeg" data-src="uploads/bing-4.jpg" alt=""></p>
-                </div>
-            </div>
-        </div>
+    <div class="yc-purchase-detail yc-purchase-bg">
+        <h3>采购结果</h3>
+        <dl class="yc-result">
+            <dt>采购商从<b>{{len(quotes)}}</b>个报价中甄选了以下{{len(acceptuser)}}家洽谈</dt>
+            {% for u in acceptuser %}
+            <dd><i class="iconfont icon-arrow-right"></i>{{u.nickname}}</dd>
+            {% end %}
+        </dl>
+    </div>
 
-        <div class="yc-purchase-detail">
-            <h3>采购商</h3>
-            <div class="bd">
-                <h4 class="company">
-                    <span>亳州永刚中药饮片有限公司</span>
-                    <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
-                </h4>
-                <div class="category">饮片公司</div>
-                <div class="total">
-                    <span class="yc-star yc-star-4">
-                        <i></i><i></i><i></i><i></i><i></i>
-                    </span>
-                    <span class="txt">成交：<b>34单</b></span>
-                    <span class="txt">好评：<b>83%</b></span>
-                </div>
+    <div class="yc-purchase-detail">
+        <h3>采购品种及要求</h3>
+        <div class="bd">
+            <h4 class="name">{{ purchase.name }}</h4>
+            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
+            <div class="weight">{{ purchase.quantity }}公斤</div>
+            <div class="desc">
+                <p>{{ purchase.quantity }}</p>
+                <p><span>意向价格</span> {{ purchase.price }}元/公斤 封顶</p>
+                <p><span>合格品样例照</span></p>
+                <p class="thumb"><img src="{{ purchase.attachment }}" data-src="{{ purchase.attachment }}" alt=""></p>
             </div>
         </div>
+    </div>
 
-        <div class="yc-purchase-detail">
-            <h3>交收要求</h3>
-            <dl class="yc-demand">
-                <dt>交货地：</dt>
-                <dd>湖北 武汉</dd>
-                <dt>发票要求：</dt>
-                <dd>普通发票</dd>
-                <dt>交易及付款：</dt>
-                <dd>双方直接交易，验收合格后<b>45</b>天付款</dd>
-                <dt>验证及包装：</dt>
-                <dd>
-                    <ol>
-                        <li>1、我公司对中药材的水分做严格的限度要求，经检测超出要求的，公司根据实际情况折扣处理。</li>
-                        <li>2、中药饮片需提供合格的检验报告书</li>
-                        <li>3、中药饮片必须双层包装严密，包装袋（箱）应干净、结实、无破损、封口严密，每袋配挂标准吊签，方便识别、储存、运输和使用。</li>
-                    </ol>
-                </dd>
-                <dt>寄样：</dt>
-                <dd>要求报价后必须寄样<span>报价后会告知详细的寄样要求</span></dd>
-                <dt>补充说明：</dt>
-                <dd>无</dd>
-            </dl>
+    <div class="yc-purchase-detail">
+        <h3>采购商</h3>
+        <div class="bd">
+            <h4 class="company">
+                <span>{{user.nickname}}</span>
+                <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
+            </h4>
+            <div class="category">{% if user.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
+            <div class="total">
+                <span class="yc-star yc-star-4">
+                    <i></i><i></i><i></i><i></i><i></i>
+                </span>
+                <span class="txt">成功采购：<b>{{purchases}}单</b></span>
+                <span class="txt">报价答复率：<b>{{reply}}%</b></span>
+            </div>
         </div>
+    </div>
+
+    <div class="yc-purchase-detail">
+        <h3>交收要求</h3>
+        <dl class="yc-demand">
+            <dt>交货地：</dt>
+            <dd>{{ purchase.areaname }}</dd>
+            <dt>发票要求：</dt>
+            <dd>
+                {% if purchase.invoice == 1%}
+                无需发票
+                {% elif purchase.invoice == 2%}
+                普通发票
+                {% elif purchase.invoice == 3 %}
+                增值税发票
+                {% end %}
+            </dd>
+            <dt>交易及付款：</dt>
+            <dd>
+                {% if purchase.pay == 1%}
+                药采购"安心交易"(预付全款)
+                {% elif purchase.pay == 2%}
+                双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
+                {% else %}
+                {{purchase.payinfo}}
+                {% end %}
+            </dd>
+            <dt>验证及包装：</dt>
+            <dd>
+                <ol>
+                    <li>{{ purchase.accept }}</li>
+                </ol>
+            </dd>
+            <dt>寄样：</dt>
+            <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span>{{ purchase.receive }}</span></dd>
+            <dt>补充说明：</dt>
+            <dd>{{ purchase.other }}</dd>
+        </dl>
+    </div>
 
 
-        <div class="yc-purchase-detail">
-            <h3>供应商要求</h3>
-            <dl class="yc-demand">
-                <dt>供应商资质：</dt>
-                <dd>必须有营业执照（公司/合作社供/经营户），不接受个人</dd>
-                <dt>其它要求：</dt>
-                <dd>无</dd>
-            </dl>
-        </div>
+    <div class="yc-purchase-detail">
+        <h3>供应商要求</h3>
+        <dl class="yc-demand">
+            <dt>供应商资质：</dt>
+            <dd>
+                {% if purchase.supplier == 1 %}
+                必须有营业执照（公司、合作社、经营户），不接收个人
+                {% elif purchase.supplier == 2 %}
+                具备GSP资质
+                {% elif purchase.supplier == 3 %}
+                具备GMP资质
+                {% end %}
+            </dd>
+            <dt>其它要求：</dt>
+            <dd>{{purchase.remark}}</dd>
+        </dl>
+    </div>
 
-    </section><!-- /yc-content -->
-	
-    <footer class="yc-footer">
-        <div class="yc-quote">
-            <a href="#none">再次报价</a>
-        </div>
-    </footer>
-
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
-</body>
-</html>
+</section><!-- /yc-content -->
+{% if quote.state == 2%}
+<footer class="yc-footer">
+    <div class="yc-quote">
+        <a href="/quote/purchaseinfoid/{{quote.purchaseinfoid}}">再次报价</a>
+    </div>
+</footer>
+{% end %}
+{% end %}

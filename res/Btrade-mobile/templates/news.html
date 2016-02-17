@@ -23,7 +23,7 @@
             <ul class="yc-news-list">
                 {% for s in sell %}
                 <li>
-                    <a {% if s.status == 0 %}class="unread"{% end %} href="#none">
+                    <a {% if s.status == 0 %}class="unread"{% end %} href="/quotedetail/quoteid/{{s.content}}">
                         <i class="iconfont {% if faces.has_key(s.content) and faces[s.content] == 1 %}icon-face{% elif faces.has_key(s.content) and faces[s.content] == 2 %}icon-frown{% else %}icon-envelope{% end %} status"></i>
                         <span>{{s.title}}</span>
                         <span class="time">{{s.datetime}}</span>

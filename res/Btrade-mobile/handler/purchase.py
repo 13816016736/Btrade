@@ -81,38 +81,21 @@ from collections import defaultdict
 class PurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
-    def get(self, number=0):
+    def get(self):
         pass
-        # number = int(number) if number > 0 else 0
-        # purchaseinf = defaultdict(list)
-        # purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id limit %s,%s) t left join area a on t.areaid = a.id", number, config.conf['POST_NUM'])
-        # if purchases:
-        #     purchaseids = [str(purchase["id"]) for purchase in purchases]
-        #     purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
-        #     purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
-        #     purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
-        #     attachments = defaultdict(list)
-        #     for attachment in purchaseattachments:
-        #         attachments[attachment["purchase_infoid"]] = attachment
-        #     for purchaseinfo in purchaseinfos:
-        #         purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
-        #         purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
-        # for purchase in purchases:
-        #     purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
-        #     purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
-        #     if purchase["limited"] == 1:
-        #         purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-        #         purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
-        # print purchases
-        # self.render("purchase.html", purchases=purchases)
 
+    @tornado.web.authenticated
     def post(self, number=0):
         number = int(number) if number > 0 else 0
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id order by p.createtime desc limit %s,%s) t left join area a on t.areaid = a.id", number, config.conf['POST_NUM'])
+        purchases = self.db.query("select t.*,a.areaname from "
+                                  "(select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id order by p.createtime desc limit %s,%s) t "
+                                  "left join area a on t.areaid = a.id", number, config.conf['POST_NUM'])
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
-            purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
+            purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p "
+                                          "left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")"
+                                          ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id")
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
@@ -178,6 +161,17 @@ class PurchaseInfoHandler(BaseHandler):
     def post(self):
         pass
 
+class PurchaseinfoBatchHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self, purchaseid):
+        print purchaseid
+        self.render("purchaseinfo_batch.html")
+
+    @tornado.web.authenticated
+    def post(self):
+        pass
+
 # class GetCityHandler(BaseHandler):
 #
 #     def get(self):
@@ -206,6 +200,8 @@ class UploadFileHandler(BaseHandler):
         #文件的暂存路径
         root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
         upload_path = os.path.join(root_path, 'static\\uploadfiles\\' + now)
+        if os.path.exists(upload_path) is False:
+            os.mkdir(upload_path)
         name = str(int(time.time())) + str(self.session.get("userid")) + type
         ext = ".png"
         filename = md5(str(name))+ext

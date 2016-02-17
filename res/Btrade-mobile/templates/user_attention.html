@@ -39,6 +39,19 @@
     </section><!-- /yc-content -->
     <script>
     !(function(){
+        // 删除数组元素
+        function arrRemoveVal(arr, val) {
+            var i = 0;
+
+            while(i < arr.length) {
+                if(arr[i] === val) {
+                    arr.splice(i, 1);
+                    break;
+                }
+                i++;
+            }
+        }
+
         // 编辑品种
         var isEdit = false;
         $('.yc-attention .title .edit').on('click', function() {
@@ -48,7 +61,10 @@
         })
         // 删除品种
         $('.yc-attention').on('click', 'i', function() {
+            var key = $(this).closest('li').data('key') || '';
+            arrRemoveVal(attentionArr, key);
             $(this).closest('li').remove();
+            console.log(attentionArr);
         });
 
         // 保存
@@ -64,7 +80,7 @@
                 success: function(data) {
                     if (data.status === 'success') {
                         lpPopover('保存成功!');
-                        self.location=document.referrer;
+                        //self.location=document.referrer;
                     } else {
                         $('.yc-attention .list').html(data.msg);
                     }

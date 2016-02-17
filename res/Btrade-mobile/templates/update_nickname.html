@@ -46,7 +46,8 @@
     }
     // 保存
     $('#jSave').on('click', function() {
-        if(checkIpt()){
+        bool = checkIpt();
+        if(bool){
             $.ajax({
                 url: '/user/updatenickname',
                 dataType: 'json',
@@ -68,6 +69,7 @@
                 }
             })
         }
+        return bool;
     });
 
     $('body').on('click', function() {
