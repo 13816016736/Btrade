@@ -13,38 +13,15 @@ class MainHandler(BaseHandler):
     def get(self):
         userid = self.session.get("userid")
         user = self.db.get("select varietyids from users where id = %s", userid)
-        varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
-
-        purchaseinf = defaultdict(list)
-        purchases = self.db.query("select t.*,a.areaname from "
-                                  "(select p.*,u.nickname,u.name,u.type from purchase p left join users u on p.userid = u.id order by p.createtime desc limit 0,5) t"
-                                  " left join area a on t.areaid = a.id")
-        if purchases:
-            purchaseids = [str(purchase["id"]) for purchase in purchases]
-            purchaseinfos = self.db.query("select pis.*,count(q.id) quotecount from (select p.*,s.specification from purchase_info p "
-                                          "left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")"
-                                          ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id")
-            purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
-            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
-            attachments = defaultdict(list)
-            for attachment in purchaseattachments:
-                attachments[attachment["purchase_infoid"]] = attachment
-            for purchaseinfo in purchaseinfos:
-                purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
-                purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
-        for purchase in purchases:
-            purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
-            purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
-            if purchase["limited"] == 1:
-                purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-                purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
-        print purchases
+        varieties = []
+        if user["varietyids"]:
+            varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
 
         #用户报过价的品种
         quotevariety = self.db.query("select v.name name from (select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s) t"
                       " left join variety v on t.varietyid = v.id group by name", userid)
 
-        self.render("index.html", varieties=varieties, purchases=purchases, quotevariety=quotevariety)
+        self.render("index.html", varieties=varieties, quotevariety=quotevariety)
 
     @tornado.web.authenticated
     def post(self):
@@ -106,7 +83,9 @@ class UserAttentionHandler(BaseHandler):
     def get(self, page=0):
         userid = self.session.get("userid")
         user = self.db.get("select varietyids from users where id = %s", userid)
-        varieties = self.db.query("select id,name from variety where id in (" + user["varietyids"] + ")")
+        varieties = []
+        if user["varietyids"]:
+            varieties = self.db.query("select id,name from variety where id in (" + user["varietyids"] + ")")
         self.render("user_attention.html", varieties=varieties)
 
 class UserListHandler(BaseHandler):
@@ -213,7 +192,7 @@ class UserUpdatePasswordHandler(BaseHandler):
         elif md5(str(self.get_argument("oldpassword")+config.salt)) != author.password:
             self.api_response({'status':'fail','message':'旧密码不对'})
         else:
-            self.db.update("UPDATE users SET password = %s  WHERE id = %s", self.get_argument("password"), userid)
+            self.db.update("UPDATE users SET password = %s  WHERE id = %s", md5(str(self.get_argument("password")+config.salt)), userid)
             self.api_response({'status':'success','message':'更新成功'})
 
 class UserUpdateNicknameHandler(BaseHandler):

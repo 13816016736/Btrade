@@ -51,7 +51,7 @@ handlers = [
     (r"/quote/purchaseinfoid/([0-9]+)", QuoteHandler),
     (r"/quote/upload/purchaseinfoid/([0-9]+)/type/([0-9]+)", QuoteUploadHandler),
     (r"/quotesuccess", QuoteSuccessHandler),
-    (r"/quotedetail/quoteid/([0-9]+)", QuoteDetailHandler),
+    (r"/quotedetail/quoteid/([0-9]+)/nid/([0-9]+)", QuoteDetailHandler),
     (r"/quotelist", QuoteListHandler),
     (r"/weixin", WeixinHandler),
     (r"/uploadfile", UploadFileHandler),

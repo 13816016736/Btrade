@@ -12,12 +12,25 @@
 <section class="yc-content">
     <div class="yc-purchase-desc">
         <div class="cf">
-            <div class="fl">批次采购号：<span>HJ283M</span></div>
-            <div class="fr"><span>2015-09-10 18:21</span></div>
+            <div class="fl">采购编码：<span>{{ purchase.id }}</span></div>
+            <div class="fr"><time data-time="{{ purchase.datetime }}">{{ purchase.datetime }}</time></div>
         </div>
         <div class="cf">
-            <div class="fl"><span class="blue">等待报价</span>(剩余<b>12</b>天)</div>
-            <div class="fr">已有<b>332</b>人浏览</div>
+            {% if purchase.status == 0%}
+            <div class="fl"><span class="red">关闭</span></div>
+            {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+            <div class="fl">
+                <span class="blue">等待报价</span>
+                {% if purchase.limited == 1%}
+                （剩余<b>{{purchase.timedelta}}</b>天）
+                {% else%}
+                常年采购
+                {% end %}
+            </div>
+            <div class="fr">已有<b>{{purchase.views}}</b>热门浏览</div>
+            {% else %}
+            <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            {% end %}
         </div>
     </div>
 
@@ -25,118 +38,95 @@
         <h3>采购商</h3>
         <div class="bd">
             <h4 class="company">
-                <span>亳州永刚中药饮片有限公司</span>
+                <span>{{user.nickname}}</span>
                 <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
             </h4>
-            <div class="category">饮片公司</div>
+            <div class="category">{% if user.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
             <div class="total">
                 <span class="yc-star yc-star-4">
                     <i></i><i></i><i></i><i></i><i></i>
                 </span>
-                <span class="txt">成功采购：<b>34单</b></span>
-                <span class="txt">报价答复率：<b>83%</b></span>
+                <span class="txt">成功采购：<b>{{purchases}}单</b></span>
+                <span class="txt">报价答复率：<b>{{reply}}%</b></span>
             </div>
         </div>
     </div>
 
     <div class="yc-purchase-detail">
         <h3>交收要求<i class="iconfont icon-fold"></i></h3>
-        <dl class="yc-demand yc-demand-fold">
+        <dl class="yc-demand">
             <dt>交货地：</dt>
-            <dd>湖北 武汉</dd>
+            <dd>{{ purchase.areaname }}</dd>
             <dt>发票要求：</dt>
-            <dd>普通发票</dd>
+            <dd>
+                {% if purchase.invoice == 1%}
+                无需发票
+                {% elif purchase.invoice == 2%}
+                普通发票
+                {% elif purchase.invoice == 3 %}
+                增值税发票
+                {% end %}
+            </dd>
             <dt>交易及付款：</dt>
-            <dd>双方直接交易，验收合格后<b>45</b>天付款</dd>
+            <dd>
+                {% if purchase.pay == 1%}
+                药采购"安心交易"(预付全款)
+                {% elif purchase.pay == 2%}
+                双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
+                {% else %}
+                {{purchase.payinfo}}
+                {% end %}
+            </dd>
             <dt>验证及包装：</dt>
             <dd>
                 <ol>
-                    <li>1、我公司对中药材的水分做严格的限度要求，经检测超出要求的，公司根据实际情况折扣处理。</li>
-                    <li>2、中药饮片需提供合格的检验报告书</li>
-                    <li>3、中药饮片必须双层包装严密，包装袋（箱）应干净、结实、无破损、封口严密，每袋配挂标准吊签，方便识别、储存、运输和使用。</li>
+                    <li>{{ purchase.accept }}</li>
                 </ol>
             </dd>
             <dt>寄样：</dt>
-            <dd>要求报价后必须寄样<span>报价后会告知详细的寄样要求</span></dd>
+            <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span>{{ purchase.receive }}</span></dd>
             <dt>补充说明：</dt>
-            <dd>无</dd>
+            <dd>{{ purchase.other }}</dd>
         </dl>
     </div>
 
     <div class="yc-purchase">
-        <h2 class="title">本批次采购以下8个品种，点击可报价</h2>
+        <h2 class="title">本批次采购以下{{len(purchase.purchaseinfo)}}个品种，点击可报价</h2>
         <div class="list">
             <ul>
+                {% for purchaseinfo in purchase.purchaseinfo%}
                 <li>
-                    <a href="purchase.html">
+                    <a href="/purchase/purchaseinfo/{{purchaseinfo.id}}">
                         <div class="bd">
-                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>黄连</h4>
-                            <div class="tag">鸡爪统 重庆</div>
-                            <div class="weight">3000公斤</div>
+                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>{{purchaseinfo.name}}</h4>
+                            <div class="tag">{{purchaseinfo.specification}} {{purchaseinfo.origin}}</div>
+                            <div class="weight">{{purchaseinfo.quantity}}{% if purchaseinfo.unit == 1 %}公斤{% elif purchaseinfo.unit == 2 %}吨{% end %}</div>
                             <div class="desc">
                                 <p class="thumb"><img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt=""></p>
-                                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
+                                <p>{{purchaseinfo.quality}}</p>
                             </div>
                         </div>
                         <div class="ft">
-                            <div class="status"><span class="blue">等待报价</span>（已有<b>5</b>个报价）</div>
-                            <div class="time"><i class="iconfont icon-time"></i>剩余<b>12</b>天</div>
+                            {% if purchase.status == 0%}
+                            <div class="status">关闭</div>
+                            {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                            {% if purchase.limited == 1%}
+                            <div class="status"><span class="blue">等待报价</span>（已有<b>{{purchaseinfo.quotecount}}</b>个报价）</div>
+                            <div class="time"><i class="iconfont icon-time"></i>剩余<b>{{purchase.timedelta}}</b>天</div>
+                            {% else %}
+                            <div class="status"><span class="blue">常年采购</span></div>
+                            {% end %}
+                            {% else %}
+                            <div class="status"><span class="red">报价完成</span>（已有<b>{{purchaseinfo.quotecount}}</b>个报价）</div>
+                            <!--<div class="time high"><i class="iconfont icon-time"></i>剩余<b>{{purchase.timedelta}}</b>天</div>-->
+                            {% end %}
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a href="purchase.html">
-                        <div class="bd">
-                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>当归</h4>
-                            <div class="tag">鸡爪统 重庆</div>
-                            <div class="weight">3000公斤</div>
-                            <div class="desc">
-                                <p class="thumb"><img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt=""></p>
-                                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                            </div>
-                        </div>
-                        <div class="ft">
-                            <div class="status"><span class="blue">等待报价</span>（已有<b>5</b>个报价）</div>
-                            <div class="time"><i class="iconfont icon-time"></i>剩余<b>12</b>天</div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="purchase.html">
-                        <div class="bd">
-                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>白芍</h4>
-                            <div class="tag">鸡爪统 重庆</div>
-                            <div class="weight">3000公斤</div>
-                            <div class="desc">
-                                <p class="thumb"><img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt=""></p>
-                                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                            </div>
-                        </div>
-                        <div class="ft">
-                            <div class="status"><span class="blue">等待报价</span>（已有<b>5</b>个报价）</div>
-                            <div class="time"><i class="iconfont icon-time"></i>剩余<b>12</b>天</div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="purchase.html">
-                        <div class="bd">
-                            <h4 class="name"><i class="iconfont icon-arrow-right"></i>浙贝母</h4>
-                            <div class="tag">鸡爪统 重庆</div>
-                            <div class="weight">3000公斤</div>
-                            <div class="desc">
-                                <p class="thumb"><img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt=""></p>
-                                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                            </div>
-                        </div>
-                        <div class="ft">
-                            <div class="status"><span class="blue">等待报价</span>（已有<b>5</b>个报价）</div>
-                            <div class="time"><i class="iconfont icon-time"></i>剩余<b>12</b>天</div>
-                        </div>
-                    </a>
-                </li>
+                {% end %}
             </ul>
         </div>
     </div>
 </section><!-- /yc-content -->
+<script src="{{ static_url('js/app.js') }}"></script>
 {% end %}

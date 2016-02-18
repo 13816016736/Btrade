@@ -23,12 +23,18 @@
             <ul class="yc-news-list">
                 {% for s in sell %}
                 <li>
-                    <a {% if s.status == 0 %}class="unread"{% end %} href="/quotedetail/quoteid/{{s.content}}">
+                    <a {% if s.status == 0 %}class="unread"{% end %} href="/quotedetail/quoteid/{{s.content}}/nid/{{s.id}}">
                         <i class="iconfont {% if faces.has_key(s.content) and faces[s.content] == 1 %}icon-face{% elif faces.has_key(s.content) and faces[s.content] == 2 %}icon-frown{% else %}icon-envelope{% end %} status"></i>
                         <span>{{s.title}}</span>
                         <span class="time">{{s.datetime}}</span>
                     </a>
                 </li>
+                {% end %}
+                {% if len(sell) == 0 %}
+                <div class="yc-news-none">
+                    <i class="iconfont icon-face"></i>
+                    <span>暂无报价消息有回复</span>
+                </div>
                 {% end %}
             </ul>
         </div>
@@ -48,6 +54,13 @@
                         <span class="time">{{g.datetime}}</span>
                     </a>
                 </li>
+
+                {% end %}
+                {% if len(grow) == 0 %}
+                <div class="yc-news-none">
+                    <i class="iconfont icon-face"></i>
+                    <span>暂无新消息</span>
+                </div>
                 {% end %}
             </ul>
         </div>
@@ -61,6 +74,12 @@
                         <span class="time">{{s.datetime}}</span>
                     </a>
                 </li>
+                {% end %}
+                {% if len(system) == 0 %}
+                <div class="yc-news-none">
+                    <i class="iconfont icon-face"></i>
+                    <span>暂无系统消息</span>
+                </div>
                 {% end %}
             </ul>
         </div>

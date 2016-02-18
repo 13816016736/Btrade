@@ -80,7 +80,7 @@
                 success: function(data) {
                     if (data.status === 'success') {
                         lpPopover('保存成功!');
-                        //self.location=document.referrer;
+                        self.location=document.referrer;
                     } else {
                         $('.yc-attention .list').html(data.msg);
                     }

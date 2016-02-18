@@ -13,19 +13,23 @@ class QuoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, purchaseinfoid):
-        purchaseinfo = self.db.get("select tn.*,pa.attachment from (select n.*,sp.specification from (select t.*,a.areaname from "
+        purchaseinfo = self.db.get("select n.*,sp.specification from (select t.*,a.areaname from "
         "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specificationid,pi.views from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
-        "specification sp on n.specificationid = sp.id) tn left join purchase_attachment pa on tn.pid = pa.purchase_infoid",
+        "specification sp on n.specificationid = sp.id",
                                      purchaseinfoid)
 
+        #获得采购品种图片
+        attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
+        for attachment in attachments:
+            attachment["attachment"] = "\\static"+attachment["attachment"].split("static")[1] if attachment.get("attachment") else ""
         purchaser = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["limited"] == 1:
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
-        purchaseinfo["attachment"] = "\\static"+purchaseinfo["attachment"] .split("static")[1] if purchaseinfo.get("attachment") else ""
+        purchaseinfo["attachments"] = attachments
 
         #此采购商成功采购单数
         purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", purchaser["id"])
@@ -53,7 +57,6 @@ class QuoteHandler(BaseHandler):
         uploadfiles = self.session.get("uploadfiles", {})
         for k in uploadfiles:
             uploadfiles[k] = "\\static"+uploadfiles[k].split("static")[1]
-        print uploadfiles
         self.render("quote.html", purchaser=purchaser, purchase=purchaseinfo, purchases=purchases, quotes=quotes,
                     reply=(float(reply)/float(len(purchaser_quotes))*100 if len(purchaser_quotes) != 0 else 0),
                     uploadfiles=uploadfiles, quotechances=quotechances)
@@ -65,10 +68,14 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'请选择采购单进行报价'})
             return
         #验证表单信息,货源描述,价格,价格说明
-        if self.get_argument("quality") == "" or self.get_argument("price") == "" or self.get_argument("explain") == "":
+        if self.get_argument("quality") == "" or self.get_argument("price") == "":
             self.api_response({'status':'fail','message':'请完整填写'})
             return
-
+        #至少上传一张图片
+        uploadfiles = self.session.get("uploadfiles")
+        if len(uploadfiles) == 0:
+            self.api_response({'status':'fail','message':'至少上传一张图片'})
+            return
         #本周可报价次数
         t = time.time()
         week_begin = get_week_begin(t,0)
@@ -84,7 +91,7 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
         #不能对自己的采购单进行报价
-        mypurchase = self.db.get("select id from purchase_info pi,purchase p where p.userid = %s and p.id = pi.purchaseid and pi.id = %s",
+        mypurchase = self.db.get("select p.id from purchase_info pi,purchase p where p.userid = %s and p.id = pi.purchaseid and pi.id = %s",
                     self.session.get("userid"), self.get_argument("purchaseinfoid"))
         if mypurchase is not None:
             self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
@@ -96,7 +103,6 @@ class QuoteHandler(BaseHandler):
                                             int(time.time()))
 
         #保存session上传图片的路径
-        uploadfiles = self.session.get("uploadfiles")
         if uploadfiles:
             for key in uploadfiles:
                 self.db.execute("insert into quote_attachment (quoteid, attachment, type)value(%s, %s, %s)", quoteid, uploadfiles[key], key)
@@ -151,7 +157,7 @@ class WeixinHandler(BaseHandler):
 
 class QuoteDetailHandler(BaseHandler):
     @tornado.web.authenticated
-    def get(self, quoteid):
+    def get(self, quoteid, nid):
         quote = self.db.get("select * from quote where id = %s", quoteid)
         quote["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(quote["createtime"])))
         quoteattachment = self.db.query("select * from quote_attachment where quoteid = %s", quoteid)
@@ -195,6 +201,9 @@ class QuoteDetailHandler(BaseHandler):
             if purchaser_quote.state is not None and purchaser_quote.state != 0:
                 reply = reply + 1
 
+        #报价回复消息标记为已读
+        result = self.db.execute("update notification set status = 1 where receiver = %s and id = %s", self.session.get("userid"), nid)
+
         self.render("quote_detail.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,
                     quotes=quotes, acceptuser=acceptuser, reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),
                     quote=quote, quoteattachment=quoteattachment)
@@ -224,7 +233,7 @@ class QuoteListHandler(BaseHandler):
             if myquote["timedelta"] <= 0:
                 over =+ 1
             if myquote.state == 0:
-                unreplay =+ 1
+                unreply =+ 1
 
         #取报价图片
         quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
@@ -240,7 +249,7 @@ class QuoteListHandler(BaseHandler):
             else:
                 mq["attachments"] = []
 
-        self.render("quote_list.html", myquotes=myquotes, over=over, unreplay=unreplay)
+        self.render("quote_list.html", myquotes=myquotes, over=over, unreply=unreply)
 
     @tornado.web.authenticated
     def post(self):

@@ -138,12 +138,12 @@
                 <div class="price">
                     <i class="iconfont icon-check-yes"></i>
                     <span>裸价</span>
-                    <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="78">
+                    <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="{{ purchase.price }}">
                     <span>元/公斤</span>
                 </div>
                 <div class="msg" id="jPriceMsg">
                     <i class="iconfont icon-exclamation"></i>
-                    <span>报价高于采购商预期（74元/公斤 封顶），请酌情控制，更利于达成交易</span>
+                    <span>报价高于采购商预期（{{ purchase.price }}元/公斤 封顶），请酌情控制，更利于达成交易</span>
                 </div>
                 <div class="txt">价格说明</div>
                 <div class="describe">
@@ -216,7 +216,9 @@
                 <p>{{ purchase.quantity }}</p>
                 <p><span>意向价格</span> {{ purchase.price }}元/公斤 封顶</p>
                 <p><span>合格品样例照</span></p>
-                <p class="thumb"><img src="{{ purchase.attachment }}" data-src="{{ purchase.attachment }}" alt=""></p>
+                {% for attachment in purchase.attachments %}
+                <p class="thumb"><img src="{{ attachment }}" data-src="{{ attachment }}" alt=""></p>
+                {% end %}
             </div>
         </div>
     </div>
@@ -345,6 +347,18 @@
         }
     })
 
+    var checkImg = function() {
+        bool = false;
+        $('ul li').each(function() {
+            if($(this).find(".in").length > 0){
+                bool = true;
+            }
+        });
+        if(!bool){
+            lpPopover('至少上传一张图片');
+        }
+        return bool;
+    }
     var checkQuality = function() {
         var val = $qualityDesc.val();
         if (!val) {
@@ -390,7 +404,7 @@
     }
 
     function checkIpt() {
-        if (checkQuality() && checkPrice() && checkQualityDesc() && checkStandard() && checkReal()) {
+        if (checkImg() && checkQuality() && checkPrice() && checkQualityDesc() && checkStandard() && checkReal()) {
             return true;
         }
         return false;
@@ -434,8 +448,7 @@
             },
             success: function(data) {
                 if (data.status === 'success') {
-                    $this.prev().attr('src', '/static/images/default_img.png');
-                    $this.remove();
+                    $this.parents(".in").remove();
                 } else {
                     lpPopover(data.message);;
                 }

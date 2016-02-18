@@ -37,27 +37,17 @@ http://www.iconfont.cn/
 1.登录页面缺服务端提示，如用户名和密码不正确
 
 20160211：
-1.update_password客户端提示不显示,如请填写密码
-2.index页面一个采购单,多个采购品种的页面暂时
-3.index下拉加载对于服务端返回status为nomore的状态处理有问题
+客户端图片压缩等比例缩放
 
 TODO:
-下拉翻页bug
-上拉刷新
-价格说明 非必填
-照片至少传一张
-报价时有一个报价高于采购单意向价格的提示
-消息已阅
-密码修改  旧密码不对(要用md5)
-采购单多品种页面
-一个采购单多品种拆分
 采购单图片浏览
-客户端图片压缩等比例缩放
-邮件雄军做页面修改
+跟严飞沟通"图片的策略" 传缩略图 后端生成裁剪图片,共两张图在不同的地方使用?
+微信开发  注册页面开发
+
 
 下周
 根据雄军做页面修改
-微信开发
+PC端页面调整
 boss系统完善
 
 3月5日 微信公众号申请
@@ -131,3 +121,4 @@ CREATE TABLE IF NOT EXISTS quote_attachment (
 
 
 insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
+

@@ -17,7 +17,7 @@ class LoginHandler(BaseHandler):
             msg = "用户名或密码不能为空"
             self.render("login.html", error="用户名或邮箱不能为空", next_url=self.get_argument("next", "/"))
             return
-        author = self.db.get("SELECT * FROM admin WHERE username = %s", username)
+        author = self.db.get("SELECT * FROM users WHERE username = %s", username)
         if not author:
             self.render("login.html", error="用户名不存在", next_url=self.get_argument("next", "/")
                         , username=username)
