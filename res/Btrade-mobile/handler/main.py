@@ -104,7 +104,9 @@ class UserInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user = self.db.get("SELECT * FROM users where id = %s", self.session.get("userid"))
-        varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
+        varieties = []
+        if user["varietyids"]:
+            varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
         self.render("user_info.html", user=user, varieties=varieties)
 
     @tornado.web.authenticated

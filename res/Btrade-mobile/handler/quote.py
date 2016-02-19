@@ -236,13 +236,14 @@ class QuoteListHandler(BaseHandler):
                 unreply =+ 1
 
         #取报价图片
-        quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
-        myquoteattachments = {}
-        for quoteattachment in quoteattachments:
-            if myquoteattachments.has_key(quoteattachment.quoteid):
-                myquoteattachments[quoteattachment.quoteid].append(quoteattachment.attachment)
-            else:
-                myquoteattachments[quoteattachment.quoteid] = [quoteattachment.attachment]
+        if quoteids:
+            quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
+            myquoteattachments = {}
+            for quoteattachment in quoteattachments:
+                if myquoteattachments.has_key(quoteattachment.quoteid):
+                    myquoteattachments[quoteattachment.quoteid].append(quoteattachment.attachment)
+                else:
+                    myquoteattachments[quoteattachment.quoteid] = [quoteattachment.attachment]
         for mq in myquotes:
             if myquoteattachments.has_key(mq.id):
                 mq["attachments"] = myquoteattachments[mq.id]

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "basenofoot.html" %}
 {% block container %}
 <body class="yc-body-nofoot">
     <header class="yc-header">
@@ -27,7 +27,8 @@
         </div>
 
         <div class="yc-form">
-            <form action="">
+            <form action="/regsuccess" method="post">
+                {% raw xsrf_form_html() %}
                 <div class="item">
                     <label class="txt">手机号</label>
                     <input class="ipt" type="text" value="" id="jMobile" placeholder="请输入手机号" />
@@ -56,7 +57,7 @@
                 </div>
                 <div class="item">
                     <label class="txt">微信绑定</label>
-                    <span class="ipt">boyyafee<img src="uploads/avatar_9527.png" alt=""></span>
+                    <span class="ipt">boyyafee<img src="static/uploads/avatar_9527.png" alt=""></span>
                     <span class="error"></span>
                 </div>
                 <div class="title">
@@ -233,7 +234,41 @@
         }
         // 保存
         $('#jSubmit').on('click', function() {
-            return checkIpt();
+            bool = checkIpt();
+            if(bool){
+                var type = ($("#jPersonalMsg").hasClass("current")) ? 6 : 1;
+                var name = (type == 6) ? $realName.val() : $compName.val();
+                var data = {
+                    "phone":$mobile.val(),
+                    "verifycode":$code.val(),
+                    "username":$name.val(),
+                    "password":$pwd.val(),
+                    "repeatpassword":$repPwd.val(),
+                    "type":type,
+                    "name":name,
+                    "nickname":$nickName.val()
+                };
+                $.ajax({
+                    url: '/register',
+                    dataType: 'json',
+                    data: data,
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                    },
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            $("form").submit();
+                        } else {
+                            lpPopover(data.message);;
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        lpPopover('网络连接超时，请您稍后重试!');
+                    }
+                })
+            }
+            return bool;
         });
 
         $('body').on('click', function() {

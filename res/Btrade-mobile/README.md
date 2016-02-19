@@ -42,7 +42,13 @@ http://www.iconfont.cn/
 TODO:
 采购单图片浏览
 跟严飞沟通"图片的策略" 传缩略图 后端生成裁剪图片,共两张图在不同的地方使用?
+
 微信开发  注册页面开发
+http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
+http://mp.weixin.qq.com/wiki/18/28fc21e7ed87bec960651f0ce873ef8a.html
+
+工作计划:
+https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f0704c1d9eb9b0b0e3b0a237/
 
 
 下周

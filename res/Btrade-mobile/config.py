@@ -66,6 +66,8 @@ handlers = [
     (r"/login", LoginHandler),
     (r"/logout", LogoutHandler),
     (r"/register", RegisterHandler),
+    (r"/getsmscode", GetSmsCodeHandler),
+    (r"/regsuccess", RegSuccessHandler),
     # (r"/register/checkphone", CheckPhoneHandler),
     # (r"/getcity", GetCityHandler),
     (r"/getvarietyinfo", GetVarietyInfoHandler),

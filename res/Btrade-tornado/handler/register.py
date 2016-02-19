@@ -33,6 +33,17 @@ class RegisterHandler(BaseHandler):
         match = pattern.match(username)
         if match is False and username is None:
             self.api_response({'status':'fail','message':'会员名填写错误'})
+        usercount = self.db.execute_rowcount("select * from users where username = %s", username)
+        if usercount > 0:
+            self.api_response({'status':'fail','message':'此会员名已被使用'})
+        phone = self.session.get("phone")
+        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$')
+        phonematch = phonepattern.match(phone)
+        if phonematch is False and phone is None:
+            self.api_response({'status':'fail','message':'手机号填写错误'})
+        phonecount = self.db.execute_rowcount("select * from users where phone = %s", phone)
+        if phonecount > 0:
+            self.api_response({'status':'fail','message':'此手机号已被使用'})
         password = self.get_argument("password")
         repeatpassword = self.get_argument("repeatpassword")
         if password is None and repeatpassword is None and password != repeatpassword:
@@ -48,7 +59,7 @@ class RegisterHandler(BaseHandler):
             self.api_response({'status':'fail','message':'个人称呼不能为空'})
 
         lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, createtime)"
-                             "value(%s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), self.session.get("phone")
+                             "value(%s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
                              , account, name, nickname, 1, int(time.time()))
         #因为去掉了user_info表,所以name字段直接放在users表了
         # result = self.db.execute("insert into user_info (userid, name)value(%s, %s)", lastrowid, name)
@@ -60,6 +71,15 @@ class CheckPhoneHandler(BaseHandler):
 
     def post(self):
         phone = self.get_argument("phone")
+        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$')
+        phonematch = phonepattern.match(phone)
+        if phonematch is False and phone is None:
+            self.api_response({'status':'fail','message':'手机号填写错误'})
+            return
+        phonecount = self.db.execute_rowcount("select * from users where phone = %s", self.session.get("phone"))
+        if phonecount > 0:
+            self.api_response({'status':'fail','message':'此手机号已被使用'})
+            return
         verifycode = self.get_argument("verifycode")
         challenge = self.get_argument("geetest_challenge")
         validate = self.get_argument("geetest_validate")
@@ -74,3 +94,15 @@ class CheckPhoneHandler(BaseHandler):
         #    self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
         else:
             self.api_response({'status':'fail','message':'滑动验证码不正确'})
+
+class GetSmsCodeHandler(BaseHandler):
+    def get(self):
+        pass
+
+    def post(self):
+        phone = self.get_argument("phone")
+        userphone = self.db.get("select * from users where phone = %s", self.session.get("phone"))
+        if userphone:
+            self.api_response({'status':'fail','message':'此手机号已被使用'})
+        #self.session.get("verifycode", "123456"):
+        pass

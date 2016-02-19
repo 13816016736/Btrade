@@ -20,6 +20,7 @@
         </div>
         <form action="/login" method="post">
             {% raw xsrf_form_html() %}
+            <input type="hidden" name="next_url" value="{{next_url}}" />
             <div class="item">
                 <i class="iconfont icon-user"></i>
                 <input class="ipt" id="jUsername" type="text" name="username" value="" placeholder="会员名/手机号" />
