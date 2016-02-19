@@ -9,21 +9,23 @@ from collections import defaultdict
 from utils import *
 
 class MainHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self):
-        userid = self.session.get("userid")
-        user = self.db.get("select varietyids from users where id = %s", userid)
-        varieties = []
-        if user["varietyids"]:
-            varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
 
-        #用户报过价的品种
-        quotevariety = self.db.query("select v.name name from (select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s) t"
-                      " left join variety v on t.varietyid = v.id group by name", userid)
+    def get(self):
+        varieties = []
+        quotevariety = []
+        userid = self.session.get("userid")
+        if userid:
+            user = self.db.get("select varietyids from users where id = %s", userid)
+            if user["varietyids"]:
+                varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
+
+            #用户报过价的品种
+            quotevariety = self.db.query("select v.name name from (select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s) t"
+                          " left join variety v on t.varietyid = v.id group by name", userid)
 
         self.render("index.html", varieties=varieties, quotevariety=quotevariety)
 
-    @tornado.web.authenticated
+
     def post(self):
         pass
 

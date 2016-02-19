@@ -57,6 +57,11 @@ class RegisterHandler(BaseHandler):
         lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
                              , type, name, nickname, 1, int(time.time()))
+        notification = self.db.query("select id from notification where receiver = %s", lastrowid)
+        self.session["userid"] = lastrowid
+        self.session["user"] = username
+        self.session["notification"] = len(notification)
+        self.session.save()
         self.api_response({'status':'success','message':'注册成功','data':{'username':username}})
 
 class GetSmsCodeHandler(BaseHandler):

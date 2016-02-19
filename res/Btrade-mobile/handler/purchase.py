@@ -9,12 +9,9 @@ import random
 from collections import defaultdict
 
 class PurchaseHandler(BaseHandler):
-
-    @tornado.web.authenticated
     def get(self):
         pass
 
-    @tornado.web.authenticated
     def post(self, number=0):
         #列表一项是一个采购单多个品种
         # number = int(number) if number > 0 else 0
@@ -80,10 +77,7 @@ class PurchaseHandler(BaseHandler):
         #列表一项是一个采购单一个品种
 
 class PurchaseInfoHandler(BaseHandler):
-
-    @tornado.web.authenticated
     def get(self, id):
-        print id
         purchaseinfo = self.db.get("select n.*,sp.specification from (select t.*,a.areaname from "
         "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specificationid,pi.views from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
@@ -100,7 +94,7 @@ class PurchaseInfoHandler(BaseHandler):
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
-        print purchaseinfo
+
         others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
                                       purchaseinfo["id"], purchaseinfo["pid"])
 
@@ -113,7 +107,7 @@ class PurchaseInfoHandler(BaseHandler):
             "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
                 "on p.id = t.purchaseid where p.userid = %s", user["id"])
         reply = 0
-        print purchaser_quotes
+
         for purchaser_quote in purchaser_quotes:
             if purchaser_quote.state is not None and purchaser_quote.state != 0:
                 reply = reply + 1
