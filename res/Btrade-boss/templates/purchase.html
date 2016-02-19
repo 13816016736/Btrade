@@ -140,9 +140,10 @@
                             {% end %}
                             <td style="text-align:center;"><a href="/purchase/purchaseinfo/{{purchaseinfo.id}}">{{purchaseinfo.name}}</a>  {{purchaseinfo.specification}}</td>
                             <td style="text-align:center;">
-                                5个报价<span class="badge" style="background-color:#f0ad4e;">4</span>
-                                最低价23（裸价）
-                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">1</b>家意向供应商</span>
+                                {{purchaseinfo.quotecount}}个报价
+                                {% if purchaseinfo.intentions > 0 %}
+                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">{{purchaseinfo.intentions}}</b>家意向供应商</span>
+                                {% end %}
                             </td>
                             <td style="text-align:center;">
                                 <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}公斤，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：http://ycg.cn/buy/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;

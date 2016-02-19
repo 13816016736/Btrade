@@ -89,10 +89,14 @@ class PurchaseHandler(BaseHandler):
             'num': self.db.execute_rowcount("select id from purchase"),
         }
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select t.*,a.areaname from (select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id limit %s,%s) t left join area a on t.areaid = a.id", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        purchases = self.db.query("select t.*,a.areaname from "
+                                  "(select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id limit %s,%s) t "
+                                  "left join area a on t.areaid = a.id", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
-            purchaseinfos = self.db.query("select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")")
+            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select pis.*,q.id qid,count(q.id) quotecount from "
+                                          "(select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")"
+                                          ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id) ta left join quote qu on ta.qid = qu.id and qu.state = 1 group by ta.id")
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
