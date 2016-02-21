@@ -52,10 +52,11 @@ class PurchaseHandler(BaseHandler):
         data['term'] = data['term'] if data.has_key('term') and data['term'] != "" else "0"
         #存储采购主体信息
         if data.has_key("city"):
-            lastrowid = self.db.execute_lastrowid("insert into purchase (userid, areaid, invoice, pay, payday, payinfo,"
+            purchaseid = get_purchaseid()
+            self.db.execute("insert into purchase (id, userid, areaid, invoice, pay, payday, payinfo,"
                                                   " send, receive, accept, other, supplier, remark, limited, term, createtime)"
-                                                  "value(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                                  self.session.get("userid"), data["city"], data['invoice'], data['pay'],
+                                                  "value(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                                  purchaseid, self.session.get("userid"), data["city"], data['invoice'], data['pay'],
                                                   data['payday'], data['payinfo'], data['send'], data['receive'],
                                                   data['accept'], data['other'], data['supplier'], data['remark'],
                                                   data['limited'], data['term'], int(time.time()))
@@ -64,7 +65,7 @@ class PurchaseHandler(BaseHandler):
                 purchase = data['purchases'][i]
                 purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specificationid, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                lastrowid, purchase["varietyid"], purchase['name'], purchase['specification'],
+                                purchaseid, purchase["varietyid"], purchase['name'], purchase['specification'],
                                 purchase['quantity'], purchase['unit'], ",".join(purchase['quality']),
                                 ",".join(purchase['origin']), purchase['price'])
                 #插入图片
@@ -197,7 +198,7 @@ class GetVarietyInfoHandler(BaseHandler):
             self.api_response({'status':'fail','message':'请填写品种'})
         else:
             varietyinfo = self.db.get("SELECT id,origin FROM variety WHERE name = %s", variety)
-            if len(varietyinfo) == 0:
+            if varietyinfo is None:
                 self.api_response({'status':'fail','message':'没有该品种'})
             else:
                 specifications = self.db.query("SELECT id,specification FROM specification WHERE varietyid = %s", varietyinfo["id"])

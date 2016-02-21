@@ -49,8 +49,8 @@ class PurchaseHandler(BaseHandler):
         number = int(number) if number > 0 else 0
         purchases = self.db.query("select ta.*,u.nickname,u.name from(select pis.*,count(q.id) quotecount from "
                                   "(select t.*,s.specification from (select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specificationid,pi.views from "
-                                  "purchase_info pi left join purchase p on p.id = pi.purchaseid order by p.createtime desc limit %s,%s) t "
-                                  "left join specification s on t.specificationid = s.id) pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid) ta "
+                                  "purchase_info pi left join purchase p on p.id = pi.purchaseid order by p.createtime desc,p.id desc limit %s,%s) t "
+                                  "left join specification s on t.specificationid = s.id) pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by pis.createtime desc) ta "
                                   "left join users u on ta.userid = u.id", number, config.conf['POST_NUM'])
         if purchases:
             purchaseinfoids = [str(purchase["pid"]) for purchase in purchases]
@@ -60,17 +60,16 @@ class PurchaseHandler(BaseHandler):
                 attachments[attachment["purchase_infoid"]] = attachment
 
             for purchase in purchases:
-                purchase["purchaseinfo"] = [{"id": purchase["pid"],"name": purchase["name"],"name": purchase["name"],"attachments":attachments.get(purchase["pid"]),
-                                             "origin": purchase["origin"],"purchaseid": purchase["id"],"quality": purchase["quality"],
-                                             "quantity": purchase["quantity"],"quotecount": purchase["quotecount"],"specification": purchase["specification"],
-                                             "specificationid": purchase["specificationid"],"unit": purchase["unit"],"views": purchase["views"]}]
                 purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
-                if purchase["limited"] == 1:
+                if int(purchase["limited"]) == 1:
                     # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     purchase["timedelta"] = (expire - datetime.datetime.now()).days
-            print purchases
-            print purchaseinfoids
+                purchase["purchaseinfo"] = [{"id": purchase["pid"],"name": purchase["name"],"name": purchase["name"],"attachments":attachments.get(purchase["pid"]),
+                                             "origin": purchase["origin"],"purchaseid": purchase["id"],"quality": purchase["quality"],"limited": purchase["limited"],
+                                             "quantity": purchase["quantity"],"quotecount": purchase["quotecount"],"specification": purchase["specification"],"datetime": purchase["datetime"],
+                                             "specificationid": purchase["specificationid"],"unit": purchase["unit"],"views": purchase["views"],"timedelta": purchase["timedelta"]}]
+
             self.api_response({'status':'success', 'list':purchases, 'message':'请求成功'})
         else:
             self.api_response({'status':'nomore','message':'没有更多的采购订单'})

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
+import random
 
 def md5(str):
     import hashlib
@@ -22,6 +23,11 @@ def get_week_begin(ts = time.time(),N = 0):
     N为0时获取时间戳ts当周的开始时间戳，N为负数时前数N周，N为整数是后数N周，此函数将周一作为周的第一天
     """
     w = int(time.strftime('%w',time.localtime(ts)))
+    """
+    w表示星期几（0-6），当时星期天时w为0，则计算出来的时候一周起始时间为下周的周一，比如今天是2016年2月21日星期天，
+    正常是当周第一天时2016年2月15日星期一，但是这里w为0的话，则把2016年2月22日当成当周第一天，则有问题，故当w为0时把该值改成7
+    """
+    w = 7 if w == 0 else w
     return get_day_begin(int(ts - (w-1)*86400)) + N*604800
 
 def get_month_begin(ts = time.time(),N = 0):
@@ -57,8 +63,13 @@ def get_month_begin(ts = time.time(),N = 0):
             t = get_month_begin(t,real_month)
     return t
 
+def get_purchaseid():
+    rand = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 2))
+    return int(str(int(time.time())) + rand)
+
 if __name__ == "__main__":
     t = time.time()
     print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_day_begin(t,1)))
     print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_week_begin(t,1)))
     print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_month_begin(t,-3)))
+    print get_purchaseid()
