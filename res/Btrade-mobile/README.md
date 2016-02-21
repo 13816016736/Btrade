@@ -30,19 +30,6 @@ http://www.iconfont.cn/
 568617195@qq.com
 20160201
 
-
-问题记录：
- 
-20160208：
-1.登录页面缺服务端提示，如用户名和密码不正确
-
-20160211：
-客户端图片压缩等比例缩放
-
-TODO:
-采购单图片浏览
-跟严飞沟通"图片的策略" 传缩略图 后端生成裁剪图片,共两张图在不同的地方使用?
-
 微信开发  注册页面开发
 http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
 http://mp.weixin.qq.com/wiki/18/28fc21e7ed87bec960651f0ce873ef8a.html
@@ -51,10 +38,13 @@ http://mp.weixin.qq.com/wiki/18/28fc21e7ed87bec960651f0ce873ef8a.html
 https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f0704c1d9eb9b0b0e3b0a237/
 
 
-下周
-根据雄军做页面修改
-PC端页面调整
+22-25日
+"图片的策略" 传缩略图 后端生成裁剪图片,共两张图在一张适用pc端一张适用移动端，并且存储公共图片服务
+采购单图片浏览
 boss系统完善
+PC端页面调整
+微信开发
+短信开发
 
 3月5日 微信公众号申请
 3月7日 短信，服务器购置 部署+域名  并提交ICP备案
@@ -127,4 +117,5 @@ CREATE TABLE IF NOT EXISTS quote_attachment (
 
 
 insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
+
 
