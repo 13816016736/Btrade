@@ -102,7 +102,9 @@
                             <div class="tag">{{purchaseinfo.specification}} {{purchaseinfo.origin}}</div>
                             <div class="weight">{{purchaseinfo.quantity}}{% if purchaseinfo.unit == 1 %}公斤{% elif purchaseinfo.unit == 2 %}吨{% end %}</div>
                             <div class="desc">
-                                <p class="thumb"><img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt=""></p>
+                                {% if purchaseinfo.attachments%}
+                                <p class="thumb"><img src="{{purchaseinfo.attachments.attachment}}" data-src="{{purchaseinfo.attachments.attachment.replace('_thumb', '')}}" alt=""></p>
+                                {% end %}
                                 <p>{{purchaseinfo.quality}}</p>
                             </div>
                         </div>

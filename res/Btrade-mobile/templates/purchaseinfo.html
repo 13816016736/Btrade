@@ -45,7 +45,7 @@
                     <p><span>意向价格</span> {{ purchase.price }}元/公斤 封顶</p>
                     <p><span>合格品样例照</span></p>
                     {% for attachment in purchase.attachments %}
-                    <p class="thumb"><img src="{{ attachment }}" data-src="{{ attachment }}" alt=""></p>
+                    <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>
                     {% end %}
                 </div>
             </div>

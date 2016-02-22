@@ -21,6 +21,8 @@ http://old.sebug.net/paper/books/tornado/
 3.redis
 4.ujson（安装ujson，参考https://pypi.python.org/simple/ujson/）
 5.jinja2（模板引擎）
+6.PIL（生成缩略图用的python Image Library，http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/00140767171357714f87a053a824ffd811d98a83b58ec13000）
+(注意:用PIL上传缩略图时,一定要在原图上传完了之后把原图上传的流给close掉,在读取保存缩略图,不然会报错)
 
 tornado模板中get_template_namespace方法自动将变量加载到全局命名空间，所以模板中可以直接使用，也可以重写get_template_namespace方法，加入业务中需要的变量
 
@@ -43,13 +45,10 @@ https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f070
 采购单图片浏览
 boss系统完善
 PC端页面调整
-微信开发
-短信开发
 
-3月5日 微信公众号申请
-3月7日 短信，服务器购置 部署+域名  并提交ICP备案
-之后短信通道接入
-微信公众号切入
+
+3月5日 微信公众号申请  短信，服务器购置 部署+域名  并提交ICP备案
+3月6，7日 短信通道接入 微信公众号开发
 
 
 purchase 采购表

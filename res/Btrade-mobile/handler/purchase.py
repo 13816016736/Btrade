@@ -51,12 +51,14 @@ class PurchaseHandler(BaseHandler):
                                   "(select t.*,s.specification from (select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specificationid,pi.views from "
                                   "purchase_info pi left join purchase p on p.id = pi.purchaseid order by p.createtime desc,p.id desc limit %s,%s) t "
                                   "left join specification s on t.specificationid = s.id) pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by pis.createtime desc) ta "
-                                  "left join users u on ta.userid = u.id", number, config.conf['POST_NUM'])
+                                  "left join users u on ta.userid = u.id order by ta.pid desc", number, config.conf['POST_NUM'])
         if purchases:
             purchaseinfoids = [str(purchase["pid"]) for purchase in purchases]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
             for attachment in purchaseattachments:
+                base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
+                attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
                 attachments[attachment["purchase_infoid"]] = attachment
 
             for purchase in purchases:
@@ -86,7 +88,8 @@ class PurchaseInfoHandler(BaseHandler):
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:
-            attachment["attachment"] = "\\static"+attachment["attachment"].split("static")[1] if attachment.get("attachment") else ""
+            base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
+            attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["limited"] == 1:
@@ -139,8 +142,13 @@ class PurchaseinfoBatchHandler(BaseHandler):
             for attachment in purchaseattachments:
                 attachments[attachment["purchase_infoid"]] = attachment
             for purchaseinfo in purchaseinfos:
-                purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
+                purchaseinfo["attachments"] = {}
+                if attachments.has_key(purchaseinfo["id"]):
+                    base, ext = os.path.splitext(os.path.basename(attachments.get(purchaseinfo["id"])["attachment"]))
+                    attachments.get(purchaseinfo["id"])["attachment"] = config.img_domain+attachments.get(purchaseinfo["id"])["attachment"][attachments.get(purchaseinfo["id"])["attachment"].find("static"):].replace(base, base+"_thumb")
+                    purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
                 purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
+                purchase["views"] =+ purchaseinfo["views"]
 
         purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
         purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
@@ -193,24 +201,31 @@ class UploadFileHandler(BaseHandler):
         imgData = base64.b64decode(base64_string)
         now = datetime.date.today().strftime("%Y%m%d")
         #文件的暂存路径
-        root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-        upload_path = os.path.join(root_path, 'static\\uploadfiles\\' + now)
+        # root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+        root_path = config.img_path
+        upload_path = os.path.join(root_path, now)
         if os.path.exists(upload_path) is False:
             os.mkdir(upload_path)
         name = str(int(time.time())) + str(self.session.get("userid")) + type
         ext = ".png"
         filename = md5(str(name))+ext
         filepath = os.path.join(upload_path,filename)
-        with open(filepath,'wb') as up:
+        try:
+            #保存上传图片
+            with open(filepath,'wb') as up:
+                up.write(imgData)
+            #生成缩略图
+            make_thumb(filepath,upload_path,300,300)
             uploadfiles = self.session.get("uploadfiles", {})
-            up.write(imgData)
             uploadfiles[type] = filepath
             self.session["uploadfiles"] = uploadfiles
             self.session.save()
             self.api_response({'status':'success','message':'上传成功','path':filepath})
+        except IOError:
+            print ' in  IOError'
+            self.api_response({'status':'fail','message':'上传失败'})
             return
 
-        self.api_response({'status':'fail','message':'上传失败'})
 
 class DeleteFileHandler(BaseHandler):
 
@@ -223,11 +238,22 @@ class DeleteFileHandler(BaseHandler):
         type = self.get_argument("type")
         uploadfiles = self.session.get("uploadfiles")
         if uploadfiles.has_key(type):
-            del uploadfiles[type]
-            self.session["uploadfiles"] = uploadfiles
-            self.session.save()
-
-        self.api_response({'status':'success','message':'删除成功'})
+            if os.path.isfile(uploadfiles[type]):
+                os.remove(uploadfiles[type])
+                base, ext = os.path.splitext(os.path.basename(uploadfiles[type]))
+                filename = uploadfiles[type].replace(base, base+"_thumb")
+                os.remove(filename)
+                del uploadfiles[type]
+                self.session["uploadfiles"] = uploadfiles
+                self.session.save()
+                self.api_response({'status':'success','message':'删除成功'})
+            else:
+                del uploadfiles[type]
+                self.session["uploadfiles"] = uploadfiles
+                self.session.save()
+                self.api_response({'status':'fail','message':'文件不存在'})
+        else:
+            self.api_response({'status':'success','message':'文件路径不存在'})
 
 class GetVarietyInfoHandler(BaseHandler):
 

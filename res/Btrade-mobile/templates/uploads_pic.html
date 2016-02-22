@@ -112,12 +112,24 @@
 
         new UploadPic({
             el: ev,
-            type: {{type}},
             // $preview: $preview, // 不需要预览功能
-            maxWidth: 196,
-            maxHeight: 196,
-            callback: function() {
-                location.href = '/quote/purchaseinfoid/{{purchaseinfoid}}';
+            maxWidth: 800,
+            maxHeight: 800,
+            callback: function(base64) {
+                $.ajax({
+                    url: "/uploadfile",
+                    data: {
+                        base64_string: base64,
+                        'type': {{type}},
+                        '_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]
+                    },
+                    type: 'post',
+                    dataType: 'json',
+                    success: function(i) {
+                        location.href = '/quote/purchaseinfoid/{{purchaseinfoid}}';
+                    }
+                })
+
             },
         });
     })

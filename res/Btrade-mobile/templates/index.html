@@ -56,7 +56,7 @@ $(function(){
                 temp.push(         '<div class="tag">' + data[i].purchaseinfo[j].specification + " " + data[i].purchaseinfo[j].origin + '</div>');
                 temp.push(         '<div class="weight">' + data[i].purchaseinfo[j].quantity + '公斤</div>');
                 temp.push(         '<div class="desc">');
-                data[i].purchaseinfo[j].attachments&&temp.push( '<p class="thumb"><img src="' + data[i].purchaseinfo[j].attachments + '" alt=""></p>');
+                data[i].purchaseinfo[j].attachments&&temp.push( '<p class="thumb"><img src="' + data[i].purchaseinfo[j].attachments.attachment + '" data-src="' + data[i].purchaseinfo[j].attachments.attachment.replace('_thumb','') + '" alt=""></p>');
                 temp.push(             '<p>' + data[i].purchaseinfo[j].quality + '</p>');
                 temp.push(         '</div>');
                 temp.push(     '</div>');

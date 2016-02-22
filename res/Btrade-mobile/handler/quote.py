@@ -23,7 +23,8 @@ class QuoteHandler(BaseHandler):
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:
-            attachment["attachment"] = "\\static"+attachment["attachment"].split("static")[1] if attachment.get("attachment") else ""
+            base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
+            attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         purchaser = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["limited"] == 1:
@@ -56,7 +57,8 @@ class QuoteHandler(BaseHandler):
         #获取图片
         uploadfiles = self.session.get("uploadfiles", {})
         for k in uploadfiles:
-            uploadfiles[k] = "\\static"+uploadfiles[k].split("static")[1]
+            base, ext = os.path.splitext(os.path.basename(uploadfiles[k]))
+            uploadfiles[k] = config.img_domain+uploadfiles[k][uploadfiles[k].find("static"):].replace(base, base+"_thumb")
         self.render("quote.html", purchaser=purchaser, purchase=purchaseinfo, purchases=purchases, quotes=quotes,
                     reply=(float(reply)/float(len(purchaser_quotes))*100 if len(purchaser_quotes) != 0 else 0),
                     uploadfiles=uploadfiles, quotechances=quotechances)
@@ -162,7 +164,8 @@ class QuoteDetailHandler(BaseHandler):
         quote["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(quote["createtime"])))
         quoteattachment = self.db.query("select * from quote_attachment where quoteid = %s", quoteid)
         for qa in quoteattachment:
-            qa["attachment"] = "\\static"+qa["attachment"] .split("static")[1]
+            base, ext = os.path.splitext(os.path.basename(qa["attachment"]))
+            qa["attachment"] = config.img_domain+qa["attachment"][qa["attachment"].find("static"):].replace(base, base+"_thumb")
 
         #查询采购单信息
         purchaseinfo = self.db.get("select tn.*,pa.attachment from (select n.*,sp.specification from (select t.*,a.areaname from "
@@ -177,7 +180,8 @@ class QuoteDetailHandler(BaseHandler):
         if purchaseinfo["limited"] == 1:
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
-        purchaseinfo["attachment"] = "\\static"+purchaseinfo["attachment"] .split("static")[1] if purchaseinfo.get("attachment") else ""
+        base, ext = os.path.splitext(os.path.basename(purchaseinfo["attachment"]))
+        purchaseinfo["attachment"] = config.img_domain+purchaseinfo["attachment"][purchaseinfo["attachment"].find("static"):].replace(base, base+"_thumb")
         print purchaseinfo
         others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
                                       purchaseinfo["id"], purchaseinfo["pid"])

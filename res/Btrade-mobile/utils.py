@@ -67,7 +67,95 @@ def get_purchaseid():
     rand = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 2))
     return int(str(int(time.time())) + rand)
 
-if __name__ == "__main__":
+#!/usr/bin/env python
+#coding=utf-8
+'''
+Created on 2016-2-22
+
+@author: kevin
+'''
+import os
+import sys
+import glob
+import time
+from PIL import Image
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+def make_thumb(path, thumb_path, w, h):
+    """生成缩略图"""
+    img = Image.open(path)
+    width, height = img.size
+    # 裁剪图片成正方形
+    if width > height:
+        delta = (width - height) / 2
+        box = (delta, 0, width - delta, height)
+        region = img.crop(box)
+    elif height > width:
+        delta = (height - width) / 2
+        box = (0, delta, width, height - delta)
+        region = img.crop(box)
+    else:
+        region = img
+
+    # 缩放
+    thumb = region.resize((w, h), Image.ANTIALIAS)
+
+    base, ext = os.path.splitext(os.path.basename(path))
+    filename = os.path.join(thumb_path, '%s_thumb%s' % (base,ext))
+    print filename
+    # 保存
+    thumb.save(filename, quality=70)
+
+def merge_thumb(files, output_file):
+    """合并图片"""
+    imgs = []
+    width = 0
+    height = 0
+
+    # 计算总宽度和长度
+    for file in files:
+        img = Image.open(file)
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        imgs.append(img)
+        if img.size[0] > width:
+            width = img.size[0]
+        height += img.size[1]
+
+    # 新建一个白色底的图片
+    merge_img = Image.new('RGB', (width, height), 0xffffff)
+    cur_height = 0
+    for img in imgs:
+        # 把图片粘贴上去
+        merge_img.paste(img, (0, cur_height))
+        cur_height += img.size[1]
+
+    merge_img.save(output_file, quality=70)
+
+if __name__ == '__main__':
+    ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
+    IMG_PATH = os.path.join(ROOT_PATH, 'img')
+    THUMB_PATH = os.path.join(IMG_PATH, 'thumbs')
+    if not os.path.exists(THUMB_PATH):
+        os.makedirs(THUMB_PATH)
+
+    # 生成缩略图
+    files = glob.glob(os.path.join(IMG_PATH, '*.jpg'))
+    begin_time = time.clock()
+    for file in files:
+        make_thumb(file, THUMB_PATH, 90)
+    end_time = time.clock()
+    print ('make_thumb time:%s' % str(end_time - begin_time))
+
+    # 合并图片
+    files = glob.glob(os.path.join(THUMB_PATH, '*_thumb.jpg'))
+    merge_output = os.path.join(THUMB_PATH, 'thumbs.jpg')
+    begin_time = time.clock()
+    merge_thumb(files, merge_output)
+    end_time = time.clock()
+    print ('merge_thumb time:%s' % str(end_time - begin_time))
+
     t = time.time()
     print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_day_begin(t,1)))
     print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_week_begin(t,1)))
