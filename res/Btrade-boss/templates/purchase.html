@@ -7,16 +7,16 @@
     <section class="filter">
         <form class="form-inline">
             <div class="form-group">
-                <span class="label label-warning">全部（5）</span>
+                <a href="/purchase/purchaselist/type/-1/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) < 0%}label-warning{%else%}label-default{%end%}">全部（{{stat.get(0,0) + stat.get(1,0) + stat.get(3,0)}}）</span></a>
             </div>
             <div class="form-group">
-                <span class="label label-default">等待报价（1）</span>
+                <a href="/purchase/purchaselist/type/1/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 1%}label-warning{%else%}label-default{%end%}">等待报价（{{stat.get(1,0)}}）</span></a>
             </div>
             <div class="form-group">
-                <span class="label label-default">甄选供应商（2）</span>
+                <a href="/purchase/purchaselist/type/3/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 3%}label-warning{%else%}label-default{%end%}">成功采购（{{stat.get(3,0)}}）</span></a>
             </div>
             <div class="form-group">
-                <span class="label label-default">关闭（3）</span>
+                <a href="/purchase/purchaselist/type/0/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 0%}label-warning{%else%}label-default{%end%}">关闭（{{stat.get(0,0)}}）</span></a>
             </div>
             <div class="form-group">
                 <label >发布时间：</label>
@@ -24,18 +24,18 @@
                     <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </div>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" id="starttime" value="{{starttime}}">
                 </div>
                 至
                 <div class="input-group date form_datetime">
                     <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </div>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" id="endtime" value="{{endtime}}">
                 </div>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-query">查询</button>
+                <button type="button" class="btn btn-primary btn-query" id="pquery">查询</button>
             </div>
             <div class="form-group">
                 <button type="reset" class="btn btn-default">清空</button>
@@ -191,11 +191,27 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
+    $(".form_datetime").datetimepicker({
+                language: "zh-CN",
+                autoclose: true,
+                todayBtn: true
+            });
+
     $(".glyphicon-share").click(function() {
         var id = $(this).attr('rel');
         var share = $(this).attr('sharerel');
         $("#sharemsg").attr("placeholder", share);
         $("#share").modal();
+    });
+
+    $("#pquery").click(function(){
+        var starttime = $("#starttime").val();
+        var endtime = $("#endtime").val();
+        if (starttime != "" && endtime != "") {
+            window.location.href='/purchase/purchaselist/type/{{type}}/starttime/'+starttime+'/endtime/'+endtime;
+        }else{
+            alert("时间范围需填写完整");
+        }
     });
 })
 

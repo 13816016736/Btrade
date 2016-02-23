@@ -117,4 +117,3 @@ CREATE TABLE IF NOT EXISTS quote_attachment (
 
 insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
 
-

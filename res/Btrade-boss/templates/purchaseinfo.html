@@ -27,11 +27,33 @@
         </div>
         <div class="row">
             <div class="col-sm-9 purchaser">
-            <b>亳州永刚中药饮片有限公司</b>&nbsp;&nbsp;&nbsp;&nbsp;
+            <b>{{user.name}}</b>&nbsp;&nbsp;&nbsp;&nbsp;
             <b style="color:#939393;">身份真实</b>&nbsp;&nbsp;&nbsp;&nbsp;
-            <span style="color:#f0ad4e;">药材经营公司</span>&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="glyphicon glyphicon-user" aria-hidden="true" style="color:#939393"></span>&nbsp;严飞&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#939393"></span>&nbsp;13006159174
+            <span style="color:#f0ad4e;">
+                {% if user.type == 1 %}
+                饮片厂/饮片生产、加工
+                {% elif user.type == 2 %}
+                药厂/制药企业
+                {% elif user.type == 3 %}
+                药材贸易经营公司
+                {% elif user.type == 4 %}
+                种植合作社/种植基地
+                {% elif user.type == 5 %}
+                其他类型公司
+                {% elif user.type == 6 %}
+                个体经营
+                {% elif user.type == 7 %}
+                企业采购经理/业务员
+                {% elif user.type == 8 %}
+                采购药材为主
+                {% elif user.type == 9 %}
+                销售药材为主
+                {% elif user.type == 10 %}
+                既采购也销售药材
+                {% end %}
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="glyphicon glyphicon-user" aria-hidden="true" style="color:#939393"></span>&nbsp;{{user.nickname}}&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#939393"></span>&nbsp;{{user.phone}}
             </div>
         </div>
     </div>
@@ -94,8 +116,8 @@
             <div class="form-group">
                 <label class="control-label">合格样例：</label>
                 <div class="form-inline">
-                {% if purchase.attachment != ""%}
-                <img width="60" height="68" src="http://127.0.0.1:8888{{ purchase.attachment }}" />
+                {% for attachment in purchase.attachments %}
+                <img width="60" height="68" src="{{ attachment.attachment }}" />
                 {% end %}
                 </div>
             </div>
@@ -161,8 +183,8 @@
     </div>
 
     <div class="alert alert-warning" role="alert">
-        <b style="font-size:20px;color:#f0ad4e;">收到<span style="color:#286090;">4</span>个报价</b>&nbsp;&nbsp;&nbsp;&nbsp;
-        <b style="color:#939393;">采购单被查看了<span style="color:#f0ad4e;">315</span>次</b>
+        <b style="font-size:20px;color:#f0ad4e;">收到<span style="color:#286090;">{{len(quotes)}}</span>个报价</b>&nbsp;&nbsp;&nbsp;&nbsp;
+        <b style="color:#939393;">采购单被查看了<span style="color:#f0ad4e;">{{ purchase.views }}</span>次</b>
     </div>
 
     <!-- /.row -->
@@ -178,97 +200,45 @@
             </tr>
         </thead>
         <tbody>
+            {% for quote in quotes %}
             <tr>
-                <td style="text-align:center;">2016-01-05 12:16</td>
+                <td style="text-align:center;">{{quote.datetime}}</td>
                 <td style="text-align:center;">
-                    <b>重庆旺隆黄连经营有限公司<span class="label label-warning"></span></b>
-                    <p><span class="glyphicon glyphicon-user"></span>王东</p>
-                    <p><span class="glyphicon glyphicon-phone"></span>13200394738</p>
+                    <b>{{quote.name}}<span class="label label-warning"></span></b>
+                    <p><span class="glyphicon glyphicon-user"></span>{{quote.nickname}}</p>
+                    <p><span class="glyphicon glyphicon-phone"></span>{{quote.phone}}</p>
                 </td>
                 <td style="text-align:center;">
-                    <p><b style="color:#f0ad4e;">78</b>元/公斤</p>
-                    <p>含税物流</p>
-                    <p><b style="color:#f0ad4e;">75</b>元/公斤</p>
-                    <p>裸价</p>
+                    <p><b style="color:#f0ad4e;">{{quote.price}}</b>元/公斤</p>
                 </td>
                 <td style="text-align:center;">
                     <p>
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
+                        {% for attachment in quote.attachments %}
+                        <img width="60" height="68" src="{{attachment.attachment}}" />
+                        {% end %}
                     </p>
-                    <p>鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节，碎渣，含量1.5左右</p>
+                    <p>{{quote.quality}}</p>
                 </td>
                 <td>
-                    <input type="checkbox" name="type">
+                    <input type="checkbox" name="type" qid="{{quote.id}}">
                 </td>
                 <td>
+                    {% if quote.state == 1 %}
                     <b style="color:green">已甄选为意向供应商</b>
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align:center;">2016-01-05 12:16</td>
-                <td style="text-align:center;">
-                    <b>重庆旺隆黄连经营有限公司</b>
-                    <p><span class="glyphicon glyphicon-user"></span>王东</p>
-                    <p><span class="glyphicon glyphicon-phone"></span>13200394738</p>
-                </td>
-                <td style="text-align:center;">
-                    <p><b style="color:#f0ad4e;">78</b>元/公斤</p>
-                    <p>含税物流</p>
-                    <p><b style="color:#f0ad4e;">75</b>元/公斤</p>
-                    <p>裸价</p>
-                </td>
-                <td style="text-align:center;">
-                    <p>
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                    </p>
-                    <p>鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节，碎渣，含量1.5左右</p>
-                </td>
-                <td>
-                    <input type="checkbox" name="type">
-                </td>
-                <td>
+                    {% elif quote.state == 2 %}
+                    <b style="color:red">已拒绝，价格不合适</b>
+                    {% elif quote.state == 0 %}
                     <p><span class="label label-success">不错，请供应商联系我</span></p>
                     <p><span class="label label-danger">不合适，再看看</span></p>
                     <p><span class="label label-warning">聊一聊</span></p>
+                    {% end %}
                 </td>
             </tr>
-            <tr>
-                <td style="text-align:center;">2016-01-05 12:16</td>
-                <td style="text-align:center;">
-                    <b>重庆旺隆黄连经营有限公司</b>
-                    <p></p>
-                    <p><span class="glyphicon glyphicon-user"></span>王东</p>
-                    <p><span class="glyphicon glyphicon-phone"></span>13200394738</p>
-                </td>
-                <td style="text-align:center;">
-                    <p><b style="color:#f0ad4e;">78</b>元/公斤</p>
-                    <p>含税物流</p>
-                    <p><b style="color:#f0ad4e;">75</b>元/公斤</p>
-                    <p>裸价</p>
-                </td>
-                <td style="text-align:center;">
-                    <p>
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                        <img width="60" height="68" src="/static/uploadfiles/20151224/931f69899890818bb2c565b86d969e6f.png" />
-                    </p>
-                    <p>鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节，碎渣，含量1.5左右</p>
-                </td>
-                <td>
-                    <input type="checkbox" name="type">
-                </td>
-                <td>
-                    <b style="color:red">已拒绝，价格不合适</b>
-                </td>
-            </tr>
+            {% end %}
         </tbody>
     </table>
     <div style="float:right">
-        <p>批量操作：<span class="label label-success">不错</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-danger">不合适</span></p>
+        <p>批量操作：<span class="label label-success" style="cursor:pointer" id="accepts">不错</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-danger" style="cursor:pointer" id="rejects">不合适</span></p>
     </div>
     </section>
 </div>
@@ -292,8 +262,56 @@
 <br>
 <script type="text/javascript">
 $(document).ready(function(){
+    $("#accepts").click(function(){
+        var qid = [];
+        $('input[type="checkbox"][name="type"]:checked').each(function(){
+            qid.push($(this).attr("qid"));
+        });
+        if(qid.length==0){
+            alert("请选择要操作的报价单!");
+            return;
+        }
+        if(confirm("确认要操作选择的报价单?")){
+            updatequotestate(qid.join(),1)
+        }
+    });
 
+    $("#rejects").click(function(){
+        var qid = [];
+        $('input[type="checkbox"][name="type"]:checked').each(function(){
+            qid.push($(this).attr("qid"));
+        });
+        if(qid.length==0){
+            alert("请选择要操作的报价单!");
+            return;
+        }
+        if(confirm("确认要操作选择的报价单?")){
+            updatequotestate(qid.join(),2)
+        }
+    });
 })
+
+function updatequotestate(qid, state){
+    $.ajax({
+        url: "/updatequotestate",
+        data: "qid="+qid+"&state="+state,
+        dataType: 'json',
+        type: 'POST',
+        beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
+        success: function(data) {
+            if(data.status == "success"){
+                window.location.reload();
+            }else{
+                alert("提交失败，请刷新页面重试");
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(errorThrown);
+        }
+     });
+}
 
 function removepurchase(pid){
     $.ajax({

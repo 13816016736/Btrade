@@ -18,7 +18,7 @@
         <ul>
             {% for quote in myquotes %}
             <li>
-                <a href="/quotedetail/quoteid/{{quote.id}}">
+                <a href="/quotedetail/quoteid/{{quote.id}}/nid/{{quote.nid}}">
                     <div class="hd">
                         <div class="fl">
                             <div class="tit">采购信息</div>
@@ -51,7 +51,7 @@
                         </div>
                         <div class="thumb">
                             {% for attachment in quote.attachments%}
-                            <img src="{{attachment}}" data-src="{{attachment}}" alt="">
+                            <img src="{{attachment}}" data-src="{{attachment.replace('_thumb', '')}}" alt="">
                             {% end %}
                         </div>
                     </div>

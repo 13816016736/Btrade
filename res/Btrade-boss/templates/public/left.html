@@ -25,7 +25,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu {% if request.uri.split('/')[1] == "purchase" %}menu-open{% end %}">
-                    <li {% if request.uri.split('/')[2] == "purchaselist" %}class="active"{% end %}><a href="/purchase/purchaselist"><i class="fa fa-circle-o"></i> 订单查询</a>
+                    <li {% if request.uri.split('/')[2] == "purchaselist" %}class="active"{% end %}><a href="/purchase/purchaselist/type/-1/starttime//endtime/"><i class="fa fa-circle-o"></i> 订单查询</a>
                     </li>
                 </ul>
             </li>

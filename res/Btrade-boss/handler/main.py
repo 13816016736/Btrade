@@ -48,3 +48,14 @@ class UserRemoveHandler(BaseHandler):
     def get(self, userid):
         self.db.execute("update users set status=0 where id = %s", userid)
         self.redirect('/users/userlist')
+
+class UpdateQuoteStateHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        qid = str(self.get_argument("qid", 0))
+        state = str(self.get_argument("state", 0))
+        if qid != 0 and state !=0:
+            self.db.execute("update quote set state=%s where id in ("+qid+")", state)
+            self.api_response({'status':'success','message':'操作成功'})
+        else:
+            self.api_response({'status':'fail','message':'请选择要标注的报价'})

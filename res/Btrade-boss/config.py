@@ -40,8 +40,8 @@ handlers = [
     (r"/users/remove/([0-9]+)", UserRemoveHandler),
     (r"/login", LoginHandler),
     (r"/logout", LogoutHandler),
-    (r"/purchase/purchaselist", PurchaseHandler),
-    (r"/purchase/purchaselist/page/([0-9]+)", PurchaseHandler),
+    (r"/purchase/purchaselist/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", PurchaseHandler),
+    (r"/purchase/purchaselist/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", PurchaseHandler),
     (r"/purchase/purchaseinfo/([0-9]+)", PurchaseInfoHandler),
     # (r"/register", RegisterHandler),
     # (r"/register/checkphone", CheckPhoneHandler),
@@ -52,6 +52,7 @@ handlers = [
     # (r"/dashboard", DashboardHandler),
     # (r"/mypurchase", PurchaseHandler),
     # (r"/mypurchase/update/(\d{1,3})", MyPurchaseUpdateHandler),
+    (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/removepurchase", RemovePurchaseHandler),
     # (r"/account", AccountHandler),
     # (r"/updateuser", UpdateUserHandler),
@@ -79,3 +80,7 @@ log_file = 'log/tornado.log'
 
 #用户密码的salt
 salt = "ycg20151012"
+
+#图片服务器域名
+img_domain = "http://10.0.24.114/"
+img_path = "E:\\wamp\\www\\static\\uploadfiles\\"

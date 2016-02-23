@@ -1,140 +1,141 @@
 {% extends "base.html" %}
 {% block container %}
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="/">
-                <i class="iconfont icon-back"></i>
-            </a>
-        </div>
-        <div class="yc-header-title">采购详情</div>
-    </header><!-- /yc-header -->
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="/">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">采购详情</div>
+</header><!-- /yc-header -->
 
-    <section class="yc-content">
-        <div class="yc-purchase-desc">
-            <div class="cf">
-                <div class="fl">采购编码：<span>{{ purchase.id }}</span></div>
-                <div class="fr"><time data-time="{{ purchase.datetime }}">{{ purchase.datetime }}</time></div>
+<section class="yc-content">
+    <div class="yc-purchase-desc">
+        <div class="cf">
+            <div class="fl">采购编码：<span>{{ purchase.id }}</span></div>
+            <div class="fr"><time data-time="{{ purchase.datetime }}">{{ purchase.datetime }}</time></div>
+        </div>
+        <div class="cf">
+            {% if purchase.status == 0%}
+            <div class="fl"><span class="red">关闭</span></div>
+            {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+            <div class="fl">
+                <span class="blue">等待报价</span>
+                {% if purchase.limited == 1%}
+                （剩余<b>{{purchase.timedelta}}</b>天）
+                {% else%}
+                常年采购
+                {% end %}
             </div>
-            <div class="cf">
-                {% if purchase.status == 0%}
-                <div class="fl"><span class="red">关闭</span></div>
-                {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
-                <div class="fl">
-                    <span class="blue">等待报价</span>
-                    {% if purchase.limited == 1%}
-                    （剩余<b>{{purchase.timedelta}}</b>天）
-                    {% else%}
-                    常年采购
-                    {% end %}
-                </div>
-                <div class="fr">已有<b>{{purchase.views}}</b>热门浏览，<b>{{quotes}}</b>个报价</div>
-                {% else %}
-                <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            <div class="fr">已有<b>{{purchase.views}}</b>热门浏览，<b>{{quotes}}</b>个报价</div>
+            {% else %}
+            <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            {% end %}
+        </div>
+    </div>
+
+    <div class="yc-purchase-detail">
+        <h3>采购品种及要求</h3>
+        <div class="bd">
+            <h4 class="name">{{ purchase.name }}</h4>
+            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
+            <div class="weight">{{ purchase.quantity }}公斤</div>
+            <div class="desc">
+                <p>{{ purchase.quantity }}</p>
+                <p><span>意向价格</span> {{ purchase.price }}元/公斤 封顶</p>
+                <p><span>合格品样例照</span></p>
+                {% for attachment in purchase.attachments %}
+                <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>
                 {% end %}
             </div>
         </div>
+    </div>
 
-        <div class="yc-purchase-detail">
-            <h3>采购品种及要求</h3>
-            <div class="bd">
-                <h4 class="name">{{ purchase.name }}</h4>
-                <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-                <div class="weight">{{ purchase.quantity }}公斤</div>
-                <div class="desc">
-                    <p>{{ purchase.quantity }}</p>
-                    <p><span>意向价格</span> {{ purchase.price }}元/公斤 封顶</p>
-                    <p><span>合格品样例照</span></p>
-                    {% for attachment in purchase.attachments %}
-                    <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>
-                    {% end %}
-                </div>
+    <div class="yc-purchase-detail">
+        <h3>采购商</h3>
+        <div class="bd">
+            <h4 class="company">
+                <span>{{user.nickname}}</span>
+                <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
+            </h4>
+            <div class="category">{% if user.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
+            <div class="total">
+                <span class="yc-star yc-star-4">
+                    <i></i><i></i><i></i><i></i><i></i>
+                </span>
+                <span class="txt">成功采购：<b>{{purchases}}单</b></span>
+                <span class="txt">报价答复率：<b>{{reply}}%</b></span>
             </div>
         </div>
+    </div>
 
-        <div class="yc-purchase-detail">
-            <h3>采购商</h3>
-            <div class="bd">
-                <h4 class="company">
-                    <span>{{user.nickname}}</span>
-                    <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
-                </h4>
-                <div class="category">{% if user.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
-                <div class="total">
-                    <span class="yc-star yc-star-4">
-                        <i></i><i></i><i></i><i></i><i></i>
-                    </span>
-                    <span class="txt">成功采购：<b>{{purchases}}单</b></span>
-                    <span class="txt">报价答复率：<b>{{reply}}%</b></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="yc-purchase-detail">
-            <h3>交收要求</h3>
-            <dl class="yc-demand">
-                <dt>交货地：</dt>
-                <dd>{{ purchase.areaname }}</dd>
-                <dt>发票要求：</dt>
-                <dd>
-                    {% if purchase.invoice == 1%}
-                    无需发票
-                    {% elif purchase.invoice == 2%}
-                    普通发票
-                    {% elif purchase.invoice == 3 %}
-                    增值税发票
-                    {% end %}
-                </dd>
-                <dt>交易及付款：</dt>
-                <dd>
-                    {% if purchase.pay == 1%}
-                    药采购"安心交易"(预付全款)
-                    {% elif purchase.pay == 2%}
-                    双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
-                    {% else %}
-                    {{purchase.payinfo}}
-                    {% end %}
-                </dd>
-                <dt>验证及包装：</dt>
-                <dd>
-                    <ol>
-                        <li>{{ purchase.accept }}</li>
-                    </ol>
-                </dd>
-                <dt>寄样：</dt>
-                <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span>{{ purchase.receive }}</span></dd>
-                <dt>补充说明：</dt>
-                <dd>{{ purchase.other }}</dd>
-            </dl>
-        </div>
+    <div class="yc-purchase-detail">
+        <h3>交收要求</h3>
+        <dl class="yc-demand">
+            <dt>交货地：</dt>
+            <dd>{{ purchase.areaname }}</dd>
+            <dt>发票要求：</dt>
+            <dd>
+                {% if purchase.invoice == 1%}
+                无需发票
+                {% elif purchase.invoice == 2%}
+                普通发票
+                {% elif purchase.invoice == 3 %}
+                增值税发票
+                {% end %}
+            </dd>
+            <dt>交易及付款：</dt>
+            <dd>
+                {% if purchase.pay == 1%}
+                药采购"安心交易"(预付全款)
+                {% elif purchase.pay == 2%}
+                双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
+                {% else %}
+                {{purchase.payinfo}}
+                {% end %}
+            </dd>
+            <dt>验证及包装：</dt>
+            <dd>
+                <ol>
+                    <li>{{ purchase.accept }}</li>
+                </ol>
+            </dd>
+            <dt>寄样：</dt>
+            <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span>{{ purchase.receive }}</span></dd>
+            <dt>补充说明：</dt>
+            <dd>{{ purchase.other }}</dd>
+        </dl>
+    </div>
 
 
-        <div class="yc-purchase-detail">
-            <h3>供应商要求</h3>
-            <dl class="yc-demand">
-                <dt>供应商资质：</dt>
-                <dd>
-                    {% if purchase.supplier == 1 %}
-                    必须有营业执照（公司、合作社、经营户），不接收个人
-                    {% elif purchase.supplier == 2 %}
-                    具备GSP资质
-                    {% elif purchase.supplier == 3 %}
-                    具备GMP资质
-                    {% end %}
-                </dd>
-                <dt>其它要求：</dt>
-                <dd>{{purchase.remark}}</dd>
-            </dl>
-        </div>
+    <div class="yc-purchase-detail">
+        <h3>供应商要求</h3>
+        <dl class="yc-demand">
+            <dt>供应商资质：</dt>
+            <dd>
+                {% if purchase.supplier == 1 %}
+                必须有营业执照（公司、合作社、经营户），不接收个人
+                {% elif purchase.supplier == 2 %}
+                具备GSP资质
+                {% elif purchase.supplier == 3 %}
+                具备GMP资质
+                {% end %}
+            </dd>
+            <dt>其它要求：</dt>
+            <dd>{{purchase.remark}}</dd>
+        </dl>
+    </div>
 
-        <div class="yc-more">
-            <i class="iconfont icon-more"></i>
-            <a href="/purchaseinfobatch/purchaseid/{{purchase.id}}">该批次采购单还包括其它<b>{{ others }}</b>个品种</a>
-        </div>
-    </section><!-- /yc-content -->
-	
-    <footer class="yc-footer">
-        <div class="yc-quote">
-            <a href="/quote/purchaseinfoid/{{purchase.pid}}"><i class="iconfont icon-plane"></i>立即报价</a>
-        </div>
-    </footer>
+    <div class="yc-more">
+        <i class="iconfont icon-more"></i>
+        <a href="/purchaseinfobatch/purchaseid/{{purchase.id}}">该批次采购单还包括其它<b>{{ others }}</b>个品种</a>
+    </div>
+</section><!-- /yc-content -->
+
+<footer class="yc-footer">
+    <div class="yc-quote">
+        <a href="/quote/purchaseinfoid/{{purchase.pid}}"><i class="iconfont icon-plane"></i>立即报价</a>
+    </div>
+</footer>
+<script src="{{ static_url('js/app.js') }}"></script>
 {% end %}

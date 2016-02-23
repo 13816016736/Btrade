@@ -69,7 +69,6 @@ function gallery(weChatImagePreview) {
 		html.push('	</div>');
 		html.push('</div>');
 		$('body').append(html.join(''));
-
 		bindEvent();
 	}
 	function bindEvent() {
@@ -167,8 +166,8 @@ var timeago = {
         return number < 10 ? '0' + number : number;
     },
     format: function(t) {
-        return t.getFullYear() + "-" 
-            + this.fillZero(t.getMonth() + 1) + "-" 
+        return t.getFullYear() + "-"
+            + this.fillZero(t.getMonth() + 1) + "-"
             + this.fillZero(t.getDate()) + " " 
             + this.fillZero(t.getHours()) + ':' 
             + this.fillZero(t.getMinutes()); 
