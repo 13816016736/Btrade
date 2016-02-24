@@ -123,6 +123,3 @@ CREATE TABLE IF NOT EXISTS quote_attachment (
 insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
 
 
-
-
-select ta.*,n.id nid from (select mq.*,u.nickname,u.type from (select t.*,s.specification from (select ta.*,p.createtime purchasetime,p.term from (select q.*,pi.purchaseid,pi.name,pi.specificationid,pi.origin,pi.quantity,pi.unit from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = 3 order by q.createtime desc) ta,purchase p where ta.purchaseid = p.id) t,specification s where t.specificationid = s.id) mq,users u where mq.userid = u.id) ta left join notification n on ta.userid = n.receiver and n.content = ta.id

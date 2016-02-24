@@ -211,7 +211,8 @@ class QuoteDetailHandler(BaseHandler):
                 reply = reply + 1
 
         #报价回复消息标记为已读
-        result = self.db.execute("update notification set status = 1 where receiver = %s and id = %s", self.session.get("userid"), nid)
+        if nid is not None:
+            self.db.execute("update notification set status = 1 where receiver = %s and id = %s", self.session.get("userid"), nid)
 
         self.render("quote_detail.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,
                     quotes=quotes, acceptuser=acceptuser, reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),

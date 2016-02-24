@@ -56,7 +56,7 @@
         <!--<div class="status">采购商已查看</div>
         <div class="status status-finish">采购已结束，采购商未答复</div>-->
         {% if quote.state == 2 %}
-        <div class="status status-refuse"><i class="iconfont icon-frown"></i>采购商回绝了您的报价，原因：{{quote.message}}</div>
+        <div class="status status-refuse"><i class="iconfont icon-frown"></i>采购商回绝了您的报价{% if quote.message is not None%}，原因：{{quote.message}}{% end %}</div>
         {% elif quote.state == 1 %}
         <div class="status status-accept"><i class="iconfont icon-face"></i>采购商认可了您的报价</div>
         {% end %}

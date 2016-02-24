@@ -1,0 +1,641 @@
+{% extends "base.html" %}
+{% block container %}
+<style>
+    .page-header .border_left{
+        background: #F0AD4E;
+        display:inline-block;
+        width:8px;
+        height:24px;
+        margin-right:10px;
+        vertical-align:middle;
+    }
+    .tag-this {
+        border-radius: 4px;
+        margin-top: 0px;
+        width: 210px;
+    }
+</style>
+<script src="{{ static_url('js/ajaxfileupload.js') }}"></script>
+<div class="container">
+    <div class="alert alert-warning" role="alert">
+        <h3>极速找货 <small>饮片厂、药厂发布采购计划，经营公司、经营户发布找货需求，海量产地供应商跟你极速报价</small></h3>
+        <h3>发布采购计划 <small>></small> 精准匹配推送 <small>></small> 供应商报价 <small>></small> 选择意向供应商洽谈 <small>></small> 安心交易</h3>
+    </div>
+
+    <form  id="purchase" action="/mypurchase/update/{{purchase.id}}" class="form-horizontal" method="post">
+    {% raw xsrf_form_html() %}
+    <h3 class="page-header"><i class="border_left"></i>采购单位/采购人</h3>
+        {% if user and handler.session.has_key('user') and handler.session.get('user') != ""  %}
+        <h4>{{ user.nickname }}  {% if user.has_key("name") %}{{user.name}}{% end %}</h4>
+        <p>{{ user.phone }}</p>
+        <p style="color:#44b549"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> 已通过实名认证</p>
+        {% else %}
+        <div class="form-group">
+            <label class="control-label col-md-2">* 联系人</label>
+            <div class="col-md-2">
+                <input type="text" name="nickname" class="form-control" placeholder="请填写本人真实姓名">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">* 手机号</label>
+            <div class="col-md-2">
+                <input type="text" name="phone" class="form-control" placeholder="请填写您的手机号">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">* 手机验证码</label>
+            <div class="col-md-9  form-inline">
+                <input type="text" name="verifycode" class="form-control">
+                <button type="button" class="btn btn-primary" onclick="time(this)">获取短信验证码</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">单位全称</label>
+            <div class="col-md-6">
+                <input type="text" name="name" class="form-control" placeholder="请填写您的单位全称，如亳州市沪谯药业有限公司；若为个人经营，请填写真实姓名">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">经营类型</label>
+            <div class="form-inline">
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="1">饮片厂/饮片生产、加工
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="2">药厂/制药企业
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="3">药材贸易经营公司
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="4">种植合作社/种植基地
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="5">其他类型公司
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="6">个体经营
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="7">企业采购经理/业务员
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="8">采购药材为主
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="9">销售药材为主
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="type" value="10">既采购也销售药材
+                </label>
+            </div>
+        </div>
+        {% end %}
+        <h3 class="page-header"><i class="border_left"></i>采购药材清单</h3>
+        <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>药材品种*</th>
+            <th>规格等级*</th>
+            <th>采购数量</th>
+            <th>质量要求</th>
+            <th>产地要求</th>
+            <th>封顶价</th>
+            <th>合格样例照</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for purchaseinfo in purchase.purchaseinfo %}
+          <tr>
+            <th>
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:removeSelf(this);">
+                    <input name="purchase[varietyid]" type="hidden" value="{{purchaseinfo.varietyid}}">
+                </span>
+            </th>
+            <td><input type="text" name="purchase[name]" style="width:80px" class="form-control" value="{{purchaseinfo.name}}" /></td>
+            <td>
+                <select name="purchase[specification]" style="width:120px" class="form-control">
+                    {% for specification in purchaseinfo.specification %}
+                    <option {% if specification.id == purchaseinfo.specificationid %}selected{% end %} value="{{specification.id}}">
+                        {{specification.specification}}
+                    </option>
+                    {% end %}
+                </select>
+            </td>
+            <td>
+                <div class="form-inline">
+                <input type="text" name="purchase[quantity]" style="width:70px" class="form-control" value="{{purchaseinfo.quantity}}"/>
+                <select name="purchase[unit]" style="width:80px" class="form-control">
+                    <option {%if purchaseinfo.unit == 1%}selected{% end %} value="1">公斤</option>
+                    <option {%if purchaseinfo.unit == 2%}selected{% end %} value="2">吨</option>
+                </select>
+                </div>
+            </td>
+            <td><input type="text" name="purchase[quality]" /></td>
+            <td><input type="text" name="purchase[origin]" /></td>
+            <td><div class="form-inline"><input type="text" name="purchase[price]" style="width:50px" class="form-control" value="{{purchaseinfo.price}}"/> 元/公斤</div></td>
+            <td>
+                <center>
+                    {% if purchaseinfo.attachments %}
+                    <img width="60" height="68" src="{{ purchaseinfo.attachments.attachment }}" />
+                    {% end %}
+                </center>
+                <center>
+                <div class="relative" style="position:relative;width:18px">
+                    <input type="file" class="fileclass" accept="image/gif, image/jpeg, image/png" name="filename" style="width:18px;z-index:1;opacity:0;position:absolute; left:0; top:0"/>
+                    <span class="glyphicon glyphicon-camera" style="font-size:18px;position:absolute; left:0; top:0;"></span>
+                </div>
+                </center>
+            </td>
+          </tr>
+          {% end %}
+        </tbody>
+      </table>
+      <div class="form-inline">
+          <button type="button" class="btn btn-primary" id="addline">增加一行</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">从EXCEL导入</button>
+      </div>
+      <h3 class="page-header"><i class="border_left"></i>交收要求</h3>
+      <div class="form-group">
+          <label class="control-label col-md-2">* 交货地</label>
+          <div class="col-md-9  form-inline">
+              <select id="province" name="province" class="form-control">
+                  <option value="">省</option>
+                  {% for province in provinces %}
+                  <option value="{{province.id}}"{% if area and (area.parentid == province.id)%} selected {%end%}>{{province.areaname}}</option>
+                  {% end %}
+              </select>
+              <select id="city" name="city" class="form-control">
+                  {% for c in city %}
+                  <option value="{{c.id}}"{% if area.id == c.id%} selected {%end%}>{{c.areaname}}</option>
+                  {% end %}
+              </select>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">发票要求</label>
+          <div class="form-inline">
+              <label class="radio-inline">
+                  <input type="radio" name="invoice" {% if purchase.invoice == 1 %}checked{% end %} value="1">无需发票
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="invoice" {% if purchase.invoice == 2 %}checked{% end %} value="2">普通发票
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="invoice" {% if purchase.invoice == 3 %}checked{% end %} value="3">增值税发票
+              </label>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">交易及付款</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="pay" {% if purchase.pay == 1 %}checked{% end %} value="1">药采购"安心交易"(预付全款)
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" id="pay-1" name="pay" {% if purchase.pay == 2 %}checked{% end %} value="2">双方直接交易，验收合格后<input type="text" name="payday" style="width:46px;height:22px" value="{{purchase.payday}}" class="form-control" />天内付款
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" id="pay-2" name="pay" {% if purchase.pay == 3 %}checked{% end %} value="3">其他  <input type="text" name="payinfo" style="width:120px;height:22px" value="{{ purchase.payinfo }}" class="form-control" />
+              </label>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">寄样</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="send" {% if purchase.send == 1 %}checked{% end %} value="1">报价必须寄样
+              </label>
+          </div>
+          <label class="control-label col-md-2"></label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" name="receive" class="form-control">
+                {{ purchase.receive }}
+            </textarea>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">验收及包装要求</label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" name="accept" class="form-control">
+                {{ purchase.accept }}
+            </textarea>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">补充说明</label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" name="other" class="form-control">
+                {{ purchase.other }}
+            </textarea>
+          </div>
+      </div>
+      <h3 class="page-header"><span class="glyphicon glyphicon-minus" aria-hidden="true" style="float:right;"></span><i class="border_left"></i>供应商要求</h3>
+      <div id="supplier" class="form-group">
+      <div class="form-group">
+          <label class="control-label col-md-2">供应商资质</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="supplier" {% if purchase.supplier == 1 %}checked{% end %} value="1">必须有营业执照（公司/合作社/经营户），不接受个人
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="supplier" {% if purchase.supplier == 2 %}checked{% end %} value="2">具备GSP资质
+              </label>
+              <label class="checkbox-inline">
+                  <input type="checkbox" name="supplier" {% if purchase.supplier == 3 %}checked{% end %} value="3">具备GMP资质
+              </label>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">其他要求</label>
+          <div class="form-inline">
+            <textarea rows="4" style="width:75%" name="remark" class="form-control">
+                {{ purchase.remark }}
+            </textarea>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">有效期</label>
+          <div class="form-inline">
+              <label class="checkbox-inline">
+                  <input type="checkbox" id="limited-0" name="limited" {% if purchase.limited == 1 %}checked{% end %} value="1">有限期报价
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="term" {% if purchase.term == 3 %}checked{% end %} value="3">3天
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="term" {% if purchase.term == 7 %}checked{% end %} value="7">7天
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="term" {% if purchase.term == 15 %}checked{% end %} value="15">15天
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="term" {% if purchase.term == 30 %}checked{% end %} value="30">30天
+              </label>
+          </div>
+          <label class="control-label col-md-2"></label>
+          <div class="form-inline">
+            <label class="checkbox-inline">
+                  <input type="checkbox" name="limited" {% if purchase.limited == 2 %}checked{% end %} value="2">常年采购
+            </label>
+          </div>
+      </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2"></label>
+          <button type="submit" class="btn btn-primary" data-loading-text="正在发布...">立即发布</button>
+      </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">批量导入</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-1">
+                <p><span class="label label-warning">1</span>&nbsp;&nbsp;</p>
+                <p><span class="label label-warning">2</span>&nbsp;&nbsp;</p>
+                <p><span class="label label-warning">3</span>&nbsp;&nbsp;</p>
+            </div>
+            <div class="col-sm-11" id="uploadexcel">
+                <p><a href="#">下载Excel模板</a></p>
+                <p>填写并保存Excel文件</p>
+                <p><input type="file" name="excel" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/></p>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+     $.fn.serializeObject = function(){
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function() {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+     };
+     var wait = 60;
+     function time(o) {
+        if (wait == 60) {
+        //ajax发送短信
+        }
+        if (wait == 0) {
+            o.removeAttribute("disabled");
+            o.innerHTML="获取短信验证码";
+            wait = 60;
+        } else {
+            o.setAttribute("disabled", true);
+            o.innerHTML="重新发送(" + wait + ")";
+            wait--;
+            setTimeout(function() {
+                time(o)
+            },
+            1000)
+        }
+    }
+    $(".page-header .glyphicon").click(function(){
+        var cs = $(this);
+        if(cs.attr("class").indexOf("minus") !=-1){
+            cs.attr("class", "glyphicon glyphicon-plus");
+            $("#supplier").hide();
+        }else{
+            cs.attr("class", "glyphicon glyphicon-minus");
+            $("#supplier").show();
+        };
+    });
+    var tr = $("tr:last").html();
+    $("#addline").click(function(){
+        $(".table").find("tbody").append("<tr>"+tr+"</tr>");
+        $("tr:last").find("input[name='purchase[quality]']").tagThis();
+        $("tr:last").find("input[name='purchase[origin]']").tagThis();
+    });
+    $("input[name='purchase[quality]']").tagThis();
+    $("input[name='purchase[origin]']").tagThis();
+    function removeSelf(obj){
+        if($("tr").length == 2){
+            alert("至少填写一个采购品种!");
+        }else{
+            $(obj).parents("tr").remove();
+        }
+    }
+
+    $('#purchase').bootstrapValidator({
+        message: 'This value is not valid',
+        fields: {
+            nickname: {
+                validators: {
+                    notEmpty: {
+                        message: '联系人不能为空'
+                    }
+                }
+            },
+            phone: {
+                validators: {
+                    notEmpty: {
+                        message: '手机号不能为空'
+                    },
+                    regexp : {
+                        regexp : /^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$/,
+                        message : '手机号码为11位数字'
+                    }
+                },
+            },
+            verifycode: {
+                validators: {
+                    notEmpty: {
+                        message: '验证码不能为空'
+                    }
+                }
+            },
+            provinces: {
+                validators: {
+                    notEmpty: {
+                        message: '省份不能为空'
+                    }
+                },
+            },
+            city: {
+                validators: {
+                    notEmpty: {
+                        message: '城市不能为空'
+                    }
+                }
+            }
+		},
+	})
+	.on('success.form.bv', function(e) {
+         e.preventDefault();
+         var $form = $(e.target);
+         var bv = $form.data('bootstrapValidator');
+         // 提交至form标签中的action，result自定义
+         var form = $(this).serializeObject();
+         //这是一个把"质量要求"这一栏的tag填写到总的post json里的实例,其他的照搬,都放到purchase的这个大json里即可
+         var purchases = {};
+         $("input[name='purchase[name]']").each(function(index, element){
+            purchases[index] = {};
+            purchases[index]["name"] = $(this).val();
+            delete form['purchase[name]'];
+         });
+         $("input[name='purchase[quantity]']").each(function(index, element){
+            purchases[index]["quantity"] = $(this).val();
+            delete form['purchase[quantity]'];
+         });
+         $("input[name='purchase[origin]']").each(function(index, element){
+            var tags = $(this).data('tags');
+            if(tags){
+                var tagArray = new Array();
+                for(var i=0;i<tags.length;i++){
+                    tagArray.push(tags[i].text);
+                }
+                purchases[index]["origin"] = eval(tagArray);
+            }else{
+                purchases[index]["origin"] = "";
+            }
+            delete form['purchase[origin]'];
+         });
+         $("input[name='purchase[price]']").each(function(index, element){
+            purchases[index]["price"] = $(this).val();
+            delete form['purchase[price]'];
+         });
+         $("input[name='purchase[quality]']").each(function(index, element){
+            var tags = $(this).data('tags');
+            if(tags){
+                var tagArray = new Array();
+                for(var i=0;i<tags.length;i++){
+                    tagArray.push(tags[i].text);
+                }
+                purchases[index]["quality"] = eval(tagArray);
+            }else{
+                purchases[index]["quality"] = "";
+            }
+            delete form['purchase[quality]'];
+         });
+         $("select[name='purchase[specification]']").each(function(index, element){
+            purchases[index]["specification"] = $(this).val();
+            delete form['purchase[specification]'];
+         });
+         $("select[name='purchase[unit]']").each(function(index, element){
+            purchases[index]["unit"] = $(this).val();
+            delete form['purchase[unit]'];
+         });
+         $("input[name='purchase[varietyid]']").each(function(index, element){
+            purchases[index]["varietyid"] = $(this).val();
+            delete form['purchase[varietyid]'];
+         });
+         form["purchases"] = purchases;
+         $.ajax({
+            url: $(this).attr('action'),
+            data: JSON.stringify(form),
+            dataType: 'json',
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if(data.status == "success"){
+                    window.location.href='/purchasesuccess';
+                }else{
+                    alert("提交失败，请刷新页面重试");
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+         });
+     });
+
+     $("#province").change(function(){
+        var provinceid = $("#province").val();
+        var _xsrf = document.cookie.match("\\b_xsrf=([^;]*)\\b")[1];
+        if(provinceid == "")
+            return;
+        $.ajax({
+            url: "/getcity",
+            data: "&_xsrf=" + _xsrf + "&provinceid=" + provinceid,
+            dataType: 'json',
+            type: 'POST',
+            success: function(data) {
+                if(data.status == "success"){
+                    $("#city").empty();
+                    cities = eval(data.data);
+                    for(var i=0; i<cities.length; i++){
+                       $("#city").append("<option value=\"" + cities[i].id +"\">" + cities[i].areaname + "</option>");
+                    }
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+         });
+     });
+     $("input[name='pay'][value=1]").click(function(){
+        if(document.getElementById("pay-1").checked){
+            $('#purchase').bootstrapValidator('addField', 'payday', {
+                validators: {
+                    notEmpty: {
+                        message: '勾选直接交易，必须填写多少天内付款'
+                    }
+                }
+            });
+        }else{
+            $('#purchase').bootstrapValidator('removeField', 'payday');
+            $("#pay-1").parent().parent().parent().attr("class","form-group");
+            $("#pay-2").parent().parent().parent().find("small").remove();
+        }
+     });
+     $("input[name='pay'][value=2]").click(function(){
+        if(document.getElementById("pay-2").checked){
+            $('#purchase').bootstrapValidator('addField', 'payinfo', {
+                validators: {
+                    notEmpty: {
+                        message: '勾选其他，必须填写交收方式'
+                    }
+                }
+            });
+        }else{
+            $('#purchase').bootstrapValidator('removeField', 'payinfo');
+            $("#pay-2").parent().parent().parent().attr("class","form-group");
+            $("#pay-2").parent().parent().parent().find("small").remove();
+        }
+     });
+     $('table').on('change','.fileclass',function(){
+        var num = $("table").find("tr").index($(this).parents("tr"));
+        var numid = "file-"+num;
+        $(this).attr("id",numid);
+        $.ajaxFileUpload({
+            url: '/uploadfile', //用于文件上传的服务器端请求地址
+            secureuri: false, //是否需要安全协议，一般设置为false
+            fileElementId: numid, //文件上传域的ID
+            data: {'num':num,'_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]},
+            success: function (data, status)  //服务器成功响应处理函数
+            {
+                var str = $(data).find("body").text();
+                var result = $.parseJSON(str);
+                if(result.status == "success"){
+                    $("table tr:eq("+num+")").find("center:eq(0)").append("<img width=\"60\" height=\"68\" src=\"static/" + result.path.split("\\static\\")[1] + "\" />");
+                }else{
+                    alert(result.message);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown)//服务器响应失败处理函数
+            {
+                alert(errorThrown);
+            }
+        })
+     });
+     $('#uploadexcel').on('change','input[name=excel]',function(){
+        $('#myModal').modal('hide');
+     });
+     var str;
+     $("table").on('keyup',"input[name='purchase[name]']",function(){
+        var _xsrf = document.cookie.match("\\b_xsrf=([^;]*)\\b")[1];
+        var num = $("table").find("tr").index($(this).parents("tr"));
+        var reg = /^[u4E00-u9FA5]+$/;
+        if(!reg.test($(this).val()) && str != $(this).val()) {
+            str = $(this).val();
+            $.ajax({
+                url: "/getvarietyinfo",
+                data: "&_xsrf=" + _xsrf + "&variety=" + str,
+                dataType: 'json',
+                type: 'POST',
+                success: function(data) {
+                    if(data.status == "success"){
+                        var obj = $("table tr:eq("+num+")").find("select[name='purchase[specification]']");
+                        obj.empty();
+                        for(var i=0; i<data.specifications.length; i++){
+                            obj.append("<option value=\"" + data.specifications[i].id +"\">" + data.specifications[i].specification + "</option>");
+                        }
+                        var originobj = $("table tr:eq("+num+")").find("input[name='purchase[origin]']");
+                        originobj.clearAllTags();
+                        $("table tr:eq("+num+")").find(".glyphicon-remove").empty();
+                        $("table tr:eq("+num+")").find(".glyphicon-remove").append("<input name=\"purchase[varietyid]\" type=\"hidden\" value=\"" + data.varietyinfo.id + "\" />");
+                        var origins = data.varietyinfo.origin.split(",");
+                        for(var j=0; j<origins.length; j++){
+                            originobj.addTag(origins[j]);
+                        }
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+             });
+        }
+     });
+     function initdata(num, quantity, origins){
+         num = num + 1;
+         var quantityobj = $("table tr:eq("+num+")").find("input[name='purchase[quality]']");
+         var quantity = quantity.split(",");
+         for(var i=0; i<quantity.length; i++){
+            quantityobj.addTag(quantity[i]);
+         }
+         var originobj = $("table tr:eq("+num+")").find("input[name='purchase[origin]']");
+         var origins = origins.split(",");
+         for(var j=0; j<origins.length; j++){
+            originobj.addTag(origins[j]);
+         }
+     }
+     {% for index,purchaseinfo in enumerate(purchase.purchaseinfo) %}
+     initdata({{index}},"{{purchaseinfo.quantity}}","{{purchaseinfo.origin}}");
+     {% end %}
+</script>
+{% end %}
