@@ -38,7 +38,7 @@ class CenterHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user = self.db.get("select * from users where id = %s", self.session.get("userid"))
-        news = self.db.query("select * from notification where receiver = %s order by type asc limit 3", self.session.get("userid"))
+        news = self.db.query("select * from notification where receiver = %s order by createtime desc limit 3", self.session.get("userid"))
 
         unread = 0
         sell = []
@@ -90,17 +90,6 @@ class UserAttentionHandler(BaseHandler):
             varieties = self.db.query("select id,name from variety where id in (" + user["varietyids"] + ")")
         self.render("user_attention.html", varieties=varieties)
 
-class UserListHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, page=0):
-        page = (int(page) - 1) if page > 0 else 0
-        nav = {
-            'model': 'users/userlist',
-            'num': self.db.execute_rowcount("SELECT * FROM users"),
-        }
-        users = self.db.query("SELECT * FROM users LIMIT %s,%s", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
-        self.render("userlist.html", users=users, nav=nav)
-
 class UserInfoHandler(BaseHandler):
 
     @tornado.web.authenticated
@@ -119,7 +108,7 @@ class NewsHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, type):
-        news = self.db.query("select * from notification where receiver = %s", self.session.get("userid"))
+        news = self.db.query("select * from notification where receiver = %s and type = %s order by createtime desc", self.session.get("userid"), type)
         unread = {}
         sell = []
         purchase = []
@@ -230,15 +219,3 @@ class UserCategoryHandler(BaseHandler):
             self.api_response({'status':'success','message':'更新成功'})
         else:
             self.api_response({'status':'fail','message':'请选择经营类型'})
-
-class UserRecoverHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, userid):
-        self.db.execute("update users set status=1 where id = %s", userid)
-        self.redirect('/users/userlist')
-
-class UserRemoveHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, userid):
-        self.db.execute("update users set status=0 where id = %s", userid)
-        self.redirect('/users/userlist')

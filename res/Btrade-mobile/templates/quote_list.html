@@ -64,7 +64,7 @@
                         {% else %}
                         {% if quote.timedelta > 0 %}
                         <div class="status">采购商还未回复</div>
-                        <div class="time"><i class="iconfont icon-time"></i>剩余<b>{{quote.datetime}}</b>天</div>
+                        <div class="time"><i class="iconfont icon-time"></i>剩余<b>{{quote.timedelta}}</b>天</div>
                         {% else %}
                         <div class="status status-finish">采购已结束，采购商未答复</div>
                         {% end %}
@@ -76,4 +76,5 @@
         </ul>
     </div>
 </section><!-- /yc-content -->
+<script src="{{ static_url('js/app.js') }}"></script>
 {% end %}

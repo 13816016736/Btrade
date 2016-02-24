@@ -23,6 +23,10 @@ class LoginHandler(BaseHandler):
             self.render("login.html", error="用户名不存在", next_url=self.get_argument("next", "/")
                         , username=username)
             return
+        if author["status"] == 0:
+            self.render("login.html", error="此用户已被禁用，请与客服联系", next_url=self.get_argument("next_url", "/")
+                        , username=username)
+            return
         if md5(str(password+config.salt)) == author.password:
             self.session["userid"] = author.id
             self.session["user"] = self.get_argument("username")

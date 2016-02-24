@@ -26,7 +26,7 @@ class QuoteHandler(BaseHandler):
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         purchaser = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
-        purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
+        purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["limited"] == 1:
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
@@ -115,9 +115,9 @@ class QuoteHandler(BaseHandler):
         #给采购商发送通知
         #获得采购商userid
         purchase = self.db.get("select u.nickname,t.* from (select p.userid,pi.name from purchase_info pi,purchase p where pi.purchaseid = p.id and pi.id = %s) "
-                               "t,user u where u.id = t.userid",
+                               "t,users u where u.id = t.userid",
                                self.get_argument("purchaseinfoid"))
-        title = purchase["nickname"] + "对您的采购品种【" + purchase["name"] + "】进行了报价"
+        title = purchase["nickname"].encode('utf-8') + "对您的采购品种【" + purchase["name"].encode('utf-8') + "】进行了报价"
 
         self.db.execute("insert into notification(sender,receiver,type,title,content,status,createtime)value(%s, %s, %s, %s, %s, %s, %s)",
                         self.session.get("userid"),purchase["userid"],2,title,self.get_argument("purchaseinfoid"),0,int(time.time()))
@@ -161,7 +161,7 @@ class QuoteDetailHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, quoteid, nid):
         quote = self.db.get("select * from quote where id = %s", quoteid)
-        quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+        quote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(quote["createtime"])))
         quoteattachment = self.db.query("select * from quote_attachment where quoteid = %s", quoteid)
         for qa in quoteattachment:
             base, ext = os.path.splitext(os.path.basename(qa["attachment"]))
@@ -175,12 +175,12 @@ class QuoteDetailHandler(BaseHandler):
         "specification sp on n.specificationid = sp.id", quote["purchaseinfoid"])
 
         #获得采购品种图片
-        attachments = self.db.query("select * from quote_attachment where quoteid = %s", quoteid)
+        attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", quote["purchaseinfoid"])
         for attachment in attachments:
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
-        purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
+        purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["limited"] == 1:
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
@@ -197,7 +197,9 @@ class QuoteDetailHandler(BaseHandler):
         for q in quotes:
             if q.state == 1:
                 acceptuserid.append(str(q.userid))
-        acceptuser = self.db.query("select nickname from users where id in (" + ",".join(acceptuserid) + ")")
+        acceptuser = []
+        if acceptuserid:
+            acceptuser = self.db.query("select nickname from users where id in (" + ",".join(acceptuserid) + ")")
         #此采购商回复供应商比例
         purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
             "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
@@ -226,10 +228,10 @@ class QuoteListHandler(BaseHandler):
         myquotes = self.db.query("select ta.*,n.id nid from (select mq.*,u.nickname,u.type from (select t.*,s.specification from "
                                  "(select ta.*,p.createtime purchasetime,p.term from ("
                                  "select q.*,pi.purchaseid,pi.name,pi.specificationid,pi.origin,pi.quantity,pi.unit "
-                                 "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s"
+                                 "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s order by q.createtime desc"
                                  ") ta,purchase p where ta.purchaseid = p.id) "
                                  "t,specification s where t.specificationid = s.id) mq,users u where mq.userid = u.id) ta "
-                                 "left join notification n on ta.userid = n.receiver and n.content = ta.id", userid)
+                                 "left join notification n on ta.userid = n.sender and n.content = ta.purchaseinfoid", userid)
         quoteids = []
         over = 0
         unreply = 0
@@ -237,7 +239,7 @@ class QuoteListHandler(BaseHandler):
             quoteids.append(str(myquote.id))
             expire = datetime.datetime.utcfromtimestamp(float(myquote["purchasetime"])) + datetime.timedelta(myquote["term"])
             myquote["timedelta"] = (expire - datetime.datetime.now()).days
-            myquote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(myquote["purchasetime"])))
+            myquote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(myquote["purchasetime"])))
             if myquote["timedelta"] <= 0:
                 over =+ 1
             if myquote.state == 0:
@@ -248,10 +250,12 @@ class QuoteListHandler(BaseHandler):
             quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
             myquoteattachments = {}
             for quoteattachment in quoteattachments:
-                if myquoteattachments.has_key(quoteattachment.quoteid):
-                    myquoteattachments[quoteattachment.quoteid].append(quoteattachment.attachment)
+                base, ext = os.path.splitext(os.path.basename(quoteattachment["attachment"]))
+                quoteattachment["attachment"] = config.img_domain+quoteattachment["attachment"][quoteattachment["attachment"].find("static"):].replace(base, base+"_thumb")
+                if myquoteattachments.has_key(quoteattachment["quoteid"]):
+                    myquoteattachments[quoteattachment["quoteid"]].append(quoteattachment["attachment"])
                 else:
-                    myquoteattachments[quoteattachment.quoteid] = [quoteattachment.attachment]
+                    myquoteattachments[quoteattachment["quoteid"]] = [quoteattachment["attachment"]]
         for mq in myquotes:
             if myquoteattachments.has_key(mq.id):
                 mq["attachments"] = myquoteattachments[mq.id]

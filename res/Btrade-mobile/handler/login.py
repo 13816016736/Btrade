@@ -22,6 +22,10 @@ class LoginHandler(BaseHandler):
             self.render("login.html", error="用户名不存在", next_url=self.get_argument("next_url", "/")
                         , username=username)
             return
+        if author["status"] == 0:
+            self.render("login.html", error="此用户已被禁用，请与客服联系", next_url=self.get_argument("next_url", "/")
+                        , username=username)
+            return
         if md5(str(password+config.salt)) == author.password:
             notification = self.db.query("select id from notification where receiver = %s", author.id)
             self.session["userid"] = author.id

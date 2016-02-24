@@ -40,12 +40,17 @@ http://mp.weixin.qq.com/wiki/18/28fc21e7ed87bec960651f0ce873ef8a.html
 https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f0704c1d9eb9b0b0e3b0a237/
 
 
+雄军需要修改的点：
+1.移动端iphone6浏览大图按钮不好点
+2.移动端添加登出按钮
+
 22-25日
 "图片的策略" 传缩略图 后端生成裁剪图片,共两张图在一张适用pc端一张适用移动端，并且存储公共图片服务
 采购单图片浏览
 boss系统完善
 PC端页面调整
 
+【03-01】【周行】提出基础数据(品种等)的格式规范要求，给到戴总，戴总/代雷开始整理
 
 3月5日 微信公众号申请  短信，服务器购置 部署+域名  并提交ICP备案
 3月6，7日 短信通道接入 微信公众号开发
@@ -117,3 +122,7 @@ CREATE TABLE IF NOT EXISTS quote_attachment (
 
 insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
 
+
+
+
+select ta.*,n.id nid from (select mq.*,u.nickname,u.type from (select t.*,s.specification from (select ta.*,p.createtime purchasetime,p.term from (select q.*,pi.purchaseid,pi.name,pi.specificationid,pi.origin,pi.quantity,pi.unit from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = 3 order by q.createtime desc) ta,purchase p where ta.purchaseid = p.id) t,specification s where t.specificationid = s.id) mq,users u where mq.userid = u.id) ta left join notification n on ta.userid = n.receiver and n.content = ta.id

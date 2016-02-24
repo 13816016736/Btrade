@@ -2,7 +2,7 @@
 
 import tornado.web
 from base import BaseHandler
-import config
+import config, time
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -52,10 +52,25 @@ class UserRemoveHandler(BaseHandler):
 class UpdateQuoteStateHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
-        qid = str(self.get_argument("qid", 0))
-        state = str(self.get_argument("state", 0))
+        qid = self.get_argument("qid", 0)
+        state = self.get_argument("state", 0)
+        message = self.get_argument("message", "")
         if qid != 0 and state !=0:
-            self.db.execute("update quote set state=%s where id in ("+qid+")", state)
+            if qid.isdigit() and int(state) == 2 and message != "":
+                self.db.execute("update quote set state=%s,message=%s,updatetime=%s where id = %s", state, message, int(time.time()), qid)
+            else:
+                self.db.execute("update quote set state=%s,updatetime=%s where id in ("+qid+")", state, int(time.time()))
+            #回复供应商的报价后，要通知供应商
+            purchases = self.db.query("select u.name,tab.id,tab.quoteuserid,tab.userid,tab.name variety,tab.price from "
+                          "(select ta.id,ta.quoteuserid,ta.price,ta.name,p.userid from (select t.id,t.userid quoteuserid,t.purchaseid,t.price,v.name from "
+                          "(select q.id,q.userid,pi.purchaseid,pi.varietyid,pi.price from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in ("+qid+")) t left join variety v on t.varietyid = v.id)"
+                          " ta left join purchase p on ta.purchaseid = p.id) tab left join users u on tab.userid = u.id")
+            params = []
+            for purchase in purchases:
+                title = purchase["name"].encode('utf-8') + "回复了您的报价【" + purchase["variety"].encode('utf-8') + " "+ str(purchase["price"]) + "】"
+                params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(time.time())])
+            self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
+
             self.api_response({'status':'success','message':'操作成功'})
         else:
             self.api_response({'status':'fail','message':'请选择要标注的报价'})

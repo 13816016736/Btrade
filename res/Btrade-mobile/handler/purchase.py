@@ -34,7 +34,7 @@ class PurchaseHandler(BaseHandler):
         #         purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
         #     for purchase in purchases:
         #         purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
-        #         purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
+        #         purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M", time.localtime(float(purchase["createtime"])))
         #         if purchase["limited"] == 1:
         #             # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
         #             expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
@@ -62,7 +62,7 @@ class PurchaseHandler(BaseHandler):
                 attachments[attachment["purchase_infoid"]] = attachment
 
             for purchase in purchases:
-                purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
+                purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
                 if int(purchase["limited"]) == 1:
                     # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
@@ -151,7 +151,7 @@ class PurchaseinfoBatchHandler(BaseHandler):
                 purchase["views"] =+ purchaseinfo["views"]
 
         purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
-        purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
+        purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
         if purchase["limited"] == 1:
             purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
             purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
