@@ -60,7 +60,7 @@ class QuoteHandler(BaseHandler):
             base, ext = os.path.splitext(os.path.basename(uploadfiles[k]))
             uploadfiles[k] = config.img_domain+uploadfiles[k][uploadfiles[k].find("static"):].replace(base, base+"_thumb")
         self.render("quote.html", purchaser=purchaser, purchase=purchaseinfo, purchases=purchases, quotes=quotes,
-                    reply=(float(reply)/float(len(purchaser_quotes))*100 if len(purchaser_quotes) != 0 else 0),
+                    reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),
                     uploadfiles=uploadfiles, quotechances=quotechances)
 
     @tornado.web.authenticated

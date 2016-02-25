@@ -75,7 +75,6 @@ Created on 2016-2-22
 @author: kevin
 '''
 import os
-import sys
 import glob
 import time
 from PIL import Image

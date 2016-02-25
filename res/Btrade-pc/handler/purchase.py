@@ -14,6 +14,14 @@ class PurchaseHandler(BaseHandler):
     def get(self):
         provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 0")
         if self.session.get("uploadfiles"):
+            for key, uploadfiles in self.session.get("uploadfiles").items():
+                for uploadfile in  uploadfiles:
+                    # uploadfile = uploadfile.encode("utf-8")
+                    if os.path.isfile(uploadfile):
+                        os.remove(uploadfile)
+                        base, ext = os.path.splitext(os.path.basename(uploadfile))
+                        filename = uploadfile.replace(base, base+"_thumb")
+                        os.remove(filename)
             self.session["uploadfiles"] = {}
             self.session.save()
         if self.session.get("userid"):
@@ -161,28 +169,33 @@ class UploadFileHandler(BaseHandler):
         num = self.get_argument("num")
         now = datetime.date.today().strftime("%Y%m%d")
         #文件的暂存路径
-        root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-        upload_path = os.path.join(root_path, 'static\\uploadfiles\\' + now)
-        if os.path.exists(upload_path) == False:
+        root_path = config.img_path
+        upload_path = os.path.join(root_path, now)
+        if os.path.exists(upload_path) is False:
             os.makedirs(upload_path)
         #提取表单中‘name’为‘file’的文件元数据
         file_metas = self.request.files['filename']
         for meta in file_metas:
             name, ext = os.path.splitext(meta['filename'])
-            filename = md5(name.encode('utf-8') + now)+ext
+            base = md5(name.encode('utf-8') + now)
+            filename = base + ".png"
             filepath = os.path.join(upload_path,filename)
             #有些文件需要已二进制的形式存储，实际中可以更改
-            with open(filepath,'wb') as up:
-                uploadfiles = self.session.get("uploadfiles", {})
-                if uploadfiles and uploadfiles.has_key(num):
-                    #uploadfiles[num].append(filepath)
-                    self.finish(json.dumps({'status':'fail','message':'一个采购单只能传一张图片'}))
-                else:
+            uploadfiles = self.session.get("uploadfiles", {})
+            if uploadfiles and uploadfiles.has_key(num):
+                #uploadfiles[num].append(filepath)
+                self.finish(json.dumps({'status':'fail','message':'一个采购单只能传一张图片'}))
+                return
+            else:
+                with open(filepath,'wb') as up:
                     up.write(meta['body'])
-                    uploadfiles[num] = [filepath]
-                    self.session["uploadfiles"] = uploadfiles
-                    self.session.save()
-                    self.finish(json.dumps({'status':'success','message':'上传成功','path':filepath}))
+                #生成缩略图
+                make_thumb(filepath,upload_path,300,300)
+                uploadfiles[num] = [filepath]
+                self.session["uploadfiles"] = uploadfiles
+                self.session.save()
+                thumbfile = config.img_domain+filepath[filepath.find("static"):].replace(base, base+"_thumb")
+                self.finish(json.dumps({'status':'success','message':'上传成功','path':thumbfile}))
                 print self.session["uploadfiles"]
                 return
         self.finish({'status':'fail','message':'上传失败'})

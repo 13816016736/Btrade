@@ -75,3 +75,7 @@ log_file = 'log/tornado.log'
 
 #用户密码的salt
 salt = "ycg20151012"
+
+#图片服务器域名
+img_domain = "http://10.0.24.114/"
+img_path = "E:\\wamp\\www\\static\\uploadfiles\\"

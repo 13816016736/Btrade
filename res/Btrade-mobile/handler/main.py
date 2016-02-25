@@ -41,12 +41,14 @@ class CenterHandler(BaseHandler):
         news = self.db.query("select * from notification where receiver = %s order by createtime desc limit 3", self.session.get("userid"))
 
         unread = 0
+        unreadtype = 0
         sell = []
         purchase = []
         quoteid = []
         for new in news:
             if new.status == 0:
                 unread =+ 1
+                unreadtype = new.type
             if new.type == 1:
                 new["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(new["createtime"])))
                 if new["content"].isdigit():
@@ -74,7 +76,7 @@ class CenterHandler(BaseHandler):
         quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
                                  , self.session.get("userid"), week_begin,week_end)
 
-        self.render("center.html", user=user, unread=unread, sell=sell, purchase=purchase, faces=faces, quotecount=quotecount)
+        self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces, quotecount=quotecount)
 
     @tornado.web.authenticated
     def post(self):
@@ -108,7 +110,7 @@ class NewsHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, type):
-        news = self.db.query("select * from notification where receiver = %s and type = %s order by createtime desc", self.session.get("userid"), type)
+        news = self.db.query("select * from notification where receiver = %s order by createtime desc", self.session.get("userid"))
         unread = {}
         sell = []
         purchase = []

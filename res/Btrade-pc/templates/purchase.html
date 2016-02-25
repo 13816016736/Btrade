@@ -553,7 +553,7 @@
                 var str = $(data).find("body").text();
                 var result = $.parseJSON(str);
                 if(result.status == "success"){
-                    $("table tr:eq("+num+")").find("center:eq(0)").append("<img width=\"60\" height=\"68\" src=\"static/" + result.path.split("\\static\\")[1] + "\" />");
+                    $("table tr:eq("+num+")").find("center:eq(0)").append("<img width=\"60\" height=\"68\" src=\"" + result.path + "\" />");
                 }else{
                     alert(result.message);
                 }
