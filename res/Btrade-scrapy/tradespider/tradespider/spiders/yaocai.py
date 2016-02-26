@@ -38,6 +38,19 @@ class YaocaiSpider(scrapy.Spider):
     def catch_item(response, typeid):
         selector = Selector(response)
         item = YaocaiItem()
+        #type值代表什么
+        # 1 花类
+        # 2 根茎类
+        # 3 全草类
+        # 4 叶类
+        # 5 树皮类
+        # 6 藤木类
+        # 7 树脂类
+        # 8 菌藻类
+        # 9 动物类
+        # 10 矿物类
+        # 11 其他加工类
+        # 12 果实种子类
         item['type'] = typeid
         item['name'] = selector.xpath('//div[@class="depict-name"]/h1/text()').extract()
         item['effect'] = selector.xpath('//div[@class="depict-name"]/p/text()').extract()

@@ -50,7 +50,27 @@ https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f070
 boss系统完善
 PC端页面调整
 
+2月27日或28日 严飞讨论记录
+1.pc端采购单发布成功的页面,那些统计的信息显示出来是否有必要.
+2.现在是否在平台都去掉认证的概念,因为还没有认证
+
 【03-01】【周行】提出基础数据(品种等)的格式规范要求，给到戴总，戴总/代雷开始整理
+SELECT v.id,
+case   
+   when v.type=1 then '花类'
+   when v.type=2 then '根茎类'
+   when v.type=3 then '全草类'
+   when v.type=4 then '叶类'
+   when v.type=5 then '树皮类'
+   when v.type=6 then '藤木类'
+   when v.type=7 then '树脂类'
+   when v.type=8 then '菌藻类'
+   when v.type=9 then '动物类'
+   when v.type=10 then '矿物类'
+   when v.type=11 then '其他加工类'
+   when v.type=12 then '果实种子类'
+   else 'none' END '分类'
+,v.name '品种',v.product '产新时间',v.origin '产地',s.specification '规格',v.identification '真伪鉴别',v.outline '概述',v.discourse '各家论述',v.characters '性状' FROM `variety` v left join specification s on v.id = s.varietyid
 
 3月5日 微信公众号申请  短信，服务器购置 部署+域名  并提交ICP备案
 3月6，7日 短信通道接入 微信公众号开发
