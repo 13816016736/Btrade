@@ -171,6 +171,12 @@
         <a href="/quote/purchaseinfoid/{{quote.purchaseinfoid}}">再次报价</a>
     </div>
 </footer>
-<script src="{{ static_url('js/app.js') }}"></script>
+{% elif quote.state == 1 %}
+<footer class="yc-footer">
+    <div class="yc-quote">
+        <a href="tel:{{user.phone}}">联系采购商</a>
+    </div>
+</footer>
 {% end %}
+<script src="{{ static_url('js/app.js') }}"></script>
 {% end %}

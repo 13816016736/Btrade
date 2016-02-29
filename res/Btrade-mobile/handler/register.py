@@ -7,8 +7,8 @@ import config
 import time
 
 class RegisterHandler(BaseHandler):
-    def get(self):
-	    self.render("register.html")
+    def get(self, next_url="/"):
+	    self.render("register.html", next_url=next_url)
 
     def post(self):
         username = self.get_argument("username")
@@ -77,4 +77,4 @@ class RegSuccessHandler(BaseHandler):
         pass
 
     def post(self):
-        self.render("register_result.html")
+        self.render("register_result.html" ,next_url=self.get_argument("next_url", "/"))

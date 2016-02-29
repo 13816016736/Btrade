@@ -1,4 +1,4 @@
-{% extends "basenofoot.html" %}
+{% extends "basenohead.html" %}
 {% block container %}
 <section class="yc-content">
     <div class="yc-message">
@@ -16,16 +16,19 @@
             </div>
 
             <div class="purchase">
-                <a href="/">返回采购单，立即报价</a>
+                <a href="{{next_url}}">返回采购单，立即报价</a>
             </div>
 
             <div class="weixin">
                 <i class="iconfont icon-weixin"></i>
                 <p>关注【药材购】微信公众平台，随时从微信进入药材购，查看药厂、饮片厂实时采购单</p>
+                <div class="qrcode">
+                    <img src="images/qucode_340_340.jpg" alt="">
+                </div>
             </div>
-            <div class="tc">
+            <!--<div class="tc">
                 <a class="back" href="/weixin">去关注</a>
-            </div>
+            </div>-->
         </div>
     </div>
 </section><!-- /yc-content -->

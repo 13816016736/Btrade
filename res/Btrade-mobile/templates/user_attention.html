@@ -79,14 +79,14 @@
                 },
                 success: function(data) {
                     if (data.status === 'success') {
-                        lpPopover('保存成功!');
+                        lpPopover('保存成功！');
                         self.location=document.referrer;
                     } else {
                         $('.yc-attention .list').html(data.msg);
                     }
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    lpPopover('网络连接超时，请您稍后重试!');
+                    lpPopover('网络连接超时，请您稍后重试！');
                 }
             })
         });

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block container %}
 <section class="yc-content">
+    {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
     <div class="yc-tag-list">
         <h2 class="hd"><i class="iconfont icon-heart"></i>我关注了</h2>
         <ul class="bd">
@@ -19,6 +20,11 @@
             {% end %}
         </ul>
     </div>
+    {% else %}
+    <div class="yc-tag-list">
+        <h2 class="hd"><i class="iconfont icon-user"></i>尚未登陆，登录后，可以跟自己心仪的采购单进行报价。<a href="/login">立即登录</a></h2>
+    </div>
+    {% end %}
 
     <div class="yc-purchase">
         <h2 class="title">为您精选采购单，赶紧报价吧</h2>
@@ -161,8 +167,9 @@ $(function(){
                         return false;
                     }
                     var result = toHtml(data.list);
-
                     $('.list ul').append(result);
+                    //列表图片点击浏览大图要绑定.thumb的点击事件
+                    gallery(true);
                     // 每次数据加载完，必须重置
                     me.resetload();
                 },

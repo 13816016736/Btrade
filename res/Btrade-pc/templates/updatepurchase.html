@@ -79,15 +79,6 @@
                 <label class="radio-inline">
                     <input type="radio" name="type" value="7">企业采购经理/业务员
                 </label>
-                <label class="radio-inline">
-                    <input type="radio" name="type" value="8">采购药材为主
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="type" value="9">销售药材为主
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="type" value="10">既采购也销售药材
-                </label>
             </div>
         </div>
         {% end %}
@@ -635,7 +626,7 @@
          }
      }
      {% for index,purchaseinfo in enumerate(purchase.purchaseinfo) %}
-     initdata({{index}},"{{purchaseinfo.quantity}}","{{purchaseinfo.origin}}");
+     initdata({{index}},"{{purchaseinfo.quality}}","{{purchaseinfo.origin}}");
      {% end %}
 </script>
 {% end %}

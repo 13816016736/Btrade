@@ -29,6 +29,7 @@
         <div class="yc-form">
             <form action="/regsuccess" method="post">
                 {% raw xsrf_form_html() %}
+                <input type="hidden" name="next_url" value="{{next_url}}" />
                 <div class="item">
                     <label class="txt">手机号</label>
                     <input class="ipt" type="text" value="" id="jMobile" placeholder="请输入手机号" />

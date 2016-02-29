@@ -13,8 +13,9 @@
             <div class="info">
                 <P>{{ user.username }}({{ user.name }})</P>
                 <p>{{ user.nickname }}</p>
-                <p class="gray">未认证</p>
+                <!--<p class="gray">未认证</p>-->
                 <!-- <p class="gray"><i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效</p> -->
+                <span class="label label-warning" onClick="location.href='/logout';return false;">退出登录</span>
             </div>
             <div class="edit">
                 {% if user.nickname is None or user.type is None or user.varietyids == ""%}

@@ -1,4 +1,4 @@
-{% extends "basenofoot.html" %}
+{% extends "basenohead.html" %}
 {% block container %}
 <section class="yc-content">
     <div class="yc-message">
@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="main">
-            <div class="thank">
+            <!--<div class="thank">
                 <i class="iconfont icon-radio-yes"></i>
                 <p>感谢您，在药材购提交了第一个报价</p>
                 <p>我们深知，每一个报价，代表着一份期待，药材购将竭力祝您促成交易</p>
@@ -20,12 +20,20 @@
                 <i class="iconfont icon-weixin"></i>
                 <p>关注【药材购】微信公众平台，查看药厂、饮片厂实时采购单，随时跟进报价</p>
                 <a class="go" href="/weixin">立即前往</a>
+            </div>-->
+
+            <div class="weixin">
+                <!--<i class="iconfont icon-weixin"></i>-->
+                <p>去【<a href="/center">我的工作台</a>】看到和管理报价。长按并识别以下二维码，关注【药材购】，随时随地查看药厂、饮片厂实时采购单</p>
+                <div class="qrcode">
+                    <img src="static/images/qucode_340_340.jpg" alt="">
+                </div>
             </div>
 
-            <div class="user">
+            <!--<div class="user">
                 <p>可在【我的工作台】看到和管理报价</p>
                 <a class="back" href="/center">去看看</a>
-            </div>
+            </div>-->
         </div>
     </div>
 </section><!-- /yc-content -->

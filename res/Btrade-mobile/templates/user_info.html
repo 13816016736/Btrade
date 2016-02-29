@@ -40,7 +40,7 @@
         <div class="item">
             <label class="txt">经营主体</label>
             <span class="ipt">{{user.nickname}}</span>
-            <span class="ipt"><a class="btn-verify" href="#none">立即认证</a></span>
+            <!--<span class="ipt"><a class="btn-verify" href="#none">立即认证</a></span>-->
         </div>
         <div class="title">
             <span>经营信息</span>
@@ -62,12 +62,6 @@
                 个人经营
                 {% elif user.type==7 %}
                 企业采购经理/业务员
-                {% elif user.type==8 %}
-                采购药材为主
-                {% elif user.type==9 %}
-                销售药材为主
-                {% elif user.type==10 %}
-                既采购也销售药材
                 {% else %}
                 未设定
                 {% end %}
@@ -78,6 +72,9 @@
             <a class="tag" href="/user/attention">
                 {% for variety in varieties %}
                 <b>{{ variety.name }}</b>
+                {% end %}
+                {% if len(varieties) == 0 %}
+                <b>添加品种</b>
                 {% end %}
                 <i class="iconfont icon-more"></i>
             </a>

@@ -211,7 +211,7 @@ class QuoteDetailHandler(BaseHandler):
                 reply = reply + 1
 
         #报价回复消息标记为已读
-        if nid is not None:
+        if int(nid)  > 0:
             self.db.execute("update notification set status = 1 where receiver = %s and id = %s", self.session.get("userid"), nid)
 
         self.render("quote_detail.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,
@@ -226,12 +226,12 @@ class QuoteListHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
-        myquotes = self.db.query("select ta.*,n.id nid from (select mq.*,u.nickname,u.type from (select t.*,s.specification from "
-                                 "(select ta.*,p.createtime purchasetime,p.term from ("
+        myquotes = self.db.query("select ta.*,n.id nid from (select mq.*,u.nickname,u.type,u.phone from (select t.*,s.specification from "
+                                 "(select ta.*,p.createtime purchasetime,p.term,p.userid purchaseuserid from ("
                                  "select q.*,pi.purchaseid,pi.name,pi.specificationid,pi.origin,pi.quantity,pi.unit "
                                  "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s order by q.createtime desc"
                                  ") ta,purchase p where ta.purchaseid = p.id) "
-                                 "t,specification s where t.specificationid = s.id) mq,users u where mq.userid = u.id) ta "
+                                 "t,specification s where t.specificationid = s.id) mq,users u where mq.purchaseuserid = u.id) ta "
                                  "left join notification n on ta.userid = n.sender and n.content = ta.purchaseinfoid", userid)
         quoteids = []
         over = 0
@@ -240,7 +240,7 @@ class QuoteListHandler(BaseHandler):
             quoteids.append(str(myquote.id))
             expire = datetime.datetime.utcfromtimestamp(float(myquote["purchasetime"])) + datetime.timedelta(myquote["term"])
             myquote["timedelta"] = (expire - datetime.datetime.now()).days
-            myquote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(myquote["purchasetime"])))
+            myquote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(myquote["createtime"])))
             if myquote["timedelta"] <= 0:
                 over =+ 1
             if myquote.state == 0:
