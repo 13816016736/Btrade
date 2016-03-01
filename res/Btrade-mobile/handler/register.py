@@ -14,7 +14,7 @@ class RegisterHandler(BaseHandler):
         username = self.get_argument("username")
         pattern = re.compile(r'^[A-Za-z0-9]{3,20}$')
         match = pattern.match(username)
-        if match is False and username is None:
+        if match is None:
             self.api_response({'status':'fail','message':'会员名填写错误'})
             return
         usercount = self.db.execute_rowcount("select * from users where username = %s", username)
@@ -24,16 +24,17 @@ class RegisterHandler(BaseHandler):
         phone = self.get_argument("phone")
         phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$')
         phonematch = phonepattern.match(phone)
-        if phonematch is False and phone is None:
+        if phonematch is None:
             self.api_response({'status':'fail','message':'手机号填写错误'})
             return
         phonecount = self.db.execute_rowcount("select * from users where phone = %s", phone)
         if phonecount > 0:
             self.api_response({'status':'fail','message':'此手机号已被使用'})
             return
-        #verifycode = self.get_argument("verifycode")
-        #if verifycode != self.session.get("verifycode"):
-        #    self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
+        smscode = self.get_argument("smscode")
+        if smscode != self.session.get("smscode"):
+           self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
+           return
 
         password = self.get_argument("password")
         repeatpassword = self.get_argument("repeatpassword")
@@ -69,8 +70,26 @@ class GetSmsCodeHandler(BaseHandler):
         pass
 
     def post(self):
-        #self.session.get("verifycode", "123456"):
-        pass
+        phone = self.get_argument("phone")
+        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$')
+        phonematch = phonepattern.match(phone)
+        if phonematch is None:
+            self.api_response({'status':'fail','message':'手机号填写错误'})
+            return
+        phonecount = self.db.execute_rowcount("select * from users where phone = %s", phone)
+        if phonecount > 0:
+            self.api_response({'status':'fail','message':'此手机号已被使用'})
+            return
+        smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
+        message = getSmsCode(phone, smscode)
+        import json
+        message = json.loads(message.encode("utf-8"))
+        if message["result"]:
+            self.session["smscode"] = smscode
+            self.session.save()
+            self.api_response({'status':'success','message':'短信验证码发送成功，请注意查收'})
+        else:
+            self.api_response({'status':'fail','message':'短信验证码发送失败，请稍后重试'})
 
 class RegSuccessHandler(BaseHandler):
     def get(self):

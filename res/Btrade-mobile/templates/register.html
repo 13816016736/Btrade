@@ -241,7 +241,7 @@
                 var name = (type == 6) ? $realName.val() : $compName.val();
                 var data = {
                     "phone":$mobile.val(),
-                    "verifycode":$code.val(),
+                    "smscode":$code.val(),
                     "username":$name.val(),
                     "password":$pwd.val(),
                     "repeatpassword":$repPwd.val(),
@@ -261,7 +261,7 @@
                         if (data.status === 'success') {
                             $("form").submit();
                         } else {
-                            lpPopover(data.message);;
+                            lpPopover(data.message);
                         }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -283,9 +283,28 @@
         // 短信验证码
         var sendMessageCode = {
             send: function() {
-                $send.text(second + txt).prop('disabled', true);
-                lpPopover("短信验证码已发出，请注意查收短信！");
-                this.lock();
+                var obj = this;
+                $.ajax({
+                    url: '/getsmscode',
+                    dataType: 'json',
+                    data: 'phone='+$mobile.val(),
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                    },
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            $send.text(second + txt).prop('disabled', true);
+                            obj.lock();
+                            lpPopover(data.message);
+                        }else{
+                            lpPopover(data.message);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        lpPopover('网络连接超时，请您稍后重试!');
+                    }
+                })
             },
             lock: function() {
                 var that = this;
@@ -302,10 +321,14 @@
         }
 
         $send.on("click", function() {
-            if (second === 0) {
-                second = 60;
-                sendMessageCode.send();
+            bool = checkMobile();
+            if(bool){
+                if (second === 0) {
+                    second = 60;
+                    sendMessageCode.send();
+                }
             }
+            return bool;
         })
 
         // 填充个人称呼

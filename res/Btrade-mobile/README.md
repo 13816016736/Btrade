@@ -23,6 +23,8 @@ http://old.sebug.net/paper/books/tornado/
 5.jinja2（模板引擎）
 6.PIL（生成缩略图用的python Image Library，http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/00140767171357714f87a053a824ffd811d98a83b58ec13000）
 (注意:用PIL上传缩略图时,一定要在原图上传完了之后把原图上传的流给close掉,在读取保存缩略图,不然会报错)
+7.requests
+
 
 tornado模板中get_template_namespace方法自动将变量加载到全局命名空间，所以模板中可以直接使用，也可以重写get_template_namespace方法，加入业务中需要的变量
 
@@ -39,24 +41,11 @@ http://mp.weixin.qq.com/wiki/18/28fc21e7ed87bec960651f0ce873ef8a.html
 工作计划:
 https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f0704c1d9eb9b0b0e3b0a237/
 
-
-雄军需要修改的点：
-1.移动端iphone6浏览大图按钮不好点
-2.移动端添加登出按钮
-
-22-25日
-"图片的策略" 传缩略图 后端生成裁剪图片,共两张图在一张适用pc端一张适用移动端，并且存储公共图片服务
-采购单图片浏览
-boss系统完善
-PC端页面调整
-
 雄军：
 移动端页面：
 1.移动首页打开蛮慢
 2.ios采购单页面大图浏览返回按钮及关闭按钮不好点
 9.android机上传图片,上传上去全是黑色的图,uploadpic这个js类生成缩略图有问题
-
-
 
 pc端：
 15.修改采购单 质量要求  品种顺序有问题  增加一行不复制上一个品种的填写   修改成功不推送   
@@ -95,7 +84,11 @@ case
 ,v.name '品种',v.product '产新时间',v.origin '产地',s.specification '规格',v.identification '真伪鉴别',v.outline '概述',v.discourse '各家论述',v.characters '性状' FROM `variety` v left join specification s on v.id = s.varietyid
 
 3月5日 微信公众号申请  短信，服务器购置 部署+域名  并提交ICP备案
+公众号   357505251@qq.com/ycg20150201
 3月6，7日 短信通道接入 微信公众号开发
+
+有道云协作
+账号:2006zhouhang@163.com
 
 
 purchase 采购表

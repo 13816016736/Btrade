@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import random
+from sendsms import *
 
 def md5(str):
     import hashlib
@@ -131,6 +132,12 @@ def merge_thumb(files, output_file):
         cur_height += img.size[1]
 
     merge_img.save(output_file, quality=70)
+
+def getSmsCode(phone, code):
+    templateId = 776
+    phone = phone
+    vars = '{"%code%":"'+code+'"}'
+    return send(templateId, phone, vars)
 
 if __name__ == '__main__':
     ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
