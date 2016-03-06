@@ -1,120 +1,79 @@
 {% extends "base.html" %}
 {% block container %}
-<style>
-  .btn-default {
-      color: #fff;
-      background-color: #aea79f;
-      border-color: #aea79f;
-  }
-</style>
-<div class="container">
-	<div class="row">
-		<div class="col-xs-12 col-sm-8 col-md-8">
-            <center><img src="{{ static_url('images/login-banner.jpg') }}" class="img-polaroid" /></center>
-		</div>
-		<div class="col-xs-12 col-sm-4 col-md-4">
-			<h3 class="center-block">登录</h3>
-            <br>
-			<form role="form" id="loginform" action="/login" method="post">
-				<div class="form-group">
-				<div class="input-group input-group-lg">
-				  <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-			      <input type="text" id="username" name="username" class="form-control" placeholder="用户名或手机号"
-					  {% if 'username' in globals() %}
-						value="{{username}}"
-					  {% end %}
-						  >
-			    </div>
-				</div>
-                <br>
-				<div class="form-group">
-				<div class="input-group input-group-lg">
-				  <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-			      <input type="password" id="password" name="password" class="form-control" placeholder="输入密码">
-			    </div>
-				</div>
-                <br>
-			    <div class="btn-group btn-group-lg btn-block">
-					<button type="submit" style="width:50%" class="btn btn-warning ladda-button" id="loginbtn" title="" data-style="expand-right" data-original-title="登录">
-						<span class="ladda-label">
-							{% raw xsrf_form_html() %}
-    						<input name="next_url" type="hidden" value="{{ next_url }}"/>
-							<span class="glyphicon glyphicon-log-in"></span> &nbsp; 登录极客
-						</span>
-					</button>
-					<button data-autosave="0" style="width:50%" type="button" class="btn btn-default ladda-button" id="autolog" title="" data-style="expand-right" data-original-title="记住密码">
-						<span class="ladda-label">
-							<span class="glyphicon glyphicon-unchecked"></span> &nbsp; 记住密码
-						</span>
-					</button>
-				</div>
-				  {% if 'error' in globals() %}
-					<br>
-					<br>
-					<div id="logalert" class="alert alert-danger" style="margin-bottom:0;">
-						<span class="glyphicon glyphicon-exclamation-sign"></span>
-						<span id="loginfo">&nbsp;{{error}}</span>
-					</div>
-				  {% end %}
-			</form>
-			<hr>
-			<div>
-		    	<a href="/register" class="btn btn-success pull-left">
-		    		<span class="glyphicon glyphicon-registration-mark"></span>&nbsp;注册
-		    	</a>
-		    	<a href="#" class="btn btn-default pull-right">
-		    		<span class="glyphicon glyphicon-search"></span>&nbsp;找回密码
-		    	</a>
-		    	<div class="clearfix"></div>
-			</div>
+<link rel="stylesheet" href="{{ static_url('css/login.css')}}" />
+<section class="sec">
+    <div class="wrap">
+        <div class="banner">
+            <img src="{{ static_url('images/56ca946e67751.jpg')}}" alt="">
+        </div>
+        <div class="log-box">
+            <h1><i class="iconfont icon-arrow"></i>登录</h1>
+            <div class="form">
+            <form action="/login" method="post" id="jLoginForm">
+				{% raw xsrf_form_html() %}<input name="next_url" type="hidden" value="{{ next_url }}"/>
+                <div class="msg" id="jMsg">{% if 'error' in globals() %}{{error}}{% end %}</div>
+                <div class="group">
+                    <i class="iconfont icon-user"></i><input type="text" placeholder="会员名/手机号" value="" name="username" class="ipt" autocomplete="off">
+                </div>
+
+                <div class="group">
+                    <i class="iconfont icon-lock"></i><input class="ipt" name="password" value="" placeholder="密码" type="password">
+                </div>
+                <div class="tr">
+                    <a href="#">忘记密码</a>
+                </div>
+
+                <div class="button">
+                    <button class="btn btn-orange" type="submit" id="jSubmit" class="submit">立即登录</button>
+                    <a class="btn btn-gray" href="/register">免费注册</a>
+                </div>
+
+                <div class="coagent">
+                    <a href="#"><i class="iconfont icon-wechat"></i>微信</a>
+                    <a href="#"><i class="iconfont icon-qq"></i>QQ</a>
+                </div>
+            </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
+{% end %}
+{% block javascript %}
+<script src="{{ static_url('js/jquery.validate.min.js')}}"></script>
 <script>
-$(document).ready(function() {
-  $("#autolog").click(function(){
-    if($(this).attr("class") == "btn ladda-button btn-warning"
-      && $(this).find("span").find("span").attr("class") == "glyphicon glyphicon-check"){
-      $(this).attr("class", "btn ladda-button btn-default");
-      $(this).find("span").find("span").attr("class", "glyphicon glyphicon-unchecked");
-    }else{
-      $(this).attr("class", "btn ladda-button btn-warning");
-      $(this).find("span").find("span").attr("class", "glyphicon glyphicon-check");
+// 登录验证
+$('#jLoginForm').validate({
+    rules: {
+        username: {
+            required: true
+        },
+        password: {
+            required: true
+        }
+    },
+    messages: {
+        username: {
+            required: '请输入用户名'
+        },
+        password: {
+            required: '请输入密码'
+        }
+    },
+    onkeyup: false,
+    errorLabelContainer: (document.getElementById('jMsg')),
+    submitHandler: function(form) {
+		form.submit();
     }
-  });
-  $('#loginform').bootstrapValidator({
-        message: 'This value is not valid',
-        /*feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },*/
-        fields: {
-            username: {
-                validators: {
-                    notEmpty: {
-                        message: '用户名不能为空'
-                    }
-                }
-            },
-            password: {
-                validators: {
-                    notEmpty: {
-                        message: '密码不能为空'
-                    }
-                }
-            },
-		},
-	});
-	// Validate the form manually 点击按钮就做验证，适合ajax提交
-    //$('#loginbtn').click(function() {
-    //    $('#loginform').bootstrapValidator('validate');
-    //});
-
-	//重置验证的状态
-    $('#resetBtn').click(function() {
-        $('#defaultForm').data('bootstrapValidator').resetForm(true);
-    });
 });
+
+</script>
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
 </script>
 {% end %}

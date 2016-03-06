@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+{% block container %}
+<link rel="stylesheet" href="{{ static_url('css/index.css')}}" />
+<section class="sec">
+    <div class="full-banner">
+        <div class="bd">
+            <ul class="yc-ul">
+                <li style="background-image:url({{ static_url('images/banner.jpg')}})">
+                    <div class="download">
+                        <a href="#">App Store下载</a>
+                        <a href="#">Andriod下载</a>
+                    </div>
+                </li>
+                <li style="background-image:url({{ static_url('images/banner.jpg')}})">
+                    <div class="download">
+                        <a href="#">App Store下载</a>
+                        <a href="#">Andriod下载</a>
+                    </div>
+                </li>
+                <li style="background-image:url({{ static_url('images/banner.jpg')}})">
+                    <div class="download">
+                        <a href="#">App Store下载</a>
+                        <a href="#">Andriod下载</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="ctrl prev"></div>
+        <div class="ctrl next"></div>
+    </div>
+
+    <div class="container">
+        <div class="floor floor1">
+            <div class="main">
+                <div class="hd">
+                    <h2 class="pull-left">即刻采购</h2>
+                    <p class="tag1">采购助理全程协助</p>
+                    <p class="tag2">品种专家协助评估价格及质量</p>
+                    <p class="tag3">海量优质供货商</p>
+                </div>
+                <div class="bd">
+                    <ol class="yc-ul">
+                        <li>
+                            <i class="icon1"></i>
+                            <strong>发布采购</strong>
+                            <span>01</span>
+                        </li>
+                        <li>
+                            <i class="icon2"></i>
+                            <strong>精准匹配推送</strong>
+                            <span>02</span>
+                        </li>
+                        <li>
+                            <i class="icon3"></i>
+                            <strong>供应商报价</strong>
+                            <span>03</span>
+                        </li>
+                        <li>
+                            <i class="icon4"></i>
+                            <strong>评估洽谈</strong>
+                            <span>04</span>
+                        </li>
+                        <li>
+                            <i class="icon5"></i>
+                            <strong>促成交易</strong>
+                            <span>05</span>
+                        </li>
+                    </ol>
+                    <div class="button">
+                        <a class="btn btn-orange" href="#">去采购</a>
+                    </div>
+                </div>
+            </div>
+            <div class="side">
+                <div class="hd">
+                    <h2>供货无忧</h2>
+                </div>
+                <div class="bd">
+                    <ul class="yc-ul">
+                        <li class="li1"><i class="icon1"></i>我是供应商</li>
+                        <li class="li2"><i class="icon2"></i>我有优质货源</li>
+                        <li class="li3"><i class="icon3"></i>随时随地查看采购单</li>
+                        <li class="li4"><i class="icon4"></i>随时随地报价</li>
+                    </ul>
+                    <div class="button">
+                        <a class="btn btn-white" href="#">去报价</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floor">
+            <div class="hd">
+                <h2>采购直播·最新采购单</h2>
+            </div>
+            <div class="list1">
+                <div class="tr thead">
+                    <div class="td1">采购单位</div>
+                    <div class="td2">
+                        <div class="group">
+                            <div class="td2-1">品种</div>
+                            <div class="td2-2">规格等级</div>
+                            <div class="td2-3">产地要求</div>
+                            <div class="td2-4">数量</div>
+                            <div class="td2-5">质量要求</div>
+                        </div>
+                    </div>
+                    <div class="td3"></div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <div class="attr">
+                            <span class="category">饮片公司</span>
+                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
+                            <time>3 分钟前</time>
+                        </div>
+                    </div>
+                    <div class="td2">
+                        <div class="group">
+                            <div class="td2-1">黄连</div>
+                            <div class="td2-2">鸡爪统</div>
+                            <div class="td2-3">重庆</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="tfoot">共采购21个品种</div>
+                    </div>
+                    <div class="td3">
+                        <div class="qrcode">
+                            <span><img src="uploads/qrcode.jpg" alt=""></span>
+                        </div>
+                        <div class="detail">
+                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <div class="attr">
+                            <span class="category">饮片公司</span>
+                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
+                            <time>3 分钟前</time>
+                        </div>
+                    </div>
+                    <div class="td2">
+                        <div class="group">
+                            <div class="td2-1">黄连</div>
+                            <div class="td2-2">鸡爪统</div>
+                            <div class="td2-3">重庆</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">枸杞子</div>
+                            <div class="td2-2">统</div>
+                            <div class="td2-3">湖北</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="tfoot">共采购21个品种</div>
+                    </div>
+                    <div class="td3">
+                        <div class="qrcode">
+                            <span><img src="uploads/qrcode.jpg" alt=""></span>
+                        </div>
+                        <div class="detail">
+                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <div class="attr">
+                            <span class="category">饮片公司</span>
+                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
+                            <time>3 分钟前</time>
+                        </div>
+                    </div>
+                    <div class="td2">
+                        <div class="group">
+                            <div class="td2-1">黄连</div>
+                            <div class="td2-2">鸡爪统</div>
+                            <div class="td2-3">重庆</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">枸杞子</div>
+                            <div class="td2-2">统</div>
+                            <div class="td2-3">湖北</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">山茱萸</div>
+                            <div class="td2-2">斜片</div>
+                            <div class="td2-3">安徽</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="tfoot">共采购21个品种</div>
+                    </div>
+                    <div class="td3">
+                        <div class="qrcode">
+                            <span><img src="uploads/qrcode.jpg" alt=""></span>
+                        </div>
+                        <div class="detail">
+                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <div class="attr">
+                            <span class="category">饮片公司</span>
+                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
+                            <time>3 分钟前</time>
+                        </div>
+                    </div>
+                    <div class="td2">
+                        <div class="group">
+                            <div class="td2-1">黄连</div>
+                            <div class="td2-2">鸡爪统</div>
+                            <div class="td2-3">重庆</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">枸杞子</div>
+                            <div class="td2-2">统</div>
+                            <div class="td2-3">湖北</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">山茱萸</div>
+                            <div class="td2-2">斜片</div>
+                            <div class="td2-3">安徽</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">山茱萸</div>
+                            <div class="td2-2">斜片</div>
+                            <div class="td2-3">安徽</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="tfoot">共采购21个品种</div>
+                    </div>
+                    <div class="td3">
+                        <div class="qrcode">
+                            <span><img src="uploads/qrcode.jpg" alt=""></span>
+                        </div>
+                        <div class="detail">
+                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <div class="attr">
+                            <span class="category">饮片公司</span>
+                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
+                            <time>3 分钟前</time>
+                        </div>
+                    </div>
+                    <div class="td2">
+                        <div class="group">
+                            <div class="td2-1">黄连</div>
+                            <div class="td2-2">鸡爪统</div>
+                            <div class="td2-3">重庆</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">枸杞子</div>
+                            <div class="td2-2">统</div>
+                            <div class="td2-3">湖北</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">山茱萸</div>
+                            <div class="td2-2">斜片</div>
+                            <div class="td2-3">安徽</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">枸杞子</div>
+                            <div class="td2-2">统</div>
+                            <div class="td2-3">湖北</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="group">
+                            <div class="td2-1">山茱萸</div>
+                            <div class="td2-2">斜片</div>
+                            <div class="td2-3">安徽</div>
+                            <div class="td2-4">3000公斤</div>
+                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                        </div>
+                        <div class="tfoot">共采购21个品种</div>
+                    </div>
+                    <div class="td3">
+                        <div class="qrcode">
+                            <span><img src="uploads/qrcode.jpg" alt=""></span>
+                        </div>
+                        <div class="detail">
+                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="floor">
+            <div class="hd">
+                <h2>采购直播·最新供货商报价</h2>
+            </div>
+            <div class="list2">
+                <div class="tr thead">
+                    <div class="td1">采购品种</div>
+                    <div class="td2">采购单位</div>
+                    <div class="td3">供应商</div>
+                    <div class="td4">货源质量</div>
+                    <div class="td5">报价</div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <strong>黄连</strong>
+                        <span>鸡爪统</span>
+                        <time>3 分钟前</time>
+                    </div>
+                    <div class="td2">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td3">
+                        <h3>秦联发</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td4">
+                        <div class="thumb">
+                            <img src="{{ static_url('uploads/small_1.jpg')}}" alt="">
+                            <img src="{{ static_url('uploads/small_2.jpg')}}" alt="">
+                            <img src="{{ static_url('uploads/small_3.jpg')}}" alt="">
+                        </div>
+                        <div class="desc">
+                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
+                        </div>
+                    </div>
+                    <div class="td5">
+                        <em>7</em>元/公斤
+                        <small>裸价</small>
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <strong>黄连</strong>
+                        <span>鸡爪统</span>
+                        <time>3 分钟前</time>
+                    </div>
+                    <div class="td2">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td3">
+                        <h3>秦联发</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td4">
+                        <div class="thumb">
+                            <img src="{{ static_url('uploads/small_4.jpg')}}" alt="">
+                        </div>
+                        <div class="desc">
+                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
+                        </div>
+                    </div>
+                    <div class="td5">
+                        <em>7</em>元/公斤
+                        <small>裸价</small>
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <strong>黄连</strong>
+                        <span>鸡爪统</span>
+                        <time>3 分钟前</time>
+                    </div>
+                    <div class="td2">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td3">
+                        <h3>秦联发</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td4">
+                        <div class="thumb">
+                            <img src="{{ static_url('uploads/small_5.jpg')}}" alt="">
+                            <img src="{{ static_url('uploads/small_6.jpg')}}" alt="">
+                        </div>
+                        <div class="desc">
+                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
+                        </div>
+                    </div>
+                    <div class="td5">
+                        <em>7</em>元/公斤
+                        <small>裸价</small>
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td1">
+                        <strong>黄连</strong>
+                        <span>鸡爪统</span>
+                        <time>3 分钟前</time>
+                    </div>
+                    <div class="td2">
+                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td3">
+                        <h3>秦联发</h3>
+                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
+                    </div>
+                    <div class="td4">
+                        <div class="thumb">
+                            <img src="{{ static_url('uploads/small_7.jpg')}}" alt="">
+                        </div>
+                        <div class="desc">
+                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
+                        </div>
+                    </div>
+                    <div class="td5">
+                        <em>7</em>元/公斤
+                        <small>裸价</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="total">
+        <div class="container">
+            <div class="hd">
+                <h2>已有<i>1</i><i>6</i><i>1</i><i>3</i>个采购品种，在药材购收到<i>1</i><i>6</i><i>1</i><i>3</i>个报价</h2>
+                <p>药材购希望通过提供有效的信息、数据和工具，帮助药材采购商提高效率，找到更多货源，质量更好，价格更优，对接更轻松。同时，供应商可以直接对接更多采购订单，打开销路。</p>
+                <div class="button">
+                    <a class="btn btn-orange" href="#">我是采购商，即刻采购</a>
+                    <a class="btn btn-gray" href="#">我是供应商，立即报价</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="coop">
+        <h2>最新入驻知名采购商</h2>
+        <div class="brands">
+            <div class="bd">
+                <ul class="yc-ul">
+                    <li><a href="#"><img src="{{ static_url('images/brand_1.jpg')}}" alt=""></a></li>
+                    <li><a href="#"><img src="{{ static_url('images/brand_2.jpg')}}" alt=""></a></li>
+                    <li><a href="#"><img src="{{ static_url('images/brand_3.jpg')}}" alt=""></a></li>
+                    <li><a href="#"><img src="{{ static_url('images/brand_4.jpg')}}" alt=""></a></li>
+                    <li><a href="#"><img src="{{ static_url('images/brand_3.jpg')}}" alt=""></a></li>
+                    <li><a href="#"><img src="{{ static_url('images/brand_2.jpg')}}" alt=""></a></li>
+                    <li><a href="#"><img src="{{ static_url('images/brand_1.jpg')}}" alt=""></a></li>
+                    <li><a href="#"><img src="{{ static_url('images/brand_4.jpg')}}" alt=""></a></li>
+                </ul>
+            </div>
+
+            <div class="ctrl next"></div>
+            <div class="ctrl prev"></div>
+        </div>
+
+    </div>
+</section>
+{% end %}
+
+{% block javascript %}
+<script src="{{ static_url('js/jquery.SuperSlide.2.1.1.js')}}"></script>
+<script>
+$(function(){
+    $('.full-banner').slide({
+        mainCell: '.bd ul',
+        effect: 'leftLoop',
+        autoPlay: true,
+        autoPage: true,
+        vis: 1,
+        easing: 'easeInQuint',
+        trigger: 'click'
+    });
+
+    $('.brands').slide({
+        mainCell: '.bd ul',
+        effect: 'left',
+        autoPlay: true,
+        autoPage: true,
+        vis: 4,
+        easing: 'easeInOutExpo',
+        trigger: 'click'
+    });
+})
+
+</script>
+
+
+
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
+</script>
+{% end %}

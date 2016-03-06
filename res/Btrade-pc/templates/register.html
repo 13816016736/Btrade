@@ -1,398 +1,145 @@
 {% extends "base.html" %}
 {% block container %}
-<style>
-  fieldset {
-      display: none;
-      margin-top:30px;
-  }
-  .title-register {
-      background-color: #fff;
-      border-radius: 4px 4px 0 0;
-      border-width:1px 1px 0 1px;
-      border-style:solid;
-      border-color:#e1e1e8;
-      -webkit-box-shadow: none;
-      box-shadow: none;
-      height:60px;
-      overflow:hidden;
-      padding-left:20px;
-      width:75%;
-      margin:0 auto;
-  }
-  .content-register {
-      width:75%;
-      margin:0 auto;
-      border: 1px solid #e1e1e8;
-  }
-</style>
-<div class="container">
-    <div class="title-register">
-      <div class="bs-example">
-        <h3>免费注册</h3>
-      </div>
-    </div>
-    <div class="content-register">
-      <fieldset style="display: block;" id="step1">
-          <div class="form-top">
-              <div class="form-top-left">
-                <center>
-                  <p>
-                    <span class="label label-warning">1</span>&nbsp;&nbsp;<b>验证手机</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="glyphicon glyphicon-menu-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="label label-default">2</span>&nbsp;&nbsp;<b>完善账户信息</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="glyphicon glyphicon-menu-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="label label-default">3</span>&nbsp;&nbsp;<b>注册成功</b>
-                  </p>
-                </center>
-              </div>
-          </div>
-          <br>
-          <form id="reg-step1" action="/register/checkphone" method="post">{% raw xsrf_form_html() %}
-          <div class="form-bottom" style="width:360px;margin:0 auto">
-              <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
-                <input type="text" id="phone" name="phone" class="form-control" placeholder="手机号">
-              </div>
-              </div>
-              <div class="form-group">
-              <div class="input-group">
-                <script type="text/javascript" src="{{url}}"></script>
-              </div>
-              </div>
-              <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-                <input type="text" id="verifycode" name="verifycode" class="form-control" placeholder="手机验证码">
-              </div>
-              </div>
-              <div class="form-group">
-              <div class="input-group">
-                <button type="button" class="btn btn-default" onclick="time(this)">获取手机验证码</button>
-              </div>
-              </div>
-              <div id="logalert" class="alert alert-danger" style="margin-bottom:0;display:none;">
-                <span class="glyphicon glyphicon-exclamation-sign"></span>
-                <span id="loginfo">&nbsp;错误提示框</span>
-              </div>
-              <br>
-              <button type="button" id="to_step2" class="btn btn-warning">下一步</button>
-              <br>
-              <br>
-              <p>点击下一步，即代表您同意<a href="#">《药采购服务条款》</a></p>
-              <br>
-          </div>
-          </form>
-      </fieldset>
+<link rel="stylesheet" href="{{ static_url('css/login.css')}}" />
+<section class="sec">
+    <div class="wrap">
+        <div class="reg-box">
+            <h1><i class="iconfont icon-arrow"></i>免费注册</h1>
+            <div class="step">
+                <ul class="yc-ul">
+                    <li class="curr">
+                        <span>1</span>
+                        <strong>验证手机</strong>
+                        <i class="iconfont icon-arrow"></i>
+                    </li>
+                    <li>
+                        <span>2</span>
+                        <strong>完善账户信息</strong>
+                        <i class="iconfont icon-arrow"></i>
+                    </li>
+                    <li>
+                        <span>3</span>
+                        <strong>注册成功</strong>
+                    </li>
+                </ul>
+            </div>
+            <div class="form">
+            <form action="/register/checkphone" method="post" id="jLoginForm">
+                {% raw xsrf_form_html() %}
+                <div class="msg" id="jMsg"></div>
+                <div class="group">
+                    <i class="iconfont icon-user"></i><input class="ipt" type="text" placeholder="手机号" value="" name="username" id="jUsername" autocomplete="off">
+                </div>
+                <div class="group">
+                    <script type="text/javascript" src="{{url}}"></script>
+                </div>
+                <div class="group">
+                    <i class="iconfont icon-lock"></i><input class="ipt code" type="text" placeholder="验证码" value="" name="code" id="jCode" autocomplete="off">
+                    <button class="btn btn-gray" type="button" id="jSend">获取验证码</button>
+                </div>
 
-      <fieldset id="step2">
-          <div class="form-top">
-              <div class="form-top-left">
-                  <center>
-                    <p>
-                      <span class="label label-default">1</span>&nbsp;&nbsp;<b>验证手机</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="glyphicon glyphicon-menu-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="label label-warning">2</span>&nbsp;&nbsp;<b>完善账户信息</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="glyphicon glyphicon-menu-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="label label-default">3</span>&nbsp;&nbsp;<b>注册成功</b>
-                    </p>
-                  </center>
-              </div>
-          </div>
-          <br>
-          <div class="form-bottom">
-            <form class="form-horizontal" id="reg-step2" action="/register" method="post">{% raw xsrf_form_html() %}
-              <div class="form-group">
-                  <label class="control-label col-md-3" for="form-phone">登录手机</label>
-                  <div class="col-md-7">
-                    <input type="text" name="form-phone" class="form-control" id="form-phone" disabled>
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-3" for="form-password">* 登录密码</label>
-                  <div class="col-md-7">
-                    <input type="password" name="password" placeholder="6-20字母、数字" class="form-password form-control" id="form-password">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-3" for="form-repeat-password">* 确认密码</label>
-                  <div class="col-md-7">
-                    <input type="password" name="repeatpassword" placeholder="" class="form-password form-control" id="form-repeat-password">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-3" for="form-username">* 会员名</label>
-                  <div class="col-md-7">
-                    <input type="text" name="username" placeholder="3-20位字母、数字，一旦设定即不可修改" class="form-control" id="form-username">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-3" for="form-nickname">* 经营主体</label>
-                  <div class="col-md-7">
-                    <p style="color:red">请真实填写以下信息，药采购倡导诚信交易，越诚信，越有价值</p>
-                    <div class="form-group">
-                    <label class="radio-inline" style="float:left">
-                      <input type="radio" name="account" id="company" value="1">注册企业账户
-                    </label>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-md-3" for="form-company">单位全称</label>
-                      <div class="col-md-8">
-                        <input type="text" name="company" placeholder="例：亳州永刚中药饮片公司" class="form-control" id="form-company">
-                      </div>
-                    </div>
-                    <div class="alert alert-warning" role="alert">
-                      <p><b>适用范围</b>：拥有营业执照主体，包括饮片厂、药厂、药材经营公司、合作社、种植基地、个体工商户等</p>
-                      <p><b>更多权益</b>：有限展示、子账号等高级功能</p>
-                      <p><b>身份核定</b>：后续需提供工商营业执照等信息来核定身份</p>
-                    </div>
-                    <div class="form-group">
-                    <label class="radio-inline" style="float:left">
-                      <input type="radio" name="account" id="person" value="6">注册个人账户
-                    </label>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-md-3" for="form-name">真实姓名</label>
-                      <div class="col-md-8">
-                        <input type="text" name="name" placeholder="" class="form-control" id="form-name">
-                      </div>
-                    </div>
-                    <div class="alert alert-warning" role="alert">
-                      <p><b>适用范围</b>：无营业执照经营个人，或企业采购经理/业务员个人注册</p>
-                      <p><b>身份核定</b>：后续需提供身份证来核定身份，以名片、单位授权书等来核定工作身份</p>
-                    </div>
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-3" for="form-nickname">* 个人称呼</label>
-                  <div class="col-md-7">
-                    <input type="text" name="nickname" placeholder="请填写你的姓名或称呼，用户联系" class="form-control" id="form-nickname">
-                  </div>
-              </div>
-              <center>
-              <div id="regalert" class="alert alert-danger" style="margin-bottom:0;width:300px;display:none;">
-                <span class="glyphicon glyphicon-exclamation-sign"></span>
-                <span id="reginfo">&nbsp;错误提示框</span>
-              </div>
-              </center>
-              <br>
-              <center><button type="button" class="btn btn-warning btn-lg" id="finish">提交</button></center>
-              <br>
+                <div class="button">
+                    <button class="btn btn-orange" type="submit" id="jSubmit" class="submit">下一步</button>
+                </div>
+
+                <div class="agreement">
+                    <p>点击下一步，即代表您同意<a href="#">《药材购服务条款》</a></p>
+                </div>
+
             </form>
-          </div>
-      </fieldset>
-
-      <fieldset id="step3">
-          <div class="form-top">
-              <div class="form-top-left">
-                  <center>
-                    <p>
-                      <span class="label label-default">1</span>&nbsp;&nbsp;<b>验证手机</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="glyphicon glyphicon-menu-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="label label-default">2</span>&nbsp;&nbsp;<b>完善账户信息</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="glyphicon glyphicon-menu-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="label label-warning">3</span>&nbsp;&nbsp;<b>注册成功</b>
-                    </p>
-                  </center>
-              </div>
-          </div>
-          <br>
-          <div class="form-bottom" style="width:600px;margin:0 auto">
-            <h3><span class="glyphicon glyphicon-ok-sign" style="color:#44b549" aria-hidden="true"></span>
-              <b id="username" style="color:#f0ad4e;">boyyafee</b> 恭喜，已成功开通药采购服务</h3>
-            <p style="color:#9d9d9d;">即刻采购，供货无忧，药采购竭力助您买卖药材</p>
-            <div class="alert alert-warning" role="alert">
-              完善会员资料，进行身份认证，获得两倍贸易机会特权，生意伙伴更信赖！<a href="/dashboard">立即前往</a>
             </div>
-            <div class="row">
-              <div class="col-sm-3">
-                <button type="button" class="btn btn-warning btn-lg">极速找货</button>
-              </div>
-              <div class="col-sm-9">
-                <p style="color:#9d9d9d;"><b style="color:#f0ad4e;">213</b> 家靠谱的大货供应商，等待与您邂逅</p>
-                <p style="color:#9d9d9d;">过去一周，已有 <b style="color:#f0ad4e;">32</b> 家单位采购到了 <b style="color:#f0ad4e;">34</b> 万元优质价廉的药材</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-3">
-                <button type="button" class="btn btn-warning btn-lg">我要供货</button>
-              </div>
-              <div class="col-sm-9">
-                <p style="color:#9d9d9d;"><b style="color:#f0ad4e;">212</b> 家靠谱的采购商，等待与您邂逅</p>
-                <p style="color:#9d9d9d;">过去一周，已有 <b style="color:#f0ad4e;">2245</b> 供货商卖出了 <b style="color:#f0ad4e;">34</b> 万元的药材</p>
-              </div>
-              <br>
-              <br>
-            </div>
-          </div>
-      </fieldset>
+        </div>
     </div>
-</div>
+</section>
+{% end %}
+{% block javascript %}
+<script src="{{ static_url('js/jquery.validate.min.js')}}"></script>
 <script>
-   $("#to_step2").click(function(){
-        $('#reg-step1').bootstrapValidator('validate');
-   });
-   $('#reg-step1').bootstrapValidator({
-        message: 'This value is not valid',
-        fields: {
-            phone: {
-                validators: {
-                    notEmpty: {
-                        message: '手机号不能为空'
-                    },
-                    regexp : {
-                        regexp : /^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$/,
-                        message : '手机号码为11位数字'
-                    }
-                },
-            },
-            verifycode: {
-                validators: {
-                    notEmpty: {
-                        message: '验证码不能为空'
-                    },
-                    regexp : {
-                        regexp : /^\d{6}$/,
-                        message : '验证码为6位数字'
-                    }
-                }
-            },
-		},
-	})
-	.on('success.form.bv', function(e) {//点击提交之后
-         // Prevent form submission
-         e.preventDefault();
 
-         // Get the form instance
-         var $form = $(e.target);
+!(function(jQuery){
+    var $mobile = $('#jUsername'),
+        $code = $('#jCode'),
+        $send = $('#jSend'),
+        timeout = 0,
+        timer = 0,
+        delay = 60,
+        txt = '秒后重新获取',
+        $error = $('#jMsg');
 
-         // Get the BootstrapValidator instance
-         var bv = $form.data('bootstrapValidator');
-         // Use Ajax to submit form data 提交至form标签中的action，result自定义
-         $.ajax({
-            url: $(this).attr('action'),
-            data: $(this).serialize(),
-            dataType: 'json',
-            type: 'POST',
-            success: function(data) {
-                if(data.status == "success"){
-                    $("#step1").hide();
-                    $("#step2").show();
-                    $("#form-phone").val(data.data);
-                }else{
-                    $("#logalert").show();
-                    $("#loginfo").html(data.message);
-                }
-            },
-            error: function(data) {
-                alert("出现异常，请刷新页面再试");
+    var _clock = function() {
+        timer && clearInterval(timer);
+        timer = setInterval(function() {
+            timeout --;
+            $send.text(timeout + txt).prop('disabled', true);
+            if (timeout === 0) {
+                clearInterval(timer);
+                $send.text('获取验证码').prop('disabled', false);
             }
-         });
-     });
-     var wait = 60;
-     function time(o) {
-        if (wait == 60) {
-        //ajax发送短信
-        }
-        if (wait == 0) {
-            o.removeAttribute("disabled");
-            o.innerHTML="获取短信验证码";
-            wait = 60;
+        }, 1e3);
+    }
+
+    var _showMsg = function(txt) {
+        if (txt) {
+            $error.html(txt);
         } else {
-            o.setAttribute("disabled", true);
-            o.innerHTML="重新发送(" + wait + ")";
-            wait--;
-            setTimeout(function() {
-                time(o)
-            },
-            1000)
+            $error.html('');
         }
     }
 
-    $("#finish").click(function(){
-        $('#reg-step2').bootstrapValidator('validate');
+    function checkMobile() {
+        var val = $mobile.val();
+        if (!val) {
+            _showMsg('请输入手机号码');
+        } else if (!/^1[345678]\d{9}$|^01[345678]\d{9}$/.test(val)) {
+            _showMsg('手机号码格式错误');
+        } else {
+            _showMsg(false);
+            return true;
+        }
+        $mobile.focus();
+        return false;
+    }
+    function checkCode() {
+        var val = $code.val();
+        if (!val) {
+            _showMsg('请输入手机验证码');
+        } else {
+            _showMsg(false);
+            return true;
+        }
+        $code.focus();
+        return false;
+    }
+    function checkIpt() {
+        if (checkMobile() && checkCode()) {
+            return true;
+        }
+        return false;
+    }
+    $('#jSubmit').on('click', function() {
+        return checkIpt();
     });
-    $('#reg-step2').bootstrapValidator({
-        message: 'This value is not valid',
-        fields: {
-            password: {
-                validators: {
-                    notEmpty: {
-                        message: '密码不能为空'
-                    },
-                    regexp : {
-                        regexp : /^[A-Za-z0-9]{6,20}$/,
-                        message : '密码必须为6-20位字母、数字组成'
-                    }
-                }
-            },
-            repeatpassword: {
-                validators: {
-                    notEmpty: {
-                        message: '确认密码不能为空'
-                    },
-                    identical: {//相同
-                        field: 'password',
-                        message: '两次密码不一致'
-                    },
-                },
-            },
-            username: {
-                validators: {
-                    notEmpty: {
-                        message: '会员名不能为空'
-                    },
-                    regexp : {
-                        regexp : /^[A-Za-z0-9]{3,20}$/,
-                        message : '密码必须为3-20位字母、数字组成'
-                    }
-                }
-            },
-            account: {
-                validators: {
-                    notEmpty: {
-                        message: '经营主体不能为空'
-                    }
-                }
-            },
-            nickname: {
-                validators: {
-                    notEmpty: {
-                        message: '个人称呼不能为空'
-                    }
-                }
-            },
-		},
-	})
-	.on('success.form.bv', function(e) {//点击提交之后
-         // Prevent form submission
-         e.preventDefault();
 
-         // Get the form instance
-         var $form = $(e.target);
+    // 验证码
+    $send.prop('disabled', false).on('click', function() {
+        if(checkMobile() && timeout === 0) {
+            timeout = delay;
+            $send.text(timeout + txt).prop('disabled', true).prev().focus();
+            _clock();
+            //ajax
+        }
+    });
+})($);
 
-         // Get the BootstrapValidator instance
-         var bv = $form.data('bootstrapValidator');
-         // Use Ajax to submit form data 提交至form标签中的action，result自定义
-         $.ajax({
-            url: $(this).attr('action'),
-            data: $(this).serialize(),
-            dataType: 'json',
-            type: 'POST',
-            success: function(data) {
-                if(data.status == "success"){
-                    $("#step2").hide();
-                    $("#step3").show();
-                    $("#username").html(data.data.username);
-                }else{
-                    $("#regalert").show();
-                    $("#reginfo").html(data.message);
-                }
-            },
-            error: function(data) {
-                alert("出现异常，请刷新页面再试");
-            }
-         });
-     });
+
+</script>
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
 </script>
 {% end %}
