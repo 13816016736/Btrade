@@ -138,7 +138,6 @@ function JPEGEncoder(a){function I(a){var c,i,j,k,l,m,n,o,p,b=[16,11,10,16,24,40
             	// 修复android
                 var encoder = new JPEGEncoder();
                 base64 = encoder.encode(ctx.getImageData(0, 0, maxWidth, maxHeight));
-
             } else {
 				base64 = canvas.toDataURL(this.fileType);
             }

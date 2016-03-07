@@ -99,6 +99,7 @@
         </div>
     </footer>
     <script src="{{ static_url('js/uploads.js') }}"></script>
+    <script src="{{ static_url('js/lrz.bundle.js') }}"></script>
     <script>
     $('.tab').on('click', 'li', function() {
         var index = $(this).index();
@@ -109,8 +110,49 @@
     $('input[type="file"]').on('change', function(ev) {
         var index = $('.tab .current').index();
         // var $preview = $('.cont .item').eq(index).find('.preview');
+        //方案一:用lrz压缩图片并上传,但是要自己写图片验证，比如格式验证，大小验证等
+        //图片验证
 
-        new UploadPic({
+        //图片lrz压缩上传
+        lrz($(this).get(0).files[0], {
+            width: 800
+        }).then(function (rst) {
+            base64 = rst.base64;
+            base64 = base64.substr(base64.indexOf(',') + 1);
+            $.ajax({
+                url: "/uploadfile",
+                data: {
+                    base64_string: base64,
+                    'type': {{type}},
+                    '_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]
+                },
+                type: 'post',
+                dataType: 'json',
+                beforeSend: function(jqXHR, settings) {
+                    lpPopover('图片正在上传，请稍后...');
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        lpPopover('上传图片成功，稍后会自动跳转回报价页面！');
+                        location.href = '/quote/purchaseinfoid/{{purchaseinfoid}}';
+                    } else {
+                        lpPopover('上传图片失败，请刷新页面重试！');
+                    }
+
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    lpPopover('网络连接超时，请您稍后重试！');
+                }
+            })
+        }).catch(function (err) {
+            // 处理失败会执行
+            lpPopover(err);
+        }).always(function () {
+            // 不管是成功失败，都会执行
+        });;
+
+        //方案二:uploadpic类实现图片压缩并上传，但是使用android手机，图片压缩全部成黑色，因为压缩出的base64有问题，好处是自带了图片验证
+        /*new UploadPic({
             el: ev,
             // $preview: $preview, // 不需要预览功能
             maxWidth: 800,
@@ -143,7 +185,7 @@
                 })
 
             },
-        });
+        });*/
     })
 
     // 高亮显示

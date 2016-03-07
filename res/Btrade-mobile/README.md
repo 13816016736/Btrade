@@ -3,9 +3,6 @@ https://github.com/zs1621/tornado-redis-session
 
 config配置玩法，就是尼玛简单的定义几个常量，然后import一下，就能直接用了
 
-准备一些公共的uimodule，如验证码、分页等
-
-添加bootstrap
 
 参考demo
 https://github.com/tornadoweb/tornado/tree/master/demos
@@ -29,6 +26,7 @@ http://old.sebug.net/paper/books/tornado/
 tornado模板中get_template_namespace方法自动将变量加载到全局命名空间，所以模板中可以直接使用，也可以重写get_template_namespace方法，加入业务中需要的变量
 
 
+药材购的字体图标:
 http://www.iconfont.cn/
 
 568617195@qq.com
@@ -46,6 +44,7 @@ https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f070
 1.移动首页打开蛮慢
 2.ios采购单页面大图浏览返回按钮及关闭按钮不好点
 9.android机上传图片,上传上去全是黑色的图,uploadpic这个js类生成缩略图有问题
+解决图片压缩的问题:https://github.com/think2011/localResizeIMG
 
 pc端：
 15.修改采购单 质量要求  品种顺序有问题  增加一行不复制上一个品种的填写   修改成功不推送   
@@ -65,7 +64,6 @@ pc端的修改：
 6.把发送短信改成关注药材购微信公众号
 7.缺favicon图片
 
-【03-01】【周行】提出基础数据(品种等)的格式规范要求，给到戴总，戴总/代雷开始整理
 SELECT v.id,
 case   
    when v.type=1 then '花类'
