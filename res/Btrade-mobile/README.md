@@ -155,3 +155,7 @@ CREATE TABLE IF NOT EXISTS quote_attachment (
 
 insert into quote(userid,purchaseinfoid,quality,price,`explain`,status,message,state,createtime)value(3,39,'test quality','10','test explain',0,'test message',1,'1452665820');
 
+
+
+
+select t.userid,t.total from (select q.userid,(pi.price*pi.quantity) total,pi.unit,pi.purchaseid from quote q left join purchase_info pi on pi.id = q.purchaseinfoid) t left join purchase p on p.id = t.purchaseid where p.createtime > 0

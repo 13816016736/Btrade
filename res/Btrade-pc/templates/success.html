@@ -1,105 +1,131 @@
 {% extends "base.html" %}
 {% block container %}
-<style>
-  body {
-    color: #9d9d9d;
-  }
-  h2,h3,h4,h5,h6 {
-    color: #333;
-  }
-</style>
-<div class="container bs-docs-container">
-  <div class="row">
-    <div class="col-md-8" role="main" style="border:1px solid #e1e1e8;border-radius: 4px;">
-      <div class="bs-docs-section">
-        <h2>发布成功 <span class="glyphicon glyphicon-ok" style="color:#44b549" aria-hidden="true"></span></h2>
-        <p>目前共有黄连的供应商<b style="color:#f0ad4e;font-size:18px">253</b>位，您的采购计划将公开给他们</p>
-        <br>
-        <p style="color:#333">采购优选了<b style="color:#f0ad4e;font-size:18px">10</b>家供应商，正将您的采购计划推送给他们</p>
-        <br>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-2"><img src="{{ static_url('images/user.jpg') }}" class="img-polaroid" height="48"/></div>
-              <div class="col-md-9" style="padding-right:0px;padding-left:20px;float:right;">
-                <p style="color:#333">重庆旺隆黄连公司</p>
-                <p>重庆石柱</p>
-              </div>
+<link rel="stylesheet" href="{{ static_url('css/order.css')}}" />
+<section class="sec">
+    <div class="container">
+        <div class="pch-success">
+            <div class="main">
+                <h2><i class="iconfont icon-radio-yes"></i>发布采购计划/找货需求成功！</h2>
+                <div class="desc">
+                    <p>目前共有{{varname}}相关品种的供应商<span>253</span>位，您的采购计划/找货需求将公开给他们</p>
+                </div>
+
+                <div class="recommend">
+                    <p>药材购优选了<span>10</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" alt=""></p>
+                    <dl>
+                        <dt>
+                            <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
+                        </dt>
+                        <dd>
+                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
+                            <address>重庆石柱</address>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
+                        </dt>
+                        <dd>
+                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
+                            <address>重庆石柱</address>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
+                        </dt>
+                        <dd>
+                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
+                            <address>重庆石柱</address>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
+                        </dt>
+                        <dd>
+                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
+                            <address>重庆石柱</address>
+                        </dd>
+                    </dl>
+
+                    <div class="more">以及其他6家</div>
+                </div>
+
+                <div class="tips">
+                    <p><span>请您坐等报价，并积极回应，可在 <a href="/dashboard">我的工作台</a>&gt;<a href="/mypurchase">我的采购</a> 随时跟进。</span>及时回应报价，积累信用等级，获得更多权益</p>
+                </div>
+
+                <div class="yc-bubble">
+                    <i class="iconfont icon-tanhao"></i>
+                    <span>完善账户资料，供应商推送数量可靠提高1倍，供应商更信赖。<a href="/account">立即完善</a></span>
+                </div>
+
+                <div class="buttons">
+                    <a class="btn btn-orange" href="/purchase">再发一条</a>
+                    <a class="btn btn-white" href="#">关闭</a>
+                </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-2"><img src="{{ static_url('images/user.jpg') }}" class="img-polaroid" height="48"/></div>
-              <div class="col-md-9" style="padding-right:0px;padding-left:20px;float:right;">
-                <p style="color:#333">重庆旺隆黄连公司</p>
-                <p>重庆石柱</p>
-              </div>
+            <div class="side">
+                <div class="bd">
+                    <h3><i class="icons icons-wechat"></i>微信邀请朋友报价</h3>
+                    <p>微信扫描如下二维码，发送到朋友圈，邀请前来报价</p>
+                    <p class="qrcode"><img width="114" height="114" src="{{ static_url('images/qrcode.jpg')}}" alt=""></p>
+                </div>
+
+                <div class="bd">
+                    <h3><i class="icons icons-qq"></i>QQ邀请朋友报价</h3>
+                    <p>复制如下消息，发送给QQ好友或QQ群，邀请前来报价</p>
+                    <textarea class="share" id="clipboard_textarea">采购黄连100公斤，鸡爪，产地重庆。符合2010药典标准
+请速报价htpp://ycg.cn/buy/199211</textarea>
+                    <button type="button" class="btn-copy" data-clipboard-target="clipboard_textarea" id="jCopyButton">复制</button>
+                    <p class="msg" id="jCopyMsg">复制成功!</p>
+                </div>
+
+                <div class="bd">
+                    <h3><i class="icons icons-mobile"></i>下载药材购手机APP</h3>
+                    <p>随时发布找货需求，第一时间查看报价，随时随地轻松洽谈</p>
+                    <div class="sms">
+                        <input class="ipt" type="text" id="jMobile">
+                        <button class="btn btn-gray" type="button" id="jMsm">发送下载地址到手机</button>
+                        <span class="error">请输入正确的手机号码！</span>
+                    </div>
+                    <div class="app">
+                        <img width="74" height="74" src="{{ static_url('images/qrcode.jpg')}}" alt="">
+                        手机扫码下载
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-2"><img src="{{ static_url('images/user.jpg') }}" class="img-polaroid" height="48"/></div>
-              <div class="col-md-9" style="padding-right:0px;padding-left:20px;float:right;">
-                <p style="color:#333">重庆旺隆黄连公司</p>
-                <p>重庆石柱</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-2"><img src="{{ static_url('images/user.jpg') }}" class="img-polaroid" height="48"/></div>
-              <div class="col-md-9" style="padding-right:0px;padding-left:20px;float:right;">
-                <p style="color:#333">重庆旺隆黄连公司</p>
-                <p>重庆石柱</p>
-              </div>
-            </div>
-          </div>
         </div>
-        <br>
-        <p>以及其它6家</p>
-        <br>
-        <br>
-        <p style="color:#333">请您坐等报价，并积极回应，可在<a href="/dashboard">我的工作台</a>随时跟进。及时回应报价，积累信用等级，获得更多权益</p>
-        <br>
-        <br>
-        <div class="alert alert-warning" role="alert">
-            <p>完善账户资料，进行实名认证，供应商推送数量可提供1倍，供应商更信赖。<a href="/account">立即完善</a></p>
-        </div>
-      </div>
     </div>
-    <div class="col-md-3" role="complementary" style="margin-left:20px;border:1px solid #e1e1e8;border-radius: 4px;">
-      <div class="bs-example">
-        <h5><img width="30" src="{{ static_url('images/wechat.jpg') }}" />  微信邀请朋友报价</h5>
-        <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
-        <center><img src="{{ static_url('images/qrcode.jpg') }}" width="120"/></center>
-      </div>
-      <div class="bs-example">
-        <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
-        <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
-         <div class="row">
-           <div class="col-md-9"><textarea class="form-control" rows="3" placeholder="严飞采购黄连1000公斤，鸡爪连，产地重庆，符合2010药典标准。请速报价：http://ycg.cn/buy/10499"></textarea></div>
-           <div class="col-md-3" style="padding:0px;"><button style="height:76px" type="button" class="btn btn-default">复制</button></div>
-         </div>
-      </div>
-      <div class="bs-example">
-        <h5><img width="30" src="{{ static_url('images/phone.jpg') }}" />  下载要采购手机APP</h5>
-        <p>随时发布找货需求，第一时间查看报价，随时随地地轻松洽谈</p>
-         <div class="row">
-           <div class="col-md-7">
-             <form action="/#" method="post">
-              <div class="form-group">
-                <input type="phone" class="form-control" id="phone" placeholder="13545002090">
-              </div>
-              <button type="submit" class="btn btn-default">发送下载到此手机</button>
-            </form>
-           </div>
-           <div class="col-md-4" style="padding:0px;margin-top:-10px">
-             <center><img src="{{ static_url('images/qrcode.jpg') }}" class="img-polaroid" width="100"/></center>
-             <center>手机扫码下载</center>
-           </div>
-         </div>
-      </div>
-    </div>
-  </div>
-</div>
+</section>
+{% end %}
+{% block javascript %}
+<script src="{{ static_url('js/ZeroClipboard.min.js')}}"></script>
+<script>
+var $copyMsg = $('#jCopyMsg');
+var timer = 0;
+var clip = new ZeroClipboard(document.getElementById("jCopyButton"));
+clip.on("aftercopy", function(e){
+    $copyMsg.fadeIn();
+    timer && clearTimeout(timer);
+    timer = setTimeout(function() {
+        $copyMsg.fadeOut(100);
+    }, 3e3);
+});
+
+// 采购数量
+$('#jMobile').on('click', function(e) {
+    $(this).nextAll('.error').fadeOut(100);
+});
+
+$('#jMsm').on('click', function() {
+    var tel = /^1[345678]\d{9}$/;
+    if (!tel.test($('#jMobile').val())) {
+        $(this).next().fadeIn(100);
+    } else {
+        $(this).next().fadeOut(100);
+    }
+})
+</script>
 {% end %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block container %}
+<link rel="stylesheet" href="{{ static_url('css/login.css')}}" />
+<section class="sec">
+    <div class="wrap">
+        <div class="reg-box">
+            <h1><i class="iconfont icon-arrow"></i>免费注册</h1>
+            <div class="step">
+                <ul class="yc-ul">
+                    <li>
+                        <span>1</span>
+                        <strong>验证手机</strong>
+                        <i class="iconfont icon-arrow"></i>
+                    </li>
+                    <li>
+                        <span>2</span>
+                        <strong>完善账户信息</strong>
+                        <i class="iconfont icon-arrow"></i>
+                    </li>
+                    <li class="curr">
+                        <span>3</span>
+                        <strong>注册成功</strong>
+                    </li>
+                </ul>
+            </div>
+            <div class="reg-success">
+                <h2><i class="iconfont icon-radio-yes"></i><strong>{{handler.session.get('user')}}</strong>恭喜，已成功开通 药材购 服务</h2>
+                <div class="desc">
+                    <p>即刻采购·供货无忧，药材购竭力祝您药材买卖轻松简单</p>
+                </div>
+
+                <div class="yc-bubble">
+                    <span>完善账户资料，供应商推送数量可靠提高1倍，供应商更信赖。<a href="/account">立即完善</a></span>
+                </div>
+
+                <div class="bd">
+                    <a href="/purchase" class="btn btn-orange">即刻采购</a>
+                    <p><span>{{len(quoter)}}</span> 靠谱的供应商，等待与您邂逅</p>
+                    <!--<p>过去一周，以后<span>32</span>家单位采购到了<span>34</span>万元质优价廉的药材</p>-->
+                </div>
+
+                <div class="bd">
+                    <a href="/quote" class="btn btn-orange">我要供货</a>
+                    <p><span>{{len(purchaser)}}</span> 靠谱的采购商，等待与您邂逅</p>
+                    <!--<p>过去一周，以后<span>32</span>家供货商卖出了<span>34</span>万元的药材</p>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% end %}
+{% block javascript %}
+{% end %}

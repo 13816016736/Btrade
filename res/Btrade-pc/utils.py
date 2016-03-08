@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import random,time
+from sendsms import *
 
 def md5(str):
     import hashlib
@@ -104,6 +105,18 @@ def make_thumb(path, thumb_path, w, h):
     print filename
     # 保存
     thumb.save(filename, quality=70)
+
+def getSmsCode(phone, code):
+    templateId = 776
+    phone = phone
+    vars = '{"%code%":"'+code+'"}'
+    return send(templateId, phone, vars)
+
+def sendRegInfo(phone, username, password):
+    templateId = 815
+    phone = phone
+    vars = '{"%username%":"'+username+'","%password%":"'+password+'"}'
+    return send(templateId, phone, vars)
 
 def merge_thumb(files, output_file):
     """合并图片"""

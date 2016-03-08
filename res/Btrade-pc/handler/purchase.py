@@ -25,64 +25,83 @@ class PurchaseHandler(BaseHandler):
             self.session["uploadfiles"] = {}
             self.session.save()
         if self.session.get("userid"):
-            user = self.db.get("SELECT id,nickname,phone FROM users WHERE id = %s", self.session.get("userid"))
+            user = self.db.get("SELECT id,username,name,nickname,phone,type,varietyids FROM users WHERE id = %s", self.session.get("userid"))
             if user:
+                #最近采购品种，id,name,origin
+                mypurchase = self.db.query("select v.id,v.name,v.origin from "
+                                           "(select pi.varietyid from purchase p left join purchase_info pi on p.id = pi.purchaseid where p.userid = %s) t "
+                                           "left join variety v on t.varietyid = v.id group by v.id", self.session.get("userid"))
+                #我关注的品种，id,name,origin
+                varietys = []
+                if user["varietyids"]:
+                    varietys = self.db.query("SELECT id,name,origin FROM  WHERE id in ("+user["varietyids"]+")")
                 user["name"] = user.get("name")
-                self.render("purchase.html", provinces=provinces, user=user)
+                self.render("purchase.html", provinces=provinces, user=user, mypurchase=mypurchase, varietys=varietys)
             else:
                 self.render("purchase.html", provinces=provinces)
         else:
             self.render("purchase.html", provinces=provinces)
 
     def post(self):
-        data = json.loads(self.request.body)
-        if self.current_user is None:#如果未登陆，则先注册
-            if data['phone'] is None or data['nickname'] is None or data['verifycode'] is None:
+        data = {}
+        for key,arg in self.request.arguments.iteritems():
+            if key == 'purchases':
+                data[key] = eval(arg[0])
+            else:
+                data[key] = arg[0]
+        if self.current_user is None or self.current_user == "":#如果未登陆，则先注册
+            if data['phone'] is None or data['name'] is None or data['smscode'] is None:
                 self.api_response({'status':'fail','message':'采购单位/采购人信息填写不完整'})
-            #if data['verifycode'] != self.session.get("verifycode"):
-            #   self.api_response({'status':'fail','message':'短信验证码不正确','data':data['phone']})
+                return
+            if data['smscode'] != self.session.get("smscode"):
+                self.api_response({'status':'fail','message':'短信验证码不正确','data':data['phone']})
+                return
             username = "ycg_" + datetime.datetime.today().strftime("%Y%m%d%H%M%S")
             password = str(random.randint(100000, 999999))
             lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), data['phone']
-                             , data['type'], data['name'], data['nickname'], int(time.time()))
+                             , data['type'], data['name'], data['name'], int(time.time()))
             self.session["userid"] = lastrowid
             self.session["user"] = username
             self.session.save()
             #发短信告知用户登陆名和密码
+            sendRegInfo(data['phone'], username, password)
 
         data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" == "" else "0"
-        data['pay'] = ",".join(data['pay']) if data.has_key("pay") else ""
+        data['paytype'] = ",".join(data['paytype']) if data.has_key("paytype") else ""
         data['payday'] = data['payday'] if data.has_key('payday') and data['payday'] != "" else "0"
-        data['send'] = data['send'] if data.has_key('send') and data['send'] != "" else "0"
-        data['supplier'] = data['supplier'] if data.has_key('supplier') and data['supplier'] != "" else "0"
-        data['limited'] = data['limited'] if data.has_key("limited") else "0"
-        data['term'] = data['term'] if data.has_key('term') and data['term'] != "" else "0"
+        data['payinfo'] = data['payinfo'] if data.has_key('payinfo') and data['payinfo'] != "" else ""
+        data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"
+        data['permit'] = data['permit'] if data.has_key('permit') and data['permit'] != "" else "0"
+        data['deadline'] = data['deadline'] if data.has_key('deadline') and data['deadline'] != "" else "0"
         #存储采购主体信息
-        if data.has_key("city"):
+        if data.has_key("address"):
             purchaseid = get_purchaseid()
             self.db.execute("insert into purchase (id, userid, areaid, invoice, pay, payday, payinfo,"
                                                   " send, receive, accept, other, supplier, remark, limited, term, createtime)"
                                                   "value(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                                  purchaseid, self.session.get("userid"), data["city"], data['invoice'], data['pay'],
-                                                  data['payday'], data['payinfo'], data['send'], data['receive'],
-                                                  data['accept'], data['other'], data['supplier'], data['remark'],
-                                                  data['limited'], data['term'], int(time.time()))
+                                                  purchaseid, self.session.get("userid"), data["address"], data['invoice'], data['paytype'],
+                                                  data['payday'], data['payinfo'], data['sample'], data['contact'],
+                                                  data['demand'], data['replenish'], data['permit'], data['others'],0,
+                                                  data['deadline'], int(time.time()))
             #存储采购品种信息
-            for i in data['purchases']:
-                purchase = data['purchases'][i]
+            varids = []
+            for i,purchase in data['purchases'].iteritems():
+                varids.append(purchase["nVarietyId"])
                 purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specificationid, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                purchaseid, purchase["varietyid"], purchase['name'], purchase['specification'],
-                                purchase['quantity'], purchase['unit'], ",".join(purchase['quality']),
-                                ",".join(purchase['origin']), purchase['price'])
+                                purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+                                purchase['nQuantity'], purchase['nUnit'], ",".join(purchase['nQuality']),
+                                ",".join(purchase['nArea']), purchase['nPrice'])
                 #插入图片
-                index = str(int(i) + 1)
+                index = i
                 if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(index):
                     for attachment in self.session.get("uploadfiles")[index]:
                         self.db.execute("insert into purchase_attachment (purchase_infoid, attachment)"
                                           "value(%s, %s)", purchase_infoid, attachment)
-            self.api_response({'status':'success','message':'请求成功'})
+                    self.session["uploadfiles"] = {}
+                    self.session.save()
+            self.api_response({'status':'success','message':'请求成功','data':varids})
         else:
             self.api_response({'status':'fail','message':'必须选择收货地'})
 
@@ -176,8 +195,7 @@ class UploadFileHandler(BaseHandler):
         #提取表单中‘name’为‘file’的文件元数据
         file_metas = self.request.files['filename']
         for meta in file_metas:
-            name, ext = os.path.splitext(meta['filename'])
-            base = md5(name.encode('utf-8') + now)
+            base = md5(str(time.time()))
             filename = base + ".png"
             filepath = os.path.join(upload_path,filename)
             #有些文件需要已二进制的形式存储，实际中可以更改
@@ -200,6 +218,33 @@ class UploadFileHandler(BaseHandler):
                 return
         self.finish({'status':'fail','message':'上传失败'})
 
+class DeleteFileHandler(BaseHandler):
+
+    def get(self):
+        pass
+
+    def post(self):
+        num = self.get_argument("num")
+        uploadfiles = self.session.get("uploadfiles")
+        if uploadfiles.has_key(num):
+            for file in uploadfiles[num]:
+                if os.path.isfile(file):
+                    os.remove(file)
+                    base, ext = os.path.splitext(os.path.basename(file))
+                    filename = file.replace(base, base+"_thumb")
+                    os.remove(filename)
+                    del file
+                    self.session["uploadfiles"] = uploadfiles
+                    self.session.save()
+                    self.api_response({'status':'success','message':'删除成功'})
+                else:
+                    del file
+                    self.session["uploadfiles"] = uploadfiles
+                    self.session.save()
+                    self.api_response({'status':'fail','message':'文件不存在'})
+        else:
+            self.api_response({'status':'success','message':'文件路径不存在'})
+
 class GetVarietyInfoHandler(BaseHandler):
 
     def get(self):
@@ -210,20 +255,43 @@ class GetVarietyInfoHandler(BaseHandler):
         if variety == "":
             self.api_response({'status':'fail','message':'请填写品种'})
         else:
-            varietyinfo = self.db.get("SELECT id,origin FROM variety WHERE name = %s", variety)
-            if varietyinfo is None:
+            varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name like %s", variety+"%")
+            if len(varietyinfo) == 0:
                 self.api_response({'status':'fail','message':'没有该品种'})
             else:
-                specifications = self.db.query("SELECT id,specification FROM specification WHERE varietyid = %s", varietyinfo["id"])
-                self.api_response({'status':'success','message':'请求成功','varietyinfo':varietyinfo,'specifications':specifications})
+                self.api_response({'status':'success','message':'请求成功','list':varietyinfo})
+
+
+class GetVarInfoByIdHandler(BaseHandler):
+
+    def post(self):
+        varietyid = self.get_argument("varietyid")
+        if varietyid == "":
+            self.api_response({'status':'fail','message':'请填写品种'})
+        else:
+            varietyinfo = self.db.get("SELECT id,specification,origin FROM variety WHERE id = %s", varietyid)
+            if len(varietyinfo) == 0:
+                self.api_response({'status':'fail','message':'没有该品种'})
+            else:
+                specifications = varietyinfo['specification'].split(",")
+                spec = []
+                for s in specifications:
+                    val = {}
+                    val["val"] = 0
+                    val["text"] = s
+                    spec.append(val)
+                self.api_response({'status':'success','message':'请求成功','rank':spec,'unit':[{'val':'0','text':'公斤'}],'txt':'公斤'})
 
 class PurchaseSuccessHandler(BaseHandler):
 
-    def get(self):
-        self.render("success.html")
-
+    @tornado.web.authenticated
     def post(self):
-        pass
+        varids = self.get_argument("varids")
+        variety = self.db.query("select name from variety where id in ("+varids+")")
+        varname = []
+        for v in variety:
+            varname.append("["+v["name"]+"]")
+        self.render("success.html", varname=",".join(varname))
 
 class RemovePurchaseHandler(BaseHandler):
 

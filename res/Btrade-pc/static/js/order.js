@@ -85,16 +85,34 @@ $('#jCreate').on('click', function() {
 // 验证码
 $send.prop('disabled', false).on('click', function() {
     if(checkMobile() && timeout === 0) {
-        timeout = delay;
-        $send.text(timeout + txt).prop('disabled', true).prev().focus();
-        _clock();
+    	$.ajax({
+			url: "/getsmscode",
+			data: { phone: $mobile.val()},
+			dataType: 'json',
+			type: 'POST',
+			beforeSend: function(jqXHR, settings) {
+				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+			},
+			success: function(data) {
+				if(data.status=="success") {
+					timeout = delay;
+        			$send.text(timeout + txt).prop('disabled', true).prev().focus();
+        			_clock();
+				}else{
+					$mobile.next().html(data.message);
+				}
+			},
+			error: function(data) {
+				alert("出现异常，请刷新页面再试");
+			}
+		 });
     }
 });
 
-})(jQuery);
+//})(jQuery);
 
 
-!(function($){
+//!(function($){
 // 防抖处理
 function debounce(func, wait) {
 	this.timer && clearTimeout(this.timer);
@@ -149,7 +167,7 @@ var $table = $('#jInventory'),
 	$varietyTags = $('#jVarietyTags'),
 	$qualityTags = $('#jQualityTags'),
 	$areaTags = $('#jAreaTags'),
-	url = 'php/index.php?id=' + (new Date).getTime() ,
+	url = '/uploadfile' ,
     maxUploadFileSize = 1 * 1024 *1024, // 限制上传的文件大小(bytes)
     acceptFileTypes = /\.(jpe?g|png|gif|bmp)$/i; // 限制的上传文件类型(正则匹配)
 
@@ -170,16 +188,22 @@ var fileuploadOptions = {
                 error = false;
             }
         });
-        console.log(data)
+        data.formData = {"num":$("table").find("tr").index($(this).parents("tr")),'_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]};
         if (error) {
         	data.submit();
         };
     },
     done: function (e, data) {
     	var self = $(this).parent();
-        $.each(data.result.files, function (index, file) {
-            self.hide().next().show().html('<img src="' + file.url + '" alt="" /><i class="del-pic" title="删除"></i>');
-        });
+    	if (data.result.status=="success") {
+    		self.hide().next().show().html('<img src="' + data.result.path + '" alt="" /><i class="del-pic" title="删除"></i>');
+        }else{
+        	alert(data.result.message);
+        }
+        //$.each(data.files, function (index, file) {
+        //	console.log(file);
+        //    self.hide().next().show().html('<img src="' + file.url + '" alt="" /><i class="del-pic" title="删除"></i>');
+        //});
     }
 }
 
@@ -199,11 +223,31 @@ $('#jInventoryPlus .import').on('click', function() {
 
 // 删除图片
 $table.on('click', '.del-pic', function() {
-	$(this).closest('.thumb').empty().hide().prev().show();
+	$this = $(this);
+	var num = $("table").find("tr").index($this.parents("tr"));
+	$.ajax({
+		url: "/delfile",
+		data: {"num": num},
+		dataType: 'json',
+		type: 'POST',
+		beforeSend: function(jqXHR, settings) {
+			jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+		},
+		success: function(data) {
+			if (data.status === 'success') {
+				$this.closest('.thumb').empty().hide().prev().show();
+			} else {
+				alert(data.message);
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert(errorThrown);
+		}
+	 });
 });
 
 // 确认删除行？
-$table.on('click', '.del-tr', function() {
+$table.on('click', '.del', function() {
 	$(this).closest('tr').addClass('tr-remove');
 	$('#jModalDelete').modal();
 });
@@ -240,7 +284,7 @@ function move(elem, k) {
 function toHtml(data, $wrap) {
     var html = [];
     $.each(data, function(i, v){
-        html.push('<span' + (i === 0 ? ' class="on"' : '') + '>' + v.name + '</span>');
+        html.push('<span varietyid="' + v.id + '" origin="' + v.origin + '"' + (i === 0 ? ' class="on"' : '') + '>' + v.name + '</span>');
     });
     $wrap.find('.search dd').html(html.join(''));
     showTags(true, $wrap);
@@ -260,9 +304,13 @@ function showTags(status, $wrap) {
 function getKeywords() {
     var keywords = $tags.val();
     $.ajax({
-        url: 'json/keywords.json',
+        url: '/getvarietyinfo',
         dataType: 'json',
-        data: {key: keywords},
+        data: {variety: keywords},
+        method: 'post',
+        beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
         success: function(data) {
             if (data.status === 'success') {
                 toHtml(data.list, $varietyTags);
@@ -315,7 +363,7 @@ window.fillIpt = fillIpt;
 function fillSelect(data, $wrap, input) {
     var html = [];
     $.each(data, function(i, v){
-        html.push('<span data-val="' + v.val + '">' + v.text + '</span>');
+        html.push('<span data-val="' + v.text + '">' + v.text + '</span>');
     });
     $wrap.find('dd').html(html.join(''));
     if (html.length === 1) {
@@ -328,12 +376,18 @@ function fillSelect(data, $wrap, input) {
     }
 }
 // 加载下拉选项菜单
-function setSelect($tr) {
+function setSelect($tr, varietyid, origin) {
 	hidePop();
 	$.ajax({
-		url: 'json/select.json',
-		data: {ran: Math.random()},
+		url: '/getvarinfobyid',
+		data: {varietyid: varietyid},
+		method: 'post',
+		beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
 		success: function(data) {
+			$tr.find("td:eq(1) input").attr("varietyid", varietyid);
+			$tr.find("td:eq(1) input").attr("origin", origin);
 			fillSelect(data.rank, $tr.find('.yc-select:eq(0)'), true);
 			fillSelect(data.unit, $tr.find('.yc-select:eq(1)'));
 			$tr.find('.unit').html('元/' + data.txt)
@@ -366,10 +420,11 @@ $table.on({
 				move($varietyTags, 1);
 				break;
 			case 13: // enter
-				var val = $varietyTags.find('.search .on').html();
+				$on = $varietyTags.find('.search .on');
+				var val = $on.html();
 				if (val.length > 0) {
 					this.value = val;
-					setSelect($varietyTags.closest('tr'));
+					setSelect($varietyTags.closest('tr'),$on.attr("varietyid"),$on.attr("origin"));
 				}
 				break;
 			case 27: //Esc
@@ -382,7 +437,7 @@ $table.on({
 
 $varietyTags.on('click', 'span', function() {
 	$tags.val($(this).html());
-	setSelect($varietyTags.closest('tr'));
+	setSelect($varietyTags.closest('tr'), $(this).attr("varietyid"),$(this).attr("origin"));
 });
 
 
@@ -434,6 +489,13 @@ $table.on({
 	'click': function() {
 		$tags = $(this);
 		hidePop();
+		origin = $(this).closest("tr").find("td:eq(1) input").attr("origin");
+		if(typeof(origin) != "undefined"){
+			origins = origin.split(",");
+			for(var i=0;i<origins.length;i++){
+				$areaTags.find("dd:eq(1)").append('\n<span>' + origins[i] + '</span>');
+			}
+		}
 		$(this).after($areaTags.show());
 		matchingCheck();
 		return false;
@@ -467,24 +529,35 @@ resetForm();
 
 // 采购药材清单验证
 function checkForm() {
+	var result = {
+		pass: false,
+		purchases: {}
+	};
+	//验证用户注册数据
+	if(!checkIpt() && $username.length != 0)
+		return result;
+	result.pass = true;
 	var $tr = $('#jInventory tbody tr');
 	var $address = $('#address');
 	var $addressError = $('#jAddressError');
 	var hasFocus = false;
-	var result = {
-		pass: true,
-		serialize: []
-	};
+
+	result.username = $username.val();
+    result.phone = $mobile.val();
+    result.smscode = $code.val();
+    result.name = $("#jCname").val();
+    result.type = $("input[type='radio'][name='type']").val();
 
 	if ($('#jAddress').prop('checked')) {
-		result.address = '亲自上门看货提货';
+		result.address = 0;
 		$addressError.addClass('hide');
 	} else if ($address.val() === '') {
 		result.pass = false;
 		$addressError.removeClass('hide');
 	} else {
 		$addressError.addClass('hide');
-		result.address = $('#jProvince dt').html() + $('#jCity dt').html();
+		//result.address = $('#jProvince dt').html() + $('#jCity dt').html();
+		result.address = $('#jCity dt').attr("data-val");
 	}
 
 	result.invoice = $('#jInvoice input:radio:checked').val() || '';
@@ -493,16 +566,18 @@ function checkForm() {
 		case "1":
 			break;
 		case "2":
-			result.paytype = $('#jPaytype .ipt-date').val();
+			result.payday = $('#jPaytype .ipt-date').val();
 			break;
 		case "3":
-			result.paytype = $('#jPaytype .ipt-other').val();
+			result.payinfo = $('#jPaytype .ipt-other').val();
 			break;
 	}
 	result.demand = $('#jDemand').val();
 	if ($('#jSample').prop('checked')) {
+		result.sample = 1
 		result.contact = $('#jContact').val();
 	} else {
+		result.sample = 0
 		result.contact = '';
 	}
 	result.replenish = $('#jReplenish').val();
@@ -517,6 +592,7 @@ function checkForm() {
 
 	$tr.each(function(i) {
 		var $variety = $(this).find('.ipt-variety'),	// 药材品种
+			val0 = $.trim($variety.attr("varietyid")),
 			val1 = $.trim($variety.val()),
 			$rank = $(this).find('input[name="nRank"]'),// 规格等级
 			val2 = $.trim($rank.val()),
@@ -561,18 +637,21 @@ function checkForm() {
 			$area.prev('.tags').find('span').each(function(){
 				val6.push($(this).html());
 			});
-			result.serialize.push({
-				nVariety: val1, 							
-				nRank: val2, 								
-				nQuantity: val3, 	
-				nUnit: val4,	
+			purchase = {
+				nVarietyId: val0,
+				nVariety: val1,
+				nRank: val2,
+				nQuantity: val3,
+				nUnit: val4,
 				nQuality: val5,
-				nArea: val6, 			
+				nArea: val6,
 				nPrice: val7,
-				nUrl: imgUrl 		
-			})
+				nUrl: imgUrl
+			};
+			result.purchases[(i+1)] = purchase;
 		}
 	});
+	result.purchases = JSON.stringify(result.purchases)
 	return result;
 }
 
@@ -587,21 +666,26 @@ $('#jSubmit').on('click', function() {
 		isSubmit = true;
 		$('body').append('<div class="loading"><i></i></div>');
 		$.ajax({
-			url: '',
-			// type: 'POST',
-			// dataType: 'json',
-			data: {data: result},
-			success: function() {
+			url: '/purchase',
+			type: 'POST',
+			dataType: 'json',
+			data: result,
+			beforeSend: function(jqXHR, settings) {
+				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+			},
+			success: function(data) {
 				isSubmit = false;
-				setTimeout(function(){
-					$('.loading').remove();
-				}, 1e3);
+				$('.loading').remove();
+				if(data.status == "success"){
+					$("#varids").val(data.data.join(","));
+					$("#purchaseForm").submit();
+				}else{
+					alert(data.message);
+				}
 			},
 			error: function() {
 				isSubmit = false;
-				setTimeout(function(){
-					$('.loading').remove();
-				}, 1e3);
+				$('.loading').remove();
 			}
 		})
 	} else {
@@ -651,6 +735,28 @@ $('#jAddress').prop('checked', false).on('click', function() {
 
 $('#jProvince').on('click', 'span', function() {
 	$('#address').val('');
+	provinceid = $(this).attr('data-val');
+	 $.ajax({
+		url: "/getcity",
+		data: {"provinceid": provinceid},
+		dataType: 'json',
+		type: 'POST',
+		beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
+		success: function(data) {
+			if(data.status == "success"){
+				$("#jCity").find("dd").empty();
+				cities = eval(data.data);
+				for(var i=0; i<cities.length; i++){
+				   $("#jCity").find("dd").append("<span data-val=\"" + cities[i].id +"\">" + cities[i].areaname + "</span>");
+				}
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert(errorThrown);
+		}
+	 });
 })
 
 $('#jCity').on('click', 'span', function() {

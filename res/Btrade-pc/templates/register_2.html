@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block container %}
+<link rel="stylesheet" href="{{ static_url('css/login.css')}}" />
+<section class="sec">
+    <div class="wrap">
+        <div class="reg-box reg-form">
+            <h1><i class="iconfont icon-arrow"></i>免费注册</h1>
+            <div class="step">
+                <ul class="yc-ul">
+                    <li>
+                        <span>1</span>
+                        <strong>验证手机</strong>
+                        <i class="iconfont icon-arrow"></i>
+                    </li>
+                    <li class="curr">
+                        <span>2</span>
+                        <strong>完善账户信息</strong>
+                        <i class="iconfont icon-arrow"></i>
+                    </li>
+                    <li>
+                        <span>3</span>
+                        <strong>注册成功</strong>
+                    </li>
+                </ul>
+            </div>
+            <div class="form">
+            <form action="/regresult" method="post" id="jRegForm">
+                {% raw xsrf_form_html() %}
+                <div class="group">
+                    <div class="txt">
+                        <span>登录手机</span>
+                    </div>
+                    <div class="cont">
+                        <span>{{phone}}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt mid">
+                        <span>*登录密码</span>
+                    </div>
+                    <div class="cont">
+                        <input class="ipt" type="password" autocomplete="off" placeholder="6-20位字母、数字" name="password" id="password">
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt mid">
+                        <span>*确认</span>
+                    </div>
+                    <div class="cont">
+                        <input class="ipt" type="password" autocomplete="off" name="pwdRepeat">
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt mid">
+                        <span>*会员名</span>
+                    </div>
+                    <div class="cont">
+                        <input class="ipt" type="text" autocomplete="off" placeholder="3-20位字母、数字" name="username">
+                        <span class="tips">可用于登录，一旦设定即不可修改</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>*经营主体</span>
+                    </div>
+                    <div class="cont">
+                        <span class="warn">请真实选择、填写以下信息，药材购倡导诚信交易，越诚信，越有价值~</span>
+                        <label class="sub-title"><input class="cbx" name="type" type="radio" value="1" iname="compname" checked>注册企业帐户</label>
+                        <div class="group">
+                            <div class="txt">
+                                <span>单位全称</span>
+                            </div>
+                            <div class="cont">
+                                <input class="ipt" type="text" autocomplete="off" placeholder="例：毫州永刚中药饮片有限公司" name="company" id="compname">
+                                <span class="tips">填写工商注册登记的企业名称</span>
+                            </div>
+                            <div class="yc-bubble">
+                                <dl>
+                                    <dt>适用：</dt>
+                                    <dd>拥有营业执照的主体，包括饮片厂、药厂、药材经营公司、合作社、种植地基、个体工商户等</dd>
+                                    <dt>更多权益：</dt>
+                                    <dd>优先展示、子账号等高级功能</dd>
+                                    <dt>身份核定：</dt>
+                                    <dd>后续需提供工商营业执照等信息来核定身份</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <label class="sub-title"><input class="cbx" name="type" type="radio" iname="name" value="8">注册个人帐户</label>
+                        <div class="group">
+                            <div class="txt">
+                                <span>真实姓名</span>
+                            </div>
+                            <div class="cont">
+                                <input class="ipt" type="text" autocomplete="off" placeholder="" name="name" id="name">
+                            </div>
+                            <div class="yc-bubble">
+                                <dl>
+                                    <dt>适用：</dt>
+                                    <dd>无营业执照的经营个人、或企业采购经理/业务员个人注册</dd>
+                                    <dt>身份核定：</dt>
+                                    <dd>后续需提供身份证来核定身份，以名片、单位授权书等来核定工作身份</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="txt mid">
+                        <span>*个人称呼</span>
+                    </div>
+                    <div class="cont">
+                        <input class="ipt" type="text" autocomplete="off" name="nickname" id="jNickname">
+                        <span class="tips">请填写您的姓名或称呼、用于联系</span>
+                    </div>
+                </div>
+
+                <div class="button">
+                    <button class="btn btn-orange" type="submit" id="jSubmit" class="submit">提交</button>
+                </div>
+
+            </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% end %}
+{% block javascript %}
+<script src="{{ static_url('js/jquery.validate.min.js')}}"></script>
+
+<script>
+
+var $cbxs = $('.cbx');
+
+function setCat() {
+    $cbxs.each(function() {
+        var flag = this.checked;
+        var val = $(this).attr("iname");
+        $('#' + val).prop('disabled', !flag).next('.error')[flag ? 'removeClass' : 'addClass']('hide');
+    })
+}
+
+$cbxs.on('click', setCat);
+
+setCat();
+
+$('#name').on('blur', function() {
+    $('#jNickname').val($(this).val());
+})
+
+// 注册验证
+$('#jRegForm').validate({
+    rules: {
+        password: {
+            required: true,
+            rangelength: [6,20]
+        },
+        pwdRepeat: {
+            required: true,
+            equalTo: '#password'
+        },
+        username: {
+            required: true,
+            rangelength: [3,20]
+        },
+        company: {
+            required: true
+        },
+        name: {
+            required: true
+        },
+        nickname: {
+            required: true
+        }
+    },
+    messages: {
+        password: {
+            required: '请输入密码',
+            rangelength: '6-20位字母、数字',
+        },
+        pwdRepeat: {
+            required: '请输入确认密码',
+            equalTo: '两次输入的密码不一致',
+        },
+        username: {
+            required: '请输入会员名',
+            rangelength: '3-20位字母、数字',
+        },
+        company: {
+            required: '请输入单位全称',
+        },
+        name: {
+            required: '请输入真实姓名',
+        },
+        nickname: {
+            required: '请输入个人称呼'
+        }
+    },
+    onkeyup: false,
+    submitHandler: function(form) {
+        ajaxSubmit(form);
+    }
+
+});
+//ajax 提交
+function ajaxSubmit(form){
+    $.ajax({
+        url: "/reginfo",
+        data: $("#jRegForm").serialize(),
+        dataType: 'json',
+        type: 'POST',
+        beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
+        success: function(data) {
+            if(data.status == "success"){
+                form.submit();
+            }else{
+                alert(data.message);
+            }
+        },
+        error: function(data) {
+            alert("出现异常，请刷新页面再试");
+        }
+     });
+}
+</script>
+{% end %}

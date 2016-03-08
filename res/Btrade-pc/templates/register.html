@@ -28,18 +28,18 @@
                 {% raw xsrf_form_html() %}
                 <div class="msg" id="jMsg"></div>
                 <div class="group">
-                    <i class="iconfont icon-user"></i><input class="ipt" type="text" placeholder="手机号" value="" name="username" id="jUsername" autocomplete="off">
+                    <i class="iconfont icon-user"></i><input class="ipt" type="text" placeholder="手机号" value="" name="phone" id="jUsername" autocomplete="off">
                 </div>
                 <div class="group">
                     <script type="text/javascript" src="{{url}}"></script>
                 </div>
                 <div class="group">
-                    <i class="iconfont icon-lock"></i><input class="ipt code" type="text" placeholder="验证码" value="" name="code" id="jCode" autocomplete="off">
+                    <i class="iconfont icon-lock"></i><input class="ipt code" type="text" placeholder="验证码" value="" name="smscode" id="jCode" autocomplete="off">
                     <button class="btn btn-gray" type="button" id="jSend">获取验证码</button>
                 </div>
 
                 <div class="button">
-                    <button class="btn btn-orange" type="submit" id="jSubmit" class="submit">下一步</button>
+                    <button class="btn btn-orange" type="button" id="jSubmit" class="submit">下一步</button>
                 </div>
 
                 <div class="agreement">
@@ -117,16 +117,54 @@
         return false;
     }
     $('#jSubmit').on('click', function() {
-        return checkIpt();
+        bool = checkIpt();
+        if (bool) {
+            $.ajax({
+                url: $("form").attr('action'),
+                data: $("form").serialize(),
+                dataType: 'json',
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if(data.status == "success"){
+                        window.location.href='/reginfo';
+                    }else{
+                        _showMsg(data.message);
+                    }
+                },
+                error: function(data) {
+                    _showMsg("出现异常，请刷新页面再试");
+                }
+             });
+         }
     });
 
     // 验证码
     $send.prop('disabled', false).on('click', function() {
         if(checkMobile() && timeout === 0) {
-            timeout = delay;
-            $send.text(timeout + txt).prop('disabled', true).prev().focus();
-            _clock();
-            //ajax
+            $.ajax({
+                url: "/getsmscode",
+                data: { phone: $mobile.val()},
+                dataType: 'json',
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if(data.status=="success") {
+                        timeout = delay;
+                        $send.text(timeout + txt).prop('disabled', true).prev().focus();
+                        _clock();
+                    }else{
+                        _showMsg(data.message);
+                    }
+                },
+                error: function(data) {
+                    _showMsg("出现异常，请刷新页面再试");
+                }
+             });
         }
     });
 })($);
