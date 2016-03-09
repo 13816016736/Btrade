@@ -69,9 +69,9 @@ function checkCode() {
     return false;
 }
 function checkIpt() {
-	var c3 = checkCode(),
+	var c1 = checkUsername(),
 		c2 = checkMobile(),
-		c1 = checkUsername();
+		c3 = checkCode();
 
     if (c1 && c2 && c3) {
         return true;
