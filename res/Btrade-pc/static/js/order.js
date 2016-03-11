@@ -525,7 +525,8 @@ function resetForm() {
 	});
 	$('#address').val('');
 }
-resetForm();
+//?为什么要一开始清空表单
+//resetForm();
 
 // 采购药材清单验证
 function checkForm() {
@@ -666,7 +667,7 @@ $('#jSubmit').on('click', function() {
 		isSubmit = true;
 		$('body').append('<div class="loading"><i></i></div>');
 		$.ajax({
-			url: '/purchase',
+			url: $("#registerForm").attr('action'),
 			type: 'POST',
 			dataType: 'json',
 			data: result,

@@ -16,6 +16,7 @@
         </div>
 
         <div class="yc-purchase-form">
+            <form action="/purchase" method="post" id="registerForm" autocomplete="off">
             <div class="item">
                 <div class="hd">
                     <h2 class="tit">采购单位/采购人</h2>
@@ -58,8 +59,6 @@
                     </div>
                     {% else %}
                     <div class="">
-                        <form action="" method="get" id="registerForm" autocomplete="off">
-                        {% raw xsrf_form_html() %}
                         <div class="group">
                             <div class="txt mid">
                                 <span>*联系人</span>
@@ -123,7 +122,6 @@
                             <!--<button class="btn btn-orange submit" type="submit" id="jCreate">立即创建账号</button>
                             <span class="yc-bubble block">已有账号，<a href="/logout">立即登录</a></span>-->
                         </div>
-                        </form>
                     </div>
                     {% end %}
                 </div>
@@ -154,57 +152,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <i class="iconfont icon-close del"></i>
-                                </td>
-                                <td>
-                                    <div>
-                                        <input class="ipt ipt-variety" type="text" name="nVariety" autocomplete="off">
-                                        <span class="error"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <dl class="yc-select">
-                                        <dt></dt>
-                                        <dd></dd>
-                                    </dl>
-                                    <input type="hidden" name="nRank">
-                                    <span class="error"></span>
-                                </td>
-                                <td>
-                                    <input class="ipt ipt-quantity" type="text" name="nQuantity">
-                                    <dl class="yc-select narrow">
-                                        <dt></dt>
-                                        <dd></dd>
-                                    </dl>
-                                    <input type="hidden" name="nUnit">
-                                </td>
-                                <td>
-                                    <div class="ipt text">
-                                        <div class="tags"></div>
-                                        <textarea class="ipt mul ipt-quality"  name="nQuality"></textarea>
-                                        <!-- <input type="text" class="ipt ipt-quality" name="nQuality"> -->
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="ipt text area-wrap">
-                                        <div class="tags"></div>
-                                        <input class="ipt ipt-area" type="text" name="nArea">
-                                    </div>
-                                </td>
-                                <td>
-                                    <input class="ipt ipt-price" type="text" name="nPrice">
-                                    <span class="unit">元/公斤</span>
-                                </td>
-                                <td>
-                                    <span class="upload">
-                                        <i class="iconfont icon-camera img"></i>
-                                        <input name="filename" type="file" />
-                                    </span>
-                                    <p class='thumb'></p>
-                                </td>
-                            </tr>
                             <tr>
                                 <td>
                                     <i class="iconfont icon-close del"></i>
@@ -460,6 +407,7 @@
             <div class="item">
                 <button class="btn btn-orange submit" type="button" id="jSubmit">立即发布，坐等报价</button>
             </div>
+            </form>
         </div>
     </div>
 </section>

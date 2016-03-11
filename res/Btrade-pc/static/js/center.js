@@ -43,16 +43,19 @@ function fillProvince() {
 
 	function getCity(url) {
 		$.ajax({
-			url: 'json/' + url + '.json',
+			url: '/getcity',
 			dataType: 'json',
+			method: 'post',
+			data: {provinceid: url},
+			beforeSend: function(jqXHR, settings) {
+				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+			},
 			success: function(data) {
-				citys[url] = data;
+				citys[url] = data.data;
 				fillCity(url);
 			},
-			error: function() {
-				setTimeout(function() {
-					getCity(url);
-				}, 1e3);
+			error: function(e) {
+				alert(e);
 			}
 		});
 	}
@@ -60,12 +63,13 @@ function fillProvince() {
 	function fillCity(val) {
 		var arr = [];
 		$.each(citys[val], function(i, item){
-			arr.push('<span data-val="' + item.i + '">' + item.n + '</span>');
+			arr.push('<span data-val="' + item.id + '">' + item.areaname + '</span>');
 		});
 		arr.length > 10 ? $('#jCity dd').addClass('fold') : $('#jCity dd').removeClass('fold') ;
 		$('#jCity dd').html(arr.join(''));
 	}
 
+	/*暂不需要ajax请求省份
 	$.ajax({
 		url: 'json/index.json',
 		dataType: 'json',
@@ -77,12 +81,10 @@ function fillProvince() {
 			arr.length > 10 && $('#jProvince dd').addClass('fold');
 			$('#jProvince dd').html(arr.join(''));
 		},
-		error: function() {
-			setTimeout(function() {
-				fillProvince();
-			}, 1e3);
+		error: function(e) {
+			alert(e);
 		}
-	});
+	});*/
 	$('#jProvince').on('click', 'span', function() {
 		var val = $(this).attr('data-val');
 		$('#jCity dt').html('省/县').attr('data-val', '0');
@@ -92,8 +94,13 @@ function fillProvince() {
 		} else {
 			getCity(val);
 		}
-	})
+	});
+	$('#jCity').on('click', 'span', function() {
+		var val = $(this).attr('data-val');
+		$("input[name='city']").val(val);
+	});
 }
+
 fillProvince();
 
 // 增加一行

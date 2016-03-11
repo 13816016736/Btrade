@@ -1,263 +1,564 @@
 {% extends "base.html" %}
 {% block page-wrapper %}
-<div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">
-                我的采购
-            </h1>
-            <ol class="breadcrumb">
-                <li>
-                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>  <a href="/dashboard">找货</a>
-                </li>
-                <li class="active">
-                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 采购订单
-                </li>
-            </ol>
-        </div>
+<div class="main-cont">
+    <div class="menu">
+        <ul class="yc-ul">
+            <li class="curr"><a href="#" title=""><i class="icons search"></i>找货</a></li>
+            <li><a href="#" title=""><i class="icons menu"></i>采购订单</a></li>
+        </ul>
     </div>
-    <!-- /.row -->
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr class="warning">
-                            <th style="text-align:center;">采购批号</th>
-                            <th style="text-align:center;">品种</th>
-                            <th style="text-align:center;">报价</th>
-                            <th style="text-align:center;">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for purchase in purchases%}
-                        <tr class="success">
-                            <td style="text-align:center;">{{ purchase.id }}</td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">发布时间：</span>
-                                {{ purchase.datetime }}
-                            </td>
-                            <td style="text-align:center;">
-                                {% if purchase.status == 0%}
-                                <span style="color:#939393;">关闭</span>
-                                {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
-                                <b style="color:#286090;">
-                                    等待报价
-                                </b>
-                                <span style="color:#939393;">
-                                    {% if purchase.limited == 1%}
-                                    剩余{{purchase.timedelta}}天（{{purchase.expire}} 截止）
-                                    {% else%}
-                                    常年采购
-                                    {% end %}
-                                </span>
-                                {% else %}
-                                <b style="color:#563d7c;">报价结束，甄选供应商</b>
-                                {% end %}
-                            </td>
-                            <td style="text-align:center;">
-                                {% if purchase.status == 0 %}
-                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
-                                {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
-                                <span class="glyphicon glyphicon-edit" style="color:#f0ad4e;" onclick="purchaseinfo({{purchase.id}})"></span>&nbsp;&nbsp;
-                                <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;" onclick="if(!confirm('确定要关闭当前采购订单？'))return false;"></span>&nbsp;&nbsp;
-                                {% else %}
-                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
-                                {% end %}
-                            </td>
-                        </tr>
-                        {% for index,purchaseinfo in enumerate(purchase.purchaseinfo)%}
-                        <tr>
-                            {% if index == 0 %}
-                            <td rowspan="{{len(purchase.purchaseinfo)}}"></td>
-                            {% end %}
-                            <td style="text-align:center;"><a href="/mypurchase/info/{{purchaseinfo.id}}">{{purchaseinfo.name}}</a>  {{purchaseinfo.specification}}</td>
-                            <td style="text-align:center;">
-                                5个报价<span class="badge" style="background-color:#f0ad4e;">4</span>
-                                最低价23（裸价）
-                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">1</b>家意向供应商</span>
-                            </td>
-                            <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}公斤，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：http://ycg.cn/buy/{{purchaseinfo.id}}"  style="color:#f0ad4e;"></span>&nbsp;&nbsp;
-                            </td>
-                        </tr>
-                        {% end %}
-                        {% end %}
-                        <!--
-                        <tr class="success">
-                            <td style="text-align:center;">439282738</td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">发布时间：</span>
-                                2016-1-4 :11:06
-                            </td>
-                            <td style="text-align:center;">
-                                <b style="color:#286090;">等待报价</b>
-                                <span style="color:#939393;">剩余3天（2016-1-7 截止）</span>
-                            </td>
-                            <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-edit" style="color:#f0ad4e;" onclick="purchaseinfo(888)"></span>&nbsp;&nbsp;
-                                <span class="glyphicon glyphicon-share" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
-                                <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="4"></td>
-                            <td style="text-align:center;"><a href="#">黄连</a>  单支统</td>
-                            <td style="text-align:center;">
-                                5个报价<span class="badge" style="background-color:#f0ad4e;">4</span>
-                                最低价23（裸价）
-                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">1</b>家意向供应商</span>
-                            </td>
-                            <td style="text-align:center;"></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:center;"><a href="#">三七</a>  60头</td>
-                            <td style="text-align:center;"><em style="color:#939393;">暂无报价，正在努力撮合</em></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:center;"><a href="#">枸杞子</a>  120粒</td>
-                            <td style="text-align:center;">
-                                12个报价
-                                最低价45.7
-                                <span style="color:#f0ad4e;">请尽快甄选意向供应商</span>
-                            </td>
-                            <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-share" style="color:#f0ad4e;"></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:center;"><a href="#">党参</a>  统货</td>
-                            <td style="text-align:center;">
-                                5个报价<span class="badge" style="background-color:#f0ad4e;">4</span>
-                                最低价23（裸价）
-                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">1</b>家意向供应商</span>
-                            </td>
-                            <td style="text-align:center;">报价结束</td>
-                        </tr>
-                        <tr class="success">
-                            <td style="text-align:center;">439282738</td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">发布时间：</span>
-                                2016-1-4 :11:06
-                            </td>
-                            <td style="text-align:center;">
-                                <b style="color:#563d7c;">报价结束，甄选供应商</b>
-                                <span style="color:#939393;">剩余3天（2016-1-7 截止）</span>
-                            </td>
-                            <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2"></td>
-                            <td style="text-align:center;"><a href="#">黄连</a>  单支统</td>
-                            <td style="text-align:center;">
-                                5个报价<span class="badge" style="background-color:#f0ad4e;">4</span>
-                                最低价23（裸价）
-                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">1</b>家意向供应商</span>
-                            </td>
-                            <td style="text-align:center;">报价结束</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:center;"><a href="#">三七</a>  60头</td>
-                            <td style="text-align:center;">无报价</td>
-                            <td style="text-align:center;">报价结束</td>
-                        </tr>
-                        <tr class="success">
-                            <td style="text-align:center;">439282738</td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">发布时间：</span>
-                                2016-1-4 :11:06
-                            </td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">关闭</span>
-                            </td>
-                            <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td rowspan="1"></td>
-                            <td style="text-align:center;"><a href="#">三七</a>  60头</td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">无报价</span>
-                            </td>
-                            <td style="text-align:center;"></td>
-                        </tr>-->
-                    </tbody>
-                </table>
+
+    <div class="box">
+        <div class="filter">
+            <div class="choose">
+                <ul class="yc-ul">
+                    <li><a class="curr" href="#">全部（5）</a></li>
+                    <li><a href="#">等待报价（1）</a></li>
+                    <li><a href="#">甄选供应商（1）</a></li>
+                    <li><a href="#">关闭（4）</a></li>
+                </ul>
+            </div>
+            <div class="date">
+                <span>发布日期</span>
+                <input id="d1" class="ipt Wdate" type="text" onFocus="WdatePicker({maxDate:'%y-%M-%d',onpicked:function(){d2.focus()}})"/>
+                <span>至</span>
+                <input id="d2" class="ipt Wdate" type="text" onFocus="WdatePicker({minDate:'#F{$dp.$D(\'d1\')}',maxDate:'%y-%M-%d'})"/>
+                <input class="ipt key" type="text" placeholder="采购批号/品种">
             </div>
         </div>
-    </div>
-    {% module PageNav(nav=nav, show=True) %}
-    <!-- /.row -->
-</div>
-<!-- Modal -->
-<div class="modal fade" id="share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">邀请报价</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="bs-example">
-                    <h5><img width="30" src="{{ static_url('images/wechat.jpg') }}" />  微信邀请朋友报价</h5>
-                    <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
-                    <center><img src="{{ static_url('images/qrcode.jpg') }}" width="180"/></center>
+
+        <div class="list">
+            <div class="tr thead">
+                <div class="td1">采购批号</div>
+                <div class="td2">品种</div>
+                <div class="td3">报价</div>
+                <div class="td4">操作/状态</div>
+                <div class="td5">
+                    <a class="page" href="#">&lt;</a>
+                    <a class="page" href="#">下一页&gt;</a>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
-                <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
-                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder=""></textarea>
-                <br>
-                <button style="width:250px" type="button" class="btn btn-default">复制</button>
+
+            <div class="tr">
+                <div class="tit">
+                    <div class="td1">HJ283M</div>
+                    <div class="td2">发布时间：<time>2015-11-25 19:03</time></div>
+                    <div class="td3">
+                        <span class="status wait">等待报价</span> 剩余3天（2015-12-12截止）
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-edit" href="#" title="编辑"></a>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                    <div class="td5">
+                        <i class="icons icons-up fold"></i>
+                    </div>
+                </div>
+                <div class="total">
+                    <span>黄连</span>
+                    <span>三七</span>
+                    <span>枸杞子</span>
+                    <span>党参</span>
+                    <span>黄连</span>
+                    <span>三七</span>
+                    <span>枸杞子</span>
+                    <span>党参</span>
+                    <span>黄连</span>
+                    <span>三七</span>
+                    <span>枸杞子</span>
+                    <span>党参</span>
+                    <span><i>14</i>个品种</span>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>001</span>
+                        <em>黄连</em>
+                        <span>单只筒</span>
+                    </div>
+                    <div class="td3">
+                        <em>5个报价<sup>3</sup></em>
+                        <span class="price">最低价23（裸价）</span>
+                        <span class="choose">已甄选<i>1</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>002</span>
+                        <em>三七</em>
+                        <span>60头</span>
+                    </div>
+                    <div class="td3">
+                        <span class="match">暂无报价，正在努力撮合</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>003</span>
+                        <em>枸杞子</em>
+                        <span>120粒</span>
+                    </div>
+                    <div class="td3">
+                        <em>12个报价</em>
+                        <span class="price">最低价45.7</span>
+                        <span class="choice">请尽快甄选意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>004</span>
+                        <em>党参</em>
+                        <span>统货</span>
+                    </div>
+                    <div class="td3">
+                        <em>5个报价</em>
+                        <span class="price">最低价23（裸价）</span>
+                        <span class="choose">已甄选<i>2</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <span class="finish">报价结束</span>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>005</span>
+                        <em>黄氏</em>
+                        <span>60头</span>
+                    </div>
+                    <div class="td3">
+                        <span class="match">暂无报价，正在努力撮合</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>006</span>
+                        <em>红花</em>
+                        <span>120粒</span>
+                    </div>
+                    <div class="td3">
+                        <em>12个报价</em>
+                        <span class="price">最低价45.7</span>
+                        <span class="choice">请尽快甄选意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <span class="finish">报价结束</span>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>007</span>
+                        <em>红花</em>
+                        <span>120粒</span>
+                    </div>
+                    <div class="td3">
+                        <em>12个报价</em>
+                        <span class="price">最低价45.7</span>
+                        <span class="choice">已甄选<i>2</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <span class="finish">报价结束</span>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tr">
+                <div class="tit">
+                    <div class="td1">H2483B</div>
+                    <div class="td2">发布时间：<time>2015-11-25 19:03</time></div>
+                    <div class="td3">
+                        <span class="status finish">报价结束，甄选供应商</span> 剩余3天（2015-12-12截止）
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-copy" href="#" title="复制"></a>
+                    </div>
+                    <div class="td5">
+                        <i class="icons icons-up fold"></i>
+                    </div>
+                </div>
+                <div class="total">
+                    <span>黄连</span>
+                    <span>三七</span>
+                    <span>枸杞子</span>
+                    <span>党参</span>
+                    <span><i>4</i>个品种</span>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>001</span>
+                        <em>黄连</em>
+                        <span>单只筒</span>
+                    </div>
+                    <div class="td3">
+                        <em>5个报价<sup>3</sup></em>
+                        <span class="price">最低价23（裸价）</span>
+                        <span class="choose">已甄选<i>1</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>002</span>
+                        <em>三七</em>
+                        <span>60头</span>
+                    </div>
+                    <div class="td3">
+                        <span class="match">暂无报价</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>003</span>
+                        <em>枸杞子</em>
+                        <span>120粒</span>
+                    </div>
+                    <div class="td3">
+                        <em>12个报价</em>
+                        <span class="price">最低价45.7</span>
+                        <span class="choice">请尽快甄选意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>004</span>
+                        <em>党参</em>
+                        <span>统货</span>
+                    </div>
+                    <div class="td3">
+                        <em>5个报价</em>
+                        <span class="price">最低价23（裸价）</span>
+                        <span class="choose">已甄选<i>2</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <span class="finish">报价结束</span>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tr">
+                <div class="tit">
+                    <div class="td1">HJ283M</div>
+                    <div class="td2">发布时间：<time>2015-11-25 19:03</time></div>
+                    <div class="td3">
+                        <span class="status wait">等待报价</span> 剩余3天（2015-12-12截止）
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-edit" href="#" title="编辑"></a>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                    <div class="td5">
+                        <i class="icons icons-up fold"></i>
+                    </div>
+                </div>
+                <div class="total">
+                    <span>黄连</span>
+                    <span>三七</span>
+                    <span>枸杞子</span>
+                    <span>党参</span>
+                    <span><i>4</i>个品种</span>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>001</span>
+                        <em>黄连</em>
+                        <span>单只筒</span>
+                    </div>
+                    <div class="td3">
+                        <em>5个报价<sup>3</sup></em>
+                        <span class="price">最低价23（裸价）</span>
+                        <span class="choose">已甄选<i>1</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>002</span>
+                        <em>三七</em>
+                        <span>60头</span>
+                    </div>
+                    <div class="td3">
+                        <span class="match">暂无报价，正在努力撮合</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>003</span>
+                        <em>枸杞子</em>
+                        <span>120粒</span>
+                    </div>
+                    <div class="td3">
+                        <em>12个报价</em>
+                        <span class="price">最低价45.7</span>
+                        <span class="choice">请尽快甄选意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>004</span>
+                        <em>党参</em>
+                        <span>统货</span>
+                    </div>
+                    <div class="td3">
+                        <em>5个报价</em>
+                        <span class="price">最低价23（裸价）</span>
+                        <span class="choose">已甄选<i>2</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <span class="finish">报价结束</span>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>005</span>
+                        <em>黄氏</em>
+                        <span>60头</span>
+                    </div>
+                    <div class="td3">
+                        <span class="match">暂无报价，正在努力撮合</span>
+                    </div>
+                    <div class="td4">
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>006</span>
+                        <em>红花</em>
+                        <span>120粒</span>
+                    </div>
+                    <div class="td3">
+                        <em>12个报价</em>
+                        <span class="price">最低价45.7</span>
+                        <span class="choice">请尽快甄选意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <span class="finish">报价结束</span>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
+                <div class="group" data-href="order_detail.html">
+                    <div class="td2">
+                        <span>007</span>
+                        <em>红花</em>
+                        <span>120粒</span>
+                    </div>
+                    <div class="td3">
+                        <em>12个报价</em>
+                        <span class="price">最低价45.7</span>
+                        <span class="choice">已甄选<i>2</i>家意向供应商</span>
+                    </div>
+                    <div class="td4">
+                        <span class="finish">报价结束</span>
+                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-delete" href="#" title="删除"></a>
+                    </div>
+                </div>
             </div>
         </div>
-      </div>
+
+        <div class="pagin">
+            <div class="skip">
+                共17页，到第<input class="ipt" type="text" onkeydown="javascript:if(event.keyCode==13){page_jump();return false;}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" value="1" maxlength="4" id="jPageSkip" >页
+                <button class="btn-skip" type="button" onclick="page_jump();">确定</button>
+            </div>
+            <div class="num">
+                <span class="disabled">&lt;</span>
+                <span class="curr">1</span>
+                <a href="?page=2">2</a>
+                <a href="?page=3">3</a>
+                <a href="?page=4">4</a>
+                <a href="?page=5">5</a>
+                <a href="?page=6">6</a>
+                <a href="?page=7">7</a>
+                <i>...</i>
+                <a href="?page=199">199</a>
+                <a href="?page=200">200</a>
+                <a href="?page=2">&gt;</a>
+            </div>
+        </div>
+        {% module PageNav(nav=nav, show=True) %}
     </div>
-  </div>
 </div>
-<script type="text/javascript">
-$(document).ready(function(){
-    $(".glyphicon-share").click(function() {
-        var id = $(this).attr('rel');
-        var share = $(this).attr('sharerel');
-        $("#sharemsg").attr("placeholder", share);
-        $("#share").modal();
-    });
-})
+{% end %}
+{% block javascript %}
+<!-- 删除 -->
+<div class="modal fade" id="jModalDelete" tabindex="-1" role="dialog" aria-labelledby="tit1">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit1">停止报价</h4>
+            </div>
+            <div class="modal-body">
+                <div class="confirm">
+                    <p>您确认删除这一行吗？</p>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-orange">停止报价</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-function purchaseinfo(pid){
-    window.location = "/mypurchase/update/"+pid;
-}
+<!-- 删除成功提示 -->
+<div class="modal fade" id="jModalDeleteResult" tabindex="-1" role="dialog" aria-labelledby="tit2">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit2">停止报价</h4>
+            </div>
+            <div class="modal-body">
+                <div class="result">
+                    <p class="success"><i class="icons icons-ok"></i>操作成功</p>
+                    <p class="tips">3秒后自动关闭</p>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-gray" data-dismiss="modal">立即关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-function removepurchase(pid){
+<!-- 分享 -->
+<div class="modal fade" id="jModalShare" tabindex="-1" role="dialog" aria-labelledby="tit3">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit3">邀请报价</h4>
+            </div>
+            <div class="modal-body">
+                <div class="share">
+                    <div class="qrcode"><img height="114" width="114" alt="" src="uploads/qrcode.jpg"></div>
+                    <div class="txt">
+                        <h3><i class="icons icons-wechat"></i>微信邀请朋友报价</h3>
+                        <p>微信扫描右侧二维码，发送到朋友圈，邀请前来报价</p>
+                    </div>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-gray" data-dismiss="modal">立即关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ static_url('js/My97DatePicker/WdatePicker.js')}}"></script>
+<script src="{{ static_url('js/area.js')}}"></script>
+<script src="{{ static_url('js/center.js')}}"></script>
+<script>
+var $jModalDelete = $('#jModalDelete');
+var timer = 0;
+var isDel = false;
+// 关闭整个采购单
+$('.list').on('click', '.tit .icons-delete', function() {
+    var txt = '<p>确认对如下采购单停止报价？停止后，该批次的所有的品种都将停止报价</p>';
+    var $pa = $(this).closest('.tit');
+    txt += '<strong>' + $pa.find('.td1').html() + $pa.next().html() + '</strong>';
+
+    $jModalDelete.find('.confirm').html(txt);
+    $jModalDelete.modal();
+    return false;
+});
+// 结束单个品种报价
+$('.list').on('click', '.group .icons-delete', function() {
+    var txt = '<p>确认对如下采购单停止报价？</p>';
+    var $pa = $(this).closest('.group');
+    txt += '<strong>' + $pa.prevAll('.tit').find('.td1').html() + $pa.find('.td2').html() + '</strong>';
+
+    $jModalDelete.find('.confirm').html(txt);
+    $jModalDelete.modal();
+    return false;
+});
+
+$jModalDelete.on('hidden.bs.modal', function() {
+    if (isDel) {
+        $('#jModalDeleteResult').modal('show');
+        timer && clearTimeout(timer);
+        timer = setTimeout(function() {
+            $('#jModalDeleteResult').modal('hide');
+        }, 3e3);
+    }
+    isDel = false;
+});
+
+$jModalDelete.on('click', '.btn', function() {
     $.ajax({
-        url: "/removepurchase",
-        data: "pid="+pid,
-        dataType: 'json',
-        type: 'POST',
-        beforeSend: function(jqXHR, settings) {
-            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-        },
-        success: function(data) {
-            if(data.status == "success"){
-                window.location.href='/mypurchase';
-            }else{
-                alert("提交失败，请刷新页面重试");
-            }
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(errorThrown);
+        url: '',
+        data: {},
+        success: function() {
+            isDel = true;
+            $jModalDelete.modal('hide');
         }
-     });
-}
+    })
+});
+
+// 分享
+$('.list').on('click', '.icons-share', function() {
+    var qrcodeSrc = 'uploads/qrcode.jpg';
+    $('#jModalShare').find('.qrcode img').attr('src', qrcodeSrc);
+    $('#jModalShare').modal();
+    return false;
+});
+
+// 跳转
+$('.list').on('click', '.group', function() {
+    var url = $(this).attr('data-href');
+    if (url) {
+        location.href = url;
+    }
+});
 </script>
 {% end %}

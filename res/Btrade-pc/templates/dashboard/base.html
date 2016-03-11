@@ -1,143 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>我的工作台 - 药采购</title>
-    <link href="{{ static_url('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-    <link href="{{ static_url('css/sb-admin.css')}}" rel="stylesheet">
-    <link href="{{ static_url('css/plugins/morris.css')}}" rel="stylesheet">
-    <link href="{{ static_url('font-awesome/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{ static_url('bootstrap/css/bootstrapValidator.css') }}" rel="stylesheet" media="screen">
-    <script src="{{ static_url('js/jquery.min.js') }}"></script>
-    <script src="{{ static_url('bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ static_url('bootstrap/js/bootstrapValidator.js') }}"></script>
-    <style>
-        body {
-            font-family: Microsoft YaHei;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <title>用户中心-药材购</title>
+    <!-- 浏览器高速模式 -->
+    <meta name="renderer" content="webkit" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css')}}" />
+    <link rel="stylesheet" href="{{ static_url('css/style.css')}}" />
+    <link rel="stylesheet" href="{{ static_url('css/center.css')}}" />
+    <!--[if lt IE 9]>
+      <script src="{{ static_url('js/html5shiv.min.js')}}"></script>
+      <script src="{{ static_url('js/respond.min.js')}}"></script>
+    <![endif]-->
 </head>
 <body>
-<div id="wrapper">
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/"><b>药采购</b></a>
-            </div>
-            <!-- Top Menu Items -->
-            <ul class="nav navbar-right top-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <b class="caret"></b></a>
-                    <ul class="dropdown-menu message-dropdown">
-                        <li class="message-preview">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="pull-left">
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    </span>
-                                    <div class="media-body">
-                                        <h5 class="media-heading"><strong>代雷</strong>
-                                        </h5>
-                                        <p class="small text-muted"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> 昨天上午10:32</p>
-                                        <p>你报价的三七是什么规格？</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="message-footer">
-                            <a href="#">查看所有信息</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> <b class="caret"></b></a>
-                    <ul class="dropdown-menu alert-dropdown">
-                        <li>
-                            <a href="#">我的三七采购单 <span class="label label-default">过期</span></a>
-                        </li>
-                        <li>
-                            <a href="#">我的三七采购单 <span class="label label-primary">过期</span></a>
-                        </li>
-                        <li>
-                            <a href="#">我的三七采购单 <span class="label label-success">过期</span></a>
-                        </li>
-                        <li>
-                            <a href="#">我的三七采购单 <span class="label label-info">过期</span></a>
-                        </li>
-                        <li>
-                            <a href="#">我的三七采购单 <span class="label label-warning">过期</span></a>
-                        </li>
-                        <li>
-                            <a href="#">我的三七采购单 <span class="label label-danger">过期</span></a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">查看所有提醒</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="/dashboard" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ handler.session.get('user') }} <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/dashboard"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;您好，{{ handler.session.get('user') }}</a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;消息中心</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="/logout"><span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp;&nbsp;退出</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">
-                    <li {% if request.uri.split('/')[1] == "dashboard" %} class="active" {% end %}>
-                        <a href="/dashboard"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> 我的工作台</a>
-                    </li>
-                    <li {% if request.uri.split('/')[1] == "mypurchase" %} class="active" {% end %}>
-                        <a href="/mypurchase"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 我的采购</a>
-                    </li>
-                    <li {% if request.uri.split('/')[1] == "talking" %} class="active" {% end %}>
-                        <a href="#"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> 洽谈</a>
-                    </li>
-                    <li {% if request.uri.split('/')[1] == "/notice" %} class="active" {% end %}>
-                        <a href="#"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> 通知</a>
-                    </li>
-                    <li {% if request.uri.split('/')[1] == "account" %} class="active" {% end %}>
-                        <a href="/account"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 账户</a>
-                    </li>
-                    <!--<li>
-                        <a href="bootstrap-grid.html"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Bootstrap Grid</a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo" class="collapse">
-                            <li>
-                                <a href="#">Dropdown Item</a>
-                            </li>
-                            <li>
-                                <a href="#">Dropdown Item</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="blank-page.html"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Blank Page</a>
-                    </li>-->
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
-        <div id="page-wrapper">
-            {% block page-wrapper %}
-            {% end %}
-        </div>
-    </div>
-    <!-- Morris Charts JavaScript
-    <script src="{{ static_url('js/plugins/morris/raphael.min.js') }}"></script>
-    <script src="{{ static_url('js/plugins/morris/morris.min.js') }}"></script>
-    <script src="{{ static_url('js/plugins/morris/morris-data.js') }}"></script> -->
+<section class="sec">
+{% block page-wrapper %}
+{% end %}
+<div class="side">
+    <ul class="yc-ul">
+        <li><a href="/"><i class="icons home"></i>首页</a></li>
+        <li {% if request.uri.split('/')[1] == "mypurchase" %}class="curr"{% end %}><a href="/mypurchase"><i class="icons menu"></i>我的采购</a><!--<em>4</em>--></li>
+        <li><a href="#"><i class="icons talk"></i>洽谈</a></li>
+        <li><a href="#"><i class="icons envelope"></i>通知</a></li>
+        <li {% if request.uri.split('/')[1] == "account" %}class="curr"{% end %}><a href="/account"><i class="icons setting"></i>账户</a></li>
+    </ul>
+</div>
+</section>
+<script src="{{ static_url('js/jquery.min.js')}}"></script>
+<script src="{{ static_url('js/bootstrap.min.js')}}"></script>
+<script src="{{ static_url('js/center.js')}}"></script>
+{% block javascript %}
+{% end %}
 </body>
 </html>

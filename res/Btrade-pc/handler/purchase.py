@@ -34,7 +34,7 @@ class PurchaseHandler(BaseHandler):
                 #我关注的品种，id,name,origin
                 varietys = []
                 if user["varietyids"]:
-                    varietys = self.db.query("SELECT id,name,origin FROM  WHERE id in ("+user["varietyids"]+")")
+                    varietys = self.db.query("SELECT id,name,origin FROM variety WHERE id in ("+user["varietyids"]+")")
                 user["name"] = user.get("name")
                 self.render("purchase.html", provinces=provinces, user=user, mypurchase=mypurchase, varietys=varietys)
             else:
@@ -91,12 +91,11 @@ class PurchaseHandler(BaseHandler):
                 purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specificationid, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                                 purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
-                                purchase['nQuantity'], purchase['nUnit'], ",".join(purchase['nQuality']),
-                                ",".join(purchase['nArea']), purchase['nPrice'])
+                                purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+                                ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'])
                 #插入图片
-                index = i
-                if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(index):
-                    for attachment in self.session.get("uploadfiles")[index]:
+                if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+                    for attachment in self.session.get("uploadfiles")[i]:
                         self.db.execute("insert into purchase_attachment (purchase_infoid, attachment)"
                                           "value(%s, %s)", purchase_infoid, attachment)
                     self.session["uploadfiles"] = {}
@@ -280,7 +279,7 @@ class GetVarInfoByIdHandler(BaseHandler):
                     val["val"] = 0
                     val["text"] = s
                     spec.append(val)
-                self.api_response({'status':'success','message':'请求成功','rank':spec,'unit':[{'val':'0','text':'公斤'}],'txt':'公斤'})
+                self.api_response({'status':'success','message':'请求成功','rank':spec,'unit':[{'val':'1','text':'公斤'}],'txt':'公斤'})
 
 class PurchaseSuccessHandler(BaseHandler):
 
@@ -291,7 +290,12 @@ class PurchaseSuccessHandler(BaseHandler):
         varname = []
         for v in variety:
             varname.append("["+v["name"]+"]")
-        self.render("success.html", varname=",".join(varname))
+        suppliers = self.db.query("select ta.name,a.areaname,a.parentid from "
+                                  "(select u.name,u.areaid from "
+                                  "(SELECT pi.id,n.sender FROM `purchase_info` pi,notification n WHERE pi.id = n.content and n.type = 2 and varietyid in ("
+                                  +varids+") and n.sender != %s) t left join users u on t.sender = u.id) ta left join area a on ta.areaid = a.id ", self.session.get("userid"))
+
+        self.render("success.html", varname=",".join(varname), suppliers=suppliers)
 
 class RemovePurchaseHandler(BaseHandler):
 
@@ -307,42 +311,66 @@ class MyPurchaseUpdateHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, id):
-        purchases = self.db.query("select * from purchase where userid = %s and id = %s", self.session.get("userid"), id)
-        purchaseids = [str(purchase["id"]) for purchase in purchases]
-        purchaseinfos = self.db.query("select * from purchase_info where purchaseid in ("+",".join(purchaseids)+")")
+        purchases = self.db.query("select * from purchase where userid = %s", self.session.get("userid"))
+        bool = True
+        for p in purchases:
+            if p["id"] == id:
+                bool = False
+                purchase = p
+        if bool:
+            self.error("此采购单不属于你", "/mypurchase")
+            return
+
+        purchaseids = [str(p["id"]) for p in purchases]
+        user = self.db.get("SELECT id,username,name,nickname,phone,type,varietyids FROM users WHERE id = %s", self.session.get("userid"))
+        #最近采购品种，id,name,origin
+        mypurchasevar = self.db.query("select v.id,v.name,v.origin from purchase_info pi left join variety v on pi.varietyid = v.id where pi.purchaseid in ("+",".join(purchaseids)+") group by v.id")
+        #我关注的品种，id,name,origin
+        varietys = []
+        if user["varietyids"]:
+            varietys = self.db.query("SELECT id,name,origin FROM variety WHERE id in ("+user["varietyids"]+")")
+
+        purchaseinfos = self.db.query("select pi.*,v.id varietyid,v.specification allspec,v.origin allorigin from purchase_info pi left join variety v on pi.varietyid = v.id where pi.purchaseid = %s",id)
         purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
         varietyids = [str(purchaseinfo["varietyid"]) for purchaseinfo in purchaseinfos]
         purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
         attachments = defaultdict(list)
         for attachment in purchaseattachments:
-            attachment["attachment"] = "\\static"+attachment["attachment"] .split("static")[1]
+            attachment["path"] = attachment["attachment"]
+            base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
+            attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
             attachments[attachment["purchase_infoid"]] = attachment
         purchaseinf = defaultdict(list)
-        for purchaseinfo in purchaseinfos:
+        uploadfiles = self.session.get("uploadfiles", {})
+        for index, purchaseinfo in enumerate(purchaseinfos):
+            i = str(index+1)
             purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
+            if uploadfiles and uploadfiles.has_key(i):
+                #uploadfiles[num].append(filepath)
+                base, ext = os.path.splitext(os.path.basename(uploadfiles[i][0]))
+                purchaseinfo["attachments"]['attachment'] = config.img_domain+uploadfiles[i][0][uploadfiles[i][0].find("static"):].replace(base, base+"_thumb")
+            elif purchaseinfo["attachments"]:
+                uploadfiles[i] = [purchaseinfo["attachments"]["path"]]
             purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
-        for purchase in purchases:
-            purchase["purchaseinfo"] = purchaseinf[purchase["id"]]
 
-        if self.session.get("uploadfiles"):
-            self.session["uploadfiles"] = {}
-            self.session.save()
+        self.session["uploadfiles"] = uploadfiles
+        self.session.save()
+        print self.session["uploadfiles"]
         provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 0")
-        area = self.db.get("SELECT id,parentid FROM area WHERE id = %s", purchase["areaid"])
+        area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase["areaid"])
         city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
-        user = self.db.get("SELECT id,nickname,phone FROM users WHERE id = %s", self.session.get("userid"))
-        specifications = self.db.query("select * from specification where varietyid in ("+",".join(varietyids)+")")
-        specificationinf = defaultdict(list)
-        for specification in specifications:
-            specificationinf[specification["varietyid"]].append(specification)
+
+        # specifications = self.db.query("select * from specification where varietyid in ("+",".join(varietyids)+")")
+        # specificationinf = defaultdict(list)
+        # for specification in specifications:
+        #     specificationinf[specification["varietyid"]].append(specification)
+        purchase["purchaseinfo"] = purchaseinf[id]
         for purchaseinfo in purchase["purchaseinfo"]:
-            for index,spec in specificationinf.items():
-                if index == purchaseinfo["varietyid"]:
-                    purchaseinfo["specification"] = spec
-                    break
-        print user
+            purchaseinfo["allspec"] = purchaseinfo["allspec"].split(",")
+        purchase["supplier"] = purchase["supplier"].split("&")
+        print purchase
         if user:
-            self.render("updatepurchase.html", purchase=purchase, provinces=provinces, city=city, area=area, user=user)
+            self.render("updatepurchase.html", purchase=purchase, provinces=provinces, city=city, area=area, user=user, mypurchasevar=mypurchasevar, varietys=varietys)
         else:
             self.error("此用户不存在", "/login")
 
@@ -352,47 +380,54 @@ class MyPurchaseUpdateHandler(BaseHandler):
         if len(purchaseinfo) == 0:
             self.api_response({'status':'fail','message':'此采购订单不属于你'})
             return
-        data = json.loads(self.request.body)
+        data = {}
+        for key,arg in self.request.arguments.iteritems():
+            if key == 'purchases':
+                data[key] = eval(arg[0])
+            else:
+                data[key] = arg[0]
         data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" == "" else "0"
-        data['pay'] = ",".join(data['pay']) if data.has_key("pay") else ""
+        data['paytype'] = ",".join(data['paytype']) if data.has_key("paytype") else ""
         data['payday'] = data['payday'] if data.has_key('payday') and data['payday'] != "" else "0"
-        data['send'] = data['send'] if data.has_key('send') and data['send'] != "" else "0"
-        data['supplier'] = data['supplier'] if data.has_key('supplier') and data['supplier'] != "" else "0"
-        data['limited'] = data['limited'] if data.has_key("limited") else "0"
-        data['term'] = data['term'] if data.has_key('term') and data['term'] != "" else "0"
-        print data
+        data['payinfo'] = data['payinfo'] if data.has_key('payinfo') and data['payinfo'] != "" else ""
+        data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"
+        data['permit'] = data['permit'] if data.has_key('permit') and data['permit'] != "" else "0"
+        data['deadline'] = data['deadline'] if data.has_key('deadline') and data['deadline'] != "" else "0"
         #存储采购主体信息
-        if data.has_key("city"):
+        if data.has_key("address"):
             self.db.execute("update purchase set areaid=%s, invoice=%s, pay=%s, payday=%s, payinfo=%s,"
                                                   " send=%s, receive=%s, accept=%s, other=%s, supplier=%s, remark=%s,"
                                                   " limited=%s, term=%s, createtime=%s where id = %s and userid = %s",
-                                                  data["city"], data['invoice'], data['pay'], data['payday'],
-                                                  data['payinfo'], data['send'], data['receive'], data['accept'],
-                                                  data['other'], data['supplier'], data['remark'], data['limited'],
-                                                  data['term'], int(time.time()), id, self.session.get("userid"))
+                                                  data["address"], data['invoice'], data['paytype'], data['payday'],
+                                                  data['payinfo'], data['sample'], data['contact'], data['demand'],
+                                                  data['replenish'], data['permit'], data['others'], 0,
+                                                  data['deadline'], int(time.time()), id, self.session.get("userid"))
             #搜出当前采购单中的品种，以备下面插入新采购单后删除
             purchaseinfos = self.db.query("select id from purchase_info where purchaseid = %s", id)
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
-            print purchaseinfoids
             #存储采购品种信息
-            for i in data['purchases']:
-                purchase = data['purchases'][i]
+            varids = []
+            for i,purchase in data['purchases'].iteritems():
+                varids.append(purchase["nVarietyId"])
                 purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specificationid, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                id, purchase["varietyid"], purchase['name'], purchase['specification'],
-                                purchase['quantity'], purchase['unit'], ",".join(purchase['quality']),
-                                ",".join(purchase['origin']), purchase['price'])
+                                id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+                                purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+                                ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'])
                 #插入图片
-                index = str(int(i) + 1)
-                if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(index):
-                    for attachment in self.session.get("uploadfiles")[index]:
+                if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+                    for attachment in self.session.get("uploadfiles")[i]:
                         self.db.execute("insert into purchase_attachment (purchase_infoid, attachment)"
                                           "value(%s, %s)", purchase_infoid, attachment)
-
+            self.session["uploadfiles"] = {}
+            self.session.save()
             #删除采购品种带的附件
+            attach = self.db.query("select attachment from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+            for a in attach:
+                del a["attachment"]
             self.db.execute("delete from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             #删除采购品种
             self.db.execute("delete from purchase_info where id in ("+",".join(purchaseinfoids)+")")
-            self.api_response({'status':'success','message':'请求成功'})
+            self.api_response({'status':'success','message':'请求成功','data':varids})
         else:
             self.api_response({'status':'fail','message':'必须选择收货地'})

@@ -1,4 +1,15 @@
 @charset "utf-8";
+header{background-color:#36404c;border-bottom:none;}
+header .nav a{color:#fff;}
+header .login{top:-20px;height:90px;padding:33px 20px;background-color:#2c2f33;}
+header .login .menu a{color:#fff;}
+header .login .menu i{width:0;height:0;margin-top:7px;background:none;border:7px dashed transparent;border-top:7px solid #fff;vertical-align:top;}
+header .login .menu em{background:none;}
+header .login .menu em:before{display:none;}
+header .login .submenu{top:70px;right:0;width:150px;}
+header .login .submenu a{color:#333;}
+header .login .submenu:before{position:absolute;right:20px;top:-17px;content:"";border:9px dashed transparent;border-bottom:9px solid #fff;}
+header .login .submenu:after{display:none;}
 .sec{position:relative;padding-left:120px;}
 .side{position:absolute;top:0;left:0;width:120px;height:100%;background-color:#369;}
 .side li{position:relative;display:block;text-align:center;}

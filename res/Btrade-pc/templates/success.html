@@ -6,51 +6,32 @@
         <div class="pch-success">
             <div class="main">
                 <h2><i class="iconfont icon-radio-yes"></i>发布采购计划/找货需求成功！</h2>
+                {% if suppliers %}
                 <div class="desc">
-                    <p>目前共有{{varname}}相关品种的供应商<span>253</span>位，您的采购计划/找货需求将公开给他们</p>
+                    <p>目前共有{{varname}}相关品种的供应商<span>{{len(suppliers)}}</span>位，您的采购计划/找货需求将公开给他们</p>
                 </div>
 
                 <div class="recommend">
-                    <p>药材购优选了<span>10</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" alt=""></p>
+                    <p>药材购优选了<span>{{len(suppliers)}}</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" alt=""></p>
+                    {% set i = 1%}
+                    {% for supplier in suppliers %}
+                    {% if i < 4 %}
                     <dl>
                         <dt>
                             <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
                         </dt>
                         <dd>
-                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
-                            <address>重庆石柱</address>
+                            <strong>{{supplier.name}}<i class="iconfont icon-pass"></i></strong>
+                            <address>{% if supplier.areaname is not None%}{{supplier.areaname}}{% end %}</address>
                         </dd>
                     </dl>
-                    <dl>
-                        <dt>
-                            <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
-                        </dt>
-                        <dd>
-                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
-                            <address>重庆石柱</address>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>
-                            <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
-                        </dt>
-                        <dd>
-                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
-                            <address>重庆石柱</address>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>
-                            <img src="{{ static_url('images/avatar.png')}}" width="30" height="30" alt="">
-                        </dt>
-                        <dd>
-                            <strong>重庆旺隆黄连公司<i class="iconfont icon-pass"></i></strong>
-                            <address>重庆石柱</address>
-                        </dd>
-                    </dl>
+                    {% end %}
+                    {% set i = i + 1 %}
+                    {% end %}
 
                     <div class="more">以及其他6家</div>
                 </div>
+                {% end %}
 
                 <div class="tips">
                     <p><span>请您坐等报价，并积极回应，可在 <a href="/dashboard">我的工作台</a>&gt;<a href="/mypurchase">我的采购</a> 随时跟进。</span>及时回应报价，积累信用等级，获得更多权益</p>

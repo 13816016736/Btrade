@@ -68,10 +68,10 @@ class UpdateUserHandler(BaseHandler):
                 phone = self.get_argument("phone")
 
         if password and phone:
-            self.db.update("UPDATE users SET nickname = %s, password = %s, phone = %s  WHERE id = %s", nickname, password, phone, userid)
+            self.db.update("UPDATE users SET nickname = %s, password = %s, phone = %s  WHERE id = %s", nickname, md5(str(password + config.salt)), phone, userid)
             self.api_response({'status':'success','message':'更新成功'})
         elif password:
-            self.db.update("UPDATE users SET nickname = %s, password = %s  WHERE id = %s", nickname, password, userid)
+            self.db.update("UPDATE users SET nickname = %s, password = %s  WHERE id = %s", nickname, md5(str(password + config.salt)), userid)
             self.api_response({'status':'success','message':'更新成功'})
         elif phone:
             self.db.update("UPDATE users SET nickname = %s, phone = %s  WHERE id = %s", nickname, phone, userid)
