@@ -39,9 +39,9 @@ $.ajax({
 		$('#jProvince dd').html(arr.join(''));
 	},
 	error: function() {
-		setTimeout(function() {
-			fillProvince();
-		}, 1e3);
+		//setTimeout(function() {
+		//	fillProvince();
+		//}, 1e3);
 	}
 });
 $('#jProvince').on('click', 'span', function() {

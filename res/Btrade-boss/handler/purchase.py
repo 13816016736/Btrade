@@ -87,7 +87,6 @@ class PurchaseInfoHandler(BaseHandler):
                 purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
                 purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
             purchaseinfo["attachments"] = attachments
-            print purchaseinfo
             others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
                                           purchaseinfo["id"], purchaseinfo["pid"])
             #获取本采购单报价信息

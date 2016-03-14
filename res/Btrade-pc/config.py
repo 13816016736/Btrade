@@ -49,11 +49,12 @@ handlers = [
     (r"/getvarinfobyid", GetVarInfoByIdHandler),
     (r"/purchasesuccess", PurchaseSuccessHandler),
     (r"/dashboard", DashboardHandler),
-    (r"/mypurchase", MyPurchaseHandler),
-    (r"/mypurchase/page/([0-9]+)", MyPurchaseHandler),
+    (r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", MyPurchaseHandler),
+    (r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MyPurchaseHandler),
     (r"/mypurchase/update/([0-9]+)", MyPurchaseUpdateHandler),
     (r"/removepurchase", RemovePurchaseHandler),
     (r"/mypurchase/info/([0-9]+)", MyPurchaseInfoHandler),
+    (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/account", AccountHandler),
     (r"/updateuser", UpdateUserHandler),
     (r"/updateusername", UpdateUserNameHandler),
@@ -65,7 +66,7 @@ handlers = [
 #如果设置为0则不现实，此处的更改为全局设置，但仍然可以单独设置某处的显示选项
 conf = {
     #主页显示的文章数目
-    'POST_NUM': 10,
+    'POST_NUM': 3,
 }
 
 """日志设置
@@ -82,6 +83,6 @@ log_file = 'log/tornado.log'
 salt = "ycg20151012"
 
 #图片服务器域名
-img_domain = "http://10.0.24.114/"
+img_domain = "http://10.0.24.147/"
 img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
 # img_path = "F:\\nginx-1.8.1\\html\\static\\uploadfiles"
