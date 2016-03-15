@@ -92,6 +92,6 @@ log_file = 'log/tornado.log'
 salt = "ycg20151012"
 
 #图片服务器域名
-img_domain = "http://10.0.24.114/"
+img_domain = "http://10.0.24.147/"
 img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
 # img_path = "F:\\nginx-1.8.1\\html\\static\\uploadfiles"

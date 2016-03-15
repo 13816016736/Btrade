@@ -59,6 +59,9 @@ handlers = [
     (r"/updateuser", UpdateUserHandler),
     (r"/updateusername", UpdateUserNameHandler),
     (r"/updateuserinfo", UpdateUserInfoHandler),
+    (r"/contact", ContactHandler),
+    (r"/aboutus", AboutusHandler),
+    (r"/quote", QuoteHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 

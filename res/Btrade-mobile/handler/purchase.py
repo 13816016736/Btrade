@@ -21,9 +21,8 @@ class PurchaseHandler(BaseHandler):
         #                           "left join area a on t.areaid = a.id", number, config.conf['POST_NUM'])
         # if purchases:
         #     purchaseids = [str(purchase["id"]) for purchase in purchases]
-        #     purchaseinfos = self.db.query("select pis.*,count(q.id) quotecount from (select p.*,s.specification from purchase_info p "
-        #                                   "left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")"
-        #                                   ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id")
+        #     purchaseinfos = self.db.query("select p.*,count(q.id) quotecount from  purchase_info p "
+        #                                   "left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id")
         #     purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
         #     purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
         #     attachments = defaultdict(list)
@@ -47,10 +46,10 @@ class PurchaseHandler(BaseHandler):
 
         #列表一项是一个采购单一个品种
         number = int(number) if number > 0 else 0
-        purchases = self.db.query("select ta.*,u.nickname,u.name from(select pis.*,count(q.id) quotecount from "
-                                  "(select t.*,s.specification from (select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specificationid,pi.views from "
-                                  "purchase_info pi left join purchase p on p.id = pi.purchaseid order by p.createtime desc,p.id desc limit %s,%s) t "
-                                  "left join specification s on t.specificationid = s.id) pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by pis.createtime desc) ta "
+        purchases = self.db.query("select ta.*,u.nickname,u.name uname from (select pis.*,count(q.id) quotecount from "
+                                  "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from "
+                                  "purchase_info pi left join purchase p on p.id = pi.purchaseid order by p.createtime desc,p.id desc limit %s,%s) "
+                                  "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by pis.createtime desc) ta "
                                   "left join users u on ta.userid = u.id order by ta.pid desc", number, config.conf['POST_NUM'])
         if purchases:
             purchaseinfoids = [str(purchase["pid"]) for purchase in purchases]
@@ -67,10 +66,10 @@ class PurchaseHandler(BaseHandler):
                     # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     purchase["timedelta"] = (expire - datetime.datetime.now()).days
-                purchase["purchaseinfo"] = [{"id": purchase["pid"],"name": purchase["name"],"name": purchase["name"],"attachments":attachments.get(purchase["pid"]),
+                purchase["purchaseinfo"] = [{"id": purchase["pid"],"name": purchase["name"],"attachments":attachments.get(purchase["pid"]),
                                              "origin": purchase["origin"],"purchaseid": purchase["id"],"quality": purchase["quality"],"limited": purchase["limited"],
                                              "quantity": purchase["quantity"],"quotecount": purchase["quotecount"],"specification": purchase["specification"],"datetime": purchase["datetime"],
-                                             "specificationid": purchase["specificationid"],"unit": purchase["unit"],"views": purchase["views"],"timedelta": purchase["timedelta"]}]
+                                             "unit": purchase["unit"],"views": purchase["views"],"timedelta": purchase.get("timedelta")}]
 
             self.api_response({'status':'success', 'list':purchases, 'message':'请求成功'})
         else:
@@ -79,12 +78,10 @@ class PurchaseHandler(BaseHandler):
 
 class PurchaseInfoHandler(BaseHandler):
     def get(self, id):
-        purchaseinfo = self.db.get("select n.*,sp.specification from (select t.*,a.areaname from "
-        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specificationid,pi.views from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
-        "specification sp on n.specificationid = sp.id",
-                                     id)
+        purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
+        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:
@@ -133,9 +130,8 @@ class PurchaseinfoBatchHandler(BaseHandler):
                                   " left join area a on t.areaid = a.id", purchaseid)
         user = self.db.get("select * from users where id = %s", purchase["userid"])
         if purchase:
-            purchaseinfos = self.db.query("select pis.*,count(q.id) quotecount from (select p.*,s.specification from purchase_info p "
-                                          "left join specification s on p.specificationid = s.id where p.purchaseid = %s"
-                                          ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id", purchaseid)
+            purchaseinfos = self.db.query("select p.*,count(q.id) quotecount from purchase_info p "
+                                          "left join quote q on p.id = q.purchaseinfoid where p.purchaseid = %s group by p.id", purchaseid)
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)

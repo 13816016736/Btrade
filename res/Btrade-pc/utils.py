@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import random,time
+import random,thread
 from sendsms import *
 
 def md5(str):
@@ -116,7 +116,8 @@ def sendRegInfo(phone, username, password):
     templateId = 815
     phone = phone
     vars = '{"%username%":"'+username+'","%password%":"'+password+'"}'
-    return send(templateId, phone, vars)
+    thread.start_new_thread(send, (templateId, phone, vars))
+    # return send(templateId, phone, vars)
 
 def merge_thumb(files, output_file):
     """合并图片"""

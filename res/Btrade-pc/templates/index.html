@@ -67,7 +67,7 @@
                         </li>
                     </ol>
                     <div class="button">
-                        <a class="btn btn-orange" href="#">去采购</a>
+                        <a class="btn btn-orange" href="/purchase">去采购</a>
                     </div>
                 </div>
             </div>
@@ -83,7 +83,7 @@
                         <li class="li4"><i class="icon4"></i>随时随地报价</li>
                     </ul>
                     <div class="button">
-                        <a class="btn btn-white" href="#">去报价</a>
+                        <a class="btn btn-white" href="/quote">去报价</a>
                     </div>
                 </div>
             </div>
@@ -107,221 +107,60 @@
                     </div>
                     <div class="td3"></div>
                 </div>
-
+                {% for purchase in purchases%}
                 <div class="tr">
                     <div class="td1">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <h3>{{purchase.name}}</h3>
                         <div class="attr">
-                            <span class="category">饮片公司</span>
+                            <span class="category">
+                                {% if purchase.type == 1%}
+                                饮片厂
+                                {% elif purchase.type == 2%}
+                                药厂
+                                {% elif purchase.type == 3%}
+                                药材经营公司
+                                {% elif purchase.type == 4%}
+                                个体经营户
+                                {% elif purchase.type == 5%}
+                                合作社
+                                {% elif purchase.type == 6%}
+                                种植基地
+                                {% elif purchase.type == 7%}
+                                其他
+                                {% elif purchase.type == 8%}
+                                个人经营
+                                {% elif purchase.type == 9%}
+                                采购经理
+                                {% elif purchase.type == 10%}
+                                销售经理
+                                {% end %}
+                            </span>
                             <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
-                            <time>3 分钟前</time>
+                            <time time="{{purchase.createtime}}">3 分钟前</time>
                         </div>
                     </div>
                     <div class="td2">
+                        {% for purchaseinfo in purchase.purchaseinfo%}
                         <div class="group">
-                            <div class="td2-1">黄连</div>
-                            <div class="td2-2">鸡爪统</div>
-                            <div class="td2-3">重庆</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
+                            <div class="td2-1">{{purchaseinfo.name}}</div>
+                            <div class="td2-2">{{purchaseinfo.specification}}</div>
+                            <div class="td2-3">{{purchaseinfo.origin}}</div>
+                            <div class="td2-4">{{purchaseinfo.quantity}}公斤</div>
+                            <div class="td2-5">{{purchaseinfo.quality}}</div>
                         </div>
-                        <div class="tfoot">共采购21个品种</div>
+                        {% end %}
+                        <div class="tfoot">共采购{{purchase.variety}}个品种</div>
                     </div>
                     <div class="td3">
                         <div class="qrcode">
-                            <span><img src="uploads/qrcode.jpg" alt=""></span>
+                            <span><img src="statis/images/qrcode.jpg" alt=""></span>
                         </div>
                         <div class="detail">
                             微信扫一扫 <br><a href="#">查看详情 立即报价</a>
                         </div>
                     </div>
                 </div>
-
-                <div class="tr">
-                    <div class="td1">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
-                        <div class="attr">
-                            <span class="category">饮片公司</span>
-                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
-                            <time>3 分钟前</time>
-                        </div>
-                    </div>
-                    <div class="td2">
-                        <div class="group">
-                            <div class="td2-1">黄连</div>
-                            <div class="td2-2">鸡爪统</div>
-                            <div class="td2-3">重庆</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">枸杞子</div>
-                            <div class="td2-2">统</div>
-                            <div class="td2-3">湖北</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="tfoot">共采购21个品种</div>
-                    </div>
-                    <div class="td3">
-                        <div class="qrcode">
-                            <span><img src="uploads/qrcode.jpg" alt=""></span>
-                        </div>
-                        <div class="detail">
-                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tr">
-                    <div class="td1">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
-                        <div class="attr">
-                            <span class="category">饮片公司</span>
-                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
-                            <time>3 分钟前</time>
-                        </div>
-                    </div>
-                    <div class="td2">
-                        <div class="group">
-                            <div class="td2-1">黄连</div>
-                            <div class="td2-2">鸡爪统</div>
-                            <div class="td2-3">重庆</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">枸杞子</div>
-                            <div class="td2-2">统</div>
-                            <div class="td2-3">湖北</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">山茱萸</div>
-                            <div class="td2-2">斜片</div>
-                            <div class="td2-3">安徽</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="tfoot">共采购21个品种</div>
-                    </div>
-                    <div class="td3">
-                        <div class="qrcode">
-                            <span><img src="uploads/qrcode.jpg" alt=""></span>
-                        </div>
-                        <div class="detail">
-                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tr">
-                    <div class="td1">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
-                        <div class="attr">
-                            <span class="category">饮片公司</span>
-                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
-                            <time>3 分钟前</time>
-                        </div>
-                    </div>
-                    <div class="td2">
-                        <div class="group">
-                            <div class="td2-1">黄连</div>
-                            <div class="td2-2">鸡爪统</div>
-                            <div class="td2-3">重庆</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">枸杞子</div>
-                            <div class="td2-2">统</div>
-                            <div class="td2-3">湖北</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">山茱萸</div>
-                            <div class="td2-2">斜片</div>
-                            <div class="td2-3">安徽</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">山茱萸</div>
-                            <div class="td2-2">斜片</div>
-                            <div class="td2-3">安徽</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="tfoot">共采购21个品种</div>
-                    </div>
-                    <div class="td3">
-                        <div class="qrcode">
-                            <span><img src="uploads/qrcode.jpg" alt=""></span>
-                        </div>
-                        <div class="detail">
-                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tr">
-                    <div class="td1">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
-                        <div class="attr">
-                            <span class="category">饮片公司</span>
-                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
-                            <time>3 分钟前</time>
-                        </div>
-                    </div>
-                    <div class="td2">
-                        <div class="group">
-                            <div class="td2-1">黄连</div>
-                            <div class="td2-2">鸡爪统</div>
-                            <div class="td2-3">重庆</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">枸杞子</div>
-                            <div class="td2-2">统</div>
-                            <div class="td2-3">湖北</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">山茱萸</div>
-                            <div class="td2-2">斜片</div>
-                            <div class="td2-3">安徽</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">枸杞子</div>
-                            <div class="td2-2">统</div>
-                            <div class="td2-3">湖北</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="group">
-                            <div class="td2-1">山茱萸</div>
-                            <div class="td2-2">斜片</div>
-                            <div class="td2-3">安徽</div>
-                            <div class="td2-4">3000公斤</div>
-                            <div class="td2-5">2010药典标准，无虫蛀，无霉，无变色，硫不超标</div>
-                        </div>
-                        <div class="tfoot">共采购21个品种</div>
-                    </div>
-                    <div class="td3">
-                        <div class="qrcode">
-                            <span><img src="uploads/qrcode.jpg" alt=""></span>
-                        </div>
-                        <div class="detail">
-                            微信扫一扫 <br><a href="#">查看详情 立即报价</a>
-                        </div>
-                    </div>
-                </div>
+                {% end %}
 
             </div>
         </div>
@@ -338,121 +177,37 @@
                     <div class="td4">货源质量</div>
                     <div class="td5">报价</div>
                 </div>
-
+                {% for quote in quotes%}
                 <div class="tr">
                     <div class="td1">
-                        <strong>黄连</strong>
-                        <span>鸡爪统</span>
-                        <time>3 分钟前</time>
+                        <strong>{{quote.name}}</strong>
+                        <span>{{quote.specification}}</span>
+                        <time time="{{quote.createtime}}"></time>
                     </div>
                     <div class="td2">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
+                        <h3>{{quote.pname}}</h3>
                         <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
                     </div>
                     <div class="td3">
-                        <h3>秦联发</h3>
+                        <h3>{{quote.qname}}</h3>
                         <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
                     </div>
                     <div class="td4">
                         <div class="thumb">
-                            <img src="{{ static_url('uploads/small_1.jpg')}}" alt="">
-                            <img src="{{ static_url('uploads/small_2.jpg')}}" alt="">
-                            <img src="{{ static_url('uploads/small_3.jpg')}}" alt="">
+                            {% for attachment in quote.attachments%}
+                            <img src="{{attachment}}" alt="">
+                            {% end %}
                         </div>
                         <div class="desc">
-                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
+                            {{quote.quality}}
                         </div>
                     </div>
                     <div class="td5">
-                        <em>7</em>元/公斤
+                        <em>{{quote.price}}</em>元/公斤
                         <small>裸价</small>
                     </div>
                 </div>
-
-                <div class="tr">
-                    <div class="td1">
-                        <strong>黄连</strong>
-                        <span>鸡爪统</span>
-                        <time>3 分钟前</time>
-                    </div>
-                    <div class="td2">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
-                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
-                    </div>
-                    <div class="td3">
-                        <h3>秦联发</h3>
-                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
-                    </div>
-                    <div class="td4">
-                        <div class="thumb">
-                            <img src="{{ static_url('uploads/small_4.jpg')}}" alt="">
-                        </div>
-                        <div class="desc">
-                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
-                        </div>
-                    </div>
-                    <div class="td5">
-                        <em>7</em>元/公斤
-                        <small>裸价</small>
-                    </div>
-                </div>
-
-                <div class="tr">
-                    <div class="td1">
-                        <strong>黄连</strong>
-                        <span>鸡爪统</span>
-                        <time>3 分钟前</time>
-                    </div>
-                    <div class="td2">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
-                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
-                    </div>
-                    <div class="td3">
-                        <h3>秦联发</h3>
-                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
-                    </div>
-                    <div class="td4">
-                        <div class="thumb">
-                            <img src="{{ static_url('uploads/small_5.jpg')}}" alt="">
-                            <img src="{{ static_url('uploads/small_6.jpg')}}" alt="">
-                        </div>
-                        <div class="desc">
-                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
-                        </div>
-                    </div>
-                    <div class="td5">
-                        <em>7</em>元/公斤
-                        <small>裸价</small>
-                    </div>
-                </div>
-
-                <div class="tr">
-                    <div class="td1">
-                        <strong>黄连</strong>
-                        <span>鸡爪统</span>
-                        <time>3 分钟前</time>
-                    </div>
-                    <div class="td2">
-                        <h3>亳州永刚中药饮片生产有限公司</h3>
-                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
-                    </div>
-                    <div class="td3">
-                        <h3>秦联发</h3>
-                        <p class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</p>
-                    </div>
-                    <div class="td4">
-                        <div class="thumb">
-                            <img src="{{ static_url('uploads/small_7.jpg')}}" alt="">
-                        </div>
-                        <div class="desc">
-                            鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、 碎渣，含量1.5左右
-                        </div>
-                    </div>
-                    <div class="td5">
-                        <em>7</em>元/公斤
-                        <small>裸价</small>
-                    </div>
-                </div>
+                {% end %}
             </div>
         </div>
     </div>
@@ -460,11 +215,11 @@
     <div class="total">
         <div class="container">
             <div class="hd">
-                <h2>已有<i>1</i><i>6</i><i>1</i><i>3</i>个采购品种，在药材购收到<i>1</i><i>6</i><i>1</i><i>3</i>个报价</h2>
+                <h2>已有{% for i in str(pvariety)%}<i>{{i}}</i>{% end %}个采购品种，在药材购收到{% for i in str(qcount)%}<i>{{i}}</i>{% end %}个报价</h2>
                 <p>药材购希望通过提供有效的信息、数据和工具，帮助药材采购商提高效率，找到更多货源，质量更好，价格更优，对接更轻松。同时，供应商可以直接对接更多采购订单，打开销路。</p>
                 <div class="button">
-                    <a class="btn btn-orange" href="#">我是采购商，即刻采购</a>
-                    <a class="btn btn-gray" href="#">我是供应商，立即报价</a>
+                    <a class="btn btn-orange" href="/purchase">我是采购商，即刻采购</a>
+                    <a class="btn btn-gray" href="/quote">我是供应商，立即报价</a>
                 </div>
             </div>
         </div>
@@ -517,19 +272,50 @@ $(function(){
         easing: 'easeInOutExpo',
         trigger: 'click'
     });
+
+    /**
+     * [dateDiff 算时间差]
+     * @param  {[type=Number]} hisTime [历史时间戳，必传]
+     * @param  {[type=Number]} nowTime [当前时间戳，不传将获取当前时间戳]
+     * @return {[string]}         [string]
+     */
+    var dateDiff = function(){
+        if(!arguments.length) return '';
+        var arg = arguments,
+            now =arg[1]?arg[1]:new Date().getTime(),
+            diffValue = now - arg[0],
+            result='',
+
+            minute = 1000 * 60,
+            hour = minute * 60,
+            day = hour * 24,
+            halfamonth = day * 15,
+            month = day * 30,
+            year = month * 12,
+
+            _year = diffValue/year,
+            _month =diffValue/month,
+            _week =diffValue/(7*day),
+            _day =diffValue/day,
+            _hour =diffValue/hour,
+            _min =diffValue/minute;
+
+            if(_year>=1) result=parseInt(_year) + "年前";
+            else if(_month>=1) result=parseInt(_month) + "个月前";
+            else if(_week>=1) result=parseInt(_week) + "周前";
+            else if(_day>=1) result=parseInt(_day) +"天前";
+            else if(_hour>=1) result=parseInt(_hour) +"个小时前";
+            else if(_min>=1) result=parseInt(_min) +"分钟前";
+            else result="刚刚";
+            return result;
+    }
+    window.dateDiff = dateDiff
+
+    $("time").each(function(){
+        $(this).html(dateDiff($(this).attr("time")+"000"));
+    })
+
 })
 
-</script>
-
-
-
-<script>
-    var ran = (new Date).getTime();
-    $.get('header.html?ran=' + ran, function(data) {
-        $('body').prepend(data);
-    })
-    $.get('footer.html?ran=' + ran, function(data) {
-        $('body').append(data);
-    })
 </script>
 {% end %}

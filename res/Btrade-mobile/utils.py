@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import time
-import random
+import random,thread
 from sendsms import *
 
 def md5(str):

@@ -36,9 +36,9 @@ class PurchaseHandler(BaseHandler):
 
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
-            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select pis.*,q.id qid,count(q.id) quotecount from "
-                                          "(select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")"
-                                          ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id) ta left join quote qu on ta.qid = qu.id and qu.state = 1 group by ta.id")
+            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select p.*,q.id qid,count(q.id) quotecount "
+                                          "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id"
+                                          ") ta left join quote qu on ta.qid = qu.id and qu.state = 1 group by ta.id")
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
@@ -69,11 +69,10 @@ class PurchaseInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, id):
         print id
-        purchaseinfo = self.db.get("select n.*,sp.specification from (select t.*,a.areaname from "
-        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specificationid,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
-        "specification sp on n.specificationid = sp.id",id)
+        purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
+        "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
+        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
 
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         #获得采购品种图片

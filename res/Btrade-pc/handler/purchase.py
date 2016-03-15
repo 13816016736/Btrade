@@ -88,7 +88,7 @@ class PurchaseHandler(BaseHandler):
             varids = []
             for i,purchase in data['purchases'].iteritems():
                 varids.append(purchase["nVarietyId"])
-                purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specificationid, quantity, unit,"
+                purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                                 purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
                                 purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
@@ -127,9 +127,9 @@ class MyPurchaseHandler(BaseHandler):
         purchaseids = [str(purchase["id"]) for purchase in purchases]
         purchaseinf = defaultdict(list)
         if purchaseids:
-            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select pis.*,q.id qid,count(q.id) quotecount from "
-                "(select p.*,s.specification from purchase_info p left join specification s on p.specificationid = s.id where p.purchaseid in ("+",".join(purchaseids)+")"
-                ") pis left join quote q on pis.id = q.purchaseinfoid group by pis.id) ta left join quote qu on ta.qid = qu.id and qu.state = 1 group by ta.id")
+            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select p.*,q.id qid,count(q.id) quotecount from purchase_info p"
+                " left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id"
+                ") ta left join quote qu on ta.qid = qu.id and qu.state = 1 group by ta.id")
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
@@ -162,12 +162,10 @@ class MyPurchaseInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, id):
         print id
-        purchaseinfo = self.db.get("select n.*,sp.specification from (select t.*,a.areaname from "
-        "(select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specificationid,pi.views from purchase p,purchase_info pi left join specification s on s.id = pi.specificationid "
-        "where p.userid = %s and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) n left join "
-        "specification sp on n.specificationid = sp.id",
-                                     self.session.get("userid"), id)
+        purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
+        "p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
+        "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
+        "where p.userid = %s and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",self.session.get("userid"), id)
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:
@@ -454,7 +452,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
             varids = []
             for i,purchase in data['purchases'].iteritems():
                 varids.append(purchase["nVarietyId"])
-                purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specificationid, quantity, unit,"
+                purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                                 id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
                                 purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
