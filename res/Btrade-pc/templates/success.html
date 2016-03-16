@@ -28,13 +28,14 @@
                     {% end %}
                     {% set i = i + 1 %}
                     {% end %}
-
-                    <div class="more">以及其他6家</div>
+                    {% if len(suppliers) - 4 > 0%}
+                    <div class="more">以及其他{{len(suppliers) - 4}}家</div>
+                    {% end %}
                 </div>
                 {% end %}
 
                 <div class="tips">
-                    <p><span>请您坐等报价，并积极回应，可在 <a href="/dashboard">我的工作台</a>&gt;<a href="/mypurchase">我的采购</a> 随时跟进。</span>及时回应报价，积累信用等级，获得更多权益</p>
+                    <p><span>请您坐等报价，并积极回应，可在 <a href="/mypurchase">我的工作台</a>&gt;<a href="/mypurchase">我的采购</a> 随时跟进。</span>及时回应报价，积累信用等级，获得更多权益</p>
                 </div>
 
                 <div class="yc-bubble">
@@ -44,7 +45,7 @@
 
                 <div class="buttons">
                     <a class="btn btn-orange" href="/purchase">再发一条</a>
-                    <a class="btn btn-white" href="#">关闭</a>
+                    <!--<a class="btn btn-white" href="#">关闭</a>-->
                 </div>
             </div>
             <div class="side">

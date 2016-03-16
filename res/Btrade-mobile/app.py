@@ -10,6 +10,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         if log:
             options.log_file_prefix = log_file
+        options.parse_command_line()
         settings['ui_modules'] = uimodule
         tornado.web.Application.__init__(self, handlers, **settings)
         self.session_manager = session.SessionManager(settings["session_secret"], settings["store_options"], settings["session_timeout"])

@@ -78,7 +78,7 @@ conf = {
 此时该设置将无任何作用
 """
 #开启日志文件记录，默认为 False
-log = False
+log = True
 #日志记录位置
 log_file = 'log/tornado.log'
 
