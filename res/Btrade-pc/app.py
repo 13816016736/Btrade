@@ -1,6 +1,8 @@
 import tornado.autoreload
 import tornado.web
 import tornado.ioloop
+import logging
+import logging.handlers
 import session
 from tornado.options import options
 from config import settings, handlers, log, log_file
@@ -8,8 +10,11 @@ from uimodule import uimodule
 
 class Application(tornado.web.Application):
     def __init__(self):
+        logger = logging.getLogger()
         if log:
             options.log_file_prefix = log_file
+            timelog = logging.handlers.TimedRotatingFileHandler(log_file, 'midnight', 1, 0)
+            logger.addHandler(timelog)
         options.parse_command_line()
         settings['ui_modules'] = uimodule
         tornado.web.Application.__init__(self, handlers, **settings)

@@ -1,26 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
-    <title>去报价-药材购</title>
-    <!-- 浏览器高速模式 -->
-    <meta name="renderer" content="webkit" />
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css')}}" />
-    <link rel="stylesheet" href="{{ static_url('css/style.css')}}" />
-    <link rel="stylesheet" href="{{ static_url('css/quote.css')}}" />
-    <!--[if lt IE 9]>
-      <script src="{{ static_url('js/html5shiv.min.js')}}"></script>
-      <script src="{{ static_url('js/respond.min.js')}}"></script>
-    <![endif]-->
-</head>
-
-<body>
-
-
+{% extends "base.html" %}
+{% block container %}
+<link rel="stylesheet" href="{{ static_url('css/quote.css')}}" />
 <section class="sec">
     <div class="banner" style="background-image:url(static/images/banner2.jpg);"></div>
 
@@ -59,7 +39,7 @@
         </div>
     </div>  
 </section>
+{% end %}
 
-</body>
-
-</html>
+{% block javascript %}
+{% end %}

@@ -1,23 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
-    <title>用户中心-药材购</title>
-    <!-- 浏览器高速模式 -->
-    <meta name="renderer" content="webkit" />
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css')}}" />
-    <link rel="stylesheet" href="{{ static_url('css/style.css')}}" />
-    <link rel="stylesheet" href="{{ static_url('css/center.css')}}" />
-    <!--[if lt IE 9]>
-      <script src="{{ static_url('js/html5shiv.min.js')}}"></script>
-      <script src="{{ static_url('js/respond.min.js')}}"></script>
-    <![endif]-->
-</head>
+{% include ../public/head.html %}
+<link rel="stylesheet" href="{{ static_url('css/center.css')}}" />
 <body>
+{% include ../public/header.html %}
 <section class="sec">
 {% block page-wrapper %}
 {% end %}
@@ -31,6 +17,7 @@
     </ul>
 </div>
 </section>
+{% include ../public/footer.html %}
 <script src="{{ static_url('js/jquery.min.js')}}"></script>
 <script src="{{ static_url('js/bootstrap.min.js')}}"></script>
 <script src="{{ static_url('js/center.js')}}"></script>

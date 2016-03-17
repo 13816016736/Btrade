@@ -492,6 +492,7 @@ $table.on({
 		origin = $(this).closest("tr").find("td:eq(1) input").attr("origin");
 		if(typeof(origin) != "undefined"){
 			origins = origin.split(",");
+			$areaTags.find("dd:eq(1)").empty();
 			for(var i=0;i<origins.length;i++){
 				$areaTags.find("dd:eq(1)").append('\n<span>' + origins[i] + '</span>');
 			}

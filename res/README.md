@@ -59,6 +59,10 @@ purchase_info表中specificationid改成specification直接存规格字符串
 微信公众号申请（微信公众号   357505251@qq.com/ycg20150201）
 微信公众号开发
 
+
+参考：
+http://lightthewoods.me/2013/11/18/Python%E5%A4%9A%E8%BF%9B%E7%A8%8Blog%E6%97%A5%E5%BF%97%E5%88%87%E5%88%86%E9%94%99%E8%AF%AF%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/
+
 采购表
 purchase
 status 0关闭 1等待报价 2报价结束 3成功采购
