@@ -140,7 +140,7 @@ class UpdateQuoteStateHandler(BaseHandler):
                           " ta left join purchase p on ta.purchaseid = p.id) tab left join users u on tab.userid = u.id")
             params = []
             for purchase in purchases:
-                title = purchase["name"].encode('utf-8') + "回复了您的报价【" + purchase["variety"].encode('utf-8') + " "+ str(purchase["price"]) + "】"
+                title = purchase["name"].encode('utf-8') + "回复了您的报价【" + purchase["variety"] + " "+ str(purchase["price"]) + "】"
                 params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(time.time())])
             self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
 

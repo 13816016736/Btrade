@@ -98,14 +98,14 @@
                                 </td>
                                 <td>
                                     <dl class="yc-select">
-                                        <dt data-val="{{purchaseinfo.specificationid}}">{{purchaseinfo.specificationid}}</dt>
+                                        <dt data-val="{{purchaseinfo.specification}}">{{purchaseinfo.specification}}</dt>
                                         <dd>
                                             {% for spec in purchaseinfo.allspec%}
                                             <span data-val="{{spec}}">{{spec}}</span>
                                             {% end %}
                                         </dd>
                                     </dl>
-                                    <input type="hidden" name="nRank" value="{{purchaseinfo.specificationid}}">
+                                    <input type="hidden" name="nRank" value="{{purchaseinfo.specification}}">
                                     <span class="error"></span>
                                 </td>
                                 <td>
