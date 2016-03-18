@@ -134,7 +134,10 @@
                         </div>
                     </div>
                     <div class="td2">
-                        {% for purchaseinfo in purchase.purchaseinfo%}
+                        {% for i,purchaseinfo in enumerate(purchase.purchaseinfo) %}
+                        {% if i > 3 %}
+                        {% break %}
+                        {% end %}
                         <div class="group">
                             <div class="td2-1">{{purchaseinfo.name}}</div>
                             <div class="td2-2">{{purchaseinfo.specification}}</div>

@@ -74,8 +74,8 @@ $(function(){
                     temp.push( '（已有<b>' + data[i].purchaseinfo[j].quotecount + '</b>个报价）');
                     temp.push(         '</div>');
                     temp.push(         '<div class="time' + (data[i].time === 1 ? ' high' : '') + '"><i class="iconfont icon-time"></i>剩余<b>' + data[i].time + '</b>天</div>');
-                }else if((data[i].purchaseinfo[j].limited == 1 && data[i].purchaseinfo[j].hasOwnProperty("timedelta") && data[i].purchaseinfo[j].timedelta > 0) || data[i].purchaseinfo[j].limited == 2){
-                    if(data[i].purchaseinfo[j].limited == 1){
+                }else if((data[i].purchaseinfo[j].term != 0 && data[i].purchaseinfo[j].hasOwnProperty("timedelta") && data[i].purchaseinfo[j].timedelta > 0) || data[i].purchaseinfo[j].term == 0){
+                    if(data[i].purchaseinfo[j].term != 0){
                         temp.push(         '<div class="status">');
                         temp.push(              '<span class="blue">等待报价</span>');
                         temp.push( '（已有<b>' + data[i].purchaseinfo[j].quotecount + '</b>个报价）');

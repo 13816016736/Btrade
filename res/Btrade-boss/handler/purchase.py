@@ -50,7 +50,7 @@ class PurchaseHandler(BaseHandler):
         for purchase in purchases:
             purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
             purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
-            if purchase["limited"] == 1:
+            if purchase["term"] != 0:
                 purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
@@ -70,7 +70,7 @@ class PurchaseInfoHandler(BaseHandler):
     def get(self, id):
         print id
         purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
-        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
+        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
 
@@ -82,7 +82,7 @@ class PurchaseInfoHandler(BaseHandler):
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         if purchaseinfo:
             purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
-            if purchaseinfo["limited"] == 1:
+            if purchaseinfo["term"] != 0:
                 purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
                 purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
             purchaseinfo["attachments"] = attachments

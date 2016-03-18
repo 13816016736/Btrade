@@ -67,8 +67,8 @@ class PurchaseHandler(BaseHandler):
             #发短信告知用户登陆名和密码
             sendRegInfo(data['phone'], username, password)
 
-        data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" == "" else "0"
-        data['paytype'] = ",".join(data['paytype']) if data.has_key("paytype") else ""
+        data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" else "0"
+        data['paytype'] = data['paytype'] if data.has_key("paytype") and data['paytype'] != "" else "0"
         data['payday'] = data['payday'] if data.has_key('payday') and data['payday'] != "" else "0"
         data['payinfo'] = data['payinfo'] if data.has_key('payinfo') and data['payinfo'] != "" else ""
         data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"
@@ -127,8 +127,8 @@ class MyPurchaseHandler(BaseHandler):
         purchaseids = [str(purchase["id"]) for purchase in purchases]
         purchaseinf = defaultdict(list)
         if purchaseids:
-            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select p.*,q.id qid,count(q.id) quotecount from purchase_info p"
-                " left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id"
+            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select p.*,q.id qid,count(q.id) quotecount,min(CAST(q.price as SIGNED)) qprice"
+                " from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id"
                 ") ta left join quote qu on ta.qid = qu.id and qu.state = 1 group by ta.id")
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
@@ -142,7 +142,7 @@ class MyPurchaseHandler(BaseHandler):
         for purchase in purchases:
             purchase["purchaseinfo"] = purchaseinf.get(purchase["id"])
             purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
-            if purchase["limited"] == 1:
+            if purchase["term"] != 0:
                 purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
@@ -163,7 +163,7 @@ class MyPurchaseInfoHandler(BaseHandler):
     def get(self, id):
         print id
         purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
-        "p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,pi.id pid,"
+        "p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.userid = %s and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",self.session.get("userid"), id)
         #获得采购品种图片
@@ -173,7 +173,7 @@ class MyPurchaseInfoHandler(BaseHandler):
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         if purchaseinfo:
             purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
-            if purchaseinfo["limited"] == 1:
+            if purchaseinfo["term"] != 0:
                 purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
                 purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
             purchaseinfo["attachments"] = attachments
@@ -184,7 +184,15 @@ class MyPurchaseInfoHandler(BaseHandler):
             quotes = self.db.query("select q.*,u.name,u.nickname,u.phone,u.type from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s", id)
             quoteids = []
             if quotes:
+                mprice = None
+                mid = 0
                 for quote in quotes:
+                    if mprice > int(quote.price):
+                        mprice = quote.price
+                        mid = quote.id
+                    elif mprice == None:
+                        mprice = quote.id
+                        mid = quote.id
                     quoteids.append(str(quote.id))
                     quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
@@ -201,7 +209,7 @@ class MyPurchaseInfoHandler(BaseHandler):
                         mq["attachments"] = myquoteattachments[mq.id]
                     else:
                         mq["attachments"] = []
-            self.render("dashboard/mypurchaseinfo.html", purchase=purchaseinfo, quotes=quotes, others=len(others))
+            self.render("dashboard/mypurchaseinfo.html", purchase=purchaseinfo, quotes=quotes, mid=mid, others=len(others))
         else:
             self.error("此采购订单不属于你", "/mypurchase")
 
@@ -429,8 +437,8 @@ class MyPurchaseUpdateHandler(BaseHandler):
                 data[key] = eval(arg[0])
             else:
                 data[key] = arg[0]
-        data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" == "" else "0"
-        data['paytype'] = ",".join(data['paytype']) if data.has_key("paytype") else ""
+        data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" else "0"
+        data['paytype'] = ",".join(data['paytype']) if data.has_key("paytype") and data['paytype'] != "" else ""
         data['payday'] = data['payday'] if data.has_key('payday') and data['payday'] != "" else "0"
         data['payinfo'] = data['payinfo'] if data.has_key('payinfo') and data['payinfo'] != "" else ""
         data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"

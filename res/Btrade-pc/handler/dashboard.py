@@ -47,11 +47,14 @@ class UpdateUserHandler(BaseHandler):
         else:
             if self.get_argument("oldpassword") == "" or self.get_argument("password") == "":
                 self.api_response({'status':'fail','message':'新旧密码必须填写'})
+                return
             else:
                 if not author:
                     self.api_response({'status':'faile','message':'用户名不存在'})
+                    return
                 if md5(str(self.get_argument("oldpassword")+config.salt)) != author.password:
                     self.api_response({'status':'fail','message':'旧密码不对'})
+                    return
                 password = self.get_argument("password")
 
         if self.get_argument("oldphone", None) is None and self.get_argument("phone", None) is None and self.get_argument("verifycode", None) is None:
@@ -59,12 +62,15 @@ class UpdateUserHandler(BaseHandler):
         else:
             if self.get_argument("oldphone") == "" or self.get_argument("phone") == "" or self.get_argument("verifycode") == "":
                 self.api_response({'status':'fail','message':'新旧手机号和短信验证码必须填写'})
+                return
             else:
                 #短信验证码是否正确self.get_argument("verifycode")
                 if not author:
                     self.api_response({'status':'fail','message':'用户名不存在'})
+                    return
                 if self.get_argument("oldphone") != author.phone:
                     self.api_response({'status':'fail','message':'旧手机号不对'})
+                    return
                 phone = self.get_argument("phone")
 
         if password and phone:

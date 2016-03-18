@@ -14,7 +14,7 @@ class QuoteHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, purchaseinfoid):
         purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
-        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", purchaseinfoid)
 
@@ -25,7 +25,7 @@ class QuoteHandler(BaseHandler):
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         purchaser = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
-        if purchaseinfo["limited"] == 1:
+        if purchaseinfo["term"] != 0:
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
@@ -53,7 +53,7 @@ class QuoteHandler(BaseHandler):
         quotechances = config.conf['QUOTE_NUM'] - quotecount if config.conf['QUOTE_NUM'] - quotecount > 0 else 0
 
         #获取图片
-        uploadfiles = self.session.get("uploadfiles", {})
+        uploadfiles = self.session.get("uploadfiles_quote", {})
         for k in uploadfiles:
             base, ext = os.path.splitext(os.path.basename(uploadfiles[k]))
             uploadfiles[k] = config.img_domain+uploadfiles[k][uploadfiles[k].find("static"):].replace(base, base+"_thumb")
@@ -72,7 +72,7 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'请完整填写'})
             return
         #至少上传一张图片
-        uploadfiles = self.session.get("uploadfiles")
+        uploadfiles = self.session.get("uploadfiles_quote")
         if len(uploadfiles) == 0:
             self.api_response({'status':'fail','message':'至少上传一张图片'})
             return
@@ -107,7 +107,7 @@ class QuoteHandler(BaseHandler):
             for key in uploadfiles:
                 self.db.execute("insert into quote_attachment (quoteid, attachment, type)value(%s, %s, %s)", quoteid, uploadfiles[key], key)
             uploadfiles = {}
-            self.session["uploadfiles"] = uploadfiles
+            self.session["uploadfiles_quote"] = uploadfiles
             self.session.save()
 
         #给采购商发送通知
@@ -140,8 +140,8 @@ class QuoteSuccessHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
-        if self.session.get("uploadfiles"):
-            self.session["uploadfiles"] = {}
+        if self.session.get("uploadfiles_quote"):
+            self.session["uploadfiles_quote"] = {}
             self.session.save()
         self.render("quote_success.html")
 
@@ -167,7 +167,7 @@ class QuoteDetailHandler(BaseHandler):
 
         #查询采购单信息
         purchaseinfo = self.db.get("select t.*,a.areaname from "
-        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", quote["purchaseinfoid"])
 
@@ -178,7 +178,7 @@ class QuoteDetailHandler(BaseHandler):
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
-        if purchaseinfo["limited"] == 1:
+        if purchaseinfo["term"] != 0:
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments

@@ -34,7 +34,7 @@ class PurchaseHandler(BaseHandler):
         #     for purchase in purchases:
         #         purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
         #         purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M", time.localtime(float(purchase["createtime"])))
-        #         if purchase["limited"] == 1:
+        #         if purchase["term"] != 0:
         #             # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
         #             expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
         #             purchase["timedelta"] = (expire - datetime.datetime.now()).days
@@ -62,12 +62,12 @@ class PurchaseHandler(BaseHandler):
 
             for purchase in purchases:
                 purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
-                if int(purchase["limited"]) == 1:
+                if int(purchase["term"]) != 0:
                     # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     purchase["timedelta"] = (expire - datetime.datetime.now()).days
                 purchase["purchaseinfo"] = [{"id": purchase["pid"],"name": purchase["name"],"attachments":attachments.get(purchase["pid"]),
-                                             "origin": purchase["origin"],"purchaseid": purchase["id"],"quality": purchase["quality"],"limited": purchase["limited"],
+                                             "origin": purchase["origin"],"purchaseid": purchase["id"],"quality": purchase["quality"],"term": purchase["term"],
                                              "quantity": purchase["quantity"],"quotecount": purchase["quotecount"],"specification": purchase["specification"],"datetime": purchase["datetime"],
                                              "unit": purchase["unit"],"views": purchase["views"],"timedelta": purchase.get("timedelta")}]
 
@@ -79,7 +79,7 @@ class PurchaseHandler(BaseHandler):
 class PurchaseInfoHandler(BaseHandler):
     def get(self, id):
         purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
-        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.limited,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
         #获得采购品种图片
@@ -89,7 +89,7 @@ class PurchaseInfoHandler(BaseHandler):
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(int(purchaseinfo["createtime"])))
-        if purchaseinfo["limited"] == 1:
+        if purchaseinfo["term"] != 0:
             purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
@@ -148,10 +148,9 @@ class PurchaseinfoBatchHandler(BaseHandler):
 
         purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
         purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
-        if purchase["limited"] == 1:
+        if purchase["term"] != 0:
             purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
             purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
-        print purchase
 
         #此采购商成功采购单数
         purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
@@ -212,9 +211,9 @@ class UploadFileHandler(BaseHandler):
                 up.write(imgData)
             #生成缩略图
             make_thumb(filepath,upload_path,300,300)
-            uploadfiles = self.session.get("uploadfiles", {})
+            uploadfiles = self.session.get("uploadfiles_quote", {})
             uploadfiles[type] = filepath
-            self.session["uploadfiles"] = uploadfiles
+            self.session["uploadfiles_quote"] = uploadfiles
             self.session.save()
             self.api_response({'status':'success','message':'上传成功','path':filepath})
         except IOError:
@@ -232,7 +231,7 @@ class DeleteFileHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         type = self.get_argument("type")
-        uploadfiles = self.session.get("uploadfiles")
+        uploadfiles = self.session.get("uploadfiles_quote")
         if uploadfiles.has_key(type):
             if os.path.isfile(uploadfiles[type]):
                 os.remove(uploadfiles[type])
@@ -240,12 +239,12 @@ class DeleteFileHandler(BaseHandler):
                 filename = uploadfiles[type].replace(base, base+"_thumb")
                 os.remove(filename)
                 del uploadfiles[type]
-                self.session["uploadfiles"] = uploadfiles
+                self.session["uploadfiles_quote"] = uploadfiles
                 self.session.save()
                 self.api_response({'status':'success','message':'删除成功'})
             else:
                 del uploadfiles[type]
-                self.session["uploadfiles"] = uploadfiles
+                self.session["uploadfiles_quote"] = uploadfiles
                 self.session.save()
                 self.api_response({'status':'fail','message':'文件不存在'})
         else:

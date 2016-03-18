@@ -38,9 +38,9 @@
                     <span>发布时间：<em>{{ purchase.datetime }}</em></span>
                     {% if purchase.status == 0%}
                     <span>关闭</span>
-                    {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                    {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                     <span class="pull-right"><strong class="status wait">等待报价</strong>
-                        {% if purchase.limited == 1%}
+                        {% if purchase.term != 0%}
                         （剩余<b>{{purchase.timedelta}}</b>天）
                         {% else%}
                         常年采购
@@ -105,9 +105,6 @@
         <div class="similarity">
             <a class="icons icons-edit" href="/mypurchase/update/{{purchase.id}}" title="编辑"></a>
             <a class="icons icons-share" href="#" title="分享"></a>
-            {% if purchase.status == 1%}
-            <a class="icons icons-delete" href="#" title="删除"></a>
-            {% end %}
             <a class="pull-left" href="#">该批次采购的还有其他{{ others }}个品种</a>
         </div>
 
@@ -128,7 +125,7 @@
                 <div class="td5">选中</div>
                 <div class="td6">
                     操作/状态
-                    <label class="ml10"><input class="cbx" type="checkbox">只看意向供应商</label>
+                    <!--<label class="ml10"><input class="cbx" type="checkbox">只看意向供应商</label>-->
                 </div>
             </div>
             {% for quote in quotes %}
@@ -168,7 +165,9 @@
                 </div>
                 <div class="td3">
                     <em>{{quote.price}}</em>元/公斤
-                    <!--<small>含税含物流</small>-->
+                    {% if quote.id == mid %}<sup>最低</sup>{% end %}
+                    <!--<small>{{quote.explain}}</small>-->
+                    <span>{{quote.explain}}</span>
                 </div>
                 <div class="td4">
                     <p class="thumb">

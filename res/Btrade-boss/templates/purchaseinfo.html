@@ -70,10 +70,10 @@
                 <span style="color:#939393;">
                     {% if purchase.status == 0%}
                     <span style="color:#939393;">关闭</span>
-                    {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                    {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                     <b style="color:#286090;">等待报价</b>
                     <span style="color:#939393;">
-                        {% if purchase.limited == 1%}
+                        {% if purchase.term != 0%}
                         （剩余<b style="color:#f0ad4e;">{{purchase.timedelta}}</b>天）
                         {% else%}
                         常年采购

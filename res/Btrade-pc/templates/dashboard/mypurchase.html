@@ -46,9 +46,9 @@
                     <div class="td3">
                         {% if purchase.status == 0%}
                         <span>关闭</span>
-                        {% elif (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                        {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                         <span class="status wait">等待报价</span>
-                        {% if purchase.limited == 1%}
+                        {% if purchase.term != 0%}
                         剩余{{purchase.timedelta}}天（{{purchase.expire}} 截止）
                         {% else%}
                         常年采购
@@ -58,12 +58,10 @@
                         {% end %}
                     </div>
                     <div class="td4">
-                        {% if (purchase.limited == 1 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.limited == 2%}
+                        {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                         <a class="icons icons-edit" href="/mypurchase/update/{{purchase.id}}" title="编辑"></a>
                         <a class="icons icons-share" href="#" title="分享"></a>
-                        {% if purchase.status == 1 %}
-                        <a class="icons icons-delete" href="#" pid="{{purchase.id}}" title="删除"></a>
-                        {% end %}
+                        <a class="icons icons-delete" href="#" pid="{{purchase.id}}" title="关闭"></a>
                         {% else %}
                         <a class="icons icons-copy" href="#" title="复制"></a>
                         {% end %}
@@ -88,7 +86,7 @@
                     <div class="td3">
                         {% if purchaseinfo.quotecount %}
                         <em>{{purchaseinfo.quotecount}}个报价<!--<sup>3</sup>--></em>
-                        <span class="price">最低价23</span>
+                        <span class="price">最低价{{purchaseinfo.qprice}}元</span>
                         {% if purchaseinfo.intentions > 0 %}
                         <span class="choose">已甄选<i>{{purchaseinfo.intentions}}</i>家意向供应商</span>
                         {% else %}
