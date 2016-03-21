@@ -63,6 +63,8 @@ class RegisterHandler(BaseHandler):
         self.session["user"] = username
         self.session["notification"] = len(notification)
         self.session.save()
+        #发短信通知用户注册成功
+        regSuccess(phone, name, username)
         self.api_response({'status':'success','message':'注册成功','data':{'username':username}})
 
 class GetSmsCodeHandler(BaseHandler):

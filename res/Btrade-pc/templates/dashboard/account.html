@@ -279,7 +279,7 @@
     $('.form-primary').on({
         'click': function(e) {
             var offset = $(this).offset();
-            $varietyTags.css({top: offset.top + $(this).outerHeight(), left: offset.left}).show();
+            $varietyTags.css({top: offset.top + $(this).outerHeight() - 90, left: offset.left}).show();
             $tags = $(this);
             showTags(false, $varietyTags);
             return false;

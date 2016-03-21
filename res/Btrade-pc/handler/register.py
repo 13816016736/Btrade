@@ -139,7 +139,8 @@ class RegInfoHandler(BaseHandler):
         self.session["userid"] = lastrowid
         self.session["user"] = username
         self.session.save()
-
+        #发短信通知用户注册成功
+        utils.regSuccess(phone, name, username)
         self.api_response({'status':'success','message':'注册成功','data':{'username':username}})
 
 class RegResultHandler(BaseHandler):

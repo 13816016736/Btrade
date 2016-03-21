@@ -117,7 +117,30 @@ def sendRegInfo(phone, username, password):
     phone = phone
     vars = '{"%username%":"'+username+'","%password%":"'+password+'"}'
     thread.start_new_thread(send, (templateId, phone, vars))
-    # return send(templateId, phone, vars)
+
+def regInfo(phone, name, password):
+    templateId = 861
+    phone = phone
+    vars = '{"%name%":"'+name+'","%password%":"'+password+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+
+def regSuccess(phone, name, username):
+    templateId = 862
+    phone = phone
+    vars = '{"%name%":"'+name+'","%username%":"'+username+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+
+def acceptQuote(phone, name, variety, price, unit, number):
+    templateId = 865
+    phone = phone
+    vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+str(price)+'","%unit%":"'+unit+'","%phone%":"'+number+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+
+def rejectQuote(phone, name, variety, price, unit, message):
+    templateId = 868
+    phone = phone
+    vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+str(price)+'","%unit%":"'+unit+'","%message%":"'+message+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
 
 def merge_thumb(files, output_file):
     """合并图片"""

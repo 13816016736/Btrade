@@ -138,6 +138,18 @@ def getSmsCode(phone, code):
     vars = '{"%code%":"'+code+'"}'
     return send(templateId, phone, vars)
 
+def regSuccess(phone, name, username):
+    templateId = 863
+    phone = phone
+    vars = '{"%name%":"'+name+'","%username%":"'+username+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+
+def quoteSms(phone, variety, name, price, unit):
+    templateId = 864
+    phone = phone
+    vars = '{"%variety%":"'+variety+'","%name%":"'+name+'","%price%":"'+price+'","%unit%":"'+unit+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+
 if __name__ == '__main__':
     ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
     IMG_PATH = os.path.join(ROOT_PATH, 'img')

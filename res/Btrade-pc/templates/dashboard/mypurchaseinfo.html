@@ -165,7 +165,7 @@
                 </div>
                 <div class="td3">
                     <em>{{quote.price}}</em>元/公斤
-                    {% if quote.id == mid %}<sup>最低</sup>{% end %}
+                    {% if quote.price == mprice %}<sup>最低</sup>{% end %}
                     <!--<small>{{quote.explain}}</small>-->
                     <span>{{quote.explain}}</span>
                 </div>

@@ -91,9 +91,8 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
         #不能对自己的采购单进行报价
-        mypurchase = self.db.get("select p.id from purchase_info pi,purchase p where p.userid = %s and p.id = pi.purchaseid and pi.id = %s",
-                    self.session.get("userid"), self.get_argument("purchaseinfoid"))
-        if mypurchase is not None:
+        purchase = self.db.get("select p.userid,pi.name from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s", self.get_argument("purchaseinfoid"))
+        if purchase["userid"] == self.session.get("userid"):
             self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
             return
 
@@ -112,14 +111,14 @@ class QuoteHandler(BaseHandler):
 
         #给采购商发送通知
         #获得采购商userid
-        purchase = self.db.get("select u.nickname,t.* from (select p.userid,pi.name from purchase_info pi,purchase p where pi.purchaseid = p.id and pi.id = %s) "
-                               "t,users u where u.id = t.userid",
-                               self.get_argument("purchaseinfoid"))
-        title = purchase["nickname"].encode('utf-8') + "对您的采购品种【" + purchase["name"].encode('utf-8') + "】进行了报价"
+        quoter = self.db.get("select name,phone from users where id = %s", self.session.get("userid"))
+        title = quoter["name"].encode('utf-8') + "对您的采购品种【" + purchase["name"].encode('utf-8') + "】进行了报价"
 
         self.db.execute("insert into notification(sender,receiver,type,title,content,status,createtime)value(%s, %s, %s, %s, %s, %s, %s)",
                         self.session.get("userid"),purchase["userid"],2,title,self.get_argument("purchaseinfoid"),0,int(time.time()))
 
+        #发短信通知采购商有用户报价
+        quoteSms(quoter["phone"], purchase["name"], quoter["name"], self.get_argument("price"), config.unit)
         self.api_response({'status':'success','message':'请求成功'})
 
 class QuoteUploadHandler(BaseHandler):

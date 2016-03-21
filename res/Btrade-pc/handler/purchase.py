@@ -60,12 +60,12 @@ class PurchaseHandler(BaseHandler):
             password = str(random.randint(100000, 999999))
             lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), data['phone']
-                             , data['type'], data['name'], data['name'], int(time.time()))
+                             , data['type'], data['name'], data['username'], int(time.time()))
             self.session["userid"] = lastrowid
             self.session["user"] = username
             self.session.save()
             #发短信告知用户登陆名和密码
-            sendRegInfo(data['phone'], username, password)
+            regInfo(data['phone'], username, password)
 
         data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" else "0"
         data['paytype'] = data['paytype'] if data.has_key("paytype") and data['paytype'] != "" else "0"
@@ -184,15 +184,10 @@ class MyPurchaseInfoHandler(BaseHandler):
             quotes = self.db.query("select q.*,u.name,u.nickname,u.phone,u.type from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s", id)
             quoteids = []
             if quotes:
-                mprice = None
-                mid = 0
+                mprice = quotes[0]["price"]
                 for quote in quotes:
                     if mprice > int(quote.price):
                         mprice = quote.price
-                        mid = quote.id
-                    elif mprice == None:
-                        mprice = quote.id
-                        mid = quote.id
                     quoteids.append(str(quote.id))
                     quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
@@ -209,7 +204,7 @@ class MyPurchaseInfoHandler(BaseHandler):
                         mq["attachments"] = myquoteattachments[mq.id]
                     else:
                         mq["attachments"] = []
-            self.render("dashboard/mypurchaseinfo.html", purchase=purchaseinfo, quotes=quotes, mid=mid, others=len(others))
+            self.render("dashboard/mypurchaseinfo.html", purchase=purchaseinfo, quotes=quotes, mprice=mprice, others=len(others))
         else:
             self.error("此采购订单不属于你", "/mypurchase")
 
