@@ -53,7 +53,7 @@ purchase_info表中specificationid改成specification直接存规格字符串
 
 严飞规整的东西包含短信，首页等其他页面  缺favicon图片
 
-手机号登陆
+手机号登陆，页面重新归入3.4
 
 2.用户设置，关注品种错位  
 

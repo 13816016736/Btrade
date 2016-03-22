@@ -1,5 +1,15 @@
 @charset "utf-8";
 .banner{height:600px;background-repeat:no-repeat;background-position:50% 0;}
+.banner .container{position:relative;height:100%;}
+.banner .pic{position:absolute;bottom:0;left:80px;widows:344px;height:522px;}
+.banner .desc{position:absolute;top:80px;left:530px;color:#fff;}
+.banner .desc h2{font-size:48px;}
+.banner .desc p{padding:10px 0 30px;font-size:20px;border-bottom:1px solid #e1b687;}
+.banner .share{margin-top:40px;}
+.banner .share .qrcode{float:left;margin-right:28px;}
+.banner .share .info{padding-top:20px;font-size:16px;}
+.banner .share .info span{display:block;margin-top:40px;font-size:20px;}
+.banner .share .info i{margin-right:20px;}
 .desc{position:relative;height:600px;overflow:hidden;}
 .desc dl{width:320px;margin:0;padding-top:140px;}
 .desc dt{float:left;width:70px;font:48px arial;color:#ffa902;}

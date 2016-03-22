@@ -69,6 +69,7 @@ a:focus{outline:none;}
 .icons{display:inline-block;margin-right:6px;background:url(../images/icons.png) no-repeat;vertical-align:middle;}
 .icons-phone{width:28px;height:28px;background-position:-363px -9px;}
 .icons-wechat{width:34px;height:28px;background-position:-263px -7px;}
+.icons-wechat2{width:34px;height:28px;background-position:-375px -263px;}
 .icons-envelope{width:30px;height:24px;background-position:-399px -11px;}
 .icons-qq{width:28px;height:28px;background-position:-329px -9px;}
 .icons-mobile{width:28px;height:28px;background-position:-297px -7px;}

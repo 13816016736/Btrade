@@ -175,7 +175,7 @@ header .login .submenu:after{display:none;}
 
 .details .cont-right .yc-demand{margin:10px 0 0;overflow:hidden;}
 .details .cont-right .yc-demand dt{float:left;width:100px;margin-bottom:8px;text-align:right;color:#aaa;font-weight:100;}
-.details .cont-right .yc-demand dd{margin-left:100px;margin-bottom:8px;color:#333;}
+.details .cont-right .yc-demand dd{min-height:20px;margin-left:100px;margin-bottom:8px;color:#333;}
 .details .cont-right .yc-demand dd span{display:block;color:#aaa;}
 .details .cont-right .yc-demand ol{list-style:none;padding:0;}
 .details .cont-right .yc-demand-fold{display:none;}
