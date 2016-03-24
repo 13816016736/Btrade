@@ -28,7 +28,7 @@
         <a class="mes" href="/news/type/{{unreadtype}}">
             <i class="iconfont icon-bell"></i>
             <b>{{ unread }}</b>
-            <span>条新系统通知</span>
+            <span>条新消息</span>
         </a>
         {% end %}
     </div>
@@ -46,7 +46,10 @@
             </div>
             <div class="list">
                 <ul>
-                    {% for s in sell %}
+                    {% for i,s in enumerate(sell) %}
+                    {% if i > 2 %}
+                    {% break %}
+                    {% end %}
                     <li>
                         <a href="/quotedetail/quoteid/{{s.content}}/nid/{{s.id}}">
                             <i class="iconfont {% if faces.has_key(s.content) and faces[s.content] == 1 %}icon-face{% elif faces.has_key(s.content) and faces[s.content] == 2 %}icon-frown{% else %}icon-envelope{% end %} status"></i>

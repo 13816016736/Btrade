@@ -134,13 +134,13 @@ def acceptQuote(phone, name, variety, price, unit, number):
     templateId = 865
     phone = phone
     vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+str(price)+'","%unit%":"'+unit+'","%phone%":"'+number+'"}'
-    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+    thread.start_new_thread(send, (templateId, phone, vars))
 
 def rejectQuote(phone, name, variety, price, unit, message):
     templateId = 868
     phone = phone
     vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+str(price)+'","%unit%":"'+unit+'","%message%":"'+message+'"}'
-    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+    thread.start_new_thread(send, (templateId, phone, vars))
 
 def merge_thumb(files, output_file):
     """合并图片"""

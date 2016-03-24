@@ -9,11 +9,11 @@
 {% end %}
 <div class="side">
     <ul class="yc-ul">
-        <li><a href="/"><i class="icons home"></i>首页</a></li>
+        <!--<li><a href="/"><i class="icons home"></i>首页</a></li>-->
         <li {% if request.uri.split('/')[1] == "mypurchase" %}class="curr"{% end %}><a href="/mypurchase/type/-1/starttime//endtime/"><i class="icons menu"></i>我的采购</a><!--<em>4</em>--></li>
-        <li><a href="#"><i class="icons talk"></i>洽谈</a></li>
-        <li><a href="#"><i class="icons envelope"></i>通知</a></li>
-        <li {% if request.uri.split('/')[1] == "account" %}class="curr"{% end %}><a href="/account"><i class="icons setting"></i>账户</a></li>
+        <!--<li><a href="#"><i class="icons talk"></i>洽谈</a></li>
+        <li><a href="#"><i class="icons envelope"></i>通知</a></li>-->
+        <li {% if request.uri.split('/')[1] == "account" %}class="curr"{% end %}><a href="/account"><i class="icons setting"></i>账户设置</a></li>
     </ul>
 </div>
 </section>

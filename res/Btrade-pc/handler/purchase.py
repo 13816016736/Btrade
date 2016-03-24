@@ -183,6 +183,7 @@ class MyPurchaseInfoHandler(BaseHandler):
             #获取本采购单报价信息
             quotes = self.db.query("select q.*,u.name,u.nickname,u.phone,u.type from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s", id)
             quoteids = []
+            mprice = None
             if quotes:
                 mprice = quotes[0]["price"]
                 for quote in quotes:

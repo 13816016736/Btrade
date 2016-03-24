@@ -13,7 +13,7 @@
             <div class="choose">
                 <ul class="yc-ul">
                     <li><a {% if int(type) < 0%}class="curr"{%end%} href="/mypurchase/type/-1/starttime/{{starttime}}/endtime/{{endtime}}">全部（{{stat.get(0,0) + stat.get(1,0)}}）</a></li>
-                    <li><a {% if int(type) == 1%}class="curr"{%end%} href="/mypurchase/type/1/starttime/{{starttime}}/endtime/{{endtime}}">等待报价（{{stat.get(1,0)}}）</a></li>
+                    <li><a {% if int(type) == 1%}class="curr"{%end%} href="/mypurchase/type/1/starttime/{{starttime}}/endtime/{{endtime}}">进行中（{{stat.get(1,0)}}）</a></li>
                     <li><a {% if int(type) == 0%}class="curr"{%end%} href="/mypurchase/type/0/starttime/{{starttime}}/endtime/{{endtime}}">关闭（{{stat.get(0,0)}}）</a></li>
                 </ul>
             </div>
@@ -115,14 +115,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="tit1">停止报价</h4>
+                <h4 class="modal-title" id="tit1">关闭</h4>
             </div>
             <div class="modal-body">
                 <div class="confirm">
                     <p>您确认删除这一行吗？</p>
                 </div>
                 <div class="button">
-                    <button type="button" class="btn btn-orange">停止报价</button>
+                    <button type="button" class="btn btn-orange">关闭</button>
                 </div>
             </div>
         </div>
@@ -135,7 +135,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="tit2">停止报价</h4>
+                <h4 class="modal-title" id="tit2">关闭</h4>
             </div>
             <div class="modal-body">
                 <div class="result">
@@ -183,7 +183,7 @@ var isDel = false;
 $('.list').on('click', '.tit .icons-delete', function() {
     var pid = $(this).attr("pid");
     $jModalDelete.attr("pid", pid);
-    var txt = '<p>确认对如下采购单停止报价？停止后，该批次的所有的品种都将停止报价</p>';
+    var txt = '<p>确认关闭采购单？关闭后，该批次的所有的品种都将停止报价</p>';
     var $pa = $(this).closest('.tit');
     txt += '<strong>' + $pa.find('.td1').html() + $pa.next().html() + '</strong>';
 

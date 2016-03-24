@@ -165,7 +165,7 @@
                 </div>
                 <div class="td3">
                     <em>{{quote.price}}</em>元/公斤
-                    {% if quote.price == mprice %}<sup>最低</sup>{% end %}
+                    {% if mprice is not None and quote.price == mprice %}<sup>最低</sup>{% end %}
                     <!--<small>{{quote.explain}}</small>-->
                     <span>{{quote.explain}}</span>
                 </div>
@@ -311,10 +311,10 @@
                 <div class="reason">
                     <h3>哪些方面您认为不合适？写下真是原因，供应商更懂您</h3>
                     <form action="" id="jFormReason">
-                        <label><input type="checkbox" value="价格偏高" name="r1">价格偏高</label>
-                        <label><input type="checkbox" value="质量不符" name="r2">质量不符</label>
-                        <label><input type="checkbox" value="供应商资质不符" name="r3">供应商资质不符</label>
-                        <textarea class="ipt" name="" placeholder="详细说明"></textarea>
+                        <label><input type="checkbox" value="价格偏高" name="msg">价格偏高</label>
+                        <label><input type="checkbox" value="质量不符" name="msg">质量不符</label>
+                        <label><input type="checkbox" value="供应商资质不符" name="msg">供应商资质不符</label>
+                        <textarea class="ipt" name="message" id="message" placeholder="详细说明"></textarea>
                     </form>
                 </div>
                 <div class="button">

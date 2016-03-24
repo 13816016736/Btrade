@@ -53,7 +53,7 @@ class CheckPhoneHandler(BaseHandler):
             self.session["phone"] = phone
             self.session.save()
             self.api_response({'status':'success','message':'验证成功','data':phone})
-        elif smscode != self.session.get("verifycode"):
+        elif smscode != self.session.get("smscode"):
             self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
         else:
             self.api_response({'status':'fail','message':'滑动验证码不正确'})
@@ -122,7 +122,7 @@ class RegInfoHandler(BaseHandler):
         if type is None:
             self.api_response({'status':'fail','message':'经营主体不能为空'})
             return
-        name = self.get_argument("company") if type == 1 else self.get_argument("name")
+        name = self.get_argument("company","") if type == 1 else self.get_argument("name", "")
         if name is None:
             self.api_response({'status':'fail','message':'真实姓名或单位名称不能为空'})
             return
