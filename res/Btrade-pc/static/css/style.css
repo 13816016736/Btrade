@@ -159,4 +159,12 @@ footer .logo-mini{position:absolute;top:-25px;right:15px;}
 .yc-bubble span{line-height:24px;font-size:14px;color:#333;}
 .yc-bubble i{font-size:18px;color:#333;}
 
+/* 看大图 */
+.preview{position:relative;width:400px;height:400px;margin:30px auto;}
+.preview li{width:400px;height:400px;}
+.preview li img{width:400px;height:400px;}
+.preview .ctrl{position:absolute;top:176px;width:27px;height:48px;background:url(../images/icons.png) no-repeat;cursor:pointer;}
+.preview .prev{left:-70px;background-position:-31px -152px;}
+.preview .next{right:-70px;background-position:-2px -152px;}
+
 

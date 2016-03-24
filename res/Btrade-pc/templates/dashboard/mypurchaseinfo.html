@@ -256,12 +256,12 @@
 </div>
 
 <!-- 删除成功提示 -->
-<div class="modal fade" id="jModalDeleteResult" tabindex="-1" role="dialog" aria-labelledby="tit2">
+<div class="modal fade" id="jModalDeleteResult" tabindex="-1" role="dialog" aria-labelledby="tit3">
     <div class="modal-dialog modal-mid" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="tit2">停止报价</h4>
+                <h4 class="modal-title" id="tit3">停止报价</h4>
             </div>
             <div class="modal-body">
                 <div class="result">
@@ -277,12 +277,12 @@
 </div>
 
 <!-- 分享 -->
-<div class="modal fade" id="jModalShare" tabindex="-1" role="dialog" aria-labelledby="tit3">
+<div class="modal fade" id="jModalShare" tabindex="-1" role="dialog" aria-labelledby="tit4">
     <div class="modal-dialog modal-mid" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="tit3">邀请报价</h4>
+                <h4 class="modal-title" id="tit4">邀请报价</h4>
             </div>
             <div class="modal-body">
                 <div class="share">
@@ -299,25 +299,50 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="rejectquote" tabindex="-1" role="dialog" aria-labelledby="rejectquoteLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="rejectquoteLabel">报价不合适</h4>
-      </div>
-      <div class="modal-body">
-        <p>哪方面您认为不合适？写下原因，供应商更懂您</p>
-        <p><input type="checkbox" name="msg" value="价格偏高" /> 价格偏高</p>
-        <p><input type="checkbox" name="msg" value="质量不符" /> 质量不符</p>
-        <p><input type="checkbox" name="msg" value="供应商资质不符" /> 供应商资质不符</p>
-        <p><textarea name="message" id="message" style="width: 550px; height: 100px;"></textarea></p>
-      </div>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-default" id="replyquote" quoteid="">回复报价</button>
-      </div>
+<!-- 报价不合适 -->
+<div class="modal fade" id="rejectquote" tabindex="-1" role="dialog" aria-labelledby="tit2">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit2">报价不合适</h4>
+            </div>
+            <div class="modal-body">
+                <div class="reason">
+                    <h3>哪些方面您认为不合适？写下真是原因，供应商更懂您</h3>
+                    <form action="" id="jFormReason">
+                        <label><input type="checkbox" value="价格偏高" name="r1">价格偏高</label>
+                        <label><input type="checkbox" value="质量不符" name="r2">质量不符</label>
+                        <label><input type="checkbox" value="供应商资质不符" name="r3">供应商资质不符</label>
+                        <textarea class="ipt" name="" placeholder="详细说明"></textarea>
+                    </form>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-orange" id="replyquote" quoteid="">回复报价</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+<!-- 弹层提示 -->
+<div class="modal fade" id="jModalMsg" tabindex="-1" role="dialog" aria-labelledby="tit5">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit5">停止报价</h4>
+            </div>
+            <div class="modal-body">
+                <div class="result">
+                    <p class="success"><i class="icons icons-ok"></i>操作成功</p>
+                    <p class="tips">3秒后自动关闭</p>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-gray" data-dismiss="modal">立即关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="{{ static_url('js/jquery.SuperSlide.2.1.1.js')}}"></script>
 <script>
@@ -411,7 +436,6 @@ $(".td6 .sad").click(function() {
 });
 $("#replyquote").click(function() {
     var qid = $(this).attr('quoteid');
-    console.log(qid);
     var message = [];
     $("input[type='checkbox'][name='msg']:checked").each(function(){
         message.push($(this).val());

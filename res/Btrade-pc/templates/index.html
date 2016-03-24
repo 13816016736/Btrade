@@ -188,7 +188,7 @@
                     <div class="td4">
                         <div class="thumb">
                             {% for attachment in quote.attachments%}
-                            <img src="{{attachment}}" alt="">
+                            <img data-src="{{attachment.replace('_thumb','')}}" src="{{attachment}}" alt="">
                             {% end %}
                         </div>
                         <div class="desc">
@@ -244,6 +244,26 @@
 
     </div>
 </section>
+<!-- 大图 -->
+<div class="modal fade" id="jModalImg" tabindex="-1" role="dialog" aria-labelledby="tit1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit1">图片</h4>
+            </div>
+            <div class="modal-body">
+                <div class="preview">
+                    <div class="bd">
+                        <ul class="yc-ul"></ul>
+                    </div>
+                    <div class="ctrl prev"></div>
+                    <div class="ctrl next"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% end %}
 
 {% block javascript %}
@@ -268,6 +288,34 @@ $(function(){
         vis: 4,
         easing: 'easeInOutExpo',
         trigger: 'click'
+    });
+
+    function showBigPic(imgUrls, index) {
+        var _result = '<div class="preview"><div class="bd"><ul class="yc-ul">';
+        $.each(imgUrls, function(i, src) {
+            _result += '<li><img src="' + src + '"></li>';
+        });
+        _result += '</ul></div><div class="ctrl prev"></div><div class="ctrl next"></div>'
+        $('#jModalImg .modal-body').html(_result);
+
+        $('.preview').slide({
+            mainCell: '.bd ul',
+            effect: 'leftLoop',
+            autoPage: true,
+            vis: 1,
+            defaultIndex: index,
+            trigger: 'click'
+        });
+    }
+    $('body').on('click', '.thumb img', function() {
+        var index = $(this).index();
+        var imgUrls = [];
+        $(this).parent().find('img').each(function() {
+            imgUrls.push($(this).data('src'));
+        });
+        $('#jModalImg').modal();
+        showBigPic(imgUrls, index);
+        return false;
     });
 
     /**

@@ -51,15 +51,13 @@ TODOList：
 purchase_info表中specificationid改成specification直接存规格字符串
 去掉specification表，将品种规格直接存入variety表的specification字段并用英文逗号分隔
 
-严飞规整的东西包含短信，首页等其他页面  缺favicon图片
+缺favicon图片
 
-手机号登陆，页面重新归入3.4
+页面重新归入3.5
 
-2.用户设置，关注品种错位  
+用户设置，关注品种错位  
 
-9.pc图片莫名删除
-
-13.pc端我的采购详情，移动端采购页字段为空时错位
+pc图片莫名删除
 
 
 导入新规整的品种数据再测试（python读excel品种数据（安装xlrd依赖））
