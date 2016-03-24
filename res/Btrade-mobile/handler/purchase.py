@@ -44,8 +44,7 @@ class PurchaseHandler(BaseHandler):
         #     self.api_response({'status':'nomore','message':'没有更多的采购订单'})
         #列表一项是一个采购单多个品种
 
-        #列表一项是一个采购单一个品种
-        number = int(number) if number > 0 else 0
+        #列表一项是一个采购单一个品        number = int(number) if number > 0 else 0
         purchases = self.db.query("select ta.*,u.nickname,u.name uname from (select pis.*,count(q.id) quotecount from "
                                   "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from "
                                   "purchase_info pi left join purchase p on p.id = pi.purchaseid order by p.createtime desc,p.id desc limit %s,%s) "

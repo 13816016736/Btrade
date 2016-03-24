@@ -38,7 +38,7 @@ class CenterHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user = self.db.get("select * from users where id = %s", self.session.get("userid"))
-        news = self.db.query("select * from notification where receiver = %s order by createtime desc limit 3", self.session.get("userid"))
+        news = self.db.query("select * from notification where receiver = %s order by createtime desc", self.session.get("userid"))
 
         unread = 0
         unreadtype = 0
@@ -47,7 +47,7 @@ class CenterHandler(BaseHandler):
         quoteid = []
         for new in news:
             if new.status == 0:
-                unread =+ 1
+                unread += 1
                 unreadtype = new.type
             if new.type == 1:
                 new["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(new["createtime"])))

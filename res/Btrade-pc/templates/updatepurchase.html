@@ -25,7 +25,7 @@
                     <div> <!--  class="hide" -->
                         <h3 class="company">
                             <strong>{% if user.get("name")%}{{ user.name }}{% end %}</strong>
-                            <span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>
+                            <!--<span class="verify"><i class="iconfont icon-radio-yes"></i> 身份真实</span>-->
                             <span class="category">
                                 {% if user.type == 1%}
                                 饮片厂
@@ -51,7 +51,7 @@
                             </span>
                         </h3>
                         <div class="userinfo">
-                            <i class="iconfont icon-user"></i><span>{{ user.username }}</span>
+                            <i class="iconfont icon-user"></i><span>{{ user.nickname }}</span>
                             <i class="iconfont icon-mobile"></i><span>{{ user.phone }}</span>
                             <span class="tips">联系方式只对您挑选合意的供货商开放</span>
                         </div>
@@ -257,7 +257,6 @@
                             <label><input class="cbx" type="radio" name="invoice" value="1" {% if purchase.invoice == 1 %}checked{% end %}>无需发票</label>
                             <label><input class="cbx" type="radio" name="invoice" value="2" {% if purchase.invoice == 2 %}checked{% end %}>普通发票</label>
                             <label><input class="cbx" type="radio" name="invoice" value="3" {% if purchase.invoice == 3 %}checked{% end %}>增值税发票</label>
-                            <span class="tips">若期望报价含税，则需告知发票要求</span>
                         </div>
                     </div>
 
@@ -266,7 +265,7 @@
                             <span>交易及付款</span>
                         </div>
                         <div class="cont" id="jPaytype">
-                            <label><input class="cbx" type="radio" name="paytype" value="1" {% if purchase.pay == 1 %}checked{% end %}>药材购“安心交易”（预付全款）<i class="iconfont icon-question"></i></label>
+                            <!--<label><input class="cbx" type="radio" name="paytype" value="1" {% if purchase.pay == 1 %}checked{% end %}>药材购“安心交易”（预付全款）<i class="iconfont icon-question"></i></label>-->
                             <label><input class="cbx" type="radio" name="paytype" value="2" {% if purchase.pay == 2 %}checked{% end %}>双方直接交易，验证合格后<input class="ipt ipt-date" name="payday" type="text" value="{{purchase.payday}}">天内付款</label>
                             <label><input class="cbx" type="radio" name="paytype" value="3" {% if purchase.pay == 3 %}checked{% end %}>其他 <input class="ipt ipt-other" name="payinfo" type="text" value="{{purchase.payinfo}}"></label>
                             <span class="tips">勾选你可接受的交易及付款方式，供应商会针对性的报价</span>
@@ -317,7 +316,6 @@
                             <label><input class="cbx" type="checkbox" name="permit1" value="1" {% if '1' in purchase.supplier %}checked{% end %}>必须有营业执照（公司/合作社供/经营户），不接受个人</label>
                             <label><input class="cbx" type="checkbox" name="permit2" value="2" {% if '2' in purchase.supplier %}checked{% end %}>具备GSP资质</label>
                             <label><input class="cbx" type="checkbox" name="permit3" value="3" {% if '3' in purchase.supplier %}checked{% end %}>具备GMP资质</label>
-                            <span class="tips">勾选你可接受的交易及付款方式，供应商会针对性的报价</span>
                         </div>
                     </div>
                     <div class="group">
