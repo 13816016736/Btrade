@@ -64,7 +64,7 @@
 .list1 .td2-2{float:left;width:13%;padding-left:16px;}
 .list1 .td2-3{float:left;width:13%;padding-left:16px;}
 .list1 .td2-4{float:left;width:13%;padding-left:16px;}
-.list1 .td2-5{float:left;width:48%;padding-left:16px;}
+.list1 .td2-5{float:left;width:48%;padding-left:16px;height:20px;overflow:hidden;}
 .list1 .group{margin-bottom:15px;overflow:hidden;}
 .list1 .tfoot{padding:20px 0 0 16px;font-size:12px;}
 .list1 .qrcode{position:absolute;top:32px;left:45px;width:20px;height:28px;background:url(../images/icons.png) no-repeat -201px -5px;}

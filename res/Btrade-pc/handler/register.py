@@ -44,19 +44,25 @@ class CheckPhoneHandler(BaseHandler):
             self.api_response({'status':'fail','message':'此手机号已被使用'})
             return
         smscode = self.get_argument("smscode")
-        challenge = self.get_argument("geetest_challenge")
-        validate = self.get_argument("geetest_validate")
-        seccode = self.get_argument("geetest_seccode")
-        gt = geetest.geetest(captcha_id, private_key)
-        result = gt.geetest_validate(challenge, validate, seccode)
-        if result and smscode == self.session.get("smscode"):
+        # challenge = self.get_argument("geetest_challenge")
+        # validate = self.get_argument("geetest_validate")
+        # seccode = self.get_argument("geetest_seccode")
+        # gt = geetest.geetest(captcha_id, private_key)
+        # result = gt.geetest_validate(challenge, validate, seccode)
+        # if result and smscode == self.session.get("smscode"):
+        #     self.session["phone"] = phone
+        #     self.session.save()
+        #     self.api_response({'status':'success','message':'验证成功','data':phone})
+        # elif smscode != self.session.get("smscode"):
+        #     self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
+        # else:
+        #     self.api_response({'status':'fail','message':'滑动验证码不正确'})
+        if smscode == self.session.get("smscode"):
             self.session["phone"] = phone
             self.session.save()
             self.api_response({'status':'success','message':'验证成功','data':phone})
-        elif smscode != self.session.get("smscode"):
-            self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
         else:
-            self.api_response({'status':'fail','message':'滑动验证码不正确'})
+            self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
 
 class GetSmsCodeHandler(BaseHandler):
     def get(self):
@@ -122,7 +128,7 @@ class RegInfoHandler(BaseHandler):
         if type is None:
             self.api_response({'status':'fail','message':'经营主体不能为空'})
             return
-        name = self.get_argument("company","") if type == 1 else self.get_argument("name", "")
+        name = self.get_argument("company","") if type == '1' else self.get_argument("name", "")
         if name is None:
             self.api_response({'status':'fail','message':'真实姓名或单位名称不能为空'})
             return

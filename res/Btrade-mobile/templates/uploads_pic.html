@@ -189,9 +189,9 @@
     })
 
     // 高亮显示
-    var newsType = getQueryStringArgs();
-    if (newsType.type) {
-        var index = parseInt(newsType.type, 10);
+    var newsType = {{type}};
+    if (newsType) {
+        var index = parseInt(newsType, 10);
         if (typeof index === 'number' && $('.tab li').length >= index ) {
             index > 1 && $('.tab li').eq(index - 1).trigger('click');
         }

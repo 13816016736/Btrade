@@ -61,7 +61,9 @@
                         {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                         <a class="icons icons-edit" href="/mypurchase/update/{{purchase.id}}" title="编辑"></a>
                         <a class="icons icons-share" href="#" title="分享"></a>
+                        {% if purchase.status != 0 %}
                         <a class="icons icons-delete" href="#" pid="{{purchase.id}}" title="关闭"></a>
+                        {% end %}
                         {% else %}
                         <a class="icons icons-copy" href="#" title="复制"></a>
                         {% end %}

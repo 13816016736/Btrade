@@ -75,25 +75,29 @@
                             {% end %}
                         </dd>
                         <dt>验证及包装：</dt>
-                        <dd>
+                        <dd id="accept">
                             {{ purchase.accept }}
                         </dd>
                         <dt>寄样：</dt>
-                        <dd>
+                        <dd id="receive">
                             {% if purchase.send == 1 %}
-                            要求报价后必须寄样
+                            要求报价后必须寄样<br>
                             {% end %}
                             {{ purchase.receive }}
                         </dd>
                         <dt>补充说明：</dt>
-                        <dd>{{ purchase.other }}</dd>
+                        <dd id="other">{{ purchase.other }}</dd>
                         <dt>供应商要求：</dt>
                         <dd>
-                            {% if purchase.supplier == '1' %}
+                            {% if '1' in purchase.supplier.split("&") %}
                             必须有营业执照（公司、合作社、经营户），不接收个人
-                            {% elif purchase.supplier == '2' %}
+                            <br>
+                            {% end %}
+                            {% if '2' in purchase.supplier.split("&") %}
                             具备GSP资质
-                            {% elif purchase.supplier == '3' %}
+                            <br>
+                            {% end %}
+                            {% if '3' in purchase.supplier.split("&") %}
                             具备GMP资质
                             {% end %}
                         </dd>
@@ -214,12 +218,12 @@
 {% end %}
 {% block javascript %}
 <!-- 大图 -->
-<div class="modal fade" id="jModalImg" tabindex="-1" role="dialog" aria-labelledby="tit4">
+<div class="modal fade" id="jModalImg" tabindex="-1" role="dialog" aria-labelledby="tit6">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="tit4">图片</h4>
+                <h4 class="modal-title" id="tit6">图片</h4>
             </div>
             <div class="modal-body">
                 <div class="preview">

@@ -43,6 +43,18 @@ $(function(){
         txt: ['关闭','等待报价', '报价完成'],
         col: ['red', 'blue', 'red']
     }
+    var userType = {
+        1: '饮片厂',
+        2: '药厂',
+        3: '药材经营公司',
+        4: '个体经营户',
+        5: '合作社',
+        6: '种植基地',
+        7: '其他',
+        8: '个人经营',
+        9: '采购经理',
+        10: '销售经理'
+    }
     var toHtml = function(data) {
         var html = [];
         for (var i = 0; i < data.length; i++) {
@@ -53,7 +65,7 @@ $(function(){
             temp.push(         '<i class="iconfont icon-user"></i>');
             temp.push(         '<span>' + data[i].nickname + '</span>');
             temp.push(     '</h3>');
-            temp.push( '<div class="category">' + (data[i].type == 1 ? " 个人采购" : " 饮片厂采购") + '</div>');
+            temp.push( '<div class="category">' + userType[data[i].type] + '</div>');
             temp.push( '</div>');
 
             for (var j = 0; j < data[i].purchaseinfo.length; j++) {

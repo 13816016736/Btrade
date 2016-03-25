@@ -634,7 +634,8 @@ function checkForm() {
 
 		if (result.pass) {
 			$quality.prev('.tags').find('span').each(function(){
-				val5.push($(this).html());
+				//val5.push($(this).html());
+				val5.unshift($(this).html());
 			});
 			$area.prev('.tags').find('span').each(function(){
 				val6.push($(this).html());

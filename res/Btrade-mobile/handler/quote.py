@@ -26,7 +26,7 @@ class QuoteHandler(BaseHandler):
         purchaser = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["term"] != 0:
-            purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+            purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
 
@@ -178,7 +178,7 @@ class QuoteDetailHandler(BaseHandler):
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["term"] != 0:
-            purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+            purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
         print purchaseinfo
@@ -233,7 +233,7 @@ class QuoteListHandler(BaseHandler):
         unreply = 0
         for myquote in myquotes:
             quoteids.append(str(myquote.id))
-            expire = datetime.datetime.utcfromtimestamp(float(myquote["purchasetime"])) + datetime.timedelta(myquote["term"])
+            expire = datetime.datetime.fromtimestamp(float(myquote["purchasetime"])) + datetime.timedelta(myquote["term"])
             myquote["timedelta"] = (expire - datetime.datetime.now()).days
             myquote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(myquote["createtime"])))
             if myquote["timedelta"] <= 0:

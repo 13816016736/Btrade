@@ -51,7 +51,7 @@ class PurchaseHandler(BaseHandler):
             purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
             purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
             if purchase["term"] != 0:
-                purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
         #统计采购单各状态的数量
@@ -83,7 +83,7 @@ class PurchaseInfoHandler(BaseHandler):
         if purchaseinfo:
             purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
             if purchaseinfo["term"] != 0:
-                purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+                purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
                 purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
             purchaseinfo["attachments"] = attachments
             others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",

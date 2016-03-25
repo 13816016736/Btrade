@@ -3,7 +3,7 @@
 import tornado.web
 from base import BaseHandler
 from utils import *
-import config
+import config,re
 from collections import defaultdict
 
 class DashboardHandler(BaseHandler):
@@ -49,6 +49,12 @@ class UpdateUserHandler(BaseHandler):
                 self.api_response({'status':'fail','message':'新旧密码必须填写'})
                 return
             else:
+                #判断新密码格式是否是字母加数字
+                pattern = re.compile(r'^[0-9a-zA-Z]{6,20}$')
+                match = pattern.match(self.get_argument("password"))
+                if match is None:
+                    self.api_response({'status':'faile','message':'密码必须是6-20位字符'})
+                    return
                 if not author:
                     self.api_response({'status':'faile','message':'用户名不存在'})
                     return

@@ -48,20 +48,26 @@
         <div class="item">
             <label class="txt">经营类型</label>
             <a class="ipt" href="/user/category">
-                {% if user.type==1 %}
-                饮片厂/饮片生产、加工
-                {% elif user.type==2 %}
-                药厂/制药企业
-                {% elif user.type==3 %}
-                药材贸易经营公司
-                {% elif user.type==4 %}
-                种植合作社/种植基地
-                {% elif user.type==5 %}
-                其它类型公司
-                {% elif user.type==6 %}
+                {% if user.type == 1%}
+                饮片厂
+                {% elif user.type == 2%}
+                药厂
+                {% elif user.type == 3%}
+                药材经营公司
+                {% elif user.type == 4%}
+                个体经营户
+                {% elif user.type == 5%}
+                合作社
+                {% elif user.type == 6%}
+                种植基地
+                {% elif user.type == 7%}
+                其他
+                {% elif user.type == 8%}
                 个人经营
-                {% elif user.type==7 %}
-                企业采购经理/业务员
+                {% elif user.type == 9%}
+                采购经理
+                {% elif user.type == 10%}
+                销售经理
                 {% else %}
                 未设定
                 {% end %}

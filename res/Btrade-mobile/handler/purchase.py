@@ -35,8 +35,8 @@ class PurchaseHandler(BaseHandler):
         #         purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
         #         purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M", time.localtime(float(purchase["createtime"])))
         #         if purchase["term"] != 0:
-        #             # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-        #             expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+        #             # purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+        #             expire = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
         #             purchase["timedelta"] = (expire - datetime.datetime.now()).days
         #     print purchaseids
         #     self.api_response({'status':'success', 'list':purchases, 'message':'请求成功'})
@@ -44,8 +44,9 @@ class PurchaseHandler(BaseHandler):
         #     self.api_response({'status':'nomore','message':'没有更多的采购订单'})
         #列表一项是一个采购单多个品种
 
-        #列表一项是一个采购单一个品        number = int(number) if number > 0 else 0
-        purchases = self.db.query("select ta.*,u.nickname,u.name uname from (select pis.*,count(q.id) quotecount from "
+        #列表一项是一个采购单一个品
+        number = int(number) if number > 0 else 0
+        purchases = self.db.query("select ta.*,u.nickname,u.name uname,u.type from (select pis.*,count(q.id) quotecount from "
                                   "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from "
                                   "purchase_info pi left join purchase p on p.id = pi.purchaseid order by p.createtime desc,p.id desc limit %s,%s) "
                                   "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by pis.createtime desc) ta "
@@ -62,8 +63,8 @@ class PurchaseHandler(BaseHandler):
             for purchase in purchases:
                 purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
                 if int(purchase["term"]) != 0:
-                    # purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-                    expire = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                    # purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                    expire = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     purchase["timedelta"] = (expire - datetime.datetime.now()).days
                 purchase["purchaseinfo"] = [{"id": purchase["pid"],"name": purchase["name"],"attachments":attachments.get(purchase["pid"]),
                                              "origin": purchase["origin"],"purchaseid": purchase["id"],"quality": purchase["quality"],"term": purchase["term"],
@@ -89,7 +90,7 @@ class PurchaseInfoHandler(BaseHandler):
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(int(purchaseinfo["createtime"])))
         if purchaseinfo["term"] != 0:
-            purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+            purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
 
@@ -148,7 +149,7 @@ class PurchaseinfoBatchHandler(BaseHandler):
         purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
         purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
         if purchase["term"] != 0:
-            purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+            purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
             purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
         #此采购商成功采购单数

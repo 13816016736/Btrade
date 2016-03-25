@@ -341,9 +341,10 @@
                                     <span data-val="0">市/县</span>
                                 </dd>
                             </dl>
+                            <input type="hidden" name="address" id="address" value="">
                             <label><input class="cbx" type="checkbox" id="jAddress">亲自上门看货提货</label>
+                            <span class="hide" id="jAddressError">请选择地址</span>
                             <span class="tips">若期望报价含运费，则需告知交货地</span>
-                            <input type="hidden" name="address" value="">
                         </div>
                     </div>
 
@@ -392,8 +393,7 @@
                         </div>
                         <div class="cont">
                             <label class="mb10"><input class="cbx" type="checkbox" name="" id="jSample">报价必须寄样</label>
-                            <textarea class="ipt desc hide" id="jContact" name="">接收地址：     接收人：        联系电话：        寄养要求：
-寄样要求：</textarea>
+                            <textarea class="ipt desc hide" wrap="virtual" id="jContact" name=""></textarea>
                         </div>
                     </div>
 
@@ -570,6 +570,10 @@
 </div>
 {% end %}
 {% block javascript %}
+<script>
+    str = ["接收地址：","接收人：","联系电话：","寄养要求："]
+    $("#jContact").val(str.join("\r\n"));
+</script>
 <script src="{{ static_url('js/jquery.validate.min.js')}}"></script>
 <script src="{{ static_url('js/fileupload/jquery.ui.widget.js')}}"></script>
 <script src="{{ static_url('js/fileupload/jquery.iframe-transport.js')}}"></script>

@@ -143,7 +143,7 @@ class MyPurchaseHandler(BaseHandler):
             purchase["purchaseinfo"] = purchaseinf.get(purchase["id"])
             purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
             if purchase["term"] != 0:
-                purchase["expire"] = datetime.datetime.utcfromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
         #统计采购单各状态的数量
@@ -174,7 +174,7 @@ class MyPurchaseInfoHandler(BaseHandler):
         if purchaseinfo:
             purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
             if purchaseinfo["term"] != 0:
-                purchaseinfo["expire"] = datetime.datetime.utcfromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+                purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
                 purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
             purchaseinfo["attachments"] = attachments
             others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
@@ -279,12 +279,12 @@ class DeleteFileHandler(BaseHandler):
                     base, ext = os.path.splitext(os.path.basename(file))
                     filename = file.replace(base, base+"_thumb")
                     os.remove(filename)
-                    del file
+                    del uploadfiles[num]
                     self.session["uploadfiles"] = uploadfiles
                     self.session.save()
                     self.api_response({'status':'success','message':'删除成功'})
                 else:
-                    del file
+                    del uploadfiles[num]
                     self.session["uploadfiles"] = uploadfiles
                     self.session.save()
                     self.api_response({'status':'fail','message':'文件不存在'})
@@ -392,11 +392,13 @@ class MyPurchaseUpdateHandler(BaseHandler):
         for index, purchaseinfo in enumerate(purchaseinfos):
             i = str(index+1)
             purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
-            if uploadfiles and uploadfiles.has_key(i):
-                #uploadfiles[num].append(filepath)
-                base, ext = os.path.splitext(os.path.basename(uploadfiles[i][0]))
-                purchaseinfo["attachments"]['attachment'] = config.img_domain+uploadfiles[i][0][uploadfiles[i][0].find("static"):].replace(base, base+"_thumb")
-            elif purchaseinfo["attachments"]:
+            # if purchaseinfo["attachments"] and uploadfiles and uploadfiles.has_key(i):
+            #     #uploadfiles[num].append(filepath)
+            #     base, ext = os.path.splitext(os.path.basename(uploadfiles[i][0]))
+            #     purchaseinfo["attachments"]['attachment'] = config.img_domain+uploadfiles[i][0][uploadfiles[i][0].find("static"):].replace(base, base+"_thumb")
+            # elif purchaseinfo["attachments"]:
+            #     uploadfiles[i] = [purchaseinfo["attachments"]["path"]]
+            if purchaseinfo["attachments"]:
                 uploadfiles[i] = [purchaseinfo["attachments"]["path"]]
             purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
 
@@ -440,6 +442,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
         data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"
         data['permit'] = data['permit'] if data.has_key('permit') and data['permit'] != "" else "0"
         data['deadline'] = data['deadline'] if data.has_key('deadline') and data['deadline'] != "" else "0"
+        #contact demand replenish others
         #存储采购主体信息
         if data.has_key("address"):
             self.db.execute("update purchase set areaid=%s, invoice=%s, pay=%s, payday=%s, payinfo=%s,"

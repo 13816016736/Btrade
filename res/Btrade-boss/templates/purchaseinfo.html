@@ -159,11 +159,15 @@
             <div class="form-group">
                 <label class="control-label">供应商要求：</label>
                 <div class="form-inline">
-                {% if purchase.supplier == 1 %}
+                {% if '1' in purchase.supplier.split("&") %}
                 必须有营业执照（公司、合作社、经营户），不接收个人
-                {% elif purchase.supplier == 2 %}
+                <br>
+                {% end %}
+                {% if '2' in purchase.supplier.split("&") %}
                 具备GSP资质
-                {% elif purchase.supplier == 3 %}
+                <br>
+                {% end %}
+                {% if '3' in purchase.supplier.split("&") %}
                 具备GMP资质
                 {% end %}
                 </div>
