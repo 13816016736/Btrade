@@ -115,7 +115,7 @@ class UpdateUserInfoHandler(BaseHandler):
         varietyname = []
         for variety in self.get_arguments("varietyid"):
             if variety == "":
-                break
+                continue
             varietyid = self.db.get("SELECT id FROM variety WHERE name = %s", variety)
             if varietyid:
                 varietyids.append(str(varietyid.id))

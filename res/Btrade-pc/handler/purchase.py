@@ -56,7 +56,7 @@ class PurchaseHandler(BaseHandler):
             if data['smscode'] != self.session.get("smscode"):
                 self.api_response({'status':'fail','message':'短信验证码不正确','data':data['phone']})
                 return
-            username = "ycg_" + datetime.datetime.today().strftime("%Y%m%d%H%M%S")
+            username = "ycg" + data['phone']
             password = str(random.randint(100000, 999999))
             lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), data['phone']
@@ -100,7 +100,7 @@ class PurchaseHandler(BaseHandler):
                                           "value(%s, %s)", purchase_infoid, attachment)
                     self.session["uploadfiles"] = {}
                     self.session.save()
-            self.api_response({'status':'success','message':'请求成功','data':varids})
+            self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':purchaseid})
         else:
             self.api_response({'status':'fail','message':'必须选择收货地'})
 
@@ -342,7 +342,7 @@ class PurchaseSuccessHandler(BaseHandler):
                                   "(SELECT pi.id,n.sender FROM `purchase_info` pi,notification n WHERE pi.id = n.content and n.type = 2 and varietyid in ("
                                   +varids+") and n.sender != %s) t left join users u on t.sender = u.id) ta left join area a on ta.areaid = a.id ", self.session.get("userid"))
 
-        self.render("success.html", varname=",".join(varname), suppliers=suppliers)
+        self.render("success.html", varname=",".join(varname), suppliers=suppliers, purchaseid=self.get_argument("purchaseid"))
 
 class RemovePurchaseHandler(BaseHandler):
 

@@ -56,9 +56,31 @@
         <div class="bd">
             <h4 class="company">
                 <span>{{user.nickname}}</span>
-                <i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效
+                <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
             </h4>
-            <div class="category">{% if user.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
+            <div class="category">
+                {% if user.type == 1%}
+                饮片厂
+                {% elif user.type == 2%}
+                药厂
+                {% elif user.type == 3%}
+                药材经营公司
+                {% elif user.type == 4%}
+                个体经营户
+                {% elif user.type == 5%}
+                合作社
+                {% elif user.type == 6%}
+                种植基地
+                {% elif user.type == 7%}
+                其他
+                {% elif user.type == 8%}
+                个人经营
+                {% elif user.type == 9%}
+                采购经理
+                {% elif user.type == 10%}
+                销售经理
+                {% end %}
+            </div>
             <div class="total">
                 <span class="yc-star yc-star-4">
                     <i></i><i></i><i></i><i></i><i></i>
@@ -73,7 +95,7 @@
         <h3>交收要求</h3>
         <dl class="yc-demand">
             <dt>交货地：</dt>
-            <dd>{{ purchase.areaname }}</dd>
+            <dd>{{ purchase.province }}  {{ purchase.areaname }}</dd>
             <dt>发票要求：</dt>
             <dd>
                 {% if purchase.invoice == 1%}
@@ -97,13 +119,13 @@
             <dt>验证及包装：</dt>
             <dd>
                 <ol>
-                    <li>{{ purchase.accept }}</li>
+                    <li id="accept">{{ purchase.accept }}</li>
                 </ol>
             </dd>
             <dt>寄样：</dt>
-            <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span>{{ purchase.receive }}</span></dd>
+            <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span id="receive">{{ purchase.receive }}</span></dd>
             <dt>补充说明：</dt>
-            <dd>{{ purchase.other }}</dd>
+            <dd id="other">{{ purchase.other }}</dd>
         </dl>
     </div>
 
@@ -126,7 +148,7 @@
                 {% end %}
             </dd>
             <dt>其它要求：</dt>
-            <dd>{{purchase.remark}}</dd>
+            <dd id="remark">{{purchase.remark}}</dd>
         </dl>
     </div>
 
@@ -142,4 +164,10 @@
     </div>
 </footer>
 <script src="{{ static_url('js/app.js') }}"></script>
+<script>
+$("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
+$("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
+$("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
+$("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
+</script>
 {% end %}

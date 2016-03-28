@@ -78,10 +78,11 @@ class PurchaseHandler(BaseHandler):
 
 class PurchaseInfoHandler(BaseHandler):
     def get(self, id):
-        purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
-        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
+        purchaseinfo = self.db.get("select ta.*,a.areaname province from (select t.*,a.areaname,a.parentid from "
+        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+        "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,"
+        "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) "
+        "ta left join area a on a.id = ta.parentid",id)
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:
@@ -125,9 +126,9 @@ class PurchaseinfoBatchHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, purchaseid):
         purchaseinf = defaultdict(list)
-        purchase = self.db.get("select t.*,a.areaname from "
+        purchase = self.db.get("select t.*,a.areaname province from (select t.*,a.areaname,a.parentid from "
                                   "(select p.*,u.nickname,u.name,u.type from purchase p left join users u on p.userid = u.id where p.id = %s) t"
-                                  " left join area a on t.areaid = a.id", purchaseid)
+                                  " left join area a on t.areaid = a.id) t left join area a on t.parentid = a.id", purchaseid)
         user = self.db.get("select * from users where id = %s", purchase["userid"])
         if purchase:
             purchaseinfos = self.db.query("select p.*,count(q.id) quotecount from purchase_info p "

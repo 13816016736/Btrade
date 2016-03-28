@@ -350,6 +350,9 @@
 </div>
 <script src="{{ static_url('js/jquery.SuperSlide.2.1.1.js')}}"></script>
 <script>
+$("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
+$("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
+$("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
 var $jModalDelete = $('#jModalDelete');
 var timer = 0;
 var isDel = false;

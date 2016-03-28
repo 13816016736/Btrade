@@ -61,8 +61,8 @@
 .list1 .td2{min-height:140px;border-right:1px dashed #ddd;}
 .list1 .td3{position:absolute;top:0;right:0;width:110px;height:100%;}
 .list1 .td2-1{float:left;width:13%;padding-left:16px;color:#333;}
-.list1 .td2-2{float:left;width:13%;padding-left:16px;}
-.list1 .td2-3{float:left;width:13%;padding-left:16px;}
+.list1 .td2-2{float:left;width:13%;padding-left:16px;height:20px;overflow:hidden;}
+.list1 .td2-3{float:left;width:13%;padding-left:16px;height:20px;overflow:hidden;}
 .list1 .td2-4{float:left;width:13%;padding-left:16px;}
 .list1 .td2-5{float:left;width:48%;padding-left:16px;height:20px;overflow:hidden;}
 .list1 .group{margin-bottom:15px;overflow:hidden;}
@@ -93,8 +93,8 @@
 .list2 .td1{position:absolute;top:0;left:0;width:15%;height:100%;padding:10px;background-color:#fdefd5;}
 .list2 .td2{float:left;width:23%;padding:0 10px;}
 .list2 .td3{float:left;width:23%;padding:0 10px;border-left:1px dashed #ddd;}
-.list2 .td4{float:left;width:42%;padding:0 10px;}
-.list2 .td5{float:left;width:12%;padding:0 10px;color:#333;}
+.list2 .td4{float:left;width:36%;padding:0 10px;}
+.list2 .td5{float:left;width:18%;padding:0 10px;color:#333;}
 .list2 .verify{margin:0 4px;font-size:14px;color:#333;}
 .list2 .verify i{font-size:22px;}
 .list2 .thumb{height:70px;margin-bottom:6px;white-space:nowrap;overflow:hidden;}
@@ -113,6 +113,7 @@
 .list2 .thead{height:auto;margin-top:0;font-size:16px;background-color:#fff;}
 .list2 .thead .td1{top:10px;padding:0 10px;background-color:#fff;}
 .list2 .thead .td3{border-left:none;}
+.list2 .thead .td5{color:#999;}
 
 
 .total{margin-top:50px;padding-top:30px;background-color:#f7f7f7;}

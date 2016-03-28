@@ -106,11 +106,11 @@ fillProvince();
 // 增加一行
 $('#jAddTr').on('click', function() {
 	var templete = '<div class="tr">'
-             + 		'\n<input class="ipt" type="text" value="">'
-             + 		'\n<input class="ipt" type="text" value="">'
-             + 		'\n<input class="ipt" type="text" value="">'
-             + 		'\n<input class="ipt" type="text" value="">'
-             + 		'\n<input class="ipt" type="text" value="">'
+             + 		'\n<input class="ipt" type="text" value="" name="varietyid">'
+             + 		'\n<input class="ipt" type="text" value="" name="varietyid">'
+             + 		'\n<input class="ipt" type="text" value="" name="varietyid">'
+             + 		'\n<input class="ipt" type="text" value="" name="varietyid">'
+             + 		'\n<input class="ipt" type="text" value="" name="varietyid">'
              + '</div>';
 	$(this).before(templete);
 })

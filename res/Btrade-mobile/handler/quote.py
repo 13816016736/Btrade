@@ -91,10 +91,17 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
         #不能对自己的采购单进行报价
-        purchase = self.db.get("select p.userid,pi.name from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s", self.get_argument("purchaseinfoid"))
+        purchase = self.db.get("select t.*,u.phone from (select p.userid,pi.name,pi.createtime,pi.term from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
+                               "t left join users u on u.id = t.userid", self.get_argument("purchaseinfoid"))
         if purchase["userid"] == self.session.get("userid"):
             self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
             return
+        #报价结束不能报价
+        if purchase["term"] != 0:
+            purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+            if (purchase["expire"] - datetime.datetime.now()).days > 0:
+                self.api_response({'status':'fail','message':'此采购单报价已结束，无法再进行报价'})
+                return
 
         quoteid = self.db.execute_lastrowid("insert into quote(userid,purchaseinfoid,quality,price,`explain`,createtime)value"
                                             "(%s,%s,%s,%s,%s,%s)", self.session.get("userid"),self.get_argument("purchaseinfoid"),
@@ -118,7 +125,7 @@ class QuoteHandler(BaseHandler):
                         self.session.get("userid"),purchase["userid"],2,title,self.get_argument("purchaseinfoid"),0,int(time.time()))
 
         #发短信通知采购商有用户报价
-        quoteSms(quoter["phone"], purchase["name"], quoter["name"], self.get_argument("price"), config.unit)
+        quoteSms(purchase["phone"], purchase["name"], quoter["name"], self.get_argument("price"), config.unit)
         self.api_response({'status':'success','message':'请求成功'})
 
 class QuoteUploadHandler(BaseHandler):

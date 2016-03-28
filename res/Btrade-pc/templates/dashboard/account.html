@@ -217,9 +217,9 @@
 
     var $varietyTags = $('#jVarietyTags');
     // 防抖处理
-    function debounce(func, wait) {
+    function debounce(func, wait, obj) {
         this.timer && clearTimeout(this.timer);
-        this.timer = setTimeout(function() {func()}, wait);
+        this.timer = setTimeout(function() {func(obj)}, wait);
     }
     // 关闭所有弹层
     function hidePop() {
@@ -254,8 +254,8 @@
     }
 
     // 药材品种
-    function getKeywords() {
-        var keywords = $tags.val();
+    function getKeywords(obj) {
+        var keywords = obj.val();
         $.ajax({
             url: '/getvarietyinfo',
             dataType: 'json',
@@ -288,7 +288,7 @@
             if ($.trim(this.value) == '') {
                 showTags(false, $varietyTags);
             } else {
-                debounce(getKeywords, 400);
+                debounce(getKeywords, 400, $(this));
             }
         },
         'keydown': function(event) {

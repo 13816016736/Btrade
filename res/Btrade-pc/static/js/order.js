@@ -3,7 +3,9 @@
 var $username = $('#jUsername'),
     $mobile = $('#jMobile'),
     $code = $('#jCode'),
+    $cname = $('#jCname'),
     $send = $('#jSend'),
+    $focus = null,
     timeout = 0, 
     timer = 0,
     delay = 60,
@@ -68,14 +70,27 @@ function checkCode() {
     $code.focus();
     return false;
 }
-function checkIpt() {
-	var c1 = checkUsername(),
-		c2 = checkMobile(),
-		c3 = checkCode();
-
-    if (c1 && c2 && c3) {
+function checkCname() {
+    var val = $cname.val();
+    if (!val) {
+    	$cname.nextAll('.error').html('请输入单位全称');
+    } else {
+    	$cname.nextAll('.error').html('');
         return true;
-    } 
+    }
+    $focus = $cname;
+    return false;
+}
+function checkIpt() {
+	var	c4 = checkCname(),
+		c3 = checkCode(),
+		c2 = checkMobile(),
+		c1 = checkUsername();
+
+    if (c1 && c2 && c3 && c4) {
+        return true;
+    }
+    $focus.focus();
     return false;
 }
 $('#jCreate').on('click', function() {
@@ -681,6 +696,7 @@ $('#jSubmit').on('click', function() {
 				$('.loading').remove();
 				if(data.status == "success"){
 					$("#varids").val(data.data.join(","));
+					$("#purchaseid").val(data.purchaseid);
 					$("#purchaseForm").submit();
 				}else{
 					alert(data.message);
