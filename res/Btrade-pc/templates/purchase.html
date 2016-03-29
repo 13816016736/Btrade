@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block title %}
+发采购_自动对接全国货源极速报价_药材购
+{% end %}
 {% block container %}
 <link rel="stylesheet" href="{{ static_url('css/order.css')}}" />
 <section class="sec">
@@ -92,10 +95,11 @@
                         </div>
                         <div class="group">
                             <div class="txt mid">
-                                <span>单位全称/姓名</span>
+                                <span>*单位全称/姓名</span>
                             </div>
                             <div class="cont">
                                 <input class="ipt wide" type="text" id="jCname">
+                                <span class="error"></span>
                                 <span class="tips">请填写您单位的全称，如亳州永刚中药饮片有限公司；若未个人经营，请填写姓名</span>
                             </div>
                         </div>

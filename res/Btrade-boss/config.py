@@ -72,5 +72,6 @@ salt = "ycg20151012"
 img_domain = "http://192.168.0.51/"
 # img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
 img_path = "F:\\nginx-1.8.1\\html\\static\\uploadfiles"
+host = "http://10.0.24.147:9999"
 
 unit = u"公斤"

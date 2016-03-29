@@ -1,5 +1,9 @@
 {% extends "base.html" %}
+{% block title %}
+我的采购_我的工作台_药材购
+{% end %}
 {% block page-wrapper %}
+{% import config %}
 <div class="main-cont">
     <div class="menu">
         <ul class="yc-ul">
@@ -60,7 +64,7 @@
                     <div class="td4">
                         {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                         <a class="icons icons-edit" href="/mypurchase/update/{{purchase.id}}" title="编辑"></a>
-                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-share" href="#" title="分享" purchaseid="{{ purchase.id }}"></a>
                         {% if purchase.status != 0 %}
                         <a class="icons icons-delete" href="#" pid="{{purchase.id}}" title="关闭"></a>
                         {% end %}
@@ -99,7 +103,7 @@
                         {% end %}
                     </div>
                     <div class="td4">
-                        <a class="icons icons-share" href="#" title="分享"></a>
+                        <a class="icons icons-share" href="#" title="分享" purchaseinfoid="{{purchaseinfo.id}}"></a>
                         <!--<a class="icons icons-delete" href="#" title="删除"></a>-->
                     </div>
                 </div>
@@ -241,7 +245,12 @@ $jModalDelete.on('click', '.btn', function() {
 
 // 分享
 $('.list').on('click', '.icons-share', function() {
-    var qrcodeSrc = 'static/images/qrcode.jpg';
+    var qrcodeSrc;
+    if($(this).attr("purchaseid")){
+        qrcodeSrc = 'http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/'+$(this).attr("purchaseid");
+    }else{
+        qrcodeSrc = 'http://qr.liantu.com/api.php?text={{config.host}}/purchase/purchaseinfo/'+$(this).attr("purchaseinfoid");
+    }
     $('#jModalShare').find('.qrcode img').attr('src', qrcodeSrc);
     $('#jModalShare').modal();
     return false;

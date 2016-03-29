@@ -1,5 +1,9 @@
 {% extends "base.html" %}
+{% block title %}
+我的采购_我的工作台_药材购
+{% end %}
 {% block page-wrapper %}
+{% import config %}
 <div class="main-cont">
     <div class="menu">
         <ul class="yc-ul">
@@ -22,7 +26,7 @@
                     <div class="weight">{{ purchase.quantity }}公斤</div>
                     <div class="desc">
                         <p><span>质量要求</span>{{ purchase.quality }}</p>
-                        <p><span>意向价格</span> {{ purchase.price }}元/公斤</p>
+                        <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤 封顶{% else %}面议{% end %}</p>
                         <p><span>合格品样例照</span></p>
                         <p class="thumb">
                             {% for attachment in purchase.attachments %}
@@ -290,7 +294,7 @@
             </div>
             <div class="modal-body">
                 <div class="share">
-                    <div class="qrcode"><img height="114" width="114" alt="" src="/static/images/qrcode.jpg"></div>
+                    <div class="qrcode"><img height="114" width="114" alt="" src=""></div>
                     <div class="txt">
                         <h3><i class="icons icons-wechat"></i>微信邀请朋友报价</h3>
                         <p>微信扫描右侧二维码，发送到朋友圈，邀请前来报价</p>
@@ -401,7 +405,7 @@ $jModalDelete.on('click', '.btn', function() {
 
 // 分享
 $('.similarity').on('click', '.icons-share', function() {
-    var qrcodeSrc = 'uploads/qrcode.jpg';
+    var qrcodeSrc = 'http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}';
     $('#jModalShare').find('.qrcode img').attr('src', qrcodeSrc);
     $('#jModalShare').modal();
     return false;

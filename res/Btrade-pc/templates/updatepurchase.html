@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block title %}
+发采购_自动对接全国货源极速报价_药材购
+{% end %}
 {% block container %}
 <link rel="stylesheet" href="{{ static_url('css/order.css')}}" />
 <section class="sec">
@@ -357,6 +360,7 @@
 <form action="/purchasesuccess" method="post" id="purchaseForm" autocomplete="off">
     {% raw xsrf_form_html() %}
     <input type="hidden" name="varids" id="varids">
+    <input type="hidden" name="purchaseid" id="purchaseid">
 </form>
 
 <!-- 删除 -->

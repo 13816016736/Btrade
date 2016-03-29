@@ -28,7 +28,7 @@ class MainHandler(BaseHandler):
 
         #最新报价
         quotes = self.db.query("select ta.*,u.name pname from (select t.*,u.name qname from (select qp.*,p.userid puid from "
-        "(select q.id,q.userid quid,q.quality,q.price,q.createtime,pi.purchaseid,pi.name,pi.specification "
+        "(select q.id,q.userid quid,q.quality,q.price,q.createtime,pi.id pid,pi.purchaseid,pi.name,pi.specification "
         "from quote q,purchase_info pi where q.purchaseinfoid = pi.id order by q.createtime desc limit 4)"
         " qp left join purchase p on qp.purchaseid = p.id) t left join users u on t.quid = u.id) ta left join users u on ta.puid = u.id")
         quoteids = [str(quote["id"]) for quote in quotes]

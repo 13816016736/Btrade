@@ -123,7 +123,6 @@ class PurchaseInfoHandler(BaseHandler):
 
 class PurchaseinfoBatchHandler(BaseHandler):
 
-    @tornado.web.authenticated
     def get(self, purchaseid):
         purchaseinf = defaultdict(list)
         purchase = self.db.get("select t.*,a.areaname province from (select t.*,a.areaname,a.parentid from "

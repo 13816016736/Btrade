@@ -49,11 +49,15 @@ https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f070
 TODOList：
 品种规格修改方案确定:
 purchase_info表中specificationid改成specification直接存规格字符串
+
 去掉specification表，将品种规格直接存入variety表的specification字段并用英文逗号分隔
+药采购生成的二维码参考:
+http://www.liantu.com/pingtai/
 
-把微信生成二维码的临时（7天）和永久（10万）的机制告诉严飞
 
-导入新规整的品种数据再测试（python读excel品种数据（安装xlrd依赖））
+导入新规整的品种数据再测试（python读excel品种数据（安装xlrd依赖））*
+移动端首页手机访问总是很慢*
+自测试*
 
 服务器购置 部署+域名  并提交ICP备案
 微信公众号申请（微信公众号   357505251@qq.com/ycg20150201）
@@ -62,17 +66,11 @@ purchase_info表中specificationid改成specification直接存规格字符串
 
 公司资产清算，注册资本赎回 @周陵     注册资本的问题再确认
 
-   
-1.页面title  description keywords定稿
+
 2.底部入驻企业需要至少4个饮片厂logo
 7.注册环节药材购服务条款
 23.报价回复页面 有报价显示联系方式  无报价  如何显示?
 
-
-
-16.发布采购单 价格不填的问题  其他地方不显示价格   解决方案:默认存个负数 比如 -1  其他地方显示判断下 如果小于0 则不显示
-
-6.草料生成二维码和微信生成二维码的区别
 
 
 

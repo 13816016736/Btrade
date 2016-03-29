@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block title %}
+去报价，海量实时采购单药材购
+{% end %}
 {% block container %}
 <header class="yc-header">
     <div class="yc-header-back">
@@ -42,7 +45,7 @@
             <div class="weight">{{ purchase.quantity }}公斤</div>
             <div class="desc">
                 <p>{{ purchase.quality }}</p>
-                <p><span>意向价格</span> {{ purchase.price }}元/公斤 封顶</p>
+                <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤{% else %}面议{% end %}</p>
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
                 <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>
@@ -95,7 +98,7 @@
         <h3>交收要求</h3>
         <dl class="yc-demand">
             <dt>交货地：</dt>
-            <dd>{{ purchase.province }}  {{ purchase.areaname }}</dd>
+            <dd>{% if purchase.province %}{{ purchase.province }}{% end %}  {% if purchase.areaname %}{{ purchase.areaname }}{% end %}</dd>
             <dt>发票要求：</dt>
             <dd>
                 {% if purchase.invoice == 1%}

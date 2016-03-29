@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
+{% import config %}
 <div class="content-wrapper">
     <section class="content-header">
         <h1>订单管理</h1>
@@ -10,10 +11,7 @@
                 <a href="/purchase/purchaselist/type/-1/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) < 0%}label-warning{%else%}label-default{%end%}">全部（{{stat.get(0,0) + stat.get(1,0) + stat.get(3,0)}}）</span></a>
             </div>
             <div class="form-group">
-                <a href="/purchase/purchaselist/type/1/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 1%}label-warning{%else%}label-default{%end%}">等待报价（{{stat.get(1,0)}}）</span></a>
-            </div>
-            <div class="form-group">
-                <a href="/purchase/purchaselist/type/3/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 3%}label-warning{%else%}label-default{%end%}">成功采购（{{stat.get(3,0)}}）</span></a>
+                <a href="/purchase/purchaselist/type/1/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 1%}label-warning{%else%}label-default{%end%}">进行中（{{stat.get(1,0)}}）</span></a>
             </div>
             <div class="form-group">
                 <a href="/purchase/purchaselist/type/0/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 0%}label-warning{%else%}label-default{%end%}">关闭（{{stat.get(0,0)}}）</span></a>
@@ -146,7 +144,7 @@
                                 {% end %}
                             </td>
                             <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}公斤，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：http://ycg.cn/buy/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}公斤，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
                             </td>
                             <td></td>
                         </tr>
@@ -174,7 +172,7 @@
                 <div class="bs-example">
                     <h5><img width="30" src="{{ static_url('images/wechat.jpg') }}" />  微信邀请朋友报价</h5>
                     <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
-                    <center><img src="{{ static_url('images/qrcode.jpg') }}" width="180"/></center>
+                    <center><img id="qrcode" src="" width="180"/></center>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -199,8 +197,11 @@ $(document).ready(function(){
 
     $(".glyphicon-share").click(function() {
         var id = $(this).attr('rel');
+        var qrcode = "http://qr.liantu.com/api.php?text={{config.host}}/purchase/purchaseinfo/"+id;
         var share = $(this).attr('sharerel');
         $("#sharemsg").attr("placeholder", share);
+        $("#sharemsg").html(share);
+        $("#qrcode").attr("src",qrcode)
         $("#share").modal();
     });
 

@@ -88,6 +88,7 @@ class PurchaseHandler(BaseHandler):
             varids = []
             for i,purchase in data['purchases'].iteritems():
                 varids.append(purchase["nVarietyId"])
+                purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
                 purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                                 purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
@@ -459,6 +460,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
             varids = []
             for i,purchase in data['purchases'].iteritems():
                 varids.append(purchase["nVarietyId"])
+                purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
                 purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
                                 " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                                 id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],

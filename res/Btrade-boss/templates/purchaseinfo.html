@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
+{% import config %}
 <style>
     .control-label{
         color:#939393;
@@ -278,13 +279,13 @@
                 <div class="bs-example">
                     <h5><img width="30" src="{{ static_url('images/wechat.jpg') }}" />  微信邀请朋友报价</h5>
                     <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
-                    <center><img src="{{ static_url('images/qrcode.jpg') }}" width="180"/></center>
+                    <center><img src="http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}" width="180"/></center>
                 </div>
             </div>
             <div class="col-sm-6">
                 <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
                 <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
-                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder="{{user.nickname}}采购{{purchase.name}}{{purchase.quantity}}公斤，{{purchase.specification}}，产地{{purchase.origin}}，{{purchase.quality}}。请速报价：http://ycg.cn/buy/{{purchase.id}}"></textarea>
+                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder="">{{user.nickname}}采购{{purchase.name}}{{purchase.quantity}}公斤，{{purchase.specification}}，产地{{purchase.origin}}，{{purchase.quality}}。请速报价：{{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}</textarea>
                 <br>
                 <button style="width:250px" type="button" class="btn btn-default">复制</button>
             </div>

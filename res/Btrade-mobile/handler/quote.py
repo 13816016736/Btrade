@@ -91,7 +91,7 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
         #不能对自己的采购单进行报价
-        purchase = self.db.get("select t.*,u.phone from (select p.userid,pi.name,pi.createtime,pi.term from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
+        purchase = self.db.get("select t.*,u.phone from (select p.userid,p.term,p.createtime,pi.name from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
                                "t left join users u on u.id = t.userid", self.get_argument("purchaseinfoid"))
         if purchase["userid"] == self.session.get("userid"):
             self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
@@ -99,7 +99,7 @@ class QuoteHandler(BaseHandler):
         #报价结束不能报价
         if purchase["term"] != 0:
             purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-            if (purchase["expire"] - datetime.datetime.now()).days > 0:
+            if (purchase["expire"] - datetime.datetime.now()).days <= 0:
                 self.api_response({'status':'fail','message':'此采购单报价已结束，无法再进行报价'})
                 return
 

@@ -42,7 +42,7 @@ function checkUsername() {
     	$username.next().html('');
         return true;
     }
-    $username.focus();
+    $focus = $username;
     return false;
 }
 
@@ -56,7 +56,7 @@ function checkMobile() {
         $mobile.next().html('');
         return true;
     }
-    $mobile.focus();
+    $focus = $mobile;
     return false;
 }
 function checkCode() {
@@ -67,7 +67,7 @@ function checkCode() {
     	$code.nextAll('.error').html('');
         return true;
     }
-    $code.focus();
+    $focus = $code;
     return false;
 }
 function checkCname() {
