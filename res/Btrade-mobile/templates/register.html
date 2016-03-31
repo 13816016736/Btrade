@@ -56,11 +56,13 @@
                     <input class="ipt" type="password" value="" id="jRepPwd" placeholder="请在输入一遍密码" />
                     <span class="error"></span>
                 </div>
+                {% if userinfo %}
                 <div class="item">
                     <label class="txt">微信绑定</label>
-                    <span class="ipt">boyyafee<img src="static/uploads/avatar_9527.png" alt=""></span>
+                    <span class="ipt">{{userinfo.nickname}}<img src="{{userinfo.headimgurl}}" alt=""></span>
                     <span class="error"></span>
                 </div>
+                {% end %}
                 <div class="title">
                     <span>经营主体</span>
                 </div>
@@ -247,7 +249,8 @@
                     "repeatpassword":$repPwd.val(),
                     "type":type,
                     "name":name,
-                    "nickname":$nickName.val()
+                    "nickname":$nickName.val(),
+                    "openid":"{% if userinfo %}{{userinfo.openid}}{% end %}"
                 };
                 $.ajax({
                     url: '/register',

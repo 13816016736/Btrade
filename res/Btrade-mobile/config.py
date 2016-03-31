@@ -66,6 +66,7 @@ handlers = [
     (r"/getvarietyinfo", GetVarietyInfoHandler),
     (r"/savevariety", SaveVarietyHandler),
     (r"/removepurchase", RemovePurchaseHandler),
+    (r"/wxcb", WxcbHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 
@@ -98,3 +99,7 @@ img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
 host = "http://10.0.24.147:9999"
 
 unit = u"公斤"
+
+appid = "wx90e04052c49aa63e"
+secret = "b1146d3ec7e0a8a483064406f361a07b"
+token = ""

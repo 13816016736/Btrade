@@ -1,14 +1,27 @@
 # -*- coding: utf-8 -*-
 
 from base import BaseHandler
-import re
+import re,json,config,time
 from utils import *
-import config
-import time
 
 class RegisterHandler(BaseHandler):
     def get(self, next_url="/"):
-	    self.render("register.html", next_url=next_url)
+        userinfo = None
+        code = self.get_argument("code", None)
+        if code:
+            #请求获取access_token和openid
+            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % config.appid, config.secret, code
+            res = requests.get(url)
+            message = json.loads(res.text.encode("utf-8"))
+            access_token = message.get("access_token", None)
+            openid = message.get("openid")
+            if access_token:
+                #请求获取用户信息
+                url = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN" % access_token, openid
+                res = requests.get(url)
+                userinfo = json.loads(res.text.encode("utf-8"))
+
+        self.render("register.html", next_url=next_url, userinfo=userinfo)
 
     def post(self):
         username = self.get_argument("username")
@@ -55,9 +68,9 @@ class RegisterHandler(BaseHandler):
             self.api_response({'status':'fail','message':'个人称呼不能为空'})
             return
 
-        lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, createtime)"
-                             "value(%s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
-                             , type, name, nickname, 1, int(time.time()))
+        lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, openid,createtime)"
+                             "value(%s, %s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
+                             , type, name, nickname, 1, self.get_argument("openid"), int(time.time()))
         notification = self.db.query("select id from notification where receiver = %s", lastrowid)
         self.session["userid"] = lastrowid
         self.session["user"] = username
@@ -84,7 +97,6 @@ class GetSmsCodeHandler(BaseHandler):
             return
         smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
         message = getSmsCode(phone, smscode)
-        import json
         message = json.loads(message.encode("utf-8"))
         if message["result"]:
             self.session["smscode"] = smscode

@@ -33,7 +33,7 @@
             </div>
             <div class="button">
                 <button class="submit" id="jSubmit" type="submit">登 录</button>
-                <a class="reg" href="/register">1分钟注册</a>
+                <a class="reg" href="/register/next_url/{{next_url}}">1分钟注册</a>
             </div>
         </form>
     </div>
@@ -44,6 +44,17 @@
     {% if 'error' in globals() %}
     lpPopover('{{error}}');
     {% end %}
+
+    function isWeixinBrowser(){
+        var ua = navigator.userAgent.toLowerCase();
+        return (/micromessenger/.test(ua)) ? true : false ;
+    }
+
+    var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/register&response_type=code&scope=snsapi_userinfo&state=ycg#wechat_redirect";
+    if(isWeixinBrowser()){
+        $(".reg").attr("href", url);
+        $(".yc-header-right a").attr("href", url);
+    }
 
     var $username = $('#jUsername'),
         $pwd = $('#jPwd');

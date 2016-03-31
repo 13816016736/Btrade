@@ -221,3 +221,15 @@ class UserCategoryHandler(BaseHandler):
             self.api_response({'status':'success','message':'更新成功'})
         else:
             self.api_response({'status':'fail','message':'请选择经营类型'})
+
+class WxcbHandler(BaseHandler):
+    def get(self):
+        signature = self.get_argument("signature")
+        timestamp = self.get_argument("timestamp")
+        nonce = self.get_argument("nonce")
+        echostr = self.get_argument("echostr")
+
+        if checkSignature(signature, timestamp, nonce):
+            self.api_response(echostr)
+        else:
+            self.api_response("check signature fail")

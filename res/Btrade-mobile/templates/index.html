@@ -3,6 +3,7 @@
 去报价，海量实时采购单药材购
 {% end %}
 {% block container %}
+{% raw xsrf_form_html() %}
 <section class="yc-content">
     {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
     <div class="yc-tag-list">

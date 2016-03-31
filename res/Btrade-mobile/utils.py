@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import random,thread
+import random,thread,config
 from sendsms import *
 
 def md5(str):
@@ -149,6 +149,14 @@ def quoteSms(phone, variety, name, price, unit):
     phone = phone
     vars = '{"%variety%":"'+variety+'","%name%":"'+name+'","%price%":"'+price+'","%unit%":"'+unit+'"}'
     thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+
+import hashlib
+
+def checkSignature(signature, timestamp, nonce):
+    token = config.token
+    tmpArr = [token, timestamp, nonce].sort()
+    tmpStr = hashlib.sha1("".join(tmpArr)).hexdigest()
+    return (tmpStr == signature)
 
 if __name__ == '__main__':
     ROOT_PATH = os.path.abspath(os.path.dirname(__file__))

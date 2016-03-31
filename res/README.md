@@ -56,12 +56,22 @@ http://www.liantu.com/pingtai/
 
 
 导入新规整的品种数据再测试（python读excel品种数据（安装xlrd依赖））*
-移动端首页手机访问总是很慢*
-自测试*
 
-服务器购置 部署+域名  并提交ICP备案
-微信公众号申请（微信公众号   357505251@qq.com/ycg20150201）
+移动端首页手机访问总是很慢*  原因是有时候打开首页cookie中没有xrsf,所以ajax before时获取cookie中xrsf值报错,导致没有请求后端服务器,则一直停在菊花框那块,没有往下继续加载  解决办法:在首页中加入了{% raw xsrf_form_html() %}  让tornado框架在cookie中生成好xrsf,则在ajax时就能获取cookie中的xrsf值
+
+服务器购置 部署+域名  并提交ICP备案  8G 4核 8m带宽  ubentu
+微信公众号   357505251@qq.com/ycg20150201
 微信公众号开发
+
+获取access_token：
+https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx90e04052c49aa63e&secret=b1146d3ec7e0a8a483064406f361a07b
+
+
+要配置“授权回调页面域名”才能使用以下页面授权回调（见https://mp.weixin.qq.com/advanced/advanced?action=table&token=1939298242&lang=zh_CN）
+
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/register&response_type=code&scope=snsapi_userinfo&state=ycg#wechat_redirect
+
+
 
 
 公司资产清算，注册资本赎回 @周陵     注册资本的问题再确认
