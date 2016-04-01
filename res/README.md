@@ -16,9 +16,9 @@ http://old.sebug.net/paper/books/tornado/
 1.tornado
 2.torndb
 3.redis
-4.ujson（安装ujson，参考https://pypi.python.org/simple/ujson/）
+4.ujson（安装ujson，源码安装参考https://pypi.python.org/simple/ujson/）
 5.jinja2（模板引擎）
-6.PIL（生成缩略图用的python Image Library，http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/00140767171357714f87a053a824ffd811d98a83b58ec13000）
+6.PIL（生成缩略图用的python Image Library，http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/00140767171357714f87a053a824ffd811d98a83b58ec13000）   如果还不行就用源码安装http://effbot.org/downloads#pil
 (注意:用PIL上传缩略图时,一定要在原图上传完了之后把原图上传的流给close掉,在读取保存缩略图,不然会报错)
 7.requests
 
@@ -59,7 +59,7 @@ http://www.liantu.com/pingtai/
 
 移动端首页手机访问总是很慢*  原因是有时候打开首页cookie中没有xrsf,所以ajax before时获取cookie中xrsf值报错,导致没有请求后端服务器,则一直停在菊花框那块,没有往下继续加载  解决办法:在首页中加入了{% raw xsrf_form_html() %}  让tornado框架在cookie中生成好xrsf,则在ajax时就能获取cookie中的xrsf值
 
-服务器购置 部署+域名  并提交ICP备案  8G 4核 8m带宽  ubentu
+服务器（ycg20160401!@#$%^） 部署+域名  并提交ICP备案  8G 4核 8m带宽  ubentu
 微信公众号   357505251@qq.com/ycg20150201
 微信公众号开发
 
