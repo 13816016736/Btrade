@@ -61,17 +61,17 @@ conf = {
 此时该设置将无任何作用
 """
 #开启日志文件记录，默认为 False
-log = False
+log = True
 #日志记录位置
-log_file = 'log/tornado.log'
+log_file = 'Btrade-boss/log/tornado.log'
 
 #用户密码的salt
 salt = "ycg20151012"
 
 #图片服务器域名
-img_domain = "http://192.168.0.51/"
+img_domain = "http://static.yaocai.pro/"
 # img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
-img_path = "F:\\nginx-1.8.1\\html\\static\\uploadfiles"
-host = "http://10.0.24.147:9999"
+img_path = "/opt/resources/static/uploadfiles"
+host = "http://m.yaocai.pro"
 
 unit = u"公斤"
