@@ -378,7 +378,7 @@ window.fillIpt = fillIpt;
 function fillSelect(data, $wrap, input) {
     var html = [];
     $.each(data, function(i, v){
-        html.push('<span data-val="' + v.text + '">' + v.text + '</span>');
+        html.push('<span data-val="' + v.val + '">' + v.text + '</span>');
     });
     $wrap.find('dd').html(html.join(''));
     if (html.length === 1) {

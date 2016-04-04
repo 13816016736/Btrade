@@ -75,7 +75,7 @@ class PurchaseHandler(BaseHandler):
         data['permit'] = data['permit'] if data.has_key('permit') and data['permit'] != "" else "0"
         data['deadline'] = data['deadline'] if data.has_key('deadline') and data['deadline'] != "" else "0"
         #存储采购主体信息
-        if data.has_key("address"):
+        if data.has_key("address") and data['purchases']:
             purchaseid = get_purchaseid()
             self.db.execute("insert into purchase (id, userid, areaid, invoice, pay, payday, payinfo,"
                                                   " send, receive, accept, other, supplier, remark, limited, term, createtime)"
