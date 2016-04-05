@@ -239,7 +239,7 @@
         $('#jSubmit').on('click', function() {
             bool = checkIpt();
             if(bool){
-                var type = ($("#jPersonalMsg").hasClass("current")) ? 6 : 1;
+                var type = ($("#jPersonalMsg").hasClass("current")) ? 8 : 7;
                 var name = (type == 6) ? $realName.val() : $compName.val();
                 var data = {
                     "phone":$mobile.val(),

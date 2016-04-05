@@ -563,7 +563,7 @@ function checkForm() {
     result.phone = $mobile.val();
     result.smscode = $code.val();
     result.name = $("#jCname").val();
-    result.type = $("input[type='radio'][name='type']").val();
+    result.type = $("input[type='radio'][name='type']:checked").val();
 
 	if ($('#jAddress').prop('checked')) {
 		result.address = 0;

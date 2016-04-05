@@ -82,7 +82,7 @@
             <div class="hd">经营信息<!--<span><i></i>不完整，请完善</span><em>完善经营信息，可精准匹配商机，第一时间推送</em>--></div>
             <div class="bd">
                 <form role="form" id="user_info_form" action="/updateuserinfo">
-                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in range(1,7)) %}
+                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in [1,2,3,4,5,6,7]) %}
                 <div class="group">
                     <div class="txt">
                         <span>经营信息（企业）</span>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
                 {% end %}
-                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in range(8,10)) %}
+                {% if user.has_key('type') is False or (user.has_key('type') and user.get('type') in [8,9,10]) %}
                 <div class="group">
                     <div class="txt">
                         <span>经营信息（个人）</span>

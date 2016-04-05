@@ -56,7 +56,7 @@ class PurchaseHandler(BaseHandler):
             if data['smscode'] != self.session.get("smscode"):
                 self.api_response({'status':'fail','message':'短信验证码不正确','data':data['phone']})
                 return
-            username = "ycg" + data['phone']
+            username = "ycg" + time.strftime("%y%m%d%H%M%S")
             password = str(random.randint(100000, 999999))
             lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), data['phone']
@@ -75,33 +75,37 @@ class PurchaseHandler(BaseHandler):
         data['permit'] = data['permit'] if data.has_key('permit') and data['permit'] != "" else "0"
         data['deadline'] = data['deadline'] if data.has_key('deadline') and data['deadline'] != "" else "0"
         #存储采购主体信息
-        if data.has_key("address") and data['purchases']:
-            purchaseid = get_purchaseid()
-            self.db.execute("insert into purchase (id, userid, areaid, invoice, pay, payday, payinfo,"
-                                                  " send, receive, accept, other, supplier, remark, limited, term, createtime)"
-                                                  "value(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                                  purchaseid, self.session.get("userid"), data["address"], data['invoice'], data['paytype'],
-                                                  data['payday'], data['payinfo'], data['sample'], data['contact'],
-                                                  data['demand'], data['replenish'], data['permit'], data['others'],0,
-                                                  data['deadline'], int(time.time()))
-            #存储采购品种信息
-            varids = []
-            for i,purchase in data['purchases'].iteritems():
-                varids.append(purchase["nVarietyId"])
-                purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
-                purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
-                                " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
-                                purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
-                                ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'])
-                #插入图片
-                if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
-                    for attachment in self.session.get("uploadfiles")[i]:
-                        self.db.execute("insert into purchase_attachment (purchase_infoid, attachment)"
-                                          "value(%s, %s)", purchase_infoid, attachment)
-                    self.session["uploadfiles"] = {}
-                    self.session.save()
-            self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':purchaseid})
+        if data.has_key("address"):
+            # purchaseid = get_purchaseid()
+            # self.db.execute("insert into purchase (id, userid, areaid, invoice, pay, payday, payinfo,"
+            #                                       " send, receive, accept, other, supplier, remark, limited, term, createtime)"
+            #                                       "value(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            #                                       purchaseid, self.session.get("userid"), data["address"], data['invoice'], data['paytype'],
+            #                                       data['payday'], data['payinfo'], data['sample'], data['contact'],
+            #                                       data['demand'], data['replenish'], data['permit'], data['others'],0,
+            #                                       data['deadline'], int(time.time()))
+            # #存储采购品种信息
+            # varids = []
+            # for i,purchase in data['purchases'].iteritems():
+            #     varids.append(purchase["nVarietyId"])
+            #     purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
+            #     purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
+            #                     " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            #                     purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+            #                     purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+            #                     ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'])
+            #     #插入图片
+            #     if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+            #         for attachment in self.session.get("uploadfiles")[i]:
+            #             self.db.execute("insert into purchase_attachment (purchase_infoid, attachment)"
+            #                               "value(%s, %s)", purchase_infoid, attachment)
+            #         self.session["uploadfiles"] = {}
+            #         self.session.save()
+            status,purchaseid,varids = purchasetransaction(self, data)
+            if status:
+                self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':purchaseid})
+            else:
+                self.api_response({'status':'fail','message':'发布失败，请刷新页面重试'})
         else:
             self.api_response({'status':'fail','message':'必须选择收货地'})
 
@@ -437,7 +441,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
             else:
                 data[key] = arg[0]
         data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" else "0"
-        data['paytype'] = ",".join(data['paytype']) if data.has_key("paytype") and data['paytype'] != "" else ""
+        data['paytype'] = data['paytype'] if data.has_key("paytype") and data['paytype'] != "" else "0"
         data['payday'] = data['payday'] if data.has_key('payday') and data['payday'] != "" else "0"
         data['payinfo'] = data['payinfo'] if data.has_key('payinfo') and data['payinfo'] != "" else ""
         data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"
@@ -446,40 +450,44 @@ class MyPurchaseUpdateHandler(BaseHandler):
         #contact demand replenish others
         #存储采购主体信息
         if data.has_key("address"):
-            self.db.execute("update purchase set areaid=%s, invoice=%s, pay=%s, payday=%s, payinfo=%s,"
-                                                  " send=%s, receive=%s, accept=%s, other=%s, supplier=%s, remark=%s,"
-                                                  " limited=%s, term=%s, createtime=%s where id = %s and userid = %s",
-                                                  data["address"], data['invoice'], data['paytype'], data['payday'],
-                                                  data['payinfo'], data['sample'], data['contact'], data['demand'],
-                                                  data['replenish'], data['permit'], data['others'], 0,
-                                                  data['deadline'], int(time.time()), id, self.session.get("userid"))
-            #搜出当前采购单中的品种，以备下面插入新采购单后删除
-            purchaseinfos = self.db.query("select id from purchase_info where purchaseid = %s", id)
-            purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
-            #存储采购品种信息
-            varids = []
-            for i,purchase in data['purchases'].iteritems():
-                varids.append(purchase["nVarietyId"])
-                purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
-                purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
-                                " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
-                                purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
-                                ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'])
-                #插入图片
-                if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
-                    for attachment in self.session.get("uploadfiles")[i]:
-                        self.db.execute("insert into purchase_attachment (purchase_infoid, attachment)"
-                                          "value(%s, %s)", purchase_infoid, attachment)
-            self.session["uploadfiles"] = {}
-            self.session.save()
-            #删除采购品种带的附件
-            attach = self.db.query("select attachment from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
-            for a in attach:
-                del a["attachment"]
-            self.db.execute("delete from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
-            #删除采购品种
-            self.db.execute("delete from purchase_info where id in ("+",".join(purchaseinfoids)+")")
-            self.api_response({'status':'success','message':'请求成功','data':varids})
+            # self.db.execute("update purchase set areaid=%s, invoice=%s, pay=%s, payday=%s, payinfo=%s,"
+            #                                       " send=%s, receive=%s, accept=%s, other=%s, supplier=%s, remark=%s,"
+            #                                       " limited=%s, term=%s, createtime=%s where id = %s and userid = %s",
+            #                                       data["address"], data['invoice'], data['paytype'], data['payday'],
+            #                                       data['payinfo'], data['sample'], data['contact'], data['demand'],
+            #                                       data['replenish'], data['permit'], data['others'], 0,
+            #                                       data['deadline'], int(time.time()), id, self.session.get("userid"))
+            # #搜出当前采购单中的品种，以备下面插入新采购单后删除
+            # purchaseinfos = self.db.query("select id from purchase_info where purchaseid = %s", id)
+            # purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
+            # #存储采购品种信息
+            # varids = []
+            # for i,purchase in data['purchases'].iteritems():
+            #     varids.append(purchase["nVarietyId"])
+            #     purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
+            #     purchase_infoid = self.db.execute_lastrowid("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
+            #                     " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            #                     id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+            #                     purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+            #                     ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'])
+            #     #插入图片
+            #     if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+            #         for attachment in self.session.get("uploadfiles")[i]:
+            #             self.db.execute("insert into purchase_attachment (purchase_infoid, attachment)"
+            #                               "value(%s, %s)", purchase_infoid, attachment)
+            # self.session["uploadfiles"] = {}
+            # self.session.save()
+            # #删除采购品种带的附件
+            # attach = self.db.query("select attachment from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+            # for a in attach:
+            #     os.remove(a["attachment"])
+            # self.db.execute("delete from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+            # #删除采购品种
+            # self.db.execute("delete from purchase_info where id in ("+",".join(purchaseinfoids)+")")
+            status,varids = updatepurchase(self, id, data)
+            if status:
+                self.api_response({'status':'success','message':'请求成功','data':varids})
+            else:
+                self.api_response({'status':'fail','message':'修改失败请刷新页面重试'})
         else:
             self.api_response({'status':'fail','message':'必须选择收货地'})

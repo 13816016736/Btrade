@@ -168,6 +168,100 @@ def merge_thumb(files, output_file):
 
     merge_img.save(output_file, quality=70)
 
+import MySQLdb
+
+def purchasetransaction(self, data):
+    if self.db._db is None:
+        self.db._ensure_connected()
+    self.db._db.begin()
+    cursor = self.db._cursor()
+    status = True
+    try:
+        purchaseid = get_purchaseid()
+        cursor.execute("insert into purchase (id, userid, areaid, invoice, pay, payday, payinfo,"
+                                                  " send, receive, accept, other, supplier, remark, limited, term, createtime)"
+                                                  "value(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                                  (purchaseid, self.session.get("userid"), data["address"], data['invoice'], data['paytype'],
+                                                  data['payday'], data['payinfo'], data['sample'], data['contact'],
+                                                  data['demand'], data['replenish'], data['permit'], data['others'],0,
+                                                  data['deadline'], int(time.time())))
+        #存储采购品种信息
+        varids = []
+        for i,purchase in data['purchases'].iteritems():
+            varids.append(purchase["nVarietyId"])
+            purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
+            cursor.execute("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
+                            " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                             (purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+                            purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice']))
+            print cursor.lastrowid
+            #插入图片
+            if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+                for attachment in self.session.get("uploadfiles")[i]:
+                    cursor.execute("insert into purchase_attachment (purchase_infoid, attachment)"
+                                      "value(%s, %s)", (cursor.lastrowid, attachment))
+                self.session["uploadfiles"] = {}
+                self.session.save()
+        self.db._db.commit()
+    except MySQLdb.OperationalError, e:
+        self.db._db.rollback()
+        status = False
+        raise Exception(e.args[1], e.args[0])
+    finally:
+        cursor.close()
+    return status,purchaseid,varids
+
+def updatepurchase(self, id, data):
+    if self.db._db is None:
+        self.db._ensure_connected()
+    self.db._db.begin()
+    cursor = self.db._cursor()
+    status = True
+    try:
+        cursor.execute("update purchase set areaid=%s, invoice=%s, pay=%s, payday=%s, payinfo=%s,"
+                                                  " send=%s, receive=%s, accept=%s, other=%s, supplier=%s, remark=%s,"
+                                                  " limited=%s, term=%s, createtime=%s where id = %s and userid = %s",
+                                                  (data["address"], data['invoice'], data['paytype'], data['payday'],
+                                                  data['payinfo'], data['sample'], data['contact'], data['demand'],
+                                                  data['replenish'], data['permit'], data['others'], 0,
+                                                  data['deadline'], int(time.time()), id, self.session.get("userid")))
+        #搜出当前采购单中的品种，以备下面插入新采购单后删除
+        cursor.execute("select id from purchase_info where purchaseid = %s" % (id))
+        purchaseinfoids = [str(purchaseinfo[0]) for purchaseinfo in cursor.fetchall()]
+        #存储采购品种信息
+        varids = []
+        for i,purchase in data['purchases'].iteritems():
+            varids.append(purchase["nVarietyId"])
+            purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
+            cursor.execute("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
+                            " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                           (id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+                            purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice']))
+            #插入图片
+            if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+                for attachment in self.session.get("uploadfiles")[i]:
+                    cursor.execute("insert into purchase_attachment (purchase_infoid, attachment)"
+                                      "value(%s, %s)", (cursor.lastrowid, attachment))
+        self.session["uploadfiles"] = {}
+        self.session.save()
+        #删除采购品种带的附件
+        cursor.execute("select attachment from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+        for attachment in cursor.fetchall():
+            os.remove(attachment[0])
+        cursor.execute("delete from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+        #删除采购品种
+        cursor.execute("delete from purchase_info where id in ("+",".join(purchaseinfoids)+")")
+        self.db._db.commit()
+    except MySQLdb.OperationalError, e:
+        self.db._db.rollback()
+        status = False
+        raise Exception(e.args[1], e.args[0])
+    finally:
+        cursor.close()
+    return status,varids
+
 if __name__ == '__main__':
     ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
     IMG_PATH = os.path.join(ROOT_PATH, 'img')
