@@ -735,9 +735,12 @@ $('#jSample').on('click', function() {
 $('#jAddress').prop('checked', false).on('click', function() {
 	var flag = this.checked;
 	$(this).parent().prevAll('.yc-select').each(function(){
+		$(this).find("dt").attr("data-val", 0);
+		$(this).find("dt").html(($(this).attr("id")=="jProvince")?"省":"市/县");
 		$(this).data('disabled', flag)[flag ? 'addClass' : 'removeClass']('disabled');
 	});
 	$('#jAddressError').addClass('hide');
+
 
 	// if (flag) {
 	// 	$('#address').val('亲自上门看货提货');
