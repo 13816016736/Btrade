@@ -36,14 +36,14 @@ types={
     "其他": 13
 }
 for s in wb.sheets():
-    for row in readsheet(s, 816, 6):# 只读取每个Sheet的前10行，前10列(当然你要确保,你的数据多余10行，且多余10列)
+    for row in readsheet(s, 867, 7):# 只读取每个Sheet的前10行，前10列(当然你要确保,你的数据多余10行，且多余10列)
         if index > 0:
             #解析数据
-            print row[0]
             row[1] = types[row[1].encode("utf-8")]
             values.append(row[1:])
+            print row
         index += 1
     #入库
-    sql = "INSERT INTO `variety` (`type`, `name`, `specification`, `origin`, `alias`) VALUES(%s, %s, %s, %s, %s)"
+    sql = "INSERT INTO `variety` (`type`, `name`, `specification`, `origin`, `alias`, `unit`) VALUES(%s, %s, %s, %s, %s, %s)"
     db.executemany(sql, values)
     db.close()

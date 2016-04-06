@@ -320,18 +320,24 @@ class GetVarInfoByIdHandler(BaseHandler):
         if varietyid == "":
             self.api_response({'status':'fail','message':'请填写品种'})
         else:
-            varietyinfo = self.db.get("SELECT id,specification,origin FROM variety WHERE id = %s", varietyid)
+            varietyinfo = self.db.get("SELECT id,specification,origin,unit FROM variety WHERE id = %s", varietyid)
             if len(varietyinfo) == 0:
                 self.api_response({'status':'fail','message':'没有该品种'})
             else:
-                specifications = varietyinfo['specification'].split(",")
                 spec = []
-                for s in specifications:
+                for s in varietyinfo['specification'].split(","):
                     val = {}
-                    val["val"] = 0
+                    val["val"] = s
                     val["text"] = s
                     spec.append(val)
-                self.api_response({'status':'success','message':'请求成功','rank':spec,'unit':[{'val':'1','text':'公斤'}],'txt':'公斤'})
+                units = varietyinfo['unit'].split(",")
+                unit = []
+                for u in units:
+                    val = {}
+                    val["val"] = u
+                    val["text"] = u
+                    unit.append(val)
+                self.api_response({'status':'success','message':'请求成功','rank':spec,'unit':unit,'txt':units[0] if units else ""})
 
 class PurchaseSuccessHandler(BaseHandler):
 

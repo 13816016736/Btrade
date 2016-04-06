@@ -167,6 +167,10 @@ $('body').on('click', '.yc-select span', function() {
 		txt = $(this).html(),
 		$pa = $(this).closest('.yc-select');
 
+	if($(this).closest("td").find("input[name='nQuantity']").length > 0){
+		$(this).closest("tr").find('.unit').html('元/' + txt)
+	}
+
 	$pa.find('dt').html(txt).attr('data-val', val);
 	$pa.next('input:hidden').val(val);
 	$pa.nextAll('.error').css('display','none').html('');
