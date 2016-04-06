@@ -13,10 +13,10 @@ class QuoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, purchaseinfoid):
-        purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        purchaseinfo = self.db.get("select ta.*,a.areaname province from (select t.*,a.areaname,a.parentid from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", purchaseinfoid)
+        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) ta left join area a on a.id = ta.parentid", purchaseinfoid)
 
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
@@ -149,7 +149,13 @@ class QuoteSuccessHandler(BaseHandler):
         if self.session.get("uploadfiles_quote"):
             self.session["uploadfiles_quote"] = {}
             self.session.save()
-        self.render("quote_success.html")
+        first = False
+        purchaseinfoid = self.get_argument("purchaseinfoid", None)
+        if purchaseinfoid:
+            count = self.db.execute_rowcount("select id from quote where purchaseinfoid = %s", purchaseinfoid)
+            if count == 1:
+                first = True
+        self.render("quote_success.html", first=first)
 
 
 class WeixinHandler(BaseHandler):
@@ -172,10 +178,10 @@ class QuoteDetailHandler(BaseHandler):
             qa["attachment"] = config.img_domain+qa["attachment"][qa["attachment"].find("static"):].replace(base, base+"_thumb")
 
         #查询采购单信息
-        purchaseinfo = self.db.get("select t.*,a.areaname from "
+        purchaseinfo = self.db.get("select ta.*,a.areaname province from (select t.*,a.areaname,a.parentid from "
         "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", quote["purchaseinfoid"])
+        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) ta left join area a on a.id = ta.parentid", quote["purchaseinfoid"])
 
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", quote["purchaseinfoid"])

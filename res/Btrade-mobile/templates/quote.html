@@ -17,6 +17,7 @@
         </div>
         <form action="/quotesuccess" method="post">
             {% raw xsrf_form_html() %}
+            <input name="purchaseinfoid" type="hidden" value="{{purchase.pid}}" />
             <div class="item">
                 <div class="hd">
                     <span class="ext">有图有真相，信任感倍增</span>
@@ -214,7 +215,7 @@
             <div class="weight">{{ purchase.quantity }}公斤</div>
             <div class="desc">
                 <p>{{ purchase.quantity }}</p>
-                <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤{% else %}面议{% end %}元/公斤 封顶</p>
+                <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤{% else %}面议{% end %}</p>
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
                 <p class="thumb"><img src="{{ attachment }}" data-src="{{ attachment }}" alt=""></p>
@@ -230,7 +231,29 @@
                 <span>{{purchaser.nickname}}</span>
                 <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
             </h4>
-            <div class="category">{% if purchaser.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
+            <div class="category">
+                {% if purchaser.type == 1%}
+                饮片厂
+                {% elif purchaser.type == 2%}
+                药厂
+                {% elif purchaser.type == 3%}
+                药材经营公司
+                {% elif purchaser.type == 4%}
+                个体经营户
+                {% elif purchaser.type == 5%}
+                合作社
+                {% elif purchaser.type == 6%}
+                种植基地
+                {% elif purchaser.type == 7%}
+                其他
+                {% elif purchaser.type == 8%}
+                个人经营
+                {% elif purchaser.type == 9%}
+                采购经理
+                {% elif purchaser.type == 10%}
+                销售经理
+                {% end %}
+            </div>
             <div class="total">
                 <span class="yc-star yc-star-4">
                     <i></i><i></i><i></i><i></i><i></i>
@@ -245,7 +268,7 @@
             <h3>交收要求</h3>
             <dl class="yc-demand">
                 <dt>交货地：</dt>
-                <dd>{{ purchase.areaname }}</dd>
+                <dd>{{ purchase.province }}  {{ purchase.areaname }}</dd>
                 <dt>发票要求：</dt>
                 <dd>
                     {% if purchase.invoice == 1%}
@@ -269,13 +292,13 @@
                 <dt>验证及包装：</dt>
                 <dd>
                     <ol>
-                        <li>{{ purchase.accept }}</li>
+                        <li id="accept">{{ purchase.accept }}</li>
                     </ol>
                 </dd>
                 <dt>寄样：</dt>
-                <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span>{{ purchase.receive }}</span></dd>
+                <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span id="receive">{{ purchase.receive }}</span></dd>
                 <dt>补充说明：</dt>
-                <dd>{{ purchase.other }}</dd>
+                <dd id="other">{{ purchase.other }}</dd>
             </dl>
         </div>
 
@@ -284,22 +307,32 @@
         <dl class="yc-demand">
             <dt>供应商资质：</dt>
             <dd>
-                {% if purchase.supplier == 1 %}
+                {% if '1' in purchase.supplier.split("&") %}
                 必须有营业执照（公司、合作社、经营户），不接收个人
-                {% elif purchase.supplier == 2 %}
+                <br>
+                {% end %}
+                {% if '2' in purchase.supplier.split("&") %}
                 具备GSP资质
-                {% elif purchase.supplier == 3 %}
+                <br>
+                {% end %}
+                {% if '3' in purchase.supplier.split("&") %}
                 具备GMP资质
                 {% end %}
             </dd>
             <dt>其它要求：</dt>
-            <dd>{{purchase.remark}}</dd>
+            <dd id="remark">{{purchase.remark}}</dd>
         </dl>
     </div>
 
 </section><!-- /yc-content -->
 <script>
 !(function(){
+
+    $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
+    $("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
+    $("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
+    $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
+
     {% if uploadfiles.has_key("4") or uploadfiles.has_key("5") or uploadfiles.has_key("6") %}
     $('.pic-extend .icon-fold').toggleClass('icon-unfold').parent().prev().toggleClass('pic-fold');
     {% end %}
