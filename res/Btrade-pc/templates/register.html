@@ -171,13 +171,4 @@
 
 
 </script>
-<script>
-    var ran = (new Date).getTime();
-    $.get('header.html?ran=' + ran, function(data) {
-        $('body').prepend(data);
-    })
-    $.get('footer.html?ran=' + ran, function(data) {
-        $('body').append(data);
-    })
-</script>
 {% end %}
