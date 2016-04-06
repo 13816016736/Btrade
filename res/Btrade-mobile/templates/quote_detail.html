@@ -64,14 +64,7 @@
 
     <div class="yc-purchase-detail yc-purchase-bg">
         <h3>采购结果</h3>
-        {% if quote.state == 2 %}
-        <dl class="yc-result">
-            <dt>采购商从<b>{{len(quotes)}}</b>个报价中甄选了以下{{len(acceptuser)}}家洽谈</dt>
-            {% for u in acceptuser %}
-            <dd><i class="iconfont icon-arrow-right"></i>{{u.nickname}}</dd>
-            {% end %}
-        </dl>
-        {% elif quote.state == 1 %}
+        {% if quote.state == 1 %}
         <dl class="yc-demand">
             <dt>联系人：</dt>
             <dd>{{user.name}}</dd>
@@ -80,7 +73,10 @@
         <dl>
         {% else %}
         <dl class="yc-result">
-            <dt>采购商暂未回应</dt>
+            <dt>采购商从<b>{{len(quotes)}}</b>个报价中甄选了以下{{len(acceptuser)}}家洽谈</dt>
+            {% for u in acceptuser %}
+            <dd><i class="iconfont icon-arrow-right"></i>{{u.nickname}}</dd>
+            {% end %}
         </dl>
         {% end %}
     </div>
