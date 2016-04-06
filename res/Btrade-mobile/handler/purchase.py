@@ -264,8 +264,9 @@ class GetVarietyInfoHandler(BaseHandler):
             if len(varietyinfo) == 0:
                 self.api_response({'status':'fail','message':'没有该品种'})
             else:
-                specifications = self.db.query("SELECT id,specification FROM specification WHERE varietyid = %s", varietyinfo[0]["id"])
-                self.api_response({'status':'success','message':'请求成功','list':varietyinfo,'specifications':specifications})
+                self.api_response({'status':'success','message':'请求成功','list':varietyinfo})
+                # specifications = self.db.query("SELECT id,specification FROM specification WHERE varietyid = %s", varietyinfo[0]["id"])
+                # self.api_response({'status':'success','message':'请求成功','list':varietyinfo,'specifications':specifications})
 
 class SaveVarietyHandler(BaseHandler):
 
