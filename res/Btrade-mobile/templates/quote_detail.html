@@ -78,6 +78,10 @@
             <dt>联系电话：</dt>
             <dd>{{user.phone}}</dd>
         <dl>
+        {% else %}
+        <dl class="yc-result">
+            <dt>采购商暂未回应</dt>
+        </dl>
         {% end %}
     </div>
 
