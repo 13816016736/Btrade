@@ -154,12 +154,15 @@ class UpdateQuoteStateHandler(BaseHandler):
             for purchase in purchases:
                 purchase["name"] = purchase["name"].encode('utf-8') if isinstance(purchase["name"], unicode) else purchase["name"]
                 purchase["variety"] = purchase["variety"].encode('utf-8') if isinstance(purchase["variety"], unicode) else purchase["variety"]
+                purchase["quotephone"] = purchase["quotephone"].encode('utf-8') if isinstance(purchase["quotephone"], unicode) else purchase["quotephone"]
+                purchase["phone"] = purchase["phone"].encode('utf-8') if isinstance(purchase["phone"], unicode) else purchase["phone"]
+                message = message.encode('utf-8') if isinstance(message, unicode) else message
                 title = purchase["name"] + "回复了您的报价【" + purchase["variety"] + " "+ str(purchase["price"]) + "】"
                 params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(time.time())])
                 if int(state) == 1:
-                    acceptQuote(purchase["quotephone"].encode('utf-8'), purchase["name"].encode('utf-8'), purchase["variety"], purchase["price"], config.unit, purchase["phone"].encode('utf-8'))
+                    acceptQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["price"]), config.unit, purchase["phone"])
                 elif int(state) == 2:
-                    rejectQuote(purchase["quotephone"].encode('utf-8'), purchase["name"].encode('utf-8'), purchase["variety"], purchase["price"], config.unit, message.encode('utf-8'))
+                    rejectQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["price"]), config.unit, message)
             self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
 
             self.api_response({'status':'success','message':'操作成功'})
