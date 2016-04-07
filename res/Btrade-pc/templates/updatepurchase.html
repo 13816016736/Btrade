@@ -114,9 +114,11 @@
                                 <td>
                                     <input class="ipt ipt-quantity" type="text" name="nQuantity" value="{{purchaseinfo.quantity}}">
                                     <dl class="yc-select narrow">
-                                        <dt data-val="{{purchaseinfo.unit}}">{% if purchaseinfo.unit == 1%}公斤{% end %}</dt>
+                                        <dt data-val="{{purchaseinfo.unit}}">{{purchaseinfo.unit}}</dt>
                                         <dd>
-                                            <span data-val="1">公斤</span>
+                                            {% for unit in purchaseinfo.allunit%}
+                                            <span data-val="{{unit}}">{{unit}}</span>
+                                            {% end %}
                                         </dd>
                                     </dl>
                                     <input type="hidden" name="nUnit" value="{{purchaseinfo.unit}}">
@@ -136,7 +138,7 @@
                                 </td>
                                 <td>
                                     <input class="ipt ipt-price" type="text" name="nPrice" value="{{purchaseinfo.price}} ">
-                                    <span class="unit">元/公斤</span>
+                                    <span class="unit">元/{% if purchaseinfo.allunit %}{{purchaseinfo.allunit[0]}}{%end%}</span>
                                 </td>
                                 <td>
                                     <span class="upload" {% if purchaseinfo.attachments %}style="display: none;"{% end %}>

@@ -197,7 +197,7 @@
                         </div>
                     </div>
                     <div class="td5">
-                        <em>{{quote.price}}</em>元/公斤
+                        <em>{{quote.price}}</em>元/{% if quote.unit == u'吨' %}公斤{% else %}{{quote.unit}}{% end %}
                         <small>裸价</small>
                         <div class="qrcode">
                             我也去报价

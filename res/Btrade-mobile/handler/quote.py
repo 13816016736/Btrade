@@ -15,7 +15,7 @@ class QuoteHandler(BaseHandler):
     def get(self, purchaseinfoid):
         purchaseinfo = self.db.get("select ta.*,a.areaname province from (select t.*,a.areaname,a.parentid from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
+        "pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) ta left join area a on a.id = ta.parentid", purchaseinfoid)
 
         #获得采购品种图片
@@ -180,8 +180,10 @@ class QuoteDetailHandler(BaseHandler):
         #查询采购单信息
         purchaseinfo = self.db.get("select ta.*,a.areaname province from (select t.*,a.areaname,a.parentid from "
         "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
+        "pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) ta left join area a on a.id = ta.parentid", quote["purchaseinfoid"])
+
+        quote["unit"] = purchaseinfo["unit"]
 
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", quote["purchaseinfoid"])

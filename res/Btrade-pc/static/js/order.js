@@ -168,7 +168,7 @@ $('body').on('click', '.yc-select span', function() {
 		$pa = $(this).closest('.yc-select');
 
 	if($(this).closest("td").find("input[name='nQuantity']").length > 0){
-		$(this).closest("tr").find('.unit').html('元/' + txt)
+		$(this).closest("tr").find('.unit').html('元/' + (txt == '吨' ? '公斤' : txt))
 	}
 
 	$pa.find('dt').html(txt).attr('data-val', val);

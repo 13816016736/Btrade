@@ -71,7 +71,7 @@ class PurchaseInfoHandler(BaseHandler):
         print id
         purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
+        "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
 
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
@@ -95,6 +95,7 @@ class PurchaseInfoHandler(BaseHandler):
                 for quote in quotes:
                     quoteids.append(str(quote.id))
                     quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+                    quote["unit"] = purchaseinfo["unit"]
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}
                 for quoteattachment in quoteattachments:

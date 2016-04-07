@@ -42,10 +42,10 @@
         <div class="bd">
             <h4 class="name">{{ purchase.name }}</h4>
             <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-            <div class="weight">{{ purchase.quantity }}公斤</div>
+            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
             <div class="desc">
                 <p>{{ purchase.quality }}</p>
-                <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤{% else %}面议{% end %}</p>
+                <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}{% else %}面议{% end %}</p>
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
                 <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>

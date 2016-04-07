@@ -42,7 +42,7 @@
             <!--<dt>含税含运费价：</dt>
             <dd>78 元 / 公斤</dd>-->
             <dt>裸价：</dt>
-            <dd>{{quote.price}} 元 / 公斤</dd>
+            <dd>{{quote.price}} 元 / {% if quote.unit == u'吨' %}公斤{% else %}{{quote.unit}}{% end %}</dd>
             <dt>价格说明：</dt>
             <dd>{{quote.explain}}</dd>
             <dt>货源质量：</dt>
@@ -88,10 +88,15 @@
         <div class="bd">
             <h4 class="name">{{ purchase.name }}</h4>
             <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-            <div class="weight">{{ purchase.quantity }}公斤</div>
+            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
             <div class="desc">
                 <p>{{ purchase.quantity }}</p>
-                <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤{% else %}面议{% end %}</p>
+                <p><span>意向价格</span>
+                    {% if purchase.price > 0 %}
+                        {{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}
+                    {% else %}
+                        面议
+                    {% end %}</p>
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
                 <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>

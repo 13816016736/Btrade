@@ -140,11 +140,16 @@
                     <i class="iconfont icon-check-yes"></i>
                     <span>裸价</span>
                     <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="{% if purchase.price > 0 %}{{ purchase.price }}{% end %}">
-                    <span>元/公斤</span>
+                    <span>元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}</span>
                 </div>
                 <div class="msg" id="jPriceMsg">
                     <i class="iconfont icon-exclamation"></i>
-                    <span>报价高于采购商预期（{% if purchase.price > 0 %}{{ purchase.price }}元/公斤{% else %}面议{% end %}），请酌情控制，更利于达成交易</span>
+                    <span>报价高于采购商预期（
+                        {% if purchase.price > 0 %}
+                            {{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}
+                        {% else %}
+                            面议
+                        {% end %}），请酌情控制，更利于达成交易</span>
                 </div>
                 <div class="txt">价格说明</div>
                 <div class="describe">
@@ -212,10 +217,15 @@
         <div class="bd">
             <h4 class="name">{{ purchase.name }}</h4>
             <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-            <div class="weight">{{ purchase.quantity }}公斤</div>
+            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
             <div class="desc">
                 <p>{{ purchase.quantity }}</p>
-                <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤{% else %}面议{% end %}</p>
+                <p><span>意向价格</span>
+                    {% if purchase.price > 0 %}
+                        {{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}
+                    {% else %}
+                        面议
+                    {% end %}</p>
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
                 <p class="thumb"><img src="{{ attachment }}" data-src="{{ attachment }}" alt=""></p>

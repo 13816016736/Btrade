@@ -169,7 +169,7 @@ class MyPurchaseInfoHandler(BaseHandler):
         print id
         purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
         "p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
+        "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.userid = %s and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",self.session.get("userid"), id)
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
@@ -196,6 +196,7 @@ class MyPurchaseInfoHandler(BaseHandler):
                         mprice = quote.price
                     quoteids.append(str(quote.id))
                     quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+                    quote["unit"] = purchaseinfo["unit"]
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}
                 for quoteattachment in quoteattachments:
@@ -388,7 +389,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
         if user["varietyids"]:
             varietys = self.db.query("SELECT id,name,origin FROM variety WHERE id in ("+user["varietyids"]+")")
 
-        purchaseinfos = self.db.query("select pi.*,v.id varietyid,v.specification allspec,v.origin allorigin from purchase_info pi left join variety v on pi.varietyid = v.id where pi.purchaseid = %s",id)
+        purchaseinfos = self.db.query("select pi.*,v.id varietyid,v.specification allspec,v.origin allorigin,v.unit allunit from purchase_info pi left join variety v on pi.varietyid = v.id where pi.purchaseid = %s",id)
         purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
         varietyids = [str(purchaseinfo["varietyid"]) for purchaseinfo in purchaseinfos]
         purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
@@ -427,6 +428,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
         purchase["purchaseinfo"] = purchaseinf[id]
         for purchaseinfo in purchase["purchaseinfo"]:
             purchaseinfo["allspec"] = purchaseinfo["allspec"].split(",")
+            purchaseinfo["allunit"] = purchaseinfo["allunit"].split(",")
         purchase["supplier"] = purchase["supplier"].split("&")
         print purchase
         if user:

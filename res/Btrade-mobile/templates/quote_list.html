@@ -35,14 +35,14 @@
                         <div class="fr">
                             <div class="num">{{quote.purchaseid}}</div>
                             <div class="cat">{% if quote.type == 1 %}个人采购{% else %}饮片厂采购{% end %}</div>
-                            <div class="kg">{{quote.quantity}}{% if quote.unit == 1 %}公斤{% elif quote.unit == 2 %}吨{% end %}</div>
+                            <div class="kg">{{quote.quantity}}{{quote.unit}}</div>
                         </div>
                     </div>
                     <div class="bd">
                         <div class="fl">
                             <div class="tit">我的报价</div>
                             <div class="price">{{quote.price}}</div>
-                            <div class="unit">元/公斤</div>
+                            <div class="unit">元/{% if quote.unit == u'吨' %}公斤{% else %}{{quote.unit}}{% end %}</div>
                             <div class="gray">裸价</div>
                         </div>
                         <div class="desc">

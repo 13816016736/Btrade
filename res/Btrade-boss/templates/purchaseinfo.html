@@ -93,7 +93,7 @@
             <div class="form-group">
                 <div class="form-inline">
                     <label style="font-size:18px">{{ purchase.name }}</label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;{{ purchase.specification }}&nbsp;&nbsp;&nbsp;&nbsp;{{ purchase.quantity }}公斤
+                    &nbsp;&nbsp;&nbsp;&nbsp;{{ purchase.specification }}&nbsp;&nbsp;&nbsp;&nbsp;{{ purchase.quantity }}{{purchase.unit}}
                 </div>
             </div>
             <div class="form-group">
@@ -105,7 +105,7 @@
             <div class="form-group">
                 <label class="control-label">意向价格：</label>
                 <div class="form-inline">
-                    {{ purchase.price }}元/公斤
+                    {{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}
                 </div>
             </div>
             <div class="form-group">
@@ -214,7 +214,7 @@
                     <p><span class="glyphicon glyphicon-phone"></span>{{quote.phone}}</p>
                 </td>
                 <td style="text-align:center;">
-                    <p><b style="color:#f0ad4e;">{{quote.price}}</b>元/公斤</p>
+                    <p><b style="color:#f0ad4e;">{{quote.price}}</b>元/{% if quote.unit == u'吨' %}公斤{% else %}{{quote.unit}}{% end %}</p>
                 </td>
                 <td style="text-align:center;">
                     <p>
@@ -285,7 +285,7 @@
             <div class="col-sm-6">
                 <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
                 <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
-                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder="">{{user.nickname}}采购{{purchase.name}}{{purchase.quantity}}公斤，{{purchase.specification}}，产地{{purchase.origin}}，{{purchase.quality}}。请速报价：{{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}</textarea>
+                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder="">{{user.nickname}}采购{{purchase.name}}{{purchase.quantity}}{{purchase.unit}}，{{purchase.specification}}，产地{{purchase.origin}}，{{purchase.quality}}。请速报价：{{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}</textarea>
                 <br>
                 <button style="width:250px" type="button" class="btn btn-default">复制</button>
             </div>

@@ -122,7 +122,7 @@
                         <div class="bd">
                             <h4 class="name"><i class="iconfont icon-arrow-right"></i>{{purchaseinfo.name}}</h4>
                             <div class="tag">{{purchaseinfo.specification}} {{purchaseinfo.origin}}</div>
-                            <div class="weight">{{purchaseinfo.quantity}}{% if purchaseinfo.unit == 1 %}公斤{% elif purchaseinfo.unit == 2 %}吨{% end %}</div>
+                            <div class="weight">{{purchaseinfo.quantity}}{{purchaseinfo.unit}}</div>
                             <div class="desc">
                                 {% if purchaseinfo.attachments%}
                                 <p class="thumb"><img src="{{purchaseinfo.attachments.attachment}}" data-src="{{purchaseinfo.attachments.attachment.replace('_thumb', '')}}" alt=""></p>

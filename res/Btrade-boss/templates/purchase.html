@@ -144,7 +144,7 @@
                                 {% end %}
                             </td>
                             <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}公斤，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
                             </td>
                             <td></td>
                         </tr>
@@ -178,7 +178,7 @@
             <div class="col-sm-6">
                 <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
                 <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
-                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder="严飞采购黄连1000公斤，鸡爪连，产地重庆，符合2010药典标准。请速报价：http://ycg.cn/buy/10499"></textarea>
+                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder=""></textarea>
                 <br>
                 <button style="width:250px" type="button" class="btn btn-default">复制</button>
             </div>

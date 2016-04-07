@@ -23,10 +23,10 @@
                 <div class="bd">
                     <h4 class="name">{{ purchase.name }}</h4>
                     <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-                    <div class="weight">{{ purchase.quantity }}公斤</div>
+                    <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
                     <div class="desc">
                         <p><span>质量要求</span>{{ purchase.quality }}</p>
-                        <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/公斤 封顶{% else %}面议{% end %}</p>
+                        <p><span>意向价格</span> {% if purchase.price > 0 %}{{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %} 封顶{% else %}面议{% end %}</p>
                         <p><span>合格品样例照</span></p>
                         <p class="thumb">
                             {% for attachment in purchase.attachments %}
@@ -172,7 +172,7 @@
                     <span><i class="icons icons-tel"></i>{{quote.phone}}</span>
                 </div>
                 <div class="td3">
-                    <em>{{quote.price}}</em>元/公斤
+                    <em>{{quote.price}}</em>元/{% if quote.unit == u'吨' %}公斤{% else %}{{quote.unit}}{% end %}
                     {% if mprice is not None and quote.price == mprice %}<sup>最低</sup>{% end %}
                     <!--<small>{{quote.explain}}</small>-->
                     <span>{{quote.explain}}</span>
