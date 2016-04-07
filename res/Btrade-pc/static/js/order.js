@@ -385,7 +385,7 @@ function fillSelect(data, $wrap, input) {
         html.push('<span data-val="' + v.val + '">' + v.text + '</span>');
     });
     $wrap.find('dd').html(html.join(''));
-    if (html.length === 1) {
+    if (html.length >= 1) {
 		$wrap.find('dt').html(data[0]['text']).attr('data-val', data[0]['val']);
 		$wrap.next('input:hidden').val(data[0]['val']);
 		$wrap.nextAll('.error').css('display','none').html('');

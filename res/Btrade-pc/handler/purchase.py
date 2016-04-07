@@ -307,7 +307,7 @@ class GetVarietyInfoHandler(BaseHandler):
         if variety == "":
             self.api_response({'status':'fail','message':'请填写品种'})
         else:
-            varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name like %s", variety+"%")
+            varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name like %s or alias like %s", variety+"%", variety+"%")
             if len(varietyinfo) == 0:
                 self.api_response({'status':'fail','message':'没有该品种'})
             else:
