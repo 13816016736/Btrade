@@ -262,6 +262,16 @@ def updatepurchase(self, id, data):
         cursor.close()
     return status,varids
 
+"""
+判断unicode码是否为中文字符.
+"""
+def is_cn(check_unicode):
+    bool = True
+    for ch in check_unicode:
+        if ch < u'\u4e00' or ch > u'\u9fff':
+            return False
+    return bool
+
 if __name__ == '__main__':
     ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
     IMG_PATH = os.path.join(ROOT_PATH, 'img')

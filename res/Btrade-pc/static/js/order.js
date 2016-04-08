@@ -322,24 +322,27 @@ function showTags(status, $wrap) {
 // 药材品种
 function getKeywords() {
     var keywords = $tags.val();
-    $.ajax({
-        url: '/getvarietyinfo',
-        dataType: 'json',
-        data: {variety: keywords},
-        method: 'post',
-        beforeSend: function(jqXHR, settings) {
-            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-        },
-        success: function(data) {
-            if (data.status === 'success') {
-                toHtml(data.list, $varietyTags);
-            } else {
-            	$varietyTags.find('.search dd').html(data.msg);
-            }
-        },
-        error: function() {
-        }
-    })
+	var reg = /^[u4E00-u9FA5]+$/;
+	if(keywords != "" && !reg.test(keywords)) {
+		$.ajax({
+			url: '/getvarietyinfo',
+			dataType: 'json',
+			data: {variety: keywords},
+			method: 'post',
+			beforeSend: function(jqXHR, settings) {
+				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+			},
+			success: function(data) {
+				if (data.status === 'success') {
+					toHtml(data.list, $varietyTags);
+				} else {
+					$varietyTags.find('.search dd').html(data.msg);
+				}
+			},
+			error: function() {
+			}
+		})
+    }
 }
 
 $('body').on('click', '.custom .btn', function() {
