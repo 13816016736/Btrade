@@ -281,7 +281,7 @@ $('#jModalDelete').on('hide.bs.modal', function() {
 });
 
 // 只能输入数字或空
-$('.yc-purchase-form').on('keyup change', '.ipt-quantity, .ipt-price, .ipt-date', function(e) {
+$('.yc-purchase-form').on('keyup change', '.ipt-date', function(e) {
 	var val = this.value;
     if (val || e.type === "change") {
         setValue(this, val);
