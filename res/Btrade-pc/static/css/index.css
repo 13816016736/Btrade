@@ -11,7 +11,8 @@
 .full-banner .next:hover{background-position:-62px -152px;}
 
 
-.floor{margin-top:50px;overflow:hidden;}
+.floor{margin-top:50px;}
+.floor .tr:after{content:'';display: table;clear:both;}
 .floor .hd{overflow:hidden;}
 .floor .hd h2{margin:0;font-size:24px;font-weight:700;color:#484848;text-align:center;}
 .floor .bd{overflow:hidden;}

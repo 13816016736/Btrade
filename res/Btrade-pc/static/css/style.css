@@ -140,8 +140,8 @@ footer .logo-mini{position:absolute;top:-25px;right:15px;}
 .yc-select{position:relative;width:100px;height:28px;margin:0;border:1px solid #999;cursor:pointer;}
 .yc-select:after{content:"";position:absolute;top:11px;right:4px;width:0;height:0;border:5px dashed transparent;border-top:5px solid #000;overflow:hidden;}
 .yc-select dt{height:100%;margin:0 20px 0 10px;line-height:26px;font-weight:100;color:#333;border-right:1px solid #999;word-wrap:break-word;word-break:break-all;overflow:hidden;}
-.yc-select dd{position:absolute;left:-1px;top:26px;z-index:2;display:none;width:150%;background:#fff;border:1px solid #999;box-shadow:0 6px 12px rgba(0,0,0,0.175);overflow-y:auto;}
-.yc-select dd.fold{height:280px;}
+.yc-select dd{position:absolute;left:-1px;top:26px;z-index:2;display:none;width:150%;max-height:280px;background:#fff;border:1px solid #999;box-shadow:0 6px 12px rgba(0,0,0,0.175);overflow-y:auto;}
+/*.yc-select dd.fold{height:280px;}*/
 .yc-select dd span{display:block;height:28px;padding:0 5px;line-height:28px;font-size:14px;overflow:hidden;}
 .yc-select dd span:hover{background:#eee;}
 .yc-select.disabled{cursor:not-allowed;}

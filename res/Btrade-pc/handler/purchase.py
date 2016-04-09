@@ -309,7 +309,7 @@ class GetVarietyInfoHandler(BaseHandler):
         elif is_cn(variety):
             varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name like %s or alias like %s", variety+"%", "%"+variety+"%")
             if len(varietyinfo) == 0:
-                self.api_response({'status':'fail','message':'没有该品种'})
+                self.api_response({'status':'notsupport','message':'没有该品种'})
             else:
                 self.api_response({'status':'success','message':'请求成功','list':varietyinfo})
         else:

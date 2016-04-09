@@ -287,6 +287,14 @@ $('.yc-purchase-form').on('keyup change', '.ipt-quantity, .ipt-price, .ipt-date'
         setValue(this, val);
     }
 });
+// 只能输入数字（小数）或空
+$('.yc-purchase-form').on('keyup', '.ipt-quantity, .ipt-price', function(e) {
+	var val = this.value;
+    if (!/^\d+\.?\d*$/.test(val)) {
+        val = Math.abs(parseFloat(val));
+        this.value = isNaN(val) ? "" : val
+    }
+});
 $('.ipt-date, .ipt-other').on('click', function() {
 	$(this).parent().find('input').prop('checked', true);
 })
@@ -335,6 +343,9 @@ function getKeywords() {
 			success: function(data) {
 				if (data.status === 'success') {
 					toHtml(data.list, $varietyTags);
+				} else if (data.status === 'notsupport') {
+					$varietyTags.find('.search dd').html('<em style="padding:4px;color:#f00;">暂不支持该品种请致电客服</em>');
+					showTags(true, $varietyTags);
 				} else {
 					$varietyTags.find('.search dd').html(data.msg);
 				}
@@ -491,8 +502,20 @@ $table.on({
 		$(this).after($qualityTags.show());
 		matchingCheck();
 		return false;
+	},
+	'keyup': function() {
+		var val = $(this).val();
+		if (val.length > 500) {
+			$(this).val(val.substring(0, 500));
+		}
 	}
 }, '.ipt-quality');
+
+$('body').on('click', '.tags span', function() {
+	$(this).remove();
+	matchingCheck();
+	return false;
+});
 
 $qualityTags.on('click', 'span', function() {
 	var $prev = $tags.prev(),
@@ -522,6 +545,12 @@ $table.on({
 		$(this).after($areaTags.show());
 		matchingCheck();
 		return false;
+	},
+	'keyup': function() {
+		var val = $(this).val();
+		if (val.length > 500) {
+			$(this).val(val.substring(0, 500));
+		}
 	}
 }, '.ipt-area');
 
@@ -651,6 +680,16 @@ function checkForm() {
 				hasFocus = true;
 				result.pass = false;
 				$('html, body').scrollTop($rank.prev().offset().top);
+			}
+		}
+		if (val3 && val4) {
+			$unit.nextAll('.error').css('display','none').html('');
+		} else {
+			$unit.nextAll('.error').css('display','block').html('请填写采购数量和单位');
+			if (!hasFocus) {
+				hasFocus = true;
+				result.pass = false;
+				$('html, body').scrollTop($unit.prev().offset().top);
 			}
 		}
 
