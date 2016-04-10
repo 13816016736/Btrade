@@ -23,9 +23,9 @@
             </div>
             <div class="date">
                 <span>发布日期</span>
-                <input id="d1" class="ipt Wdate" type="text" onFocus="WdatePicker({maxDate:'%y-%M-%d',onpicked:function(){d2.focus()}})" value="{{starttime}}"/>
+                <input id="d1" class="ipt Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'%y-%M-%d',onpicked:function(){d2.focus()}})" value="{{starttime}}"/>
                 <span>至</span>
-                <input id="d2" class="ipt Wdate" type="text" onFocus="WdatePicker({minDate:'#F{$dp.$D(\'d1\')}',maxDate:'%y-%M-%d'})" value="{{endtime}}"/>
+                <input id="d2" class="ipt Wdate" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'d1\')}',maxDate:'%y-%M-%d'})" value="{{endtime}}"/>
                 <!--<input class="ipt key" type="text" placeholder="采购批号/品种">-->
                 <button type="button" id="pquery" class="btn btn-orange btn-sm">查询</button>
             </div>
@@ -63,9 +63,9 @@
                     </div>
                     <div class="td4">
                         {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
-                        <a class="icons icons-edit" href="/mypurchase/update/{{purchase.id}}" title="编辑"></a>
                         <a class="icons icons-share" href="#" title="分享" purchaseid="{{ purchase.id }}"></a>
                         {% if purchase.status != 0 %}
+                        <a class="icons icons-edit" href="/mypurchase/update/{{purchase.id}}" title="编辑"></a>
                         <a class="icons icons-delete" href="#" pid="{{purchase.id}}" title="关闭"></a>
                         {% end %}
                         {% else %}

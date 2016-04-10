@@ -123,8 +123,8 @@ class MyPurchaseHandler(BaseHandler):
         if int(type) >= 0:
             condition.append("p.status = "+type)
         if starttime !="" and endtime != "":
-            condition.append("p.createtime > "+str(int(time.mktime(time.strptime(starttime,'%Y-%m-%d')))))
-            condition.append("p.createtime < "+str(int(time.mktime(time.strptime(endtime,'%Y-%m-%d')))))
+            condition.append("p.createtime > "+str(int(time.mktime(time.strptime(starttime,'%Y-%m-%d %H:%M:%S')))))
+            condition.append("p.createtime < "+str(int(time.mktime(time.strptime(endtime,'%Y-%m-%d %H:%M:%S')))))
         conditionstr = ""
         if condition:
             conditionstr = ("and "+(" and ".join(condition)))
@@ -307,7 +307,7 @@ class GetVarietyInfoHandler(BaseHandler):
         if variety == "":
             self.api_response({'status':'fail','message':'请填写品种'})
         elif is_cn(variety):
-            varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name like %s or alias like %s", variety+"%", "%"+variety+"%")
+            varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name like %s or alias like %s", "%"+variety+"%", "%"+variety+"%")
             if len(varietyinfo) == 0:
                 self.api_response({'status':'notsupport','message':'没有该品种'})
             else:

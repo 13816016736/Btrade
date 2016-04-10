@@ -128,7 +128,7 @@ class RegInfoHandler(BaseHandler):
         if type is None:
             self.api_response({'status':'fail','message':'经营主体不能为空'})
             return
-        name = self.get_argument("company","") if type == '1' else self.get_argument("name", "")
+        name = self.get_argument("company",None) if type == u'7' else self.get_argument("name", None)
         if name is None:
             self.api_response({'status':'fail','message':'真实姓名或单位名称不能为空'})
             return
