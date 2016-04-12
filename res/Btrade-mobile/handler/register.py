@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from base import BaseHandler
-import re,json,config,time
+import re,json,config,time,logging
 from utils import *
 
 class RegisterHandler(BaseHandler):
@@ -21,6 +21,7 @@ class RegisterHandler(BaseHandler):
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
 
+	logging.info(userinfo)
         self.render("register.html", next_url=next_url, userinfo=userinfo)
 
     def post(self):

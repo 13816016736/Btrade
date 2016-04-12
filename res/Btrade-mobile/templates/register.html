@@ -59,7 +59,7 @@
                 {% if userinfo %}
                 <div class="item">
                     <label class="txt">微信绑定</label>
-                    <span class="ipt">{{userinfo.nickname}}<img src="{{userinfo.headimgurl}}" alt=""></span>
+                    <span class="ipt">{{userinfo['nickname']}}<img src="{{userinfo['headimgurl']}}" alt=""></span>
                     <span class="error"></span>
                 </div>
                 {% end %}
@@ -240,7 +240,7 @@
             bool = checkIpt();
             if(bool){
                 var type = ($("#jPersonalMsg").is(":visible")) ? 8 : 7;
-                var name = (type == 6) ? $realName.val() : $compName.val();
+                var name = (type == 8) ? $realName.val() : $compName.val();
                 var data = {
                     "phone":$mobile.val(),
                     "smscode":$code.val(),
@@ -250,7 +250,7 @@
                     "type":type,
                     "name":name,
                     "nickname":$nickName.val(),
-                    "openid":"{% if userinfo %}{{userinfo.openid}}{% end %}"
+                    "openid":"{% if userinfo %}{{userinfo['openid']}}{% end %}"
                 };
                 $.ajax({
                     url: '/register',
