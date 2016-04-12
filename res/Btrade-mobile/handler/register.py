@@ -10,14 +10,14 @@ class RegisterHandler(BaseHandler):
         code = self.get_argument("code", None)
         if code:
             #请求获取access_token和openid
-            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % config.appid, config.secret, code
+            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (config.appid, config.secret, code)
             res = requests.get(url)
             message = json.loads(res.text.encode("utf-8"))
             access_token = message.get("access_token", None)
             openid = message.get("openid")
             if access_token:
                 #请求获取用户信息
-                url = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN" % access_token, openid
+                url = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
 
