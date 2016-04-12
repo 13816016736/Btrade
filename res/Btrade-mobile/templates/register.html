@@ -59,7 +59,7 @@
                 {% if userinfo %}
                 <div class="item">
                     <label class="txt">微信绑定</label>
-                    <span class="ipt">{{userinfo['nickname']}}<img src="{{userinfo['headimgurl']}}" alt=""></span>
+                    <span class="ipt">{{userinfo['nickname'].encode('utf-8')}}<img src="{{userinfo['headimgurl']}}" alt=""></span>
                     <span class="error"></span>
                 </div>
                 {% end %}
