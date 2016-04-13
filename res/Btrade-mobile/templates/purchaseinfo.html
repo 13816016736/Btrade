@@ -175,17 +175,24 @@ $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"
 <script src="{{ static_url('js/wechart.js') }}"></script>
 <script>
 $(function(){
-    var data = {
-        title: '【{{ purchase.datetime }}采购单】{{user.name}} 采购 {{ purchase.name }}（{{ purchase.specification }}）{{ purchase.quantity }}{{purchase.unit}}',
-        desc: '质量要求：{{ purchase.quality }} | 产地要求：{{ purchase.origin }}',
-        link: 'http://m.yaocai.pro/purchase/purchaseinfo/83',//window.location.href
-        imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
-        type: '',
-        dataUrl: ''
-    }
-
-    readyWeixin(data);
+    wx.ready(function () {
+        setupWeixinShare({
+            title: '【{{ purchase.datetime }}采购单】{{user.name}} 采购 {{ purchase.name }}（{{ purchase.specification }}）{{ purchase.quantity }}{{purchase.unit}}',
+            desc: '质量要求：{{ purchase.quality }} | 产地要求：{{ purchase.origin }}',
+            link: 'http://m.yaocai.pro/purchase/purchaseinfo/83',//window.location.href
+            imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
+            type: '',
+            dataUrl: ''
+            success: function () {
+                // 用户确认分享后执行的回调函数
+                console.log(data);
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+                console.log("cancel");
+            }
+        });
+    });
 })
-
 </script>
 {% end %}
