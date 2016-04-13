@@ -1,5 +1,6 @@
 {% extends "basenofoot.html" %}
 {% block container %}
+{% import time %}
 {% raw xsrf_form_html() %}
 <header class="yc-header">
     <div class="yc-header-back">
@@ -159,8 +160,28 @@ $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"
 $("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
 $("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
 </script>
-<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="{{ static_url('js/jweixin-1.0.0.js') }}"></script>
+<script src="{{ static_url('js/wechart.js') }}"></script>
 <script>
-
+$(function(){
+    wx.ready(function () {
+        setupWeixinShare({
+            title: '【{{ time.strftime("%m月%d日", time.localtime(int(purchase["createtime"]))) }}采购单】{{user.name}} 采购 {% for purchaseinfo in purchase.purchaseinfo%}{{purchaseinfo.name}} {% end %}',
+            desc: '{% for purchaseinfo in purchase.purchaseinfo%}{{purchaseinfo.name}} {{ purchaseinfo.specification }}）{{ purchaseinfo.quantity }}{{purchaseinfo.unit}} | {% end %}',
+            link: window.location.href,
+            imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
+            type: '',
+            dataUrl: '',
+            success: function () {
+                // 用户确认分享后执行的回调函数
+                console.log(data);
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+                console.log("cancel");
+            }
+        });
+    });
+})
 </script>
 {% end %}

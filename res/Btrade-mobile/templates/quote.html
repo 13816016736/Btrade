@@ -1,5 +1,6 @@
 {% extends "basenofoot.html" %}
 {% block container %}
+{% import time %}
 <header class="yc-header">
     <div class="yc-header-back">
         <a href="/purchase/purchaseinfo/{{purchase.pid}}">
@@ -505,21 +506,28 @@
     });
 }(jQuery));
 </script>
-<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="{{ static_url('js/jweixin-1.0.0.js') }}"></script>
+<script src="{{ static_url('js/wechart.js') }}"></script>
 <script>
-wx.config({
-    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    appId: 'wx90e04052c49aa63e', // 必填，公众号的唯一标识
-    timestamp: new Date().getTime(), // 必填，生成签名的时间戳
-    nonceStr: '', // 必填，生成签名的随机串
-    signature: '',// 必填，签名，见附录1
-    jsApiList: [] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-});
-wx.ready(function(){
-    alert("success");
-});
-wx.error(function(res){
-    alert("error");
-});
+$(function(){
+    wx.ready(function () {
+        setupWeixinShare({
+            title: '【药材购】实时饮片厂、药厂、经营大户采购单',
+            desc: '药材卖货神器！实时推送药厂、饮片厂、经营户最新采购单，在线报价，极速答复，供货无忧！药商们都在抢订单，还不快来？',
+            link: window.location.href,
+            imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
+            type: '',
+            dataUrl: '',
+            success: function () {
+                // 用户确认分享后执行的回调函数
+                console.log(data);
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+                console.log("cancel");
+            }
+        });
+    });
+})
 </script>
 {% end %}

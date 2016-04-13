@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
+{% import time %}
 {% raw xsrf_form_html() %}
 <header class="yc-header">
     <div class="yc-header-back">
@@ -177,9 +178,9 @@ $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"
 $(function(){
     wx.ready(function () {
         setupWeixinShare({
-            title: '【{{ purchase.datetime }}采购单】{{user.name}} 采购 {{ purchase.name }}（{{ purchase.specification }}）{{ purchase.quantity }}{{purchase.unit}}',
+            title: '【{{ time.strftime("%m月%d日", time.localtime(int(purchase["createtime"]))) }}采购单】{{user.name}} 采购 {{ purchase.name }}（{{ purchase.specification }}）{{ purchase.quantity }}{{purchase.unit}}',
             desc: '质量要求：{{ purchase.quality }} | 产地要求：{{ purchase.origin }}',
-            link: 'http://m.yaocai.pro/purchase/purchaseinfo/83',//window.location.href
+            link: window.location.href,
             imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
             type: '',
             dataUrl: '',
