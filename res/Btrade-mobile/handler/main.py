@@ -7,6 +7,7 @@ import json, os, datetime
 import time
 from collections import defaultdict
 from utils import *
+from wechatjsapi import *
 
 class MainHandler(BaseHandler):
 
@@ -233,3 +234,11 @@ class WxcbHandler(BaseHandler):
             self.api_response(echostr)
         else:
             self.api_response("check signature fail")
+
+class WechartConfigHandler(BaseHandler):
+    def post(self):
+        wechart = WechartJSAPI(self.db).sign(self.get_argument("url",None))
+        if wechart:
+            self.api_response({'status':'success','message':'获取微信配置成功','data':wechart})
+        else:
+            self.api_response({'status':'fail','message':'获取微信配置失败'})

@@ -67,6 +67,7 @@ handlers = [
     (r"/savevariety", SaveVarietyHandler),
     (r"/removepurchase", RemovePurchaseHandler),
     (r"/wxcb", WxcbHandler),
+    (r"/wechartconfig", WechartConfigHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 
@@ -87,7 +88,7 @@ conf = {
 #开启日志文件记录，默认为 False
 log = True 
 #日志记录位置
-log_file = 'Btrade-mobile/log/tornado.log'
+log_file = 'log/tornado.log'
 
 #用户密码的salt
 salt = "ycg20151012"

@@ -170,4 +170,21 @@ $("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br
 $("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
 $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
 </script>
+<script src="{{ static_url('js/jweixin-1.0.0.js') }}"></script>
+<script src="{{ static_url('js/wechart.js') }}"></script>
+<script>
+$(function(){
+    var data = {
+        title: '【{{ purchase.datetime }}采购单】{{user.name}} 采购 {{ purchase.name }}（{{ purchase.specification }}）{{ purchase.quantity }}{{purchase.unit}}',
+        desc: '质量要求：{{ purchase.quality }} | 产地要求：{{ purchase.origin }}',
+        link: 'http://m.yaocai.pro/purchase/purchaseinfo/83',//window.location.href
+        imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
+        type: '',
+        dataUrl: ''
+    }
+
+    readyWeixin(data);
+})
+
+</script>
 {% end %}

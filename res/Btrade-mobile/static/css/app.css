@@ -145,11 +145,11 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-purchase .list .hd .company{float:left;margin:0;font-size:1.4rem;color:#333;line-height:26px;}
 .yc-purchase .list .hd .company span{display:inline-block;max-width:160px;height:16px;line-height:16px;vertical-align:middle;overflow:hidden;}
 .yc-purchase .list .hd .category{float:right;width:80px;padding:1px 0;color:#f90;border:1px solid #f90;-webkit-border-radius:4px;border-radius:4px;text-align:center;}
-.yc-purchase .list .bd{padding:10px 0;color:#777;border-bottom:1px dotted #ddd;}
-.yc-purchase .list .bd .name{float:left;margin:0;font-size:1.6rem;color:#000;}
-.yc-purchase .list .bd .tag{float:left;margin-left:10px;}
-.yc-purchase .list .bd .weight{float:right;font-size:1.6rem;color:#000;}
-.yc-purchase .list .bd .desc{clear:both;padding:5px 0 0 24px;overflow:hidden;}
+.yc-purchase .list .bd{position:relative;padding:10px 0;color:#777;border-bottom:1px dotted #ddd;}
+.yc-purchase .list .bd .name{float:left;margin:0 10px 0 0;font-size:1.6rem;color:#000;}
+.yc-purchase .list .bd .tag{height:22px;margin-right:80px;overflow:hidden;}
+.yc-purchase .list .bd .weight{position:absolute;top:10px;right:0;font-size:1.6rem;color:#000;}
+.yc-purchase .list .bd .desc{clear:both;max-height:106px;padding:5px 0 0 24px;overflow:hidden;}
 .yc-purchase .list .bd .desc p{margin:0;}
 .yc-purchase .list .bd .desc p.thumb{float:right;width:65px;height:65px;margin-left:5px;}
 .yc-purchase .list .bd .desc p.thumb img{width:100%;}

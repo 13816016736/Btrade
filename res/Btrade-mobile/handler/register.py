@@ -14,8 +14,8 @@ class RegisterHandler(BaseHandler):
             res = requests.get(url)
             message = json.loads(res.text.encode("utf-8"))
             access_token = message.get("access_token", None)
-            openid = message.get("openid")
             if access_token:
+                openid = message.get("openid")
                 #请求获取用户信息
                 url = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
