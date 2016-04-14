@@ -179,7 +179,7 @@ $(function(){
     wx.ready(function () {
         setupWeixinShare({
             title: '【{{ time.strftime("%m月%d日", time.localtime(int(purchase["createtime"]))) }}采购单】{{user.name}} 采购 {{ purchase.name }}（{{ purchase.specification }}）{{ purchase.quantity }}{{purchase.unit}}',
-            desc: '质量要求：{{ purchase.quality }} | 产地要求：{{ purchase.origin }}',
+            desc: '质量要求：{{ " ".join(purchase.quality.split()) }} | 产地要求：{{ "".join(purchase.origin.split()) }}',
             link: window.location.href,
             imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
             type: '',

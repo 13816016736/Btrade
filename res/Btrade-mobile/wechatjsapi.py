@@ -31,7 +31,7 @@ class WechartJSAPI:
 
     def getAccessToken(self):
         conf = self.db.get("select * from config where `key`=%s", "access_token")
-        if conf and conf['expires_time'] > time.time() and conf['value']:
+        if conf and int(conf['expires_time']) > int(time.time()) and conf['value']:
             return conf["value"]
         else:
             url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (config.appid, config.secret)
@@ -43,7 +43,7 @@ class WechartJSAPI:
 
     def getTicket(self):
         config = self.db.get("select * from config where `key`=%s", "jsapi_ticket")
-        if config and config['expires_time'] > time.time() and config['value']:
+        if config and int(config['expires_time']) > int(time.time()) and config['value']:
             return config["value"]
         else:
             url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % (self.getAccessToken())
