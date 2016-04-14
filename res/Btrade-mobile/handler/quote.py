@@ -19,7 +19,7 @@ class QuoteHandler(BaseHandler):
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) ta left join area a on a.id = ta.parentid", purchaseinfoid)
 
         #获得采购品种图片
-        attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
+        attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", purchaseinfoid)
         for attachment in attachments:
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
@@ -237,7 +237,7 @@ class QuoteListHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
-        myquotes = self.db.query("select ta.*,n.id nid from (select mq.*,u.nickname,u.type,u.phone from "
+        myquotes = self.db.query("select ta.*,n.id nid from (select mq.*,u.name uname,u.nickname,u.type,u.phone from "
                                  "(select ta.*,p.createtime purchasetime,p.term,p.userid purchaseuserid from ("
                                  "select q.*,pi.purchaseid,pi.name,pi.specification,pi.origin,pi.quantity,pi.unit "
                                  "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s order by q.createtime desc"

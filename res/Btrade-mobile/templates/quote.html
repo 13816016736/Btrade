@@ -220,7 +220,7 @@
             <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
             <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
             <div class="desc">
-                <p>{{ purchase.quantity }}</p>
+                <p>{{ purchase.quality }}</p>
                 <p><span>意向价格</span>
                     {% if purchase.price > 0 %}
                         {{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}
@@ -239,7 +239,7 @@
         <h3>采购商</h3>
         <div class="bd">
             <h4 class="company">
-                <span>{{purchaser.nickname}}</span>
+                <span>{{purchaser.name}}</span>
                 <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
             </h4>
             <div class="category">
@@ -520,7 +520,7 @@ $(function(){
             dataUrl: '',
             success: function () {
                 // 用户确认分享后执行的回调函数
-                console.log(data);
+                console.log("success");
             },
             cancel: function () {
                 // 用户取消分享后执行的回调函数

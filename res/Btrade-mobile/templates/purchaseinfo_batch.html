@@ -40,7 +40,7 @@
         <h3>采购商</h3>
         <div class="bd">
             <h4 class="company">
-                <span>{{user.nickname}}</span>
+                <span>{{user.name}}</span>
                 <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
             </h4>
             <div class="category">
@@ -77,8 +77,8 @@
     </div>
 
     <div class="yc-purchase-detail">
-        <h3>交收要求<i class="iconfont icon-fold"></i></h3>
-        <dl class="yc-demand">
+        <h3>交收要求<i class="iconfont icon-fold icon-unfold"></i></h3>
+        <dl class="yc-demand" style="display: none;">
             <dt>交货地：</dt>
             <dd>{% if purchase.province %}{{ purchase.province }}{% end %}  {% if purchase.areaname %}{{ purchase.areaname }}{% end %}</dd>
             <dt>发票要求：</dt>
@@ -174,7 +174,7 @@ $(function(){
             dataUrl: '',
             success: function () {
                 // 用户确认分享后执行的回调函数
-                console.log(data);
+                console.log("success");
             },
             cancel: function () {
                 // 用户取消分享后执行的回调函数
