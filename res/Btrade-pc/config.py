@@ -80,7 +80,7 @@ conf = {
 #开启日志文件记录，默认为 False
 log = True
 #日志记录位置
-log_file = 'log/tornado.log'
+log_file = 'Btrade-pc/log/tornado.log'
 
 #用户密码的salt
 salt = "ycg20151012"
