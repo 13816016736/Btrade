@@ -229,7 +229,7 @@
                     {% end %}</p>
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
-                <p class="thumb"><img src="{{ attachment }}" data-src="{{ attachment }}" alt=""></p>
+                <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment }}" alt=""></p>
                 {% end %}
             </div>
         </div>
@@ -512,8 +512,8 @@
 $(function(){
     wx.ready(function () {
         setupWeixinShare({
-            title: '【药材购】实时饮片厂、药厂、经营大户采购单',
-            desc: '药材卖货神器！实时推送药厂、饮片厂、经营户最新采购单，在线报价，极速答复，供货无忧！药商们都在抢订单，还不快来？',
+            title: '【{{ time.strftime("%m月%d日", time.localtime(int(purchase["createtime"]))) }}采购单】{{purchaser.name}} 采购 {{ purchase.name }}（{{ purchase.specification }}）{{ purchase.quantity }}{{purchase.unit}}',
+            desc: '质量要求：{{ " ".join(purchase.quality.split()) }} | 产地要求：{{ "".join(purchase.origin.split()) }}',
             link: window.location.href,
             imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
             type: '',
