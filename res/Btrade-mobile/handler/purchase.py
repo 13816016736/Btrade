@@ -48,7 +48,7 @@ class PurchaseHandler(BaseHandler):
         number = int(number) if number > 0 else 0
         purchases = self.db.query("select ta.*,u.nickname,u.name uname,u.type from (select pis.*,count(q.id) quotecount from "
                                   "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
-                                  "(case when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 when p.term = 1 then 0 else 1 end) orderid from "
+                                  "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid from "
                                   "purchase_info pi left join purchase p on p.id = pi.purchaseid where p.status != 0 order by orderid desc,"
                                   "p.createtime desc,p.id desc limit %s,%s) "
                                   "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by orderid desc,pis.createtime desc) ta "
