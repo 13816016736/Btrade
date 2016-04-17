@@ -34,7 +34,7 @@ class CheckPhoneHandler(BaseHandler):
 
     def post(self):
         phone = self.get_argument("phone")
-        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$')
+        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
         phonematch = phonepattern.match(phone)
         if phonematch is False and phone is None:
             self.api_response({'status':'fail','message':'手机号填写错误'})
@@ -70,7 +70,7 @@ class GetSmsCodeHandler(BaseHandler):
 
     def post(self):
         phone = self.get_argument("phone")
-        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$')
+        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
         phonematch = phonepattern.match(phone)
         if phonematch is None:
             self.api_response({'status':'fail','message':'手机号填写错误'})
