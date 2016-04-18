@@ -130,43 +130,46 @@ class PurchaseinfoBatchHandler(BaseHandler):
         purchase = self.db.get("select t.*,a.areaname province from (select t.*,a.areaname,a.parentid from "
                                   "(select p.*,u.nickname,u.name,u.type from purchase p left join users u on p.userid = u.id where p.id = %s) t"
                                   " left join area a on t.areaid = a.id) t left join area a on t.parentid = a.id", purchaseid)
-        user = self.db.get("select * from users where id = %s", purchase["userid"])
         if purchase:
-            purchaseinfos = self.db.query("select p.*,count(q.id) quotecount from purchase_info p "
-                                          "left join quote q on p.id = q.purchaseinfoid where p.purchaseid = %s group by p.id", purchaseid)
-            purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
-            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
-            attachments = defaultdict(list)
-            for attachment in purchaseattachments:
-                attachments[attachment["purchase_infoid"]] = attachment
-            for purchaseinfo in purchaseinfos:
-                purchaseinfo["attachments"] = {}
-                if attachments.has_key(purchaseinfo["id"]):
-                    base, ext = os.path.splitext(os.path.basename(attachments.get(purchaseinfo["id"])["attachment"]))
-                    attachments.get(purchaseinfo["id"])["attachment"] = config.img_domain+attachments.get(purchaseinfo["id"])["attachment"][attachments.get(purchaseinfo["id"])["attachment"].find("static"):].replace(base, base+"_thumb")
-                    purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
-                purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
-                purchase["views"] =+ purchaseinfo["views"]
+            user = self.db.get("select * from users where id = %s", purchase["userid"])
+            if purchase:
+                purchaseinfos = self.db.query("select p.*,count(q.id) quotecount from purchase_info p "
+                                              "left join quote q on p.id = q.purchaseinfoid where p.purchaseid = %s group by p.id", purchaseid)
+                purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
+                purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+                attachments = defaultdict(list)
+                for attachment in purchaseattachments:
+                    attachments[attachment["purchase_infoid"]] = attachment
+                for purchaseinfo in purchaseinfos:
+                    purchaseinfo["attachments"] = {}
+                    if attachments.has_key(purchaseinfo["id"]):
+                        base, ext = os.path.splitext(os.path.basename(attachments.get(purchaseinfo["id"])["attachment"]))
+                        attachments.get(purchaseinfo["id"])["attachment"] = config.img_domain+attachments.get(purchaseinfo["id"])["attachment"][attachments.get(purchaseinfo["id"])["attachment"].find("static"):].replace(base, base+"_thumb")
+                        purchaseinfo["attachments"] = attachments.get(purchaseinfo["id"])
+                    purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
+                    purchase["views"] =+ purchaseinfo["views"]
 
-        purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
-        purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
-        if purchase["term"] != 0:
-            purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-            purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
+            purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
+            purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
+            if purchase["term"] != 0:
+                purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
-        #此采购商成功采购单数
-        purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
-        #此采购商回复供应商比例
-        purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
-            "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
-                "on p.id = t.purchaseid where p.userid = %s", user["id"])
-        reply = 0
-        for purchaser_quote in purchaser_quotes:
-            if purchaser_quote.state is not None and purchaser_quote.state != 0:
-                reply = reply + 1
+            #此采购商成功采购单数
+            purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
+            #此采购商回复供应商比例
+            purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
+                "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
+                    "on p.id = t.purchaseid where p.userid = %s", user["id"])
+            reply = 0
+            for purchaser_quote in purchaser_quotes:
+                if purchaser_quote.state is not None and purchaser_quote.state != 0:
+                    reply = reply + 1
 
-        self.render("purchaseinfo_batch.html", user=user, purchase=purchase, purchases=purchases,
-                    reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0))
+            self.render("purchaseinfo_batch.html", user=user, purchase=purchase, purchases=purchases,
+                        reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0))
+        else:
+            self.error("采购单不存在","/")
 
     @tornado.web.authenticated
     def post(self):

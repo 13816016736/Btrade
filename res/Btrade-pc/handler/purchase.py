@@ -355,7 +355,13 @@ class PurchaseSuccessHandler(BaseHandler):
                                   "(SELECT pi.id,n.sender FROM `purchase_info` pi,notification n WHERE pi.id = n.content and n.type = 2 and varietyid in ("
                                   +varids+") and n.sender != %s) t left join users u on t.sender = u.id) ta left join area a on ta.areaid = a.id ", self.session.get("userid"))
 
-        self.render("success.html", varname=",".join(varname), suppliers=suppliers, purchaseid=self.get_argument("purchaseid"))
+        user = self.db.get("select name from users where id = %s", self.session.get("userid"))
+        purchaseinfo = self.db.query("select p.id,p.createtime,pi.name,pi.specification from purchase p left join purchase_info pi on "
+                                 "p.id = pi.purchaseid where p.id = %s limit 4", self.get_argument("purchaseid"))
+        if purchaseinfo:
+            self.render("success.html", varname=",".join(varname), suppliers=suppliers, user=user, purchaseinfo=purchaseinfo)
+        else:
+            self.failure("采购单不存在","/")
 
 class RemovePurchaseHandler(BaseHandler):
 

@@ -3,7 +3,7 @@
 发采购_自动对接全国货源极速报价_药材购
 {% end %}
 {% block container %}
-{% import config %}
+{% import config,time %}
 <link rel="stylesheet" href="{{ static_url('css/order.css')}}" />
 <section class="sec">
     <div class="container">
@@ -56,14 +56,13 @@
                 <div class="bd">
                     <h3><i class="icons icons-wechat"></i>微信邀请朋友报价</h3>
                     <p>微信扫描如下二维码，发送到朋友圈，邀请前来报价</p>
-                    <p class="qrcode"><img width="114" height="114" src="http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/{{purchaseid}}" alt=""></p>
+                    <p class="qrcode"><img width="114" height="114" src="http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/{{purchaseinfo[0]['id']}}" alt=""></p>
                 </div>
 
                 <div class="bd">
                     <h3><i class="icons icons-qq"></i>QQ邀请朋友报价</h3>
                     <p>复制如下消息，发送给QQ好友或QQ群，邀请前来报价</p>
-                    <textarea class="share" id="clipboard_textarea">采购黄连100公斤，鸡爪，产地重庆。符合2010药典标准
-请速报价{{config.host}}/purchaseinfobatch/purchaseid/{{purchaseid}}</textarea>
+                    <textarea class="share" id="clipboard_textarea">【{{ time.strftime("%m月%d日", time.localtime(int(purchaseinfo[0]["createtime"]))) }}采购单】{{user.name}} 采购{% for index,pi in enumerate(purchaseinfo)%}{{pi.name}}（{{ pi.specification }}）{% if (index+1) <> len(purchaseinfo)%}、{%end%}{% end %}请速报价{{config.host}}/purchaseinfobatch/purchaseid/{{purchaseinfo[0]["id"]}}</textarea>
                     <button type="button" class="btn-copy" data-clipboard-target="clipboard_textarea" id="jCopyButton">复制</button>
                     <p class="msg" id="jCopyMsg">复制成功!</p>
                 </div>
