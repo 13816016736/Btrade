@@ -287,13 +287,32 @@ $('.yc-purchase-form').on('keyup change', '.ipt-date', function(e) {
         setValue(this, val);
     }
 });
-// 只能输入数字（小数）或空
-$('.yc-purchase-form').on('keyup', '.ipt-quantity, .ipt-price', function(e) {
+// 封顶价
+$('.yc-purchase-form').on('keyup', '.ipt-price', function(e) {
 	var val = this.value;
     if (!/^\d+\.?\d*$/.test(val)) {
         val = Math.abs(parseFloat(val));
         this.value = isNaN(val) ? "" : val
     }
+});
+// 采购数量
+$('.yc-purchase-form').on('keyup', '.ipt-quantity', function(e) {
+	var val = this.value,
+		k = val.split('.');
+	if (!/^\d{1,10}$|^\d{1,6}\.?\d{0,3}$/.test(val)) {
+		if (k.length === 2) {
+			k[0] = k[0].slice(0, 6);
+			k[1] = k[1].slice(0, 3);
+			val = parseFloat(k.join('.'));
+			if (val.toString().indexOf('.') === -1) {
+				val += '.';
+			}
+		} else {
+			val = parseFloat(val.slice(0, 10));
+		}
+
+		this.value = isNaN(val) ? '' : val;
+	}
 });
 $('.ipt-date, .ipt-other').on('click', function() {
 	$(this).parent().find('input').prop('checked', true);
