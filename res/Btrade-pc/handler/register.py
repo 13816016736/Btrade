@@ -39,7 +39,7 @@ class CheckPhoneHandler(BaseHandler):
         if phonematch is False and phone is None:
             self.api_response({'status':'fail','message':'手机号填写错误'})
             return
-        phonecount = self.db.execute_rowcount("select * from users where phone = %s", self.session.get("phone"))
+        phonecount = self.db.execute_rowcount("select * from users where phone = %s", phone)
         if phonecount > 0:
             self.api_response({'status':'fail','message':'此手机号已被使用'})
             return
