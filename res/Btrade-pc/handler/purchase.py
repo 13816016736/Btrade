@@ -501,7 +501,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
             # self.db.execute("delete from purchase_info where id in ("+",".join(purchaseinfoids)+")")
             status,varids = updatepurchase(self, id, data)
             if status:
-                self.api_response({'status':'success','message':'请求成功','data':varids})
+                self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':id})
             else:
                 self.api_response({'status':'fail','message':'修改失败请刷新页面重试'})
         else:

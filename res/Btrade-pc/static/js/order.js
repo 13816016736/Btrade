@@ -187,7 +187,7 @@ var $table = $('#jInventory'),
 	$qualityTags = $('#jQualityTags'),
 	$areaTags = $('#jAreaTags'),
 	url = '/uploadfile' ,
-    maxUploadFileSize = 1 * 1024 *1024, // 限制上传的文件大小(bytes)
+    maxUploadFileSize = 5 * 1024 *1024, // 限制上传的文件大小(bytes)
     acceptFileTypes = /\.(jpe?g|png|gif|bmp)$/i; // 限制的上传文件类型(正则匹配)
 
 $temp.remove(); // 移除模板

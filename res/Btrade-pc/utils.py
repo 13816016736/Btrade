@@ -248,8 +248,11 @@ def updatepurchase(self, id, data):
         self.session.save()
         #删除采购品种带的附件
         cursor.execute("select attachment from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
-        for attachment in cursor.fetchall():
-            os.remove(attachment[0])
+        try:
+            for attachment in cursor.fetchall():
+                os.remove(attachment[0])
+        except Exception,ex:
+            print Exception,":",ex
         cursor.execute("delete from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
         #删除采购品种
         cursor.execute("delete from purchase_info where id in ("+",".join(purchaseinfoids)+")")
