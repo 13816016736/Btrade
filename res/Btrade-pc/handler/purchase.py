@@ -192,7 +192,7 @@ class MyPurchaseInfoHandler(BaseHandler):
             if quotes:
                 mprice = quotes[0]["price"]
                 for quote in quotes:
-                    if mprice > int(quote.price):
+                    if mprice > quote.price:
                         mprice = quote.price
                     quoteids.append(str(quote.id))
                     quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
