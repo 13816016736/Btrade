@@ -2,11 +2,9 @@
 
 import tornado.web
 from base import BaseHandler
-import json, os, datetime
+import json, os, datetime, random, time
 from utils import *
 from config import *
-import random
-import time
 from collections import defaultdict
 
 class PurchaseHandler(BaseHandler):
@@ -68,7 +66,6 @@ class PurchaseInfoHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, id):
-        print id
         purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
@@ -123,3 +120,18 @@ class RemovePurchaseHandler(BaseHandler):
     def post(self):
         self.db.execute("UPDATE purchase SET status = 0 WHERE id = %s", self.get_argument("pid"))
         self.api_response({'status':'success','message':'请求成功'})
+
+class PushPurchaseHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def post(self):
+        purchaseinfoid = self.get_argument("purchaseinfoid")
+        purchaser = self.get_argument("purchaser")
+        purchaseinfo = self.db.get("select id purchaseinfoid,varietyid,name variety,specification,quantity,unit from purchase_info where id = %s", purchaseinfoid)
+        purchaseinfo["name"] = purchaser
+        phones = self.db.query("select phone from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
+        if phones:
+            pushPurchase(phones, purchaseinfo)
+            self.api_response({'status':'success','message':'群发给了'+str(len(phones))+'个用户'})
+        else:
+            self.api_response({'status':'fail','message':'暂无关注此品种的用户'})

@@ -79,11 +79,11 @@
                             </td>
                             <td style="text-align:center;">
                                 {% if purchase.status == 0 %}
-                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
+                                <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
                                 {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                                 <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;" onclick="removepurchase({{purchase.id}})"></span>&nbsp;&nbsp;
                                 {% else %}
-                                <span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>
+                                <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
                                 {% end %}
                             </td>
                             <td style="text-align:center;">
@@ -144,7 +144,10 @@
                                 {% end %}
                             </td>
                             <td style="text-align:center;">
-                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.nickname}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
+                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                <span class="glyphicon glyphicon-list-alt" rel="{{purchaseinfo.id}}" purchaser="{{purchase.name}}" sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                {% end %}
                             </td>
                             <td></td>
                         </tr>
@@ -187,6 +190,27 @@
     </div>
   </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="sendx" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="mysendModalLabel">邀请报价</h4>
+      </div>
+      <div class="modal-body">
+        <center>
+        <h5><img width="30" src="{{ static_url('images/phone.jpg') }}" />  短信群发通知供应商报价</h5>
+        <textarea id="content" class="form-control" style="width: 500px; height: 100px;" placeholder="" readonly="readonly"></textarea>
+        <br>
+        <input type="hidden" id="purchaseinfoid" name="purchaseinfoid">
+        <input type="hidden" id="purchaser" name="purchaser">
+        <button style="width:250px" type="button" class="btn btn-default" id="sendsms">发送</button>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>
 <script type="text/javascript">
 $(document).ready(function(){
     $(".form_datetime").datetimepicker({
@@ -203,6 +227,44 @@ $(document).ready(function(){
         $("#sharemsg").html(share);
         $("#qrcode").attr("src",qrcode)
         $("#share").modal();
+    });
+
+    $(".glyphicon-list-alt").click(function() {
+        $("#sendsms").html("发送");
+        $("#sendsms").removeAttr("disabled");
+        var id = $(this).attr('rel');
+        var purchaser = $(this).attr('purchaser');
+        var share = $(this).attr('sharerel');
+        $("#purchaseinfoid").val(id);
+        $("#purchaser").val(purchaser);
+        $("#content").html(share);
+        $("#sendx").modal();
+    });
+
+    $("#sendsms").click(function() {
+        $(this).html("正在发送");
+        $(this).attr('disabled',"true");
+        $.ajax({
+            url: "/pushpurchase",
+            data: "purchaseinfoid="+$("#purchaseinfoid").val()+"&purchaser="+$("#purchaser").val(),
+            dataType: 'json',
+            type: 'POST',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if(data.status == "success"){
+                    console.log(123);
+                    $("#sendsms").html(data.message);
+                    //$("#sendsms").removeAttr("disabled");
+                }else{
+                    $("#sendsms").html(data.message);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+         });
     });
 
     $("#pquery").click(function(){

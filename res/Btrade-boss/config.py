@@ -45,6 +45,7 @@ handlers = [
     (r"/purchase/purchaseinfo/([0-9]+)", PurchaseInfoHandler),
     (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/removepurchase", RemovePurchaseHandler),
+    (r"/pushpurchase", PushPurchaseHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 
