@@ -146,7 +146,7 @@
                             <td style="text-align:center;">
                                 {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                                 <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
-                                <span class="glyphicon glyphicon-list-alt" rel="{{purchaseinfo.id}}" purchaser="{{purchase.name}}" sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                <span class="glyphicon glyphicon-list-alt" rel="{{purchaseinfo.id}}" purchaser="{{purchase.name}}" sharerel="【药材购】{{purchase.name}}采购{{purchaseinfo.name}}（{{purchaseinfo.specification}}）{{purchaseinfo.quantity}}{{purchaseinfo.unit}}。邀请您立即报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}} 退订回T" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
                                 {% end %}
                             </td>
                             <td></td>
