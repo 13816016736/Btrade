@@ -42,7 +42,7 @@ handlers = [
     (r"/reginfo", RegInfoHandler),
     (r"/regresult", RegResultHandler),
     (r"/purchase", PurchaseHandler),
-    (r"/getcity", GetCityHandler),
+    (r"/getparentarea", GetParentAreaHandler),
     (r"/uploadfile", UploadFileHandler),
     (r"/delfile", DeleteFileHandler),
     (r"/getvarietyinfo", GetVarietyInfoHandler),

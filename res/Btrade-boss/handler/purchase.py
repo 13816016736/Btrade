@@ -29,7 +29,7 @@ class PurchaseHandler(BaseHandler):
         if condition:
             conditionstr = ("where "+(" and ".join(condition)))
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select t.*,a.areaname from "
+        purchases = self.db.query("select t.*,a.position from "
                                   "(select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id "+
                                   conditionstr + " order by p.createtime desc limit %s,%s) t "
                                   "left join area a on t.areaid = a.id", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
@@ -69,7 +69,7 @@ class PurchaseInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, id):
         print id
-        purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)

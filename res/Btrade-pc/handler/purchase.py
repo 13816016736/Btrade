@@ -12,7 +12,7 @@ from collections import defaultdict
 class PurchaseHandler(BaseHandler):
 
     def get(self):
-        provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 0")
+        provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
         if self.session.get("uploadfiles"):
             for key, uploadfiles in self.session.get("uploadfiles").items():
                 for uploadfile in  uploadfiles:
@@ -167,7 +167,7 @@ class MyPurchaseInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, id):
         print id
-        purchaseinfo = self.db.get("select t.*,a.areaname from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
+        purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
         "p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
         "where p.userid = %s and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",self.session.get("userid"), id)
@@ -218,18 +218,18 @@ class MyPurchaseInfoHandler(BaseHandler):
     def post(self):
         pass
 
-class GetCityHandler(BaseHandler):
+class GetParentAreaHandler(BaseHandler):
 
     def get(self):
         pass
 
     def post(self):
-        provinceid = self.get_argument("provinceid")
-        if provinceid == "":
-            self.api_response({'status':'fail','message':'请选择省份'})
+        parentid = self.get_argument("parentid")
+        if parentid == "":
+            self.api_response({'status':'fail','message':'请选择区域'})
         else:
-            cities = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", provinceid)
-            self.api_response({'status':'success','message':'请求成功','data':cities})
+            areas = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", parentid)
+            self.api_response({'status':'success','message':'请求成功','data':areas})
 
 class UploadFileHandler(BaseHandler):
 
@@ -423,10 +423,12 @@ class MyPurchaseUpdateHandler(BaseHandler):
 
         self.session["uploadfiles"] = uploadfiles
         self.session.save()
-        print self.session["uploadfiles"]
-        provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 0")
+
+        provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
         area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase["areaid"])
-        city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+        district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+        city = self.db.query("SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid", area.get("parentid"))
+        area["gparentid"] = city[0]["parentid"]
 
         # specifications = self.db.query("select * from specification where varietyid in ("+",".join(varietyids)+")")
         # specificationinf = defaultdict(list)
@@ -439,7 +441,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
         purchase["supplier"] = purchase["supplier"].split("&")
         print purchase
         if user:
-            self.render("updatepurchase.html", purchase=purchase, provinces=provinces, city=city, area=area, user=user, mypurchasevar=mypurchasevar, varietys=varietys)
+            self.render("updatepurchase.html", purchase=purchase, provinces=provinces, city=city, district=district, area=area, user=user, mypurchasevar=mypurchasevar, varietys=varietys)
         else:
             self.error("此用户不存在", "/login")
 

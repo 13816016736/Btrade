@@ -629,7 +629,8 @@ function checkForm() {
 	} else {
 		$addressError.addClass('hide');
 		//result.address = $('#jProvince dt').html() + $('#jCity dt').html();
-		result.address = $('#jCity dt').attr("data-val");
+		//result.address = $('#jCity dt').attr("data-val");
+		result.address = $('#jDistrict dt').attr("data-val");
 	}
 
 	result.invoice = $('#jInvoice input:radio:checked').val() || '';
@@ -822,10 +823,10 @@ $('#jAddress').prop('checked', false).on('click', function() {
 
 $('#jProvince').on('click', 'span', function() {
 	$('#address').val('');
-	provinceid = $(this).attr('data-val');
+	parentid = $(this).attr('data-val');
 	 $.ajax({
-		url: "/getcity",
-		data: {"provinceid": provinceid},
+		url: "/getparentarea",
+		data: {"parentid": parentid},
 		dataType: 'json',
 		type: 'POST',
 		beforeSend: function(jqXHR, settings) {
@@ -834,9 +835,9 @@ $('#jProvince').on('click', 'span', function() {
 		success: function(data) {
 			if(data.status == "success"){
 				$("#jCity").find("dd").empty();
-				cities = eval(data.data);
-				for(var i=0; i<cities.length; i++){
-				   $("#jCity").find("dd").append("<span data-val=\"" + cities[i].id +"\">" + cities[i].areaname + "</span>");
+				areas = eval(data.data);
+				for(var i=0; i<areas.length; i++){
+				   $("#jCity").find("dd").append("<span data-val=\"" + areas[i].id +"\">" + areas[i].areaname + "</span>");
 				}
 			}
 		},
@@ -848,6 +849,29 @@ $('#jProvince').on('click', 'span', function() {
 
 $('#jCity').on('click', 'span', function() {
 	$('#jAddressError').addClass('hide');
+	$('#address').val('');
+	parentid = $(this).attr('data-val');
+	 $.ajax({
+		url: "/getparentarea",
+		data: {"parentid": parentid},
+		dataType: 'json',
+		type: 'POST',
+		beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
+		success: function(data) {
+			if(data.status == "success"){
+				$("#jDistrict").find("dd").empty();
+				areas = eval(data.data);
+				for(var i=0; i<areas.length; i++){
+				   $("#jDistrict").find("dd").append("<span data-val=\"" + areas[i].id +"\">" + areas[i].areaname + "</span>");
+				}
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert(errorThrown);
+		}
+	 });
 	// var val = $(this).attr('data-val'),
 	// 	txt = $(this).html(),
 	// 	$pa = $(this).closest('.yc-select');

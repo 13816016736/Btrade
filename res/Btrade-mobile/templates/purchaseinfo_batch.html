@@ -80,7 +80,7 @@
         <h3>交收要求<i class="iconfont icon-fold icon-unfold"></i></h3>
         <dl class="yc-demand" style="display: none;">
             <dt>交货地：</dt>
-            <dd>{% if purchase.province %}{{ purchase.province }}{% end %}  {% if purchase.areaname %}{{ purchase.areaname }}{% end %}</dd>
+            <dd>{{ purchase.position }}</dd>
             <dt>发票要求：</dt>
             <dd>
                 {% if purchase.invoice == 1%}

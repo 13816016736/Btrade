@@ -15,7 +15,7 @@ def readsheet(s, row_count=-1, col_count=-1):#
         yield [s.cell(row_index, col).value for col in xrange(col_count)]
         row_index += 1
 
-wb = open_workbook('G:\\Btrade\\res\\area.xls') #打开Excel文件
+wb = open_workbook('E:\\Btrade\\res\\area.xls') #打开Excel文件
 # 读取Excel中所有的Sheet
 index = 0
 db = database.instance().get_session()

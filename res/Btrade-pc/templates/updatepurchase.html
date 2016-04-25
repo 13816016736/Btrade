@@ -226,7 +226,7 @@
                         </div>
                         <div class="cont">
                             <dl class="yc-select" id="jProvince">
-                                <dt data-val="{{area.parentid}}">{% for province in provinces %}{% if province.id == area.parentid%}{{province.areaname}}{%end%}{% end %}</dt>
+                                <dt data-val="{{area.gparentid}}">{% for province in provinces %}{% if province.id == area.gparentid%}{{province.areaname}}{%end%}{% end %}</dt>
                                 <dd>
                                     {% for province in provinces %}
                                     <span data-val="{{province.id}}">{{province.areaname}}</span>
@@ -234,10 +234,18 @@
                                 </dd>
                             </dl>
                             <dl class="yc-select" id="jCity">
-                                <dt data-val="{{area.id}}">{{area.areaname}}</dt>
+                                <dt data-val="{{area.parentid}}">{% for c in city %}{% if c.id == area.parentid%}{{c.areaname}}{%end%}{%end%}</dt>
                                 <dd>
                                     {% for c in city %}
                                     <span data-val="{{c.id}}">{{c.areaname}}</span>
+                                    {% end %}
+                                </dd>
+                            </dl>
+                            <dl class="yc-select" id="jDistrict">
+                                <dt data-val="{{area.id}}">{{area.areaname}}</dt>
+                                <dd>
+                                    {% for d in district %}
+                                    <span data-val="{{d.id}}">{{d.areaname}}</span>
                                     {% end %}
                                 </dd>
                             </dl>

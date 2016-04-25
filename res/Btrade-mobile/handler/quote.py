@@ -13,10 +13,10 @@ class QuoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, purchaseinfoid):
-        purchaseinfo = self.db.get("select ta.*,a.areaname province from (select t.*,a.areaname,a.parentid from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) ta left join area a on a.id = ta.parentid", purchaseinfoid)
+        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", purchaseinfoid)
 
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", purchaseinfoid)
@@ -178,10 +178,10 @@ class QuoteDetailHandler(BaseHandler):
             qa["attachment"] = config.img_domain+qa["attachment"][qa["attachment"].find("static"):].replace(base, base+"_thumb")
 
         #查询采购单信息
-        purchaseinfo = self.db.get("select ta.*,a.areaname province from (select t.*,a.areaname,a.parentid from "
+        purchaseinfo = self.db.get("select t.*,a.position from "
         "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid) ta left join area a on a.id = ta.parentid", quote["purchaseinfoid"])
+        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", quote["purchaseinfoid"])
 
         quote["unit"] = purchaseinfo["unit"]
 
@@ -196,7 +196,7 @@ class QuoteDetailHandler(BaseHandler):
             purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
-        print purchaseinfo
+
         others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
                                       purchaseinfo["id"], purchaseinfo["pid"])
 
@@ -216,7 +216,7 @@ class QuoteDetailHandler(BaseHandler):
             "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
                 "on p.id = t.purchaseid where p.userid = %s", user["id"])
         reply = 0
-        print purchaser_quotes
+
         for purchaser_quote in purchaser_quotes:
             if purchaser_quote.state is not None and purchaser_quote.state != 0:
                 reply = reply + 1
