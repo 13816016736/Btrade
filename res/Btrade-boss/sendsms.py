@@ -46,7 +46,7 @@ def sendx(templateId, tos):
         'smsUser': SMS_USER,
         'templateId' : templateId,
         'msgType' : 0,
-        'tos' : str(tos)#'[{"phone":"13488888888", "vars":{"%content%":"liubidatest"}},{"phone":"15688888888", "vars":{"%content%":"jiangliantest"}}]'
+        'tos' : tos
     }
 
     param_keys = list(param.keys())

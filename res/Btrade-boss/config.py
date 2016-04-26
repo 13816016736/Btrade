@@ -75,4 +75,4 @@ img_domain = "http://static.yaocai.pro/"
 img_path = "/opt/resources/static/uploadfiles"
 host = "http://m.yaocai.pro"
 
-unit = u"公斤"
+unit = "公斤"

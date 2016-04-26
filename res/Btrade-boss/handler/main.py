@@ -3,6 +3,7 @@
 import tornado.web
 from base import BaseHandler
 import config, time
+from utils import *
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -76,9 +77,9 @@ class UpdateQuoteStateHandler(BaseHandler):
                 # title = purchase["name"].encode('utf-8') + "回复了您的报价【" + purchase["variety"].encode('utf-8') + " "+ str(purchase["price"]) + "】"
                 params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(time.time())])
                 if int(state) == 1:
-                    config.acceptQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["price"]), config.unit, purchase["phone"])
+                    acceptQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["price"]), config.unit, purchase["phone"])
                 elif int(state) == 2:
-                    config.rejectQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["price"]), config.unit, message)
+                    rejectQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["price"]), config.unit, message)
             self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
 
             self.api_response({'status':'success','message':'操作成功'})
