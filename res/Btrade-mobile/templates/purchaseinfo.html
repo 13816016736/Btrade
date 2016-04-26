@@ -161,12 +161,13 @@
     </div>
     {% end %}
 </section><!-- /yc-content -->
-
+{% if purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0 %}
 <footer class="yc-footer">
     <div class="yc-quote">
         <a href="/quote/purchaseinfoid/{{purchase.pid}}"><i class="iconfont icon-plane"></i>立即报价</a>
     </div>
 </footer>
+{% end %}
 <script src="{{ static_url('js/app.js') }}"></script>
 <script>
 $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
