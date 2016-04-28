@@ -122,4 +122,47 @@ class YaocaiMySQLStorePipeline(object):
 
         return item
 
+class ZyccstMySQLStorePipeline(object):
+    def __init__(self):                            #初始化连接mysql的数据库相关信息
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
+        self.conn = MySQLdb.connect(host='localhost',user='root',passwd='ycg20160401',db='purchase',port=3306, charset="utf8")
+        self.cursor = self.conn.cursor()
+
+    # pipeline dafault function                    #这个函数是pipeline默认调用的函数
+    def process_item(self, item, spider):
+        print item
+        # try:
+        #     self.cursor.execute("insert into yaocai (type, name, alias, english, product, "
+        #                         "origin, price, specification, identification, outline, "
+        #                         "discourse, characters) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        #                    (item["type"], item["name"], item["alias"], item["english"], item["product"],
+        #                     item["origin"], item["price"], item["specification"], item["identification"],
+        #                     item["outline"], item["discourse"],
+        #                     item["characters"]))
+        #     yaocaiid = int(self.cursor.lastrowid)
+        #     order = 0
+        #     for image in item["images"]:
+        #         order += 1
+        #         self.cursor.execute("insert into images (yaocaiid, type, image, orderid) values (%s, %s, %s, %s)",
+        #                        (yaocaiid, 1, image, order))
+        #     order = 0
+        #     for encyclopedias in item["encyclopedias"]:
+        #         order += 1
+        #         self.cursor.execute("insert into images (yaocaiid, type, image, orderid) values (%s, %s, %s, %s)",
+        #                        (yaocaiid, 2, encyclopedias, order))
+        #     order = 0
+        #     for variety in item["variety"]:
+        #         order += 1
+        #         self.cursor.execute("insert into variety (yaocaiid, variety) values (%s, %s)",
+        #                        (yaocaiid, variety))
+        #
+        #     self.conn.commit()
+        # except MySQLdb.Error, e:
+        #     print "-----"
+        #     print e
+        #     print "-----"
+
+        return item
+
 

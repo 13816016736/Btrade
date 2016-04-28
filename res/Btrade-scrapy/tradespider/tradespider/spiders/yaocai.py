@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import scrapy
 from scrapy.http.request import Request
 from scrapy.selector import Selector
@@ -38,19 +40,19 @@ class YaocaiSpider(scrapy.Spider):
     def catch_item(response, typeid):
         selector = Selector(response)
         item = YaocaiItem()
-        #typeÖµ´ú±íÊ²Ã´
-        # 1 »¨Àà
-        # 2 ¸ù¾¥Àà
-        # 3 È«²İÀà
-        # 4 Ò¶Àà
-        # 5 Ê÷Æ¤Àà
-        # 6 ÌÙÄ¾Àà
-        # 7 Ê÷Ö¬Àà
-        # 8 ¾úÔåÀà
-        # 9 ¶¯ÎïÀà
-        # 10 ¿óÎïÀà
-        # 11 ÆäËû¼Ó¹¤Àà
-        # 12 ¹ûÊµÖÖ×ÓÀà
+        #typeå€¼ä»£è¡¨ä»€ä¹ˆ
+        # 1 èŠ±ç±»
+        # 2 æ ¹èŒç±»
+        # 3 å…¨è‰ç±»
+        # 4 å¶ç±»
+        # 5 æ ‘çš®ç±»
+        # 6 è—¤æœ¨ç±»
+        # 7 æ ‘è„‚ç±»
+        # 8 èŒè—»ç±»
+        # 9 åŠ¨ç‰©ç±»
+        # 10 çŸ¿ç‰©ç±»
+        # 11 å…¶ä»–åŠ å·¥ç±»
+        # 12 æœå®ç§å­ç±»
         item['type'] = typeid
         item['name'] = selector.xpath('//div[@class="depict-name"]/h1/text()').extract()
         item['effect'] = selector.xpath('//div[@class="depict-name"]/p/text()').extract()

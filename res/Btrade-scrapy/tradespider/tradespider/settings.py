@@ -15,7 +15,7 @@ SPIDER_MODULES = ['tradespider.spiders']
 NEWSPIDER_MODULE = 'tradespider.spiders'
 DEFAULT_ITEM_CLASS = 'tradespider.items.Website'
 ITEM_PIPELINES = {
-   'tradespider.pipelines.YaocaiMySQLStorePipeline': 800,
+   'tradespider.pipelines.ZyccstMySQLStorePipeline': 800,
 }
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36'

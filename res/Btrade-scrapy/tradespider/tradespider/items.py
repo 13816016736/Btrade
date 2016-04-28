@@ -36,3 +36,20 @@ class YaocaiItem(scrapy.Item):
     outline = scrapy.Field()
     discourse = scrapy.Field()
     characters = scrapy.Field()
+
+class Yt1998Item(scrapy.Item):
+    variety = scrapy.Field()
+    name = scrapy.Field()
+    phone = scrapy.Field()
+    mobile = scrapy.Field()
+    qq = scrapy.Field()
+    area = scrapy.Field()
+    address = scrapy.Field()
+
+class ZyccstItem(scrapy.Item):
+    variety = scrapy.Field()
+    name = scrapy.Field()
+    phone = scrapy.Field()
+    mobile = scrapy.Field()
+    qq = scrapy.Field()
+    address = scrapy.Field()
