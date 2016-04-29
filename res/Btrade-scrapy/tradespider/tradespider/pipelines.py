@@ -131,37 +131,38 @@ class ZyccstMySQLStorePipeline(object):
 
     # pipeline dafault function                    #这个函数是pipeline默认调用的函数
     def process_item(self, item, spider):
-        print item
-        # try:
-        #     self.cursor.execute("insert into yaocai (type, name, alias, english, product, "
-        #                         "origin, price, specification, identification, outline, "
-        #                         "discourse, characters) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        #                    (item["type"], item["name"], item["alias"], item["english"], item["product"],
-        #                     item["origin"], item["price"], item["specification"], item["identification"],
-        #                     item["outline"], item["discourse"],
-        #                     item["characters"]))
-        #     yaocaiid = int(self.cursor.lastrowid)
-        #     order = 0
-        #     for image in item["images"]:
-        #         order += 1
-        #         self.cursor.execute("insert into images (yaocaiid, type, image, orderid) values (%s, %s, %s, %s)",
-        #                        (yaocaiid, 1, image, order))
-        #     order = 0
-        #     for encyclopedias in item["encyclopedias"]:
-        #         order += 1
-        #         self.cursor.execute("insert into images (yaocaiid, type, image, orderid) values (%s, %s, %s, %s)",
-        #                        (yaocaiid, 2, encyclopedias, order))
-        #     order = 0
-        #     for variety in item["variety"]:
-        #         order += 1
-        #         self.cursor.execute("insert into variety (yaocaiid, variety) values (%s, %s)",
-        #                        (yaocaiid, variety))
-        #
-        #     self.conn.commit()
-        # except MySQLdb.Error, e:
-        #     print "-----"
-        #     print e
-        #     print "-----"
+        try:
+            # self.cursor.execute("insert into supplier (name, company, phone, mobile, qq, address, businessplace, "
+            #                     "variety, addvariety, scale, sales, relationship, manager, source) "
+            #                     "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            self.cursor.execute("select id from variety where name = %s", item["variety"])
+            variety = self.cursor.fetchone()
+            if variety and len(variety) == 1:
+                varietyid = variety[0]
+                self.cursor.execute("select id,variety from supplier where mobile = %s", item["mobile"])
+                supplier = self.cursor.fetchone()
+                if supplier:
+                    var = []
+                    for i in supplier[1].split(","):
+                        var.append(i.encode("utf-8"))
+                    if varietyid in var:
+                        pass
+                    else:
+                        var.append(str(varietyid))
+                        print "++++"
+                        print var
+                        print "++++"
+                        varietyids = ",".join(var)
+                        self.cursor.execute("update supplier set variety = %s where id = %s ", (varietyids, supplier[0]))
+                else:
+                    self.cursor.execute("insert into supplier (name, phone, mobile, qq, address, variety, source) "
+                                        "values (%s, %s, %s, %s, %s, %s, %s)",
+                                   (item["name"], item["phone"], item["mobile"], item["qq"], item["address"], varietyid, 'zyccst'))
+                self.conn.commit()
+        except MySQLdb.Error, e:
+            print "-----"
+            print e
+            print "-----"
 
         return item
 
