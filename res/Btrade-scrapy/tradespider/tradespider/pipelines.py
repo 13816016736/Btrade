@@ -142,18 +142,9 @@ class ZyccstMySQLStorePipeline(object):
                 self.cursor.execute("select id,variety from supplier where mobile = %s", item["mobile"])
                 supplier = self.cursor.fetchone()
                 if supplier:
-                    var = []
-                    for i in supplier[1].split(","):
-                        var.append(i.encode("utf-8"))
-                    if varietyid in var:
-                        pass
-                    else:
-                        var.append(str(varietyid))
-                        print "++++"
-                        print var
-                        print "++++"
-                        varietyids = ",".join(var)
-                        self.cursor.execute("update supplier set variety = %s where id = %s ", (varietyids, supplier[0]))
+                    supplier[1] = supplier[1]+","+varietyid
+                    varietyids = ",".join(list(set(supplier[1].split(","))))
+                    self.cursor.execute("update supplier set variety = %s where id = %s ", (varietyids, supplier[0]))
                 else:
                     self.cursor.execute("insert into supplier (name, phone, mobile, qq, address, variety, source) "
                                         "values (%s, %s, %s, %s, %s, %s, %s)",

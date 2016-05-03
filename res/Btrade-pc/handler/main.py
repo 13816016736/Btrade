@@ -8,7 +8,7 @@ import os,config,logging
 class MainHandler(BaseHandler):
     def get(self):
         #最新采购单
-        purchases = self.db.query("select p.id,p.createtime,u.name,u.type from purchase p left join users u on p.userid = u.id order by p.createtime desc limit 5")
+        purchases = self.db.query("select p.id,p.createtime,u.name,u.type from purchase p left join users u on p.userid = u.id where p.status != 0 order by p.createtime desc limit 5")
         purchaseids = [str(purchase["id"]) for purchase in purchases]
         purchaseinf = defaultdict(list)
         if purchaseids:
