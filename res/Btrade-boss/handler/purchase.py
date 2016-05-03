@@ -129,7 +129,14 @@ class PushPurchaseHandler(BaseHandler):
         purchaser = self.get_argument("purchaser")
         purchaseinfo = self.db.get("select id purchaseinfoid,varietyid,name variety,specification,quantity,unit from purchase_info where id = %s", purchaseinfoid)
         purchaseinfo["name"] = purchaser
-        phones = self.db.query("select phone from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
+        users = self.db.query("select phone from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
+        yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and source = %s and mobile != ''", purchaseinfo["varietyid"], 'yt1998')
+        phones = set()
+        for i in users:
+            phones.add(i["phone"])
+        for j in yt:
+            phones.add(j["mobile"])
+        phones = list(set(phones))
         if phones:
             pushPurchase(phones, purchaseinfo)
             self.api_response({'status':'success','message':'群发给了'+str(len(phones))+'个用户'})

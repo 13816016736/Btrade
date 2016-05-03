@@ -33,8 +33,7 @@ def pushPurchase(phones, purchase):
     vars = '{"%purchaseinfoid%":"'+str(purchase["purchaseinfoid"])+'","%variety%":"'+purchase["variety"]+'","%name%":"'+purchase["name"]+'","%specification%":"'+purchase["specification"]+'","%quantity%":"'+purchase["quantity"]+'","%unit%":"'+purchase["unit"]+'"}'
     tos = []
     for phone in phones:
-        phone["phone"] = phone["phone"].encode('utf-8') if isinstance(phone["phone"], unicode) else phone["phone"]
-        phone["vars"] = vars
-        tos.append('{"phone": "'+phone["phone"]+'", "vars": '+vars+'}')
+        phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
+        tos.append('{"phone": "'+phone+'", "vars": '+vars+'}')
     tos = "["+",".join(tos)+"]"
     thread.start_new_thread(sendx, (templateId, tos))
