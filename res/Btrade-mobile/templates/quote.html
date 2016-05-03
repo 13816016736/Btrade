@@ -140,7 +140,7 @@
                 <div class="price">
                     <i class="iconfont icon-check-yes"></i>
                     <span>裸价</span>
-                    <input class="ipt" id="jPrice" type="number" value="1" data-maxprice="{% if purchase.price > 0 %}{{ purchase.price }}{% end %}">
+                    <input class="ipt" id="jPrice" type="number" value="" data-maxprice="{% if purchase.price > 0 %}{{ purchase.price }}{% end %}">
                     <span>元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}</span>
                 </div>
                 <div class="msg" id="jPriceMsg">
