@@ -221,7 +221,7 @@
             <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
             <div class="desc">
                 <p>{{ purchase.quality }}</p>
-                <p><span>意向价格</span>
+                <p><span>封顶价</span>
                     {% if purchase.price > 0 %}
                         {{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}
                     {% else %}
