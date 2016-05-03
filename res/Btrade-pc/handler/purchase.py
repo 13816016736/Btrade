@@ -14,14 +14,14 @@ class PurchaseHandler(BaseHandler):
     def get(self):
         provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
         if self.session.get("uploadfiles"):
-            for key, uploadfiles in self.session.get("uploadfiles").items():
-                for uploadfile in  uploadfiles:
-                    # uploadfile = uploadfile.encode("utf-8")
-                    if os.path.isfile(uploadfile):
-                        os.remove(uploadfile)
-                        base, ext = os.path.splitext(os.path.basename(uploadfile))
-                        filename = uploadfile.replace(base, base+"_thumb")
-                        os.remove(filename)
+            # for key, uploadfiles in self.session.get("uploadfiles").items():
+            #     for uploadfile in  uploadfiles:
+            #         # uploadfile = uploadfile.encode("utf-8")
+            #         if os.path.isfile(uploadfile):
+            #             os.remove(uploadfile)
+            #             base, ext = os.path.splitext(os.path.basename(uploadfile))
+            #             filename = uploadfile.replace(base, base+"_thumb")
+            #             os.remove(filename)
             self.session["uploadfiles"] = {}
             self.session.save()
         if self.session.get("userid"):
