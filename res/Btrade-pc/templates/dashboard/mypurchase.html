@@ -91,7 +91,7 @@
                     </div>
                     <div class="td3">
                         {% if purchaseinfo.quotecount %}
-                        <em>{{purchaseinfo.quotecount}}个报价<!--<sup>3</sup>--></em>
+                        <em>{{purchaseinfo.quotecount}}个报价{% if purchaseinfo.unread > 0 %}<sup>{{purchaseinfo.unread}}</sup>{% end %}</em>
                         <span class="price">最低价{{purchaseinfo.qprice}}元</span>
                         {% if purchaseinfo.intentions > 0 %}
                         <span class="choose">已甄选<i>{{purchaseinfo.intentions}}</i>家意向供应商</span>

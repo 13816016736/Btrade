@@ -132,9 +132,9 @@ class MyPurchaseHandler(BaseHandler):
         purchaseids = [str(purchase["id"]) for purchase in purchases]
         purchaseinf = defaultdict(list)
         if purchaseids:
-            purchaseinfos = self.db.query("select ta.*,count(qu.id) intentions from (select p.*,q.id qid,count(q.id) quotecount,min(CAST(q.price as SIGNED)) qprice"
-                " from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id"
-                ") ta left join quote qu on ta.qid = qu.id and qu.state = 1 group by ta.id")
+            purchaseinfos = self.db.query("select p.*,q.id qid,count(q.id) quotecount,min(CAST(q.price as SIGNED)) qprice"
+                ",count(if(q.state=1,true,null )) intentions, count(if(q.state=0,true,null )) unread "
+                "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id")
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
