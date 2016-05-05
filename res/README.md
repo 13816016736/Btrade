@@ -48,6 +48,11 @@ https://tower.im/projects/eb4f76bf60c142da858d4f115419ef97/messages/8bf30700f070
 4.行业知名人士对于一直"打酱油"的情况是不能形成自己对行业企业改进的解决方案,所以行业企业才总是催促戴快出产品.
 
 TODOList：
+1.供应商管理，用户列表搜索
+2.登陆1小时改长一点
+3.采购单分品种关闭
+
+
 品种规格修改方案确定:
 purchase_info表中specificationid改成specification直接存规格字符串
 

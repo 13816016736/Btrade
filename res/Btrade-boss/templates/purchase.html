@@ -138,7 +138,7 @@
                             {% end %}
                             <td style="text-align:center;"><a href="/purchase/purchaseinfo/{{purchaseinfo.id}}">{{purchaseinfo.name}}</a>  {{purchaseinfo.specification}}</td>
                             <td style="text-align:center;">
-                                {{purchaseinfo.quotecount}}个报价
+                                {{purchaseinfo.quotecount}}个报价{% if purchaseinfo.unread > 0 %}（<b style="color:red;">{{purchaseinfo.unread}}</b>个未回复）{% end %}
                                 {% if purchaseinfo.intentions > 0 %}
                                 <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">{{purchaseinfo.intentions}}</b>家意向供应商</span>
                                 {% end %}
