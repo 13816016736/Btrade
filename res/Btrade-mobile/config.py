@@ -105,3 +105,5 @@ unit = u"公斤"
 appid = "wx90e04052c49aa63e"
 secret = "b1146d3ec7e0a8a483064406f361a07b"
 token = ""
+
+logtimeout = 60*60*24*7
