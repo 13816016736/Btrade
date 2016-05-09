@@ -46,13 +46,20 @@ class PurchaseHandler(BaseHandler):
 
         #列表一项是一个采购单一个品
         number = int(number) if number > 0 else 0
+        myvarietyid = 0
+        if self.session.get("userid", None):
+            userid = self.session.get("userid")
+            user = self.db.get("select varietyids from users where id = %s", userid)
+            if user:
+                myvarietyid = user["varietyids"]
         purchases = self.db.query("select ta.*,u.nickname,u.name uname,u.type from (select pis.*,count(q.id) quotecount from "
                                   "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
-                                  "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid from "
+                                  "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid,"
+                                  "(case when pi.varietyid in (%s) then 1 else 0 end) myvariety from "
                                   "purchase_info pi left join purchase p on p.id = pi.purchaseid where p.status != 0 order by orderid desc,"
-                                  "p.createtime desc,p.id desc limit %s,%s) "
-                                  "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by orderid desc,pis.createtime desc) ta "
-                                  "left join users u on ta.userid = u.id order by orderid desc,ta.pid desc", number, config.conf['POST_NUM'])
+                                  "myvariety desc,p.createtime desc,p.id desc limit %s,%s) "
+                                  "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by orderid desc,myvariety desc,pis.createtime desc) ta "
+                                  "left join users u on ta.userid = u.id order by orderid desc,myvariety desc,ta.pid desc", myvarietyid, number, config.conf['POST_NUM'])
         if purchases:
             purchaseinfoids = [str(purchase["pid"]) for purchase in purchases]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")

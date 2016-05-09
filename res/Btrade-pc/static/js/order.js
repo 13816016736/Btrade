@@ -363,7 +363,7 @@ function getKeywords() {
 				if (data.status === 'success') {
 					toHtml(data.list, $varietyTags);
 				} else if (data.status === 'notsupport') {
-					$varietyTags.find('.search dd').html('<em style="padding:4px;color:#f00;">暂不支持该品种请致电客服</em>');
+					$varietyTags.find('.search dd').html('<em style="padding:4px;color:#f00;">暂不支持该品种请致电客服:173-0967-3939</em>');
 					showTags(true, $varietyTags);
 				} else {
 					$varietyTags.find('.search dd').html(data.msg);

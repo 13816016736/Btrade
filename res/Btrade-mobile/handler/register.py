@@ -21,7 +21,7 @@ class RegisterHandler(BaseHandler):
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
 
-	logging.info(userinfo)
+	    logging.info(userinfo)
         self.render("register.html", next_url=next_url, userinfo=userinfo)
 
     def post(self):
