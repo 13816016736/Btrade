@@ -24,7 +24,7 @@ class MainHandler(BaseHandler):
                 purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
         for purchase in purchases:
             purchase["purchaseinfo"] = purchaseinf.get(purchase["id"])
-            purchase["variety"] = len(purchase["purchaseinfo"])
+            purchase["variety"] = len(purchase["purchaseinfo"]) if purchase["purchaseinfo"] else 0
 
         #最新报价
         quotes = self.db.query("select ta.*,u.name pname from (select t.*,u.name qname from (select qp.*,p.userid puid from "
