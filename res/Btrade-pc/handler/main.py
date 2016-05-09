@@ -48,8 +48,8 @@ class MainHandler(BaseHandler):
                 mq["attachments"] = myquoteattachments[mq.id]
             else:
                 mq["attachments"] = []
-        #采购品种总数和报价总数
-        pvariety = self.db.execute_rowcount("select id from purchase_info group by varietyid")
+        #采购批次总数和报价总数
+        pvariety = self.db.execute_rowcount("select id from purchase_info")
         qcount = self.db.execute_rowcount("select q.id from quote q,purchase_info pi where q.purchaseinfoid = pi.id")
         self.render("index.html", purchases=purchases, quotes=quotes, pvariety=pvariety, qcount=qcount)
 
