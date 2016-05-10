@@ -76,6 +76,7 @@
                         <i class="icons icons-up fold"></i>
                     </div>
                 </div>
+                {% if purchase %}
                 <div class="total">
                     {% for purchaseinfo in purchase.purchaseinfo%}
                     <span>{{purchaseinfo.name}}</span>
@@ -107,6 +108,7 @@
                         <!--<a class="icons icons-delete" href="#" title="删除"></a>-->
                     </div>
                 </div>
+                {% end %}
                 {% end %}
             </div>
             {% end %}
