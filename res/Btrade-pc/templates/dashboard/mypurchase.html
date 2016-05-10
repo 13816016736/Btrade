@@ -76,7 +76,7 @@
                         <i class="icons icons-up fold"></i>
                     </div>
                 </div>
-                {% if purchase %}
+                {% if purchase.purchaseinfo %}
                 <div class="total">
                     {% for purchaseinfo in purchase.purchaseinfo%}
                     <span>{{purchaseinfo.name}}</span>
