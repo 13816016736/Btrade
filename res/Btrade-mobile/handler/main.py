@@ -21,7 +21,7 @@ class MainHandler(BaseHandler):
                 varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
 
             #用户报过价的品种
-            quotevariety = self.db.query("select v.name name from (select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s) t"
+            quotevariety = self.db.query("select v.name name from (select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s and pi.varietyid is not null) t"
                           " left join variety v on t.varietyid = v.id group by name", userid)
 
         self.render("index.html", varieties=varieties, quotevariety=quotevariety)

@@ -233,7 +233,7 @@
                     {% if quote.state == 1 %}
                     <b style="color:green">已甄选为意向供应商</b>
                     {% elif quote.state == 2 %}
-                    <b style="color:red">已拒绝，价格不合适</b>
+                    <b style="color:red">已拒绝，{{quote.message}}</b>
                     {% elif quote.state == 0 %}
                     <p><span class="label label-success" style="cursor:pointer" onclick="if(confirm('确认要操作此的报价单?')){updatequotestate({{quote.id}},1)}">不错，请供应商联系我</span></p>
                     <p><span class="label label-danger" style="cursor:pointer" quoteid="{{quote.id}}">不合适，再看看</span></p>
