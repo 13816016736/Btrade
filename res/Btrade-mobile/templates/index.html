@@ -74,7 +74,7 @@ $(function(){
                 temp.push(     '<div class="bd">');
                 temp.push(         '<h4 class="name"><i class="iconfont icon-arrow-right"></i>' + data[i].purchaseinfo[j].name + '</h4>');
                 temp.push(         '<div class="tag">' + data[i].purchaseinfo[j].specification + " " + data[i].purchaseinfo[j].origin + '</div>');
-                temp.push(         '<div class="weight">' + data[i].purchaseinfo[j].quantity + (data[i].purchaseinfo[j].unit == '吨' ? '公斤':data[i].purchaseinfo[j].unit) + '</div>');
+                temp.push(         '<div class="weight">' + data[i].purchaseinfo[j].quantity + data[i].purchaseinfo[j].unit + '</div>');
                 temp.push(         '<div class="desc">');
                 data[i].purchaseinfo[j].attachments&&temp.push( '<p class="thumb"><img src="' + data[i].purchaseinfo[j].attachments.attachment + '" data-src="' + data[i].purchaseinfo[j].attachments.attachment.replace('_thumb','') + '" alt=""></p>');
                 temp.push(             '<p>' + data[i].purchaseinfo[j].quality + '</p>');
