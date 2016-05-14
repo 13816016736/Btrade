@@ -149,7 +149,7 @@
                     <div class="cont">
                         <dl class="yc-select" id="jProvince">
                             {% if area %}
-                            <dt data-val="{{area.parentid}}">{% for province in provinces %}{% if province.id == area.parentid%}{{province.areaname}}{%end%}{% end %}</dt>
+                            <dt data-val="{{area.gparentid}}">{% for province in provinces %}{% if province.id == area.gparentid%}{{province.areaname}}{%end%}{% end %}</dt>
                             {% else %}
                             <dt data-val="0">省</dt>
                             {% end %}
@@ -161,21 +161,29 @@
                         </dl>
                         <dl class="yc-select" id="jCity">
                             {% if area %}
-                            <dt data-val="{{area.id}}">{% for c in city %}{% if c.id == area.id%}{{c.areaname}}{%end%}{% end %}</dt>
+                            <dt data-val="{{area.parentid}}">{% for c in city %}{% if c.id == area.parentid%}{{c.areaname}}{%end%}{%end%}</dt>
                             {% else %}
-                            <dt data-val="0">省/县</dt>
+                            <dt data-val="0">市</dt>
                             {% end %}
                             <dd>
-                                {% if user.has_key('areaid') and area%}
                                 {% for c in city %}
                                 <span data-val="{{c.id}}">{{c.areaname}}</span>
                                 {% end %}
-                                {% else %}
-                                <span data-val="0">省/县</span>
+                            </dd>
+                        </dl>
+                        <dl class="yc-select" id="jDistrict">
+                            {% if area %}
+                            <dt data-val="{{area.id}}">{{area.areaname}}</dt>
+                            {% else %}
+                            <dt data-val="0">区/县</dt>
+                            {% end %}
+                            <dd>
+                                {% for d in district %}
+                                <span data-val="{{d.id}}">{{d.areaname}}</span>
                                 {% end %}
                             </dd>
                         </dl>
-                        <input type="hidden" name="city">
+                        <input type="hidden" name="area">
                     </div>
                 </div>
                 <div class="group">

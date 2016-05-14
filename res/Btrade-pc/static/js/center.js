@@ -40,19 +40,39 @@ $('body').on('click', '.yc-select span', function() {
 // fill province select
 function fillProvince() {
 	var citys = {};
+	var districts = {};
 
 	function getCity(url) {
 		$.ajax({
-			url: '/getcity',
+			url: '/getparentarea',
 			dataType: 'json',
 			method: 'post',
-			data: {provinceid: url},
+			data: {parentid: url},
 			beforeSend: function(jqXHR, settings) {
 				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
 			},
 			success: function(data) {
 				citys[url] = data.data;
 				fillCity(url);
+			},
+			error: function(e) {
+				alert(e);
+			}
+		});
+	}
+
+	function getDistrict(url) {
+		$.ajax({
+			url: '/getparentarea',
+			dataType: 'json',
+			method: 'post',
+			data: {parentid: url},
+			beforeSend: function(jqXHR, settings) {
+				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+			},
+			success: function(data) {
+				districts[url] = data.data;
+				fillDistrict(url);
 			},
 			error: function(e) {
 				alert(e);
@@ -67,6 +87,15 @@ function fillProvince() {
 		});
 		arr.length > 10 ? $('#jCity dd').addClass('fold') : $('#jCity dd').removeClass('fold') ;
 		$('#jCity dd').html(arr.join(''));
+	}
+
+	function fillDistrict(val) {
+		var arr = [];
+		$.each(districts[val], function(i, item){
+			arr.push('<span data-val="' + item.id + '">' + item.areaname + '</span>');
+		});
+		arr.length > 10 ? $('#jDistrict dd').addClass('fold') : $('#jDistrict dd').removeClass('fold') ;
+		$('#jDistrict dd').html(arr.join(''));
 	}
 
 	/*暂不需要ajax请求省份
@@ -87,7 +116,7 @@ function fillProvince() {
 	});*/
 	$('#jProvince').on('click', 'span', function() {
 		var val = $(this).attr('data-val');
-		$('#jCity dt').html('省/县').attr('data-val', '0');
+		$('#jCity dt').html('市').attr('data-val', '0');
 
 		if (citys[val]) {
 			fillCity(val);
@@ -97,7 +126,18 @@ function fillProvince() {
 	});
 	$('#jCity').on('click', 'span', function() {
 		var val = $(this).attr('data-val');
-		$("input[name='city']").val(val);
+		$('#jDistrict dt').html('区/县').attr('data-val', '0');
+
+		if (districts[val]) {
+			fillDistrict(val);
+		} else {
+			getDistrict(val);
+		}
+	});
+
+	$('#jDistrict').on('click', 'span', function() {
+		var val = $(this).attr('data-val');
+		$("input[name='area']").val(val);
 	});
 }
 

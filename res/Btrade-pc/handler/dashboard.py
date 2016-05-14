@@ -17,7 +17,7 @@ class AccountHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
-        provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 0")
+        provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
         user = self.db.get("SELECT * FROM users WHERE id = %s", self.session.get("userid"))
         # user_info = self.db.get("SELECT * FROM user_info WHERE userid = %s", self.session.get("userid"))
         # if users and user_info:
@@ -25,14 +25,17 @@ class AccountHandler(BaseHandler):
         # else:
         #     user["name"] = ""
         city = []
+        district = []
         varietyids = []
         area = defaultdict(list)
         if user.has_key("areaid") and user.get("areaid") != 0:
-            area = self.db.get("SELECT id,parentid FROM area WHERE id = %s", user.get("areaid"))
-            city = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+            area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", user.get("areaid"))
+            district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+            city = self.db.query("SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid", area.get("parentid"))
+            area["gparentid"] = city[0]["parentid"]
         if user.has_key("varietyids") and user.get("varietyids") != "" and user.get("varietyids") is not None:
             varietyids = self.db.query("SELECT id,name FROM variety WHERE id in ("+user.get("varietyids")+")")
-        self.render("dashboard/account.html", user=user, provinces=provinces, city=city, area=area, varietyids=varietyids)
+        self.render("dashboard/account.html", user=user, provinces=provinces, city=city, district=district, area=area, varietyids=varietyids)
 
 class UpdateUserHandler(BaseHandler):
 
@@ -129,8 +132,8 @@ class UpdateUserInfoHandler(BaseHandler):
             sql.append("type = "+self.get_argument("type"))
         if varietyids:
             sql.append("varietyids = \""+",".join(varietyids)+"\"")
-        if self.get_argument("city"):
-            sql.append("areaid = "+self.get_argument("city"))
+        if self.get_argument("area"):
+            sql.append("areaid = "+self.get_argument("area"))
         self.db.update("UPDATE users SET "+",".join(sql)+" WHERE id = %s", self.session.get("userid"))
         self.api_response({'status':'success','message':'更新成功'})
 
