@@ -40,7 +40,7 @@ class PurchaseHandler(BaseHandler):
                     varietys = self.db.query("SELECT id,name,origin FROM variety WHERE id in ("+user["varietyids"]+")")
                 user["name"] = user.get("name")
                 #取上次采购单的交货地
-                purchase = self.db.get("select areaid from purchase where userid = %s order by createtime desc", self.session.get("userid"))
+                purchase = self.db.get("select areaid from purchase where userid = %s order by createtime desc limit 1", self.session.get("userid"))
                 if purchase:
                     area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase.get("areaid"))
                     district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
