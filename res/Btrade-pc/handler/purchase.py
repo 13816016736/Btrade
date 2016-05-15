@@ -13,6 +13,9 @@ class PurchaseHandler(BaseHandler):
 
     def get(self):
         provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
+        city = []
+        district = []
+        area = defaultdict(list)
         if self.session.get("uploadfiles"):
             for key, uploadfiles in self.session.get("uploadfiles").items():
                 for uploadfile in  uploadfiles:
@@ -36,11 +39,18 @@ class PurchaseHandler(BaseHandler):
                 if user["varietyids"]:
                     varietys = self.db.query("SELECT id,name,origin FROM variety WHERE id in ("+user["varietyids"]+")")
                 user["name"] = user.get("name")
-                self.render("purchase.html", provinces=provinces, user=user, mypurchase=mypurchase, varietys=varietys)
+                #取上次采购单的交货地
+                purchase = self.db.get("select areaid from purchase where userid = %s order by createtime desc", self.session.get("userid"))
+                if purchase:
+                    area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase.get("areaid"))
+                    district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+                    city = self.db.query("SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid", area.get("parentid"))
+                    area["gparentid"] = city[0]["parentid"]
+                self.render("purchase.html", provinces=provinces, city=city, district=district, area=area, user=user, mypurchase=mypurchase, varietys=varietys)
             else:
-                self.render("purchase.html", provinces=provinces)
+                self.render("purchase.html", provinces=provinces, city=city, district=district, area=area)
         else:
-            self.render("purchase.html", provinces=provinces)
+            self.render("purchase.html", provinces=provinces, city=city, district=district, area=area)
 
     def post(self):
         data = {}
