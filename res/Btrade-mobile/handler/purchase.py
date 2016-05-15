@@ -50,7 +50,7 @@ class PurchaseHandler(BaseHandler):
         if self.session.get("userid", None):
             userid = self.session.get("userid")
             user = self.db.get("select varietyids from users where id = %s", userid)
-            if user:
+            if user and user.get("varietyids", None):
                 myvarietyid = user["varietyids"]
         purchases = self.db.query("select ta.*,u.nickname,u.name uname,u.type from (select pis.*,count(q.id) quotecount from "
                                   "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
