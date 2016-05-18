@@ -318,7 +318,7 @@
                                     {% end %}
                                 </dd>
                             </dl>
-                            <input type="hidden" name="address" id="address" value="">
+                            <input type="hidden" name="address" id="address" value="{% if area %}{{area.id}}{% end %}">
                             <label><input class="cbx" type="checkbox" id="jAddress">亲自上门看货提货</label>
                             <span class="hide" id="jAddressError">请选择地址</span>
                             <span class="tips">若期望报价含运费，则需告知交货地</span>
