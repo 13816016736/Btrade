@@ -19,7 +19,7 @@ class LoginHandler(BaseHandler):
             self.render("login.html", error="用户名或邮箱不能为空", next_url=self.get_argument("next", "/"))
             return
         #判断是否是手机号登录
-        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\d{8}$')
+        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
         phonematch = phonepattern.match(username)
         if phonematch:
             author = self.db.get("SELECT * FROM users WHERE phone = %s", username)
