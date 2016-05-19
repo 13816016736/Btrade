@@ -135,7 +135,7 @@
         // 添加新品种
         $('.list').on('click', '.item', function() {
             var key = $(this).data('key');
-            if (attentionArr.join("/").indexOf(key) === -1) {
+            if ($.inArray(key, attentionArr) === -1) {
                 attentionArr.push(key);
                 $('#jMyTags').append('<li data-key="' + key + '"><span>' + $(this).html() + '<i></i></span></li>');
             } else {
