@@ -194,7 +194,7 @@
                     {% if quote.state == 1 %}
                     <span class="choose">已甄选为意向供应商</span>
                     {% elif quote.state == 2 %}
-                    <span class="refuse">已拒绝，价格不合适</span>
+                    <span class="refuse">已拒绝{% if quote.message %}，{{quote.message}}{% end %}</span>
                     {% elif quote.state == 0 %}
                     <a class="smile" href="javascript:void(0)" onclick="if(confirm('确认要操作此的报价单?')){updatequotestate({{quote.id}},1)}">
                         <i class="icons icons-smile"></i>不错，请供应商联系我
