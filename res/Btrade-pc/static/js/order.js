@@ -215,14 +215,10 @@ var fileuploadOptions = {
     done: function (e, data) {
     	var self = $(this).parent();
     	if (data.result.status=="success") {
-    		self.hide().next().show().html('<img src="' + data.result.path + '" alt="" /><i class="del-pic" title="删除"></i>');
+    		self.hide().next().show().html('<img data-src="' + data.result.path + '" src="' + data.result.path + '" alt="" /><i class="del-pic" title="删除"></i>');
         }else{
         	alert(data.result.message);
         }
-        //$.each(data.files, function (index, file) {
-        //	console.log(file);
-        //    self.hide().next().show().html('<img src="' + file.url + '" alt="" /><i class="del-pic" title="删除"></i>');
-        //});
     }
 }
 
@@ -235,7 +231,7 @@ $('#jInventoryPlus .add').on('click', function() {
 	$('#jInventory .upload:last input').fileupload(fileuploadOptions);
 });
 
-//  从Excel导入
+// 从Excel导入
 $('#jInventoryPlus .import').on('click', function() {
 	$('#jModalImport').modal();
 });
@@ -660,8 +656,6 @@ function checkForm() {
 	})
 	result.deadline = $('#jDeadline input:radio:checked').val() || '';
 	result.others = $('#jOthers').val();
-
-	// console.log(result)
 
 	$tr.each(function(i) {
 		var $variety = $(this).find('.ipt-variety'),	// 药材品种
