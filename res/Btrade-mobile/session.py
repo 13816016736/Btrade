@@ -33,8 +33,8 @@ class Session(SessionData):
 		self.session_id = current_session.session_id
 		self.hmac_key = current_session.hmac_key
 	
-	def save(self, timeout=None):
-		self.session_manager.set(self.request_handler, self, timeout)
+	def save(self):
+		self.session_manager.set(self.request_handler, self)
 
 
 class SessionManager(object):
@@ -90,14 +90,12 @@ class SessionManager(object):
 				session[key] = data
 		return session
 	
-	def set(self, request_handler, session, timeout):
+	def set(self, request_handler, session):
 		request_handler.set_secure_cookie("session_id", session.session_id)
 		request_handler.set_secure_cookie("verification", session.hmac_key)
 
 		session_data = ujson.dumps(dict(session.items()))
-		if timeout is None:
-			timeout = self.session_timeout
-		self.redis.setex(session.session_id, timeout, session_data)
+		self.redis.setex(session.session_id, self.session_timeout, session_data)
 
 
 	def _generate_id(self):

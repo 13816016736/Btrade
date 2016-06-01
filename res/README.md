@@ -16,12 +16,13 @@ http://old.sebug.net/paper/books/tornado/
 1.tornado
 2.torndb
 3.redis
-4.ujson（安装ujson，源码安装参考https://pypi.python.org/simple/ujson/）
-PIL install:http://cn-popeye.iteye.com/blog/1236691#bc2249888
+4.ujson（安装ujson，源码安装参考https://pypi.python.org/simple/ujson/） 用exe才安装成功
+PIL install:http://cn-popeye.iteye.com/blog/1236691#bc2249888 用exe才安装成功
 5.jinja2（模板引擎）
 6.PIL（生成缩略图用的python Image Library，http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/00140767171357714f87a053a824ffd811d98a83b58ec13000）   如果还不行就用源码安装http://effbot.org/downloads#pil
 (注意:用PIL上传缩略图时,一定要在原图上传完了之后把原图上传的流给close掉,在读取保存缩略图,不然会报错)
 7.requests
+8.python-mysql  用.whl才安装成功
 
 
 tornado模板中get_template_namespace方法自动将变量加载到全局命名空间，所以模板中可以直接使用，也可以重写get_template_namespace方法，加入业务中需要的变量
