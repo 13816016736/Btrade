@@ -409,7 +409,7 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-form .item .current{display:block;}
 .yc-form .item .btn-send{position:absolute;top:10px;right:10px;width:90px;border:1px solid #f90;padding:0 5px;font-size:1.2rem;-webkit-border-radius:4px;border-radius:4px;color:#f90;background-color:#fff;}
 .yc-form .item .btn-send[disabled]{background-color:#ddd;border-color:#ddd;color:#fff;}
-.yc-form .button{padding:40px 0;background-color:#eee;text-align:center;}
+.yc-form .button{padding:10px 0;background-color:#eee;text-align:center;}
 .yc-form .button .submit{width:150px;height:40px;background-color:#f90;border:none;color:#fff;-webkit-border-radius:4px;border-radius:4px;vertical-align:top;}
 .yc-form .button .reg{display:inline-block;width:150px;height:40px;margin-left:10px;line-height:40px;border:1px solid #f90;color:#f90;background-color:#fff;-webkit-border-radius:4px;border-radius:4px;vertical-align:top;text-decoration:none;}
 .yc-form-r{text-align:right;}
@@ -446,6 +446,14 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-login .title p{margin:0 0 0 20px;line-height:24px;font-size:1.2rem;}
 .yc-login .item{padding-left:50px;}
 .yc-login .item i{left:16px;right:auto;color:#aaa;font-size:2rem;}
+.yc-login .tr{padding:10px;text-align:right;border-top:1px solid #ddd;background:#eee;}
+.yc-login .step{padding:20px 0;text-align:center;background:#eee;}
+.yc-login .step li{display:inline-block;}
+.yc-login .step li span{display:inline-block;width:24px;height:24px;line-height:24px;color:#fff;text-align:center;background-color:#ccc;-webkit-border-radius:100%;border-radius:100%;}
+.yc-login .step li strong{margin-left:10px;font-size:14px;font-weight:100;}
+.yc-login .step li b{margin:0 10px;font-weight:100;}
+.yc-login .step .curr span{background-color:#ffa902;}
+.yc-login .step .curr strong{color:#333;color:#ffa902;}
 
 /* 联系我们 */
 .yc-contentus{padding-top:70px;text-align:center;color:#aaa;}
