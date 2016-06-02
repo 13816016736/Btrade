@@ -14,6 +14,7 @@ class PurchaseHandler(BaseHandler):
         page = (int(page) - 1) if page > 0 else 0
         nav = {
             'model': 'purchase/purchaselist/type/'+type+'/starttime/'+starttime+'/endtime/'+endtime,
+            'cur': page + 1,
             'num': self.db.execute_rowcount("select id from purchase"),
         }
         #查询条件

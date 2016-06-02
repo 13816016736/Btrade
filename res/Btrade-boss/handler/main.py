@@ -16,6 +16,7 @@ class UserListHandler(BaseHandler):
         page = (int(page) - 1) if page > 0 else 0
         nav = {
             'model': 'users/userlist',
+            'cur': page + 1,
             'num': self.db.execute_rowcount("SELECT * FROM users"),
         }
         users = self.db.query("SELECT * FROM users LIMIT %s,%s", page * config.conf['POST_NUM'], config.conf['POST_NUM'])

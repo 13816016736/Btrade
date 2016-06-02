@@ -1,7 +1,28 @@
 <div>
     <ul class="pagination">
-        {% for i in range(1, nav['num']+1) %}
+        {% set start = nav['cur'] - 5 if nav['cur'] - 5 > 0 else 1 %}
+        {% set end = nav['cur'] + 5 if nav['cur'] + 5 < nav['num'] else nav['num'] %}
+
+        {% if end - start < 10 and nav['num'] < 10 %}
+        {% set start = 1 %}
+        {% set end = nav['num'] %}
+        {% elif end - start < 10 and nav['num'] > 10 %}
+        {% if nav['cur'] - 5 < 0 %}
+        {% set end = nav['num'] - start if nav['num'] - start < 10 else start + 9 %}
+        {% end %}
+        {% if nav['cur'] + 5 > nav['num'] %}
+        {% set start = start - 1 if start - 1 < 10 else end - 9 %}
+        {% end %}
+        {% end %}
+
+        {% if start > 1 %}
+        <li><a href="/{{ nav['model'] }}/page/1">首页</a></li>
+        {% end %}
+        {% for i in range(start, end + 1) %}
             <li id="page-{{ i }}"><a href="/{{ nav['model'] }}/page/{{ i }}">{{ i }} <span class="sr-only">(current)</span></a></li>
+        {% end %}
+        {% if end < nav['num'] %}
+        <li><a href="/{{ nav['model'] }}/page/{{ nav['num'] }}">末页</a></li>
         {% end %}
     </ul>
 </div>
