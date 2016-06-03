@@ -306,6 +306,15 @@ $(function(){
         return false;
     });
 
+    $('.qrcode').on('mouseenter', function() {
+        var $img = $(this).find('img'),
+            src2 = $img.data('src');
+        if (src2) {
+            $img.attr('src', src2).removeAttr('data-src')
+        }
+
+    });
+
     /**
      * [dateDiff 算时间差]
      * @param  {[type=Number]} hisTime [历史时间戳，必传]
