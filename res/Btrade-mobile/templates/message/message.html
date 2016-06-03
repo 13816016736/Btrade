@@ -1,24 +1,17 @@
-{% extends "basenohead.html" %}
+{% extends "../basenohead.html" %}
 {% block container %}
 <section class="yc-content">
     <div class="yc-message">
-        <div class="head success">
-            <h1 class="title"><i class="iconfont icon-face"></i>成功</h1>
+        <div class="head {% if bool %}success{% else %}fail{% end %}">
+            <h1 class="title"><i class="iconfont {% if bool %}icon-face{% else %}icon-frown{% end %}"></i></h1>
             <div class="text">
-                <p>药材购已通知采购商尽快评估，祝您做成这单</p>
-            </div>
-        </div>
-
-        <div class="head fail">
-            <h1 class="title"><i class="iconfont icon-frown"></i>失败</h1>
-            <div class="text">
-                <p>药材购已通知采购商尽快评估，祝您做成这单</p>
+                <p>{{message}}</p>
             </div>
         </div>
 
         <div class="main">
             <div class="link">
-                <a href="javascript:history.back(-1);">返回上一页</a>
+                <a href="{{url}}">返回上一页</a>
             </div>
 
             <div class="weixin">
@@ -29,10 +22,10 @@
                 </div>
             </div>
 
-            <div class="user">
+            <!--<div class="user">
                 <p>可在【我的工作台】看到和管理报价</p>
                 <a class="back" href="/center">去看看</a>
-            </div>
+            </div>-->
         </div>
     </div>
 </section><!-- /yc-content -->

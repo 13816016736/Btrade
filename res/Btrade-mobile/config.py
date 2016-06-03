@@ -68,6 +68,9 @@ handlers = [
     (r"/removepurchase", RemovePurchaseHandler),
     (r"/wxcb", WxcbHandler),
     (r"/wechartconfig", WechartConfigHandler),
+    (r"/forgetpwd", ForgetPwdHandler),
+    (r"/setpwd", SetPwdHandler),
+    (r"/getsmscodeforpwd", GetSmsCodeForPwdHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 

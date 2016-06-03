@@ -31,15 +31,15 @@ class BaseHandler(tornado.web.RequestHandler):
   def success(self, message='操作成功', url=''):
         """操作成功提示
         """
-        self.render('message/success.html', message=message, url=url)
+        self.render('message/message.html', bool=True, message=message, url=url)
 
   def failure(self, message="操作失败", url=''):
-        self.render('message/failure.html', message=message, url=url)
+        self.render('message/message.html', bool=False, message=message, url=url)
 
   def error(self, message="出现错误了", url=''):
         """操作失败提示
         """
-        self.render('message/error.html', message=message, url=url)
+        self.render('message/message.html', bool=False, message=message, url=url)
 
   def api_response(self, data):
         """将数据转成json返回给客户端"""

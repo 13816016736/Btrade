@@ -4,7 +4,7 @@ import tornado.web
 from base import BaseHandler
 import config
 import json, os, datetime
-import time
+import time,utils,re
 from collections import defaultdict
 from utils import *
 from wechatjsapi import *
@@ -242,3 +242,65 @@ class WechartConfigHandler(BaseHandler):
             self.api_response({'status':'success','message':'获取微信配置成功','data':wechart})
         else:
             self.api_response({'status':'fail','message':'获取微信配置失败'})
+
+class ForgetPwdHandler(BaseHandler):
+    def get(self):
+        self.render("find_password.html")
+
+    def post(self):
+        smscode = self.get_argument("smscode")
+        phone = self.get_argument("phone")
+        if self.db.get("select * from users where phone = %s" , phone):
+            # 验证手机验证码
+            if self.session.get("smscode") == smscode:
+                self.session["phone"] = phone
+                self.session.save()
+                self.render("find_password_2.html", smscode=smscode)
+            else:
+                self.error("手机验证码错误","/forgetpwd")
+        else:
+            self.error("手机号不存在","/forgetpwd")
+
+class SetPwdHandler(BaseHandler):
+
+    def post(self):
+        smscode = self.get_argument("smscode")
+        password = self.get_argument("password")
+        repassword = self.get_argument("repassword")
+        phone = self.session.get("phone")
+        if password is None and repassword is None and password <> repassword:
+            self.error("密码和确认密码填写错误","/forgetpwd")
+        user = self.db.get("select id from users where phone = %s", phone)
+        if len(user) == 1:
+            # 验证手机验证码
+            if self.session.get("smscode") == smscode:
+                self.db.update("update users set password = %s where id = %s", utils.md5(str(password + config.salt)), user["id"])
+                self.success("操作成功","/")
+            else:
+                self.error("手机验证码错误","/forgetpwd")
+        else:
+            self.error("手机号存在异常，请联系客服人员","/forgetpwd")
+
+class GetSmsCodeForPwdHandler(BaseHandler):
+
+    def post(self):
+        phone = self.get_argument("phone")
+        phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
+        phonematch = phonepattern.match(phone)
+        if phonematch is None:
+            self.api_response({'status':'fail','message':'手机号填写错误'})
+            return
+        phonecount = self.db.execute_rowcount("select * from users where phone = %s", phone)
+        if phonecount == 0:
+            self.api_response({'status':'fail','message':'此手机号暂未注册'})
+            return
+        smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
+        message = utils.getSmsCode(phone, smscode)
+        import json
+        message = json.loads(message.encode("utf-8"))
+        if message["result"]:
+            self.session["smscode"] = smscode
+            self.session.save()
+            self.api_response({'status':'success','message':'短信验证码发送成功，请注意查收'})
+        else:
+            self.api_response({'status':'fail','message':'短信验证码发送失败，请稍后重试'})
