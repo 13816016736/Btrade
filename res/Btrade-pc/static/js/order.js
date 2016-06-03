@@ -215,7 +215,7 @@ var fileuploadOptions = {
     done: function (e, data) {
     	var self = $(this).parent();
     	if (data.result.status=="success") {
-    		self.hide().next().show().html('<img data-src="' + data.result.path + '" src="' + data.result.path + '" alt="" /><i class="del-pic" title="删除"></i>');
+    		self.hide().next().show().html('<img data-src="' + data.result.path.replace('_thumb','') + '" src="' + data.result.path + '" alt="" /><i class="del-pic" title="删除"></i>');
         }else{
         	alert(data.result.message);
         }

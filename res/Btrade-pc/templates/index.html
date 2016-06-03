@@ -6,18 +6,8 @@
     <div class="full-banner">
         <div class="bd">
             <ul class="yc-ul">
-                <li style="background-image:url({{ static_url('images/banner1.jpg')}})">
-                    <div class="download">
-                        <a href="#">App Store下载</a>
-                        <a href="#">Andriod下载</a>
-                    </div>
-                </li>
-                <li style="background-image:url({{ static_url('images/banner2.jpg')}})">
-                    <div class="download">
-                        <a href="#">App Store下载</a>
-                        <a href="#">Andriod下载</a>
-                    </div>
-                </li>
+                <li style="background-image:url({{ static_url('images/banner1.jpg')}})"></li>
+                <li style="background-image:url({{ static_url('images/banner2.jpg')}})"></li>
             </ul>
         </div>
         <div class="ctrl prev"></div>
@@ -201,7 +191,7 @@
                         <small>裸价</small>
                         <div class="qrcode">
                             我也去报价
-                            <span><img src="http://qr.liantu.com/api.php?text={{config.host}}/purchase/purchaseinfo/{{quote.pid}}"/></span>
+                            <span><img src="/static/images/blank.gif" data-src="http://qr.liantu.com/api.php?text={{config.host}}/purchase/purchaseinfo/{{quote.pid}}"/></span>
                         </div>
                     </div>
                 </div>
