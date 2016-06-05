@@ -16,7 +16,9 @@ class UserListHandler(BaseHandler):
         query = self.get_argument("query", None)
         condition = ""
         if query:
-            condition = " where phone = %s" % query
+            condition = " where phone =" \
+                        "" \
+                        " %s" % query
         page = (int(page) - 1) if page > 0 else 0
         nav = {
             'model': 'users/userlist',
@@ -39,10 +41,14 @@ class UserInfoHandler(BaseHandler):
         if self.get_argument("userid") is None or self.get_argument("nickname") is None or self.get_argument("type") is None or self.get_argument("name") is None or self.get_argument("phone") is None:
             self.api_response({'status':'fail','message':'请完整填写表单'})
         else:
-            self.db.execute("update users set nickname=%s,type=%s,name=%s,phone=%s where id = %s",
-                            self.get_argument("nickname"), self.get_argument("type"), self.get_argument("name"),
-                            self.get_argument("phone"), self.get_argument("userid"))
-            self.api_response({'status':'success','message':'提交成功'})
+            user = self.db.query("select * from users where phone = %s and id != %s", self.get_argument("phone"), self.get_argument("userid"))
+            if user:
+                self.api_response({'status':'fail','message':'此手机号已被他人注册过'})
+            else:
+                self.db.execute("update users set nickname=%s,type=%s,name=%s,phone=%s where id = %s",
+                                self.get_argument("nickname"), self.get_argument("type"), self.get_argument("name"),
+                                self.get_argument("phone"), self.get_argument("userid"))
+                self.api_response({'status':'success','message':'提交成功'})
 
 class UserRecoverHandler(BaseHandler):
     @tornado.web.authenticated
