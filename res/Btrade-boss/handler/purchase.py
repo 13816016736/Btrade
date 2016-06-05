@@ -11,7 +11,7 @@ class PurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, type=-1, starttime=0, endtime=0, page=0):
-        query = self.get_argument("query")
+        query = self.get_argument("query", None)
         page = (int(page) - 1) if page > 0 else 0
         #查询条件
         condition = []
