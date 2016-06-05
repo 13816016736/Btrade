@@ -11,12 +11,8 @@ class PurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, type=-1, starttime=0, endtime=0, page=0):
+        query = self.get_argument("query")
         page = (int(page) - 1) if page > 0 else 0
-        nav = {
-            'model': 'purchase/purchaselist/type/'+type+'/starttime/'+starttime+'/endtime/'+endtime,
-            'cur': page + 1,
-            'num': self.db.execute_rowcount("select id from purchase"),
-        }
         #查询条件
         condition = []
         if int(type) >= 0:
@@ -24,9 +20,20 @@ class PurchaseHandler(BaseHandler):
         if starttime !="" and endtime != "":
             condition.append("p.createtime > "+str(int(time.mktime(time.strptime(starttime,'%Y-%m-%d %H:%M')))))
             condition.append("p.createtime < "+str(int(time.mktime(time.strptime(endtime,'%Y-%m-%d %H:%M')))))
+        if query:
+            varieties = self.db.query("select id from variety where name = %s", query)
+            if len(varieties) == 1:
+                p = self.db.query("select purchaseid from purchase_info where varietyid = %s", varieties[0]["id"])
+                condition.append("p.id in ("+",".join([str(pur["purchaseid"]) for pur in p])+")")
         conditionstr = ""
         if condition:
             conditionstr = ("where "+(" and ".join(condition)))
+        nav = {
+            'model': 'purchase/purchaselist/type/'+type+'/starttime/'+starttime+'/endtime/'+endtime,
+            'cur': page + 1,
+            'num': self.db.execute_rowcount("select id from purchase p "+conditionstr),
+            'query': "?query=%s" % query,
+        }
         purchaseinf = defaultdict(list)
         purchases = self.db.query("select t.*,a.position from "
                                   "(select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id "+
@@ -57,7 +64,7 @@ class PurchaseHandler(BaseHandler):
         stat = {}
         for r in results:
             stat[r.status] = r.count
-        self.render("purchase.html", purchases=purchases, nav=nav, stat=stat, type=type, starttime=starttime, endtime=endtime)
+        self.render("purchase.html", purchases=purchases, nav=nav, stat=stat, type=type, starttime=starttime, endtime=endtime, query=query)
 
     def post(self):
         pass

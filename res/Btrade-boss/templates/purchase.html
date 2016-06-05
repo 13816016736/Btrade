@@ -33,6 +33,9 @@
                 </div>
             </div>
             <div class="form-group">
+                <input class="form-control" id="query" size="80" name="query" placeholder="品种名" type="text" value="{% if query %}{{query}}{% end %}">
+            </div>
+            <div class="form-group">
                 <button type="button" class="btn btn-primary btn-query" id="pquery">查询</button>
             </div>
             <div class="form-group">
@@ -270,10 +273,11 @@ $(document).ready(function(){
     $("#pquery").click(function(){
         var starttime = $("#starttime").val();
         var endtime = $("#endtime").val();
-        if (starttime != "" && endtime != "") {
-            window.location.href='/purchase/purchaselist/type/{{type}}/starttime/'+starttime+'/endtime/'+endtime;
+        var query = $("#query").val();
+        if ((starttime != "" && endtime != "") || query !="") {
+            window.location.href='/purchase/purchaselist/type/{{type}}/starttime/'+starttime+'/endtime/'+endtime+'?query='+query;
         }else{
-            alert("时间范围需填写完整");
+            alert("时间范围或品种名需填写完整");
         }
     });
 })
