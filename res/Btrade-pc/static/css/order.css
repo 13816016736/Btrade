@@ -94,6 +94,7 @@
 .variety-tags .search dd span{display:block;margin:0;line-height:24px;border:none;border-radius:0;}
 .variety-tags .search dd span:hover{background-color:#ffa902;color:#fff;}
 .variety-tags .search dd span.on{background-color:#ffa902;color:#fff;}
+.variety-tags .search dd em{display:block;line-height:24px;padding:1px 4px;color:#f00;}
 .quality-tags{position:relative;z-index:9;display:none;/*margin-top:10px;*/}
 .quality-tags .inner{position:absolute;top:0;left:-5px;width:260px;padding:5px;background-color:#fff;border:1px solid #999;border-top:0;}
 .quality-tags dl{margin:0;line-height:30px;}
