@@ -137,7 +137,7 @@
                     </div>
                     <div class="td3">
                         <div class="qrcode">
-                            <span><img src="http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}"/></span>
+                            <span><img src="/static/images/blank.gif" data-src="http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}"/></span>
                         </div>
                         <div class="detail">
                             微信扫一扫<br>查看详情<br>立即报价
@@ -309,10 +309,7 @@ $(function(){
     $('.qrcode').on('mouseenter', function() {
         var $img = $(this).find('img'),
             src2 = $img.data('src');
-        if (src2) {
-            $img.attr('src', src2).removeAttr('data-src')
-        }
-
+        src2 && $img.attr('src', src2).removeAttr('data-src');
     });
 
     /**

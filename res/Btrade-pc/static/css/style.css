@@ -36,6 +36,7 @@ a:focus{outline:none;}
 .icon-excel:before { content: "\e60c"; }
 .icon-camera:before { content: "\e608"; }
 .icon-radio-yes:before { content: "\e601"; }
+.icon-check:before { content: "\e614"; }
 .icon-plus:before { content: "\e609"; }
 .icon-wechat:before { content: "\e610"; }
 .icon-envelope:before { content: "\e611"; }
@@ -158,6 +159,15 @@ footer .logo-mini{position:absolute;top:-25px;right:15px;}
 .yc-bubble{margin-top:20px;padding:6px 10px;background-color:#ffffdb;border:1px solid #ccc;overflow:hidden;}
 .yc-bubble span{line-height:24px;font-size:14px;color:#333;}
 .yc-bubble i{font-size:18px;color:#333;}
+
+/* 消息提示 */
+.yc-msg{width:740px;margin:100px auto;font-size:14px;}
+.yc-msg .cont{padding:80px 140px;border:1px solid #ddd;}
+.yc-msg .cont .iconfont{display:inline-block;line-height:1;font-size:90px;color:#ffa902;vertical-align:middle;}
+.yc-msg .cont .txt{display:inline-block;width:330px;margin-left:20px;vertical-align:middle;}
+.yc-msg .cont .txt strong{display:block;margin-bottom:10px;font-size:26px;font-weight:100;color:#333;}
+.yc-msg .cont .txt span{color:#ababab;}
+.yc-msg .link{padding:40px 100px;color:#005fe1;text-align:right;border:1px solid #ddd;border-top:none;}
 
 /* 看大图 */
 .preview{position:relative;width:400px;height:400px;margin:30px auto;}
