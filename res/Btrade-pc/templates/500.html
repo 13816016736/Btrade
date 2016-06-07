@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <title>500-药材购</title>
+    <!-- 浏览器高速模式 -->
+    <meta name="renderer" content="webkit" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+
+<section class="sec">
+    <div class="yc-page-error">
+        <div class="pic">
+            <img width="361" height="156" src="images/banner-500.png" alt="页面无法访问">
+            <span>（错误类型：500）</span>
+        </div>
+        <div class="tips">
+            <i class="icons sad"></i>
+            <strong>抱歉，出错了！但是我们已经派人在抢修了......</strong>
+        </div>
+        <div class="links">
+            <a class="btn btn-orange" href="#"><i class="icons back"></i>返回上一页</a>
+        </div>
+    </div>
+</section>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
+</script>
+</body>
+
+</html>
