@@ -57,7 +57,7 @@
                 <div class="bd">
                     <dl class="yc-demand">
                         <dt>交货地：</dt>
-                        <dd>{{ purchase.position }}</dd>
+                        <dd>{% if purchase.areaid %}{{ purchase.position }}{% else %}亲自上门看货提货{% end %}</dd>
                         <dt>发票要求：</dt>
                         <dd>
                             {% if purchase.invoice == 1%}

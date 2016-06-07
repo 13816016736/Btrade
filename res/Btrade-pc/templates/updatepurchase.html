@@ -226,7 +226,7 @@
                         </div>
                         <div class="cont">
                             <dl class="yc-select" id="jProvince">
-                                <dt data-val="{{area.gparentid}}">{% for province in provinces %}{% if province.id == area.gparentid%}{{province.areaname}}{%end%}{% end %}</dt>
+                                <dt data-val="{% if area.has_key('gparentid') %}{{area.gparentid}}{% else %}0{% end %}">{% if area.has_key("gparentid") %}{% for province in provinces %}{% if province.id == area.gparentid%}{{province.areaname}}{%end%}{% end %}{% else %}省{% end %}</dt>
                                 <dd>
                                     {% for province in provinces %}
                                     <span data-val="{{province.id}}">{{province.areaname}}</span>
@@ -234,22 +234,26 @@
                                 </dd>
                             </dl>
                             <dl class="yc-select" id="jCity">
-                                <dt data-val="{{area.parentid}}">{% for c in city %}{% if c.id == area.parentid%}{{c.areaname}}{%end%}{%end%}</dt>
+                                <dt data-val="{% if area.has_key('parentid') %}{{area.parentid}}{% else %}0{% end %}">{% if area.has_key("parentid") %}{% for c in city %}{% if c.id == area.parentid%}{{c.areaname}}{%end%}{%end%}{% else %}市/县{% end %}</dt>
                                 <dd>
+                                    {% if city %}
                                     {% for c in city %}
                                     <span data-val="{{c.id}}">{{c.areaname}}</span>
+                                    {% end %}
                                     {% end %}
                                 </dd>
                             </dl>
                             <dl class="yc-select" id="jDistrict">
-                                <dt data-val="{{area.id}}">{{area.areaname}}</dt>
+                                <dt data-val="{% if area.has_key('id') %}{{area.id}}{% else %}0{% end %}">{% if area.has_key("gparentid") %}{{area.areaname}}{% else %}市/县{% end %}</dt>
                                 <dd>
+                                    {% if district %}
                                     {% for d in district %}
                                     <span data-val="{{d.id}}">{{d.areaname}}</span>
                                     {% end %}
+                                    {% end %}
                                 </dd>
                             </dl>
-                            <input type="hidden" name="address" id="address" value="{{area.id}}">
+                            <input type="hidden" name="address" id="address" value="{{purchase.areaid}}">
                             <label><input class="cbx" type="checkbox" id="jAddress" {% if purchase.areaid == 0 %}checked{% end %}>亲自上门看货提货</label>
                             <span class="hide" id="jAddressError">请选择地址</span>
                             <span class="tips">若期望报价含运费，则需告知交货地</span>

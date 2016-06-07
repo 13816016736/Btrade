@@ -72,6 +72,7 @@ handlers = [
     (r"/setpwd", SetPwdHandler),
     (r"/getsmscodeforpwd", GetSmsCodeForPwdHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
+    (r".*", BaseHandler),
 ];
 
 #参数配置项

@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>404 Not FOUND</title>
-    <link href="{{ static_url('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
-</head>
-<body>
-    <diV class="container">
-        <h1>404 NOT FOUND</h1>
-        <p>您访问的页面不存在！</p>
-        <a href="/">返回首页</a>
-    </diV>
-</div>
-</body>
-</html>
+{% extends "../base.html" %}
+{% block container %}
+<section class="sec">
+    <div class="yc-page-error">
+        <div class="pic"><img width="180" height="78" src="{{ static_url('images/banner-404.png')}}" alt="页面无法访问"></div>
+        <div class="tips">
+            <i class="iconfont icon-frown"></i>
+            <strong>很抱歉，您访问的页面找不到了......</strong>
+        </div>
+        <div class="links">
+            <a class="btn btn-warning" href="/"><i class="icons back"></i>返回首页</a>
+        </div>
+    </div>
+</section>
+{% end %}

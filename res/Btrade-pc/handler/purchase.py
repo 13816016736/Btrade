@@ -41,7 +41,7 @@ class PurchaseHandler(BaseHandler):
                 user["name"] = user.get("name")
                 #取上次采购单的交货地
                 purchase = self.db.get("select areaid from purchase where userid = %s order by createtime desc limit 1", self.session.get("userid"))
-                if purchase:
+                if purchase and purchase.get("areaid") != 0:
                     area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase.get("areaid"))
                     district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
                     city = self.db.query("SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid", area.get("parentid"))
@@ -436,10 +436,14 @@ class MyPurchaseUpdateHandler(BaseHandler):
         self.session.save()
 
         provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
-        area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase["areaid"])
-        district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
-        city = self.db.query("SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid", area.get("parentid"))
-        area["gparentid"] = city[0]["parentid"]
+        area = {}
+        district = None
+        city = None
+        if purchase["areaid"] != 0:
+            area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase["areaid"])
+            district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+            city = self.db.query("SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid", area.get("parentid"))
+            area["gparentid"] = city[0]["parentid"]
 
         # specifications = self.db.query("select * from specification where varietyid in ("+",".join(varietyids)+")")
         # specificationinf = defaultdict(list)
