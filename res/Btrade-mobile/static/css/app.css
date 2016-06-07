@@ -519,3 +519,14 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .gallery-close i{font-size:3rem;color:#fff;}
 .gallery-num{position:absolute;left:0;bottom:0;width:100%;line-height:44px;color:#fff;text-align:center;}
 .gallery-body{overflow:hidden;}
+
+
+/* yc-page-error */
+.yc-page-error{padding:50px 0;text-align:center;}
+.yc-page-error .pic span{display:block;font-size:14px;}
+.yc-page-error .tips{margin-top:50px;}
+.yc-page-error .tips .iconfont{margin-right:10px;font-size:3rem;color:#f90;vertical-align:middle;}
+.yc-page-error .tips strong{display:inline-block;font-size:1.6rem;font-weight:100;color:#ababab;vertical-align:middle;text-align:left;}
+.yc-page-error .links{margin-top:50px;}
+.yc-page-error .links .btn{width:150px;line-height:30px;background-color:#f90;}
+.yc-page-error .links .back{width:20px;height:20px;background-position:-177px -157px;}
