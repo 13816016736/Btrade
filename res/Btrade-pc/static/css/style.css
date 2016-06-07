@@ -34,6 +34,7 @@ header,footer,.sec,.container{min-width:1170px;}
 .icon-question:before { content: "\e605"; }
 .icon-lock:before { content: "\e612"; }
 .icon-excel:before { content: "\e60c"; }
+.icon-frown:before { content: "\e617"; }
 .icon-camera:before { content: "\e608"; }
 .icon-radio-yes:before { content: "\e601"; }
 .icon-check:before { content: "\e614"; }
@@ -46,8 +47,6 @@ header,footer,.sec,.container{min-width:1170px;}
 .icon-close:before { content: "\e607"; }
 .icon-question1:before { content: "\e606"; }
 .icon-unfold:before { content: "\e60b"; }
-
-
 
 /* iconfont color */
 .icon-radio-yes{color:#4cc035;vertical-align:middle;}
