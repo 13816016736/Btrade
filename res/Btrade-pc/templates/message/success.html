@@ -1,4 +1,17 @@
-<div class="alert alert-success  alert-dismissable">
-    <a href="{{url}}">返回</a>
-    <p>{{ message }}</p>
-</div>
+{% extends "../base.html" %}
+{% block container %}
+<section class="sec">
+    <div class="yc-msg">
+        <div class="cont">
+            <div class="iconfont icon-check"></div>
+            <div class="txt">
+                <strong>提交成功！</strong>
+                <span>{{message}}</span>
+            </div>
+        </div>
+        <div class="link">
+            <a href="{{url}}">返回<i class="iconfont icon-arrow"></i></a>
+        </div>
+    </div>
+</section>
+{% end %}

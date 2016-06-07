@@ -1,44 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
-    <title>消息-药材购</title>
-    <!-- 浏览器高速模式 -->
-    <meta name="renderer" content="webkit" />
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <!--[if lt IE 9]>
-      <script src="js/html5shiv.min.js"></script>
-      <script src="js/respond.min.js"></script>
-    <![endif]-->
-</head>
-
-<body>
-
-
+{% extends "base.html" %}
+{% block container %}
 <section class="sec">
     <div class="yc-msg">
         <div class="cont">
             <div class="iconfont icon-check"></div>
             <div class="txt">
                 <strong>提交成功！</strong>
-                <span>填写您的手机号码，用于登录。手机号不会随意公开仅会公开给您希望联系的供货商。</span>
+                <span>{{message}}</span>
             </div>
         </div>
         <div class="link">
-            <a href="#">去到会员中心看看<i class="iconfont icon-arrow"></i></a>
+            <a href="{{url}}">返回<i class="iconfont icon-arrow"></i></a>
         </div>
     </div>
 </section>
 
 
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.validate.min.js"></script>
+<script src="{{ static_url('js/jquery.min.js')}}"></script>
+<script src="{{ static_url('js/bootstrap.min.js')}}"></script>
+<script src="{{ static_url('js/jquery.validate.min.js')}}"></script>
 <script>
 // 登录验证
 $('#jLoginForm').validate({
@@ -66,15 +46,4 @@ $('#jLoginForm').validate({
 });
 
 </script>
-<script>
-    var ran = (new Date).getTime();
-    $.get('header.html?ran=' + ran, function(data) {
-        $('body').prepend(data);
-    })
-    $.get('footer.html?ran=' + ran, function(data) {
-        $('body').append(data);
-    })
-</script>
-</body>
-
-</html>
+{% end %}
