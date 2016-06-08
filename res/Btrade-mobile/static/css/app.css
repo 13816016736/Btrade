@@ -87,6 +87,14 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .fl{float:left;}
 .fr{float:right;}
 
+.yc-modal-delete.in .modal-dialog {
+  -webkit-transform: translate(0, 100px);
+      -ms-transform: translate(0, 100px);
+       -o-transform: translate(0, 100px);
+          transform: translate(0, 100px);
+}
+.yc-modal-delete .button{margin-top:20px;text-align:center;}
+
 /* 评分 */
 .yc-star{display:inline-block;vertical-align:top;color:#aaa;}
 .yc-star i{display:inline-block;vertical-align:top;}
@@ -388,7 +396,7 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-reply-list .dispose i{margin-right:6px;color:#f90;}
 .yc-reply-list li{margin-top:20px;background:#fff;}
 .yc-reply-list dl{margin:0;border-bottom:1px solid #ddd;}
-.yc-reply-list dt{font-weight:100;background:#fffcdb;border-bottom:1px solid #ddd;}
+.yc-reply-list dt{font-weight:400;background:#fffcdb;border-bottom:1px solid #ddd;}
 .yc-reply-list dd{margin:0 10px;padding:10px 0;border-top:1px dotted #ddd;}
 .yc-reply-list dd:nth-child(2){border:none;}
 .yc-reply-list dd a{position:relative;display:block;}
