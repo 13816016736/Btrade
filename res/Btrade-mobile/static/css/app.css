@@ -87,13 +87,6 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .fl{float:left;}
 .fr{float:right;}
 
-.yc-modal-delete.in .modal-dialog {
-  -webkit-transform: translate(0, 100px);
-      -ms-transform: translate(0, 100px);
-       -o-transform: translate(0, 100px);
-          transform: translate(0, 100px);
-}
-.yc-modal-delete .button{margin-top:20px;text-align:center;}
 
 /* 评分 */
 .yc-star{display:inline-block;vertical-align:top;color:#aaa;}
@@ -574,3 +567,34 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-page-error .links{margin-top:50px;}
 .yc-page-error .links .btn{width:150px;line-height:30px;background-color:#f90;}
 .yc-page-error .links .back{width:20px;height:20px;background-position:-177px -157px;}
+
+
+
+/* 模态框扩展 */
+.modal-body .confirm{font-size:14px;}
+.modal-body .confirm p{margin-bottom:10px;}
+.modal-body .confirm strong{display:block;color:#333;text-align:center;}
+.modal-body .confirm i{margin:0 2px;color:#ffa902;}
+.modal-body .result{text-align:center;}
+.modal-body .result .success{font-size:14px;color:#333;}
+.modal-body .result .success i{margin-right:6px;vertical-align:middle;}
+.modal-body .result .tips{margin-top:20px;}
+.modal-body .button{padding:20px 0;text-align:center;}
+.modal-body .share{padding:0 30px 0 10px;overflow:hidden;}
+.modal-body .share .qrcode{float:right;margin-left:20px;}
+.modal-body .share .txt{font-size:14px;}
+.modal-body .share .txt h3{margin:0 0 4px;font-size:14px;color:#333;}
+.modal-body .share .txt p{margin-bottom:8px;padding-left:40px;line-height:18px;}
+.modal-body .preview{text-align:center;}
+.modal-body .reason{}
+.modal-body .reason h3{margin-top:0;font-size:14px;}
+.modal-body .reason form{margin:0 20px;}
+.modal-body .reason form label{display:block;margin-bottom:6px;color:#333;}
+.modal-body .reason form input{margin-right:4px;vertical-align:-2px;}
+.modal-body .reason form .ipt{width:100%;height:30px;margin-top:10px;padding:4px;line-height:20px;border:1px solid #999;resize:none;}
+.yc-modal-delete.in .modal-dialog {
+  -webkit-transform: translate(0, 100px);
+      -ms-transform: translate(0, 100px);
+       -o-transform: translate(0, 100px);
+          transform: translate(0, 100px);
+}
