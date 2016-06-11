@@ -68,10 +68,10 @@ class RegisterHandler(BaseHandler):
         if nickname is None:
             self.api_response({'status':'fail','message':'个人称呼不能为空'})
             return
-
+        openid = self.get_argument("openid", "")
         lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, openid,createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
-                             , type, name, nickname, 1, self.get_argument("openid"), int(time.time()))
+                             , type, name, nickname, 1, openid, int(time.time()))
         notification = self.db.query("select id from notification where receiver = %s", lastrowid)
         self.session["userid"] = lastrowid
         self.session["user"] = username
@@ -79,6 +79,8 @@ class RegisterHandler(BaseHandler):
         self.session.save()
         #发短信通知用户注册成功
         regSuccess(phone, name, username)
+        #发微信模板消息通知用户注册成功
+        regSuccessWx(openid, name, username)
         self.api_response({'status':'success','message':'注册成功','data':{'username':username}})
 
 class GetSmsCodeHandler(BaseHandler):

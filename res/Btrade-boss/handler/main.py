@@ -72,7 +72,7 @@ class UpdateQuoteStateHandler(BaseHandler):
             else:
                 self.db.execute("update quote set state=%s,updatetime=%s where id in ("+qid+")", state, int(time.time()))
             #回复供应商的报价后，要通知供应商
-            purchases = self.db.query("select u.phone quotephone,ta.* from (select u.name,u.phone,tab.id,tab.quoteuserid,tab.userid,tab.name variety,tab.qprice,tab.price from "
+            purchases = self.db.query("select u.phone quotephone,u.openid quoteopenid,ta.* from (select u.name,u.phone,u.nickname,tab.id,tab.quoteuserid,tab.userid,tab.name variety,tab.qprice,tab.price from "
                           "(select ta.id,ta.quoteuserid,ta.qprice,ta.price,ta.name,p.userid from (select t.id,t.userid quoteuserid,t.purchaseid,t.qprice,t.price,v.name from "
                           "(select q.id,q.price qprice,q.userid,pi.purchaseid,pi.varietyid,pi.price from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in ("+qid+")) t left join variety v on t.varietyid = v.id)"
                           " ta left join purchase p on ta.purchaseid = p.id) tab left join users u on tab.userid = u.id) ta left join users u on ta.quoteuserid = u.id")
@@ -85,11 +85,14 @@ class UpdateQuoteStateHandler(BaseHandler):
                 message = message.encode('utf-8') if isinstance(message, unicode) else message
                 title = purchase["name"] + "回复了您的报价【" + purchase["variety"] + " "+ str(purchase["price"]) + "】"
                 # title = purchase["name"].encode('utf-8') + "回复了您的报价【" + purchase["variety"].encode('utf-8') + " "+ str(purchase["price"]) + "】"
-                params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(time.time())])
+                today = time.time()
+                params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int()])
                 if int(state) == 1:
                     acceptQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, purchase["phone"])
+                    acceptQuoteWx(purchase["quoteopenid"], purchase["name"], purchase["variety"], purchase["qprice"], purchase["nickname"], purchase["phone"], today)
                 elif int(state) == 2:
                     rejectQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, message)
+                    rejectQuoteWx(purchase["quoteopenid"], purchase["name"], purchase["variety"], purchase["qprice"], message, today)
             self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
 
             self.api_response({'status':'success','message':'操作成功'})

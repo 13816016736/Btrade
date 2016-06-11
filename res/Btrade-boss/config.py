@@ -76,3 +76,7 @@ img_path = "/opt/resources/static/uploadfiles"
 host = "http://m.yaocai.pro"
 
 unit = "公斤"
+
+appid = "wx90e04052c49aa63e"
+secret = "b1146d3ec7e0a8a483064406f361a07b"
+token = ""

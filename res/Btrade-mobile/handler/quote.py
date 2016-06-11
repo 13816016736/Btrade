@@ -63,12 +63,15 @@ class QuoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
+        purchaseinfoid = self.get_argument("purchaseinfoid")
         #验证对X采购单报价
-        if self.get_argument("purchaseinfoid") == "":
+        if purchaseinfoid == "":
             self.api_response({'status':'fail','message':'请选择采购单进行报价'})
             return
+        quality = self.get_argument("quality")
+        price = self.get_argument("price")
         #验证表单信息,货源描述,价格,价格说明
-        if self.get_argument("quality") == "" or self.get_argument("price") == "":
+        if quality == "" or price == "":
             self.api_response({'status':'fail','message':'请完整填写'})
             return
         #至少上传一张图片
@@ -86,13 +89,13 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'本周已用完5次报价机会,无法再进行报价'})
             return
         #一个用户只能对同一个采购单报价一次
-        quote = self.db.get("select id from quote where userid = %s and purchaseinfoid = %s and state = 0", self.session.get("userid"), self.get_argument("purchaseinfoid"))
+        quote = self.db.get("select id from quote where userid = %s and purchaseinfoid = %s and state = 0", self.session.get("userid"), purchaseinfoid)
         if quote is not None:
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
         #不能对自己的采购单进行报价
-        purchase = self.db.get("select t.*,u.phone from (select p.userid,p.term,p.createtime,pi.name from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
-                               "t left join users u on u.id = t.userid", self.get_argument("purchaseinfoid"))
+        purchase = self.db.get("select t.*,u.name uname,u.phone,u.openid from (select p.userid,p.term,p.createtime,pi.name,pi.specification,pi.quantity,pi.unit from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
+                               "t left join users u on u.id = t.userid", purchaseinfoid)
         if purchase["userid"] == self.session.get("userid"):
             self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
             return
@@ -103,10 +106,11 @@ class QuoteHandler(BaseHandler):
                 self.api_response({'status':'fail','message':'此采购单报价已结束，无法再进行报价'})
                 return
 
+        today = time.time()
         quoteid = self.db.execute_lastrowid("insert into quote(userid,purchaseinfoid,quality,price,`explain`,createtime)value"
                                             "(%s,%s,%s,%s,%s,%s)", self.session.get("userid"),self.get_argument("purchaseinfoid"),
-                                            self.get_argument("quality"),self.get_argument("price"),self.get_argument("explain"),
-                                            int(time.time()))
+                                            quality,price,self.get_argument("explain"),
+                                            int(today))
 
         #保存session上传图片的路径
         if uploadfiles:
@@ -118,14 +122,18 @@ class QuoteHandler(BaseHandler):
 
         #给采购商发送通知
         #获得采购商userid
-        quoter = self.db.get("select name,phone from users where id = %s", self.session.get("userid"))
+        quoter = self.db.get("select name,phone,openid from users where id = %s", self.session.get("userid"))
         title = quoter["name"].encode('utf-8') + "对您的采购品种【" + purchase["name"].encode('utf-8') + "】进行了报价"
 
         self.db.execute("insert into notification(sender,receiver,type,title,content,status,createtime)value(%s, %s, %s, %s, %s, %s, %s)",
                         self.session.get("userid"),purchase["userid"],2,title,self.get_argument("purchaseinfoid"),0,int(time.time()))
 
         #发短信通知采购商有用户报价
-        quoteSms(purchase["phone"], purchase["name"], quoter["name"], self.get_argument("price"), config.unit)
+        quoteSms(purchase["phone"], purchase["name"], quoter["name"], price, config.unit)
+        #发微信模板消息通知采购商有用户报价
+        quoteWx(purchase["openid"], purchaseinfoid, purchase["name"], quoter["name"], price, purchase["unit"], quality, today)
+        #发微信模板消息提示报价的供应商报价成功啦
+        quoteSuccessWx(quoter["openid"], purchase["uname"], purchase["name"], purchase["specification"], purchase["quantity"], price, purchase["unit"], quality, today)
         self.api_response({'status':'success','message':'请求成功'})
 
 class QuoteUploadHandler(BaseHandler):

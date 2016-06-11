@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import random,thread,config
+import random,thread,config,config,time
 from sendsms import *
+from sendwechart import *
 
 def md5(str):
     import hashlib
@@ -145,10 +146,14 @@ def regSuccess(phone, name, username):
     thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
 
 def quoteSms(phone, variety, name, price, unit):
+    variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    price = price.encode('utf-8') if isinstance(price, unicode) else price
+    unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     templateId = 864
-    phone = phone
+    phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
     vars = '{"%variety%":"'+variety+'","%name%":"'+name+'","%price%":"'+price+'","%unit%":"'+unit+'"}'
-    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+    thread.start_new_thread(send, (templateId, phone, vars))
 
 import hashlib
 
@@ -167,6 +172,110 @@ def is_cn(check_unicode):
         if ch < u'\u4e00' or ch > u'\u9fff':
             return False
     return bool
+
+def regSuccessWx(openid, name, username):
+    openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    username = username.encode('utf-8') if isinstance(username, unicode) else username
+    templateId = 'R49JXzySURAo-dgzpGtH1EDYXzgxgWVPYg3rQcuNzes'
+    link = 'm.yaocai.pro'
+    data = {
+        "first": {
+           "value":"%s，欢迎成为药材购会员！" % name,
+           "color":"#173177"
+        },
+        "keyword1":{
+           "value":username,
+           "color":"#173177"
+        },
+        "keyword2": {
+           "value":"****",
+           "color":"#173177"
+        },
+        "remark":{
+           "value":"点击“详情”，设置您的关注品种，为您推送药厂、饮片厂实时采购单，随时随地报价。",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
+
+#供应商报价,通知给采购方
+def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime):
+    openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+    variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    price = price.encode('utf-8') if isinstance(price, unicode) else price
+    unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
+    quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
+    templateId = 'aUADL3alEqWYfs5pEM1X5dtm3pstmrxMt1ktrMNs1qk'
+    link = 'www.yaocai.pro/mypurchase/info/%s' % purchaseinfoid
+    data = {
+        "first": {
+           "value":"您好，%s收到新报价" % variety,
+           "color":"#173177"
+        },
+        "keyword1":{
+           "value":time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+           "color":"#173177"
+        },
+        "keyword2": {
+           "value":name,
+           "color":"#173177"
+        },
+        "keyword3": {
+           "value":variety,
+           "color":"#173177"
+        },
+        "keyword4": {
+           "value":"%s元/%s，%s" % (price, unit, quality),
+           "color":"#173177"
+        },
+        "remark":{
+           "value":"点击“详情”立即查看，并请尽快答复！及早答复报价，将为您累计信用，能收到更多优质报价。",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
+
+#供应商报价,通知给供应商报价成功
+def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, qtime):
+    openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
+    spec = spec.encode('utf-8') if isinstance(spec, unicode) else spec
+    quantity = quantity.encode('utf-8') if isinstance(quantity, unicode) else quantity
+    price = price.encode('utf-8') if isinstance(price, unicode) else price
+    unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
+    quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
+    templateId = 'RGAztJ6ocuwvJosRCsCCJd8imGif6TT8B7vXYPa_KGs'
+    link = 'm.yaocai.pro'
+    data = {
+        "first": {
+           "value":"报价成功",
+           "color":"#173177"
+        },
+        "keyword1": {
+           "value":"%s 采购 %s（%s）%s%s" % (name,variety,spec,quantity,unit),
+           "color":"#173177"
+        },
+        "keyword2": {
+           "value":quality,
+           "color":"#173177"
+        },
+        "keyword3": {
+           "value":"%s元/%s" % (price, config.unit),
+           "color":"#173177"
+        },
+        "keyword4":{
+           "value":time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+           "color":"#173177"
+        },
+        "remark":{
+           "value":"药材购已通知采购商尽快查看并给您答复！点击“详情”可以查看更多您在经营品种的采购单，立刻报价",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
 if __name__ == '__main__':
     ROOT_PATH = os.path.abspath(os.path.dirname(__file__))

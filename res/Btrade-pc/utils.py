@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import random,thread
+import random,thread,config
 from sendsms import *
+from sendwechart import *
 
 def md5(str):
     import hashlib
@@ -274,6 +275,98 @@ def is_cn(check_unicode):
         if ch < u'\u4e00' or ch > u'\u9fff':
             return False
     return bool
+
+def regSuccessWx(openid, name, username):
+    templateId = 'R49JXzySURAo-dgzpGtH1EDYXzgxgWVPYg3rQcuNzes'
+    link = 'm.yaocai.pro'
+    data = {
+        "first": {
+           "value":"%s，欢迎成为药材购会员！" % name,
+           "color":"#173177"
+        },
+        "keyword1":{
+           "value":username,
+           "color":"#173177"
+        },
+        "keyword2": {
+           "value":"****",
+           "color":"#173177"
+        },
+        "remark":{
+           "value":"点击“详情”，设置您的关注品种，为您推送药厂、饮片厂实时采购单，随时随地报价。",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
+
+#采购方对报价进行回复（认可报价）,通知给供应方
+def acceptQuoteWx(openid, name, variety, price, nickname, phone, qtime):
+    openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
+    price = price.encode('utf-8') if isinstance(price, unicode) else price
+    nickname = nickname.encode('utf-8') if isinstance(nickname, unicode) else nickname
+    phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
+    templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
+    link = 'http://m.yaocai.pro/quotelist'
+    data = {
+        "first": {
+           "value":"报价被认可，请尽快联系",
+           "color":"#173177"
+        },
+        "keyword1": {
+           "value":name,
+           "color":"#173177"
+        },
+        "keyword2":{
+           "value":time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+           "color":"#173177"
+        },
+        "keyword3": {
+           "value":"对您%s {%s元/%s}的报价感兴趣。请尽快联系：%s，%s" % (variety,price,config.unit,phone,nickname),
+           "color":"#173177"
+        },
+
+        "remark":{
+           "value":"点击“详情”立即查看，并请尽快答复！及早答复报价，将为您累计信用，能收到更多优质报价。",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
+
+#采购方对报价进行回复（拒绝报价）,通知给供应方
+def rejectQuoteWx(openid, name, variety, price, message, qtime):
+    openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
+    price = price.encode('utf-8') if isinstance(price, unicode) else price
+    message = message.encode('utf-8') if isinstance(message, unicode) else message
+    templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
+    link = 'http://m.yaocai.pro/quotelist'
+    data = {
+        "first": {
+           "value":"报价被拒绝",
+           "color":"#173177"
+        },
+        "keyword1": {
+           "value":name,
+           "color":"#173177"
+        },
+        "keyword2":{
+           "value":time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+           "color":"#173177"
+        },
+        "keyword3": {
+           "value":"对您%s {%s元/%s}的报价表示不合适，理由：%s" % (variety,price,config.unit,message),
+           "color":"#173177"
+        },
+
+        "remark":{
+           "value":"点击“详情”立即查看，并请尽快答复！及早答复报价，将为您累计信用，能收到更多优质报价。",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
 if __name__ == '__main__':
     ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
