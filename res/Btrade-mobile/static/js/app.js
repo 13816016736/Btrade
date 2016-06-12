@@ -97,7 +97,6 @@ function gallery(weChatImagePreview) {
 	}
 	function showBigPic(imgUrls, index) {
         var _result = '<div class="gallery"><ul>';
-        console.log(imgUrls)
         $.each(imgUrls, function(i, src) {
             _result += '<li><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="' + src + '"></li>';
         });

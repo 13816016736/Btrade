@@ -1,5 +1,5 @@
 html{font-size:62.5%;}
-body{font-size:1.4rem;background-color:#eee;color:#333;}
+body{font-size:1.4rem;background-color:#eee;}
 ul,ol{margin:0;padding:0;list-style:none;}
 img{vertical-align:top;}
 a{color:#333;}
@@ -29,6 +29,7 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .icon-center:before { content: "\e608"; }
 .icon-plus:before { content: "\e60c"; }
 .icon-heart:before { content: "\e60f"; }
+.icon-mobile:before { content: "\e61d"; }
 .icon-star:before { content: "\e617"; }
 .icon-exclamation:before { content: "\e610"; }
 .icon-menu:before { content: "\e613"; }
@@ -72,8 +73,9 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 
 /* iconfont color */
 .icon-radio-yes{color:#8bc34a;}
-.icon-arrow-right{color:#f90;}
-.icon-user{color:#f90;}
+.icon-arrow-right,
+.icon-user,
+.icon-mobile,
 .icon-time{color:#f90;}
 
 /* color */
@@ -86,6 +88,7 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .cf:after{clear:both;display:table;content:"";}
 .fl{float:left;}
 .fr{float:right;}
+.yc-cat{display:inline-block;padding:1px 5px;color:#f90;border:1px solid #f90;-webkit-border-radius:4px;border-radius:4px;background:#fff;}
 
 
 /* 评分 */
@@ -170,7 +173,6 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-purchase-detail h3:before{content:"";display:inline-block;width:5px;height:14px;margin-right:10px;background-color:#f90;vertical-align:middle;}
 .yc-purchase-detail h3 i{position:absolute;top:0;right:0;color:#f90;}
 .yc-purchase-detail h3 .time{position:absolute;top:0;right:0;color:#aaa;}
-.yc-purchase-detail .title{margin:0;background-color:#f90;line-height:44px;color:#fff;font-size:1.6rem;text-align:center;}
 .yc-purchase-detail .bd{padding-top:10px;overflow:hidden;}
 .yc-purchase-detail .bd .name{float:left;margin:0;font-size:1.6rem;color:#000;}
 .yc-purchase-detail .bd .tag{float:left;margin-left:10px;}
@@ -208,7 +210,7 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-more i{float:right;font-size:2rem;color:#aaa;}
 .yc-more a{display:block;padding-left:10px;color:#aaa;}
 .yc-more b{margin:0 3px;color:#f90;}
-.yc-quote{background-color:#f90;line-height:56px;font-size:1.6rem;text-align:center;}
+.yc-quote{background-color:#f90;line-height:50px;font-size:1.6rem;text-align:center;}
 .yc-quote a{display:block;color:#fff;font-weight:700;}
 .yc-quote i{margin-right:5px;vertical-align:middle;font-size:2.4rem;font-weight:100;}
 
@@ -291,6 +293,43 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-quote-form .submit .button{width:100%;height:50px;font-size:1.6rem;color:#fff;border:none;background-color:#f90;}
 .yc-quote-form .agreement{padding:20px 10px;text-align:center;}
 .yc-quote-form .agreement a{color:#f90;}
+
+/* 我的采购_详情 */
+.yc-quote-receive{margin-top:20px;}
+.yc-quote-receive h3{margin:0;line-height:50px;font-size:1.6rem;font-weight:700;color:#fff;background:#f90;text-align:center;}
+.yc-quote-receive li{margin-top:20px;counter-increment:a;background:#fffcdb;}
+.yc-quote-receive .hd{padding:10px;position:relative;}
+.yc-quote-receive .hd .tl{padding-right:120px;}
+.yc-quote-receive .hd .tr{position:absolute;top:10px;right:10px;width:100px;text-align:right;}
+.yc-quote-receive .hd .tr time{display:block;margin-bottom:5px;color:#999;}
+.yc-quote-receive .hd .tr .yc-cat{display:block;text-align:center;}
+.yc-quote-receive .hd .type{color:#f90;}
+.yc-quote-receive .hd .type:before{margin-right:10px;content: counter(a, decimal-leading-zero);}
+.yc-quote-receive .hd .name{display:block;height:22px;margin-top:9px;font-weight:700;overflow:hidden;}
+.yc-quote-receive .hd .user{padding:10px 0 5px;border-bottom:1px dotted #ddd;}
+.yc-quote-receive .hd .user i{vertical-align:middle;}
+.yc-quote-receive .hd .user a{color:#f90;}
+.yc-quote-receive .hd .user span{margin-right:14px;}
+.yc-quote-receive .bd{padding:0 10px 20px;overflow:hidden;}
+.yc-quote-receive .bd .tit{color:#f90;}
+.yc-quote-receive .bd .unit{float:left;text-align:right;}
+.yc-quote-receive .bd .unit .t1{color:#f90;font-size:2.6rem;line-height:1;}
+.yc-quote-receive .bd .unit .t2{color:#333;}
+.yc-quote-receive .bd .unit .t3{color:#aaa;font-size:1.2rem;}
+.yc-quote-receive .bd .desc{margin-left:80px;}
+.yc-quote-receive .bd .thumb{clear:both;padding-top:4px;overflow:hidden;}
+.yc-quote-receive .bd .thumb img{width:30%;margin-bottom:6px;}
+.yc-quote-receive .tools a{display:inline-block;width:50%;line-height:50px;color:#fff;text-align:center;}
+.yc-quote-receive .tools .smile{background:#0c3;}
+.yc-quote-receive .tools .sad{background:#ff7043;}
+.yc-quote-receive .tools a i{margin-right:2px;}
+.yc-quote-receive .ft{margin:0 10px;line-height:44px;border-top:1px dotted #ddd;overflow:hidden;}
+.yc-quote-receive .ft .status{float:left;}
+.yc-quote-receive .ft .time{float:right;}
+.yc-quote-receive .ft b{margin:0 4px;}
+.yc-quote-receive .ft i{margin-right:4px;}
+.yc-quote-receive .ft .button{float:right;width:90px;line-height:30px;margin-top:7px;background-color:#f90;color:#fff;-webkit-border-radius:4px;border-radius:4px;text-align:center;}
+.yc-quote-receive li b{color:#f90;}
 
 /* 成功/失败信息 */
 .yc-message{font-size:1.4rem;}
@@ -569,7 +608,6 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-page-error .links .back{width:20px;height:20px;background-position:-177px -157px;}
 
 
-
 /* 模态框扩展 */
 .modal-body .confirm{font-size:14px;}
 .modal-body .confirm p{margin-bottom:10px;}
@@ -592,9 +630,9 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .modal-body .reason form label{display:block;margin-bottom:6px;color:#333;}
 .modal-body .reason form input{margin-right:4px;vertical-align:-2px;}
 .modal-body .reason form .ipt{width:100%;height:30px;margin-top:10px;padding:4px;line-height:20px;border:1px solid #999;resize:none;}
-.yc-modal-delete.in .modal-dialog {
-  -webkit-transform: translate(0, 100px);
-      -ms-transform: translate(0, 100px);
-       -o-transform: translate(0, 100px);
-          transform: translate(0, 100px);
+.yc-modal.in .modal-dialog{position:absolute;top:50%;left:50%;width:300px;margin:0;
+  -webkit-transform: translate(-50%,-50%);
+      -ms-transform: translate(-50%,-50%);
+       -o-transform: translate(-50%,-50%);
+          transform: translate(-50%,-50%);
 }
