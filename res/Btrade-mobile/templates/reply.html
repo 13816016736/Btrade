@@ -1,250 +1,238 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>我的采购</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css?id=22">
-</head>
-<body class="yc-body-nofoot">
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="javascript:history.back();">
-                <i class="iconfont icon-back"></i>
-            </a>
-        </div>
-        <div class="yc-header-title">我的采购</div>
-    </header><!-- /yc-header -->
+{% extends "basenofoot.html" %}
+{% block container %}
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="javascript:history.back();">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">我的采购</div>
+</header><!-- /yc-header -->
 
-    <section class="yc-content">
-        <div class="yc-sub-title">
-            <span>共发布<b>12</b>个采购批次，收到<b>20</b>个报价</span>
-        </div>
-        <div class="yc-reply-list">
-            <div class="dispose">
-                <i class="iconfont icon-exclamation"></i>您有<span>32</span>个报价未答复，请尽快答复
-            </div>
-
-            <ul>
-                <li>
-                    <dl>
-                        <dt class="yc-sub-title">
-                            <div class="cf">
-                                <div class="fl">采购批次号：<span>HJ283M001</span></div>
-                                <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
-                            </div>
-                            <div class="cf">
-                                <div class="fl"><span class="blue">等待报价</span></div>
-                                <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
-                            </div>
-                        </dt>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                    </dl>
-                    <div class="tools cf">
-                        <span class="fl"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>
-                        <span class="fr"><a href="purchase_batch.html"><i class="iconfont icon-share"></i>查看/分享采购单</a></span>
-                    </div>
-                </li>
-
-                <li>
-                    <dl>
-                        <dt class="yc-sub-title">
-                            <div class="cf">
-                                <div class="fl">采购批次号：<span>HJ283M001</span></div>
-                                <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
-                            </div>
-                            <div class="cf">
-                                <div class="fl"><span class="blue">等待报价</span></div>
-                                <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
-                            </div>
-                        </dt>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                    </dl>
-                    <div class="tools cf">
-                        <span class="fl"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>
-                        <span class="fr"><a href="purchase_batch.html"><i class="iconfont icon-share"></i>查看/分享采购单</a></span>
-                    </div>
-                </li>
-
-                <li>
-                    <dl>
-                        <dt class="yc-sub-title">
-                            <div class="cf">
-                                <div class="fl">采购批次号：<span>HJ283M001</span></div>
-                                <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
-                            </div>
-                            <div class="cf">
-                                <div class="fl"><span class="gray">关闭</span></div>
-                                <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
-                            </div>
-                        </dt>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                    </dl>
-                </li>
-
-                <li>
-                    <dl>
-                        <dt class="yc-sub-title">
-                            <div class="cf">
-                                <div class="fl">采购批次号：<span>HJ283M001</span></div>
-                                <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
-                            </div>
-                            <div class="cf">
-                                <div class="fl"><span class="gray">关闭</span></div>
-                                <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
-                            </div>
-                        </dt>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价(<em>2</em>个未答复)</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a href="reply_detail.html">
-                                <span class="w1">西藏红景</span>
-                                <span class="w2">统</span>
-                                <span class="w3">12个报价</span>
-                                <i class="iconfont icon-more arrow"></i>
-                            </a>
-                        </dd>
-                    </dl>
-                </li>
-            </ul>
+<section class="yc-content">
+    <div class="yc-sub-title">
+        <span>共发布<b>12</b>个采购批次，收到<b>20</b>个报价</span>
+    </div>
+    <div class="yc-reply-list">
+        <div class="dispose">
+            <i class="iconfont icon-exclamation"></i>您有<span>32</span>个报价未答复，请尽快答复
         </div>
 
-    </section><!-- /yc-content -->
-
-    <!-- 删除 -->
-    <div class="modal yc-modal" id="jModalDelete" tabindex="-1" role="dialog" aria-labelledby="tit1">
-        <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="tit1">停止报价</h4>
+        <ul>
+            <li>
+                <dl>
+                    <dt class="yc-sub-title">
+                        <div class="cf">
+                            <div class="fl">采购批次号：<span>HJ283M001</span></div>
+                            <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
+                        </div>
+                        <div class="cf">
+                            <div class="fl"><span class="blue">等待报价</span></div>
+                            <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
+                        </div>
+                    </dt>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                </dl>
+                <div class="tools cf">
+                    <span class="fl"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>
+                    <span class="fr"><a href="purchase_batch.html"><i class="iconfont icon-share"></i>查看/分享采购单</a></span>
                 </div>
-                <div class="modal-body">
-                    <div class="confirm">
-                        <p>您确认删除这一行吗？</p>
-                    </div>
-                    <div class="button">
-                        <button type="button" class="btn btn-warning">停止报价</button>
-                    </div>
+            </li>
+
+            <li>
+                <dl>
+                    <dt class="yc-sub-title">
+                        <div class="cf">
+                            <div class="fl">采购批次号：<span>HJ283M001</span></div>
+                            <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
+                        </div>
+                        <div class="cf">
+                            <div class="fl"><span class="blue">等待报价</span></div>
+                            <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
+                        </div>
+                    </dt>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                </dl>
+                <div class="tools cf">
+                    <span class="fl"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>
+                    <span class="fr"><a href="purchase_batch.html"><i class="iconfont icon-share"></i>查看/分享采购单</a></span>
+                </div>
+            </li>
+
+            <li>
+                <dl>
+                    <dt class="yc-sub-title">
+                        <div class="cf">
+                            <div class="fl">采购批次号：<span>HJ283M001</span></div>
+                            <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
+                        </div>
+                        <div class="cf">
+                            <div class="fl"><span class="gray">关闭</span></div>
+                            <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
+                        </div>
+                    </dt>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                </dl>
+            </li>
+
+            <li>
+                <dl>
+                    <dt class="yc-sub-title">
+                        <div class="cf">
+                            <div class="fl">采购批次号：<span>HJ283M001</span></div>
+                            <div class="fr"><time title="2016-01-28 10:28" data-time="2016/01/28 10:28:59">2016-01-28 10:28</time></div>
+                        </div>
+                        <div class="cf">
+                            <div class="fl"><span class="gray">关闭</span></div>
+                            <div class="fr">剩余<b>12</b>天(2015-12-12截止)</div>
+                        </div>
+                    </dt>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价(<em>2</em>个未答复)</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a href="reply_detail.html">
+                            <span class="w1">西藏红景</span>
+                            <span class="w2">统</span>
+                            <span class="w3">12个报价</span>
+                            <i class="iconfont icon-more arrow"></i>
+                        </a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+</section><!-- /yc-content -->
+
+<!-- 删除 -->
+<div class="modal yc-modal" id="jModalDelete" tabindex="-1" role="dialog" aria-labelledby="tit1">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit1">停止报价</h4>
+            </div>
+            <div class="modal-body">
+                <div class="confirm">
+                    <p>您确认删除这一行吗？</p>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-warning">停止报价</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- 删除成功提示 -->
-    <div class="modal yc-modal" id="jModalDeleteResult" tabindex="-1" role="dialog" aria-labelledby="tit2">
-        <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="tit2">停止报价</h4>
+<!-- 删除成功提示 -->
+<div class="modal yc-modal" id="jModalDeleteResult" tabindex="-1" role="dialog" aria-labelledby="tit2">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit2">停止报价</h4>
+            </div>
+            <div class="modal-body">
+                <div class="result">
+                    <p class="success"><i class="iconfont icon-radio-yes"></i>操作成功</p>
+                    <p class="tips">3秒后自动关闭</p>
                 </div>
-                <div class="modal-body">
-                    <div class="result">
-                        <p class="success"><i class="iconfont icon-radio-yes"></i>操作成功</p>
-                        <p class="tips">3秒后自动关闭</p>
-                    </div>
-                    <div class="button">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">立即关闭</button>
-                    </div>
+                <div class="button">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">立即关闭</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
-    <script>
+<script src="{{ static_url('js/jquery.min.js') }}"></script>
+<script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+<script src="{{ static_url('js/app.js') }}"></script>
+<script>
 var $jModalDelete = $('#jModalDelete');
 var timer = 0;
 var isDel = false;
@@ -287,5 +275,4 @@ $jModalDelete.on('click', '.btn', function() {
 });
 
 </script>
-</body>
-</html>
+{% end %}

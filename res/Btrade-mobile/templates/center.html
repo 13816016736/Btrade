@@ -47,7 +47,7 @@
             <div class="list">
                 <ul>
                     {% for i,s in enumerate(sell) %}
-                    {% if i > 2 %}
+                    {% if i > 5 %}
                     {% break %}
                     {% end %}
                     <li>
@@ -75,18 +75,18 @@
             <h2><i class="iconfont icon-car"></i>采购情况</h2>
         </div>
         <div class="bd">
-            <!-- start 有消息
+            <!-- start 有消息 -->
             <div class="total">
                 <p>最近一周</p>
                 <div class="sum clearfix">
                     <div class="col">
-                        <a href="reply.html">
-                            <span>98</span>批<em>发布采购</em>
+                        <a href="/reply">
+                            <span>{{len(purchaseinfos)}}</span>批<em>发布采购</em>
                         </a>
                     </div>
                     <div class="col">
-                        <a href="reply.html">
-                            <span>333</span>个<em>收到报价</em>
+                        <a href="/reply">
+                            <span>{{len(quotes)}}</span>个<em>收到报价</em>
                         </a>
                     </div>
                 </div>
@@ -94,36 +94,32 @@
             <div class="list no-bd">
                 <h3>最新报价</h3>
                 <ul>
+                    {% for i,p in enumerate(purchase) %}
+                    {% if i > 5 %}
+                    {% break %}
+                    {% end %}
                     <li>
-                        <a class="unread" href="reply.html">
+                        <a {% if p.status == 0 %}class="unread"{% end %} href="/replydetail?id={{p.content}}">
                             <i class="iconfont icon-envelope status"></i>
-                            <span>黄柏</span>
-                            <span>165元/公斤</span>
-                            <span>亳州永刚中药饮片有限公司</span>
+                            <span>{{p.title}}</span>
                             <i class="iconfont icon-more arrow"></i>
                         </a>
                     </li>
-                    <li>
-                        <a href="reply.html">
-                            <i class="iconfont icon-envelope status"></i>
-                            <span>黄柏</span>
-                            <span>170元/公斤</span>
-                            <span>韩启才</span>
-                            <i class="iconfont icon-more arrow"></i>
-                        </a>
-                    </li>
+                    {% end %}
+                    {% if unreadquote %}
                     <li class="dispose">
-                        <a href="#">立即处理</a>
-                        <i class="iconfont icon-exclamation"></i>您有<span>32</span>个报价未答复
+                        <a href="/reply">立即处理</a>
+                        <i class="iconfont icon-exclamation"></i>您有<span>{{unreadquote}}</span>个报价未答复
                     </li>
+                    {% end %}
                     <li class="more">
-                        <a href="news.html?type=1">
+                        <a href="/news/type/2">
                             <span>更多采购消息</span>
                             <i class="iconfont icon-more arrow"></i>
                         </a>
                     </li>
                 </ul>
-            </div>< end 有消息 -->
+            </div><!-- end 有消息 -->
 
             <!-- start 没有消息 -->
             <div class="no-news">

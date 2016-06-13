@@ -74,10 +74,28 @@ class CenterHandler(BaseHandler):
         t = time.time()
         week_begin = get_week_begin(t,0)
         week_end = get_week_begin(t,1)
+        #我对别人的采购单进行的报价
         quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
                                  , self.session.get("userid"), week_begin,week_end)
+        #统计一周的采购批次
+        purchases = self.db.query("select id from purchase where userid = %s and createtime > %s and createtime < %s"
+                                    , self.session.get("userid"), week_begin, week_end)
+        unreadquote = 0
+        purchaseinfos = []
+        quotes = []
+        if purchases:
+            purchaseinfos = self.db.query("select id from purchase_info where purchaseid in (%s)" % ",".join([p["id"] for p in purchases]))
+            #我的采购单收到的报价
+            if purchaseinfos:
+                quotes = self.db.query("select id,state from quote where purchaseinfoid in (%s)" % ",".join([pi["id"] for pi in purchaseinfos]))
+                unreadquote = 0
+                for q in quotes:
+                    if q["state"] == 0:
+                        unreadquote += 1
 
-        self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces, quotecount=quotecount)
+
+        self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces, quotecount=quotecount
+                    , purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote)
 
     @tornado.web.authenticated
     def post(self):
@@ -304,3 +322,17 @@ class GetSmsCodeForPwdHandler(BaseHandler):
             self.api_response({'status':'success','message':'短信验证码发送成功，请注意查收'})
         else:
             self.api_response({'status':'fail','message':'短信验证码发送失败，请稍后重试'})
+
+class ReplayHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        self.render("reply.html")
+
+class ReplayDetailHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        self.render("reply_detail.html")
+
+    @tornado.web.authenticated
+    def post(self):
+        pass
