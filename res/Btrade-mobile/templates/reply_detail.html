@@ -28,7 +28,7 @@
                 常年采购
                 {% end %}
             </div>
-            <div class="fr">已有<b>{{purchase.views}}</b>次浏览，<b>{{quotes}}</b>个报价</div>
+            <div class="fr">已有<b>{{purchase.views}}</b>次浏览，<b>{{len(quotes)}}</b>个报价</div>
             {% else %}
             <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
             {% end %}
@@ -151,7 +151,7 @@
                 </div>
                 {% if quote.state == 0 %}
                 <div class="tools">
-                    <a class="smile" href="#"><i class="iconfont icon-face"></i>不错，请供应商联系我</a><a class="sad" href="#"><i class="iconfont icon-frown"></i>不合适，再看看</a>
+                    <a class="smile" href="#" qid="{{quote.id}}"><i class="iconfont icon-face"></i>不错，请供应商联系我</a><a class="sad" href="#" qid="{{quote.id}}"><i class="iconfont icon-frown"></i>不合适，再看看</a>
                 </div>
                 {% elif quote.state == 1 %}
                 <div class="ft">
@@ -169,6 +169,26 @@
 
 </section><!-- /yc-content -->
 
+<!-- 报价合适 -->
+<div class="modal yc-modal" id="jModalOk" tabindex="-1" role="dialog" aria-labelledby="tit1">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit1">认可报价</h4>
+            </div>
+            <div class="modal-body">
+                <div class="confirm">
+                    <p>您确认要认可此报价吗？</p>
+                </div>
+                <div class="button">
+                    <input type="hidden" name="qid" value=""/>
+                    <button type="button" class="btn btn-warning">认可报价</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 报价不合适 -->
 <div class="modal yc-modal" id="jModalFail" tabindex="-1" role="dialog" aria-labelledby="tit2">
 <div class="modal-dialog modal-sm" role="document">
@@ -184,10 +204,11 @@
                     <label><input type="checkbox" value="价格偏高" name="r1">价格偏高</label>
                     <label><input type="checkbox" value="质量不符" name="r2">质量不符</label>
                     <label><input type="checkbox" value="供应商资质不符" name="r3">供应商资质不符</label>
-                    <textarea class="ipt" name="" placeholder="详细说明"></textarea>
+                    <textarea id="message" class="ipt" name="message" placeholder="详细说明"></textarea>
                 </form>
             </div>
             <div class="button">
+                <input type="hidden" name="qid" value=""/>
                 <button type="button" class="btn btn-warning">回复报价</button>
             </div>
         </div>
@@ -225,6 +246,7 @@
 <script src="{{ static_url('js/app.js') }}"></script>
 <script>
     $(function() {
+        var $jModalOk = $('#jModalOk');
         var $jModalFail = $('#jModalFail');
         var $jModalMsg = $('#jModalMsg');
         var ajaxSuccess = false;
@@ -238,10 +260,23 @@
             }, 3e3);
         }
 
+        // 报价合适
+        $('.yc-quote-receive').on('click', '.smile', function() {
+            $jModalOk.find("input[name='qid']").val($(this).attr("qid"));
+            $jModalOk.modal();
+            return false;
+        });
         // 报价不合适
         $('.yc-quote-receive').on('click', '.sad', function() {
+            $jModalFail.find("input[name='qid']").val($(this).attr("qid"));
             $jModalFail.modal();
             return false;
+        });
+        $jModalOk.on('hidden.bs.modal', function() {
+            if (ajaxSuccess) {
+                ajaxSuccess = false;
+                showMsg('报价合适');
+            }
         });
         $jModalFail.on('hidden.bs.modal', function() {
             if (ajaxSuccess) {
@@ -250,18 +285,38 @@
             }
         });
 
-        var serialize = {};
+        $jModalOk.on('click', '.btn', function() {
+            $.ajax({
+                type:'post',
+                url: '/updatequotestate',
+                data: {qid:$jModalOk.find("input[name='qid']").val(),state:1,message:""},
+                dataType: 'json',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    ajaxSuccess = true;
+                    $jModalOk.modal('hide');
+                }
+            })
+        });
+
+        var message = [];
         var $form = $('#jFormReason');
         $jModalFail.on('click', '.btn', function() {
-            $form.find('input').each(function() {
-                serialize[this.name] = this.checked ? this.value : '';
-                // serialize[this.name] = this.checked;
+            $form.find('input:checked').each(function() {
+                message.push(this.value);
             });
-            serialize['desc'] = $form.find('.ipt').val();
+            message.push($form.find('textarea').val());
             $.ajax({
-                url: '',
-                data: serialize,
-                success: function() {
+                type: 'post',
+                url: '/updatequotestate',
+                data: {"qid":$jModalFail.find("input[name='qid']").val(),"state":2,"message":message.join()},
+                dataType: 'json',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
                     ajaxSuccess = true;
                     $jModalFail.modal('hide');
                 }

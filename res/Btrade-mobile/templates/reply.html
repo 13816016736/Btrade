@@ -33,14 +33,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="tit1">停止报价</h4>
+                <h4 class="modal-title" id="tit1">关闭采购单</h4>
             </div>
             <div class="modal-body">
                 <div class="confirm">
-                    <p>您确认删除这一行吗？</p>
+                    <p>您确认要关闭此采购单吗？</p>
                 </div>
                 <div class="button">
-                    <button type="button" class="btn btn-warning">停止报价</button>
+                    <input id="pid" type="hidden" name="pid" value=""/>
+                    <button type="button" class="btn btn-warning">关闭采购单</button>
                 </div>
             </div>
         </div>
@@ -53,7 +54,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="tit2">停止报价</h4>
+                <h4 class="modal-title" id="tit2">关闭采购单</h4>
             </div>
             <div class="modal-body">
                 <div class="result">
@@ -79,6 +80,7 @@ $(function() {
     var isDel = false;
     // 关闭整个采购单
     $('.yc-reply-list').on('click', '.tools .fl', function() {
+        $("#pid").val($(this).attr("pid"));
         var txt = '<p>确认对如下采购单停止报价？停止后，该批次的所有的品种都将停止报价</p>';
         var $pa = $(this).closest('li').find('dd>a');
         var tags = [];
@@ -106,9 +108,14 @@ $(function() {
 
     $jModalDelete.on('click', '.btn', function() {
         $.ajax({
-            url: '',
-            data: {},
-            success: function() {
+            url: '/removepurchase',
+            data: {pid:$("#pid").val()},
+            type: 'post',
+            dataType: 'json',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
                 isDel = true;
                 $jModalDelete.modal('hide');
             }
@@ -165,7 +172,7 @@ $(function() {
         }
         var temp = [];
         temp.push('<div class="tools cf">');
-        temp.push(  '<span class="fl"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>');
+        temp.push(  '<span class="fl" pid="', data.id,'"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>');
         temp.push(  '<span class="fr"><a href="/purchaseinfobatch/purchaseid/', data.id, '"><i class="iconfont icon-share"></i>查看/分享采购单</a></span>');
         temp.push('</div>');
         return temp.join('');
