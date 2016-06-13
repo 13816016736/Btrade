@@ -242,50 +242,6 @@
 
 <script src="{{ static_url('js/jquery.min.js') }}"></script>
 <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
-<script src="{{ static_url('js/app.js?id=2') }}"></script>
-<script>
-
-var $jModalFail = $('#jModalFail');
-var $jModalMsg = $('#jModalMsg');
-var ajaxSuccess = false;
-
-var showMsg = function(tit) {
-$jModalMsg.find('.modal-title').html(tit);
-$jModalMsg.modal('show');
-this.timer && clearTimeout(this.timer);
-this.timer = setTimeout(function() {
-    $jModalMsg.modal('hide');
-}, 3e3);
-}
-
-// 报价不合适
-$('.yc-quote-receive').on('click', '.sad', function() {
-$jModalFail.modal();
-return false;
-});
-$jModalFail.on('hidden.bs.modal', function() {
-if (ajaxSuccess) {
-    ajaxSuccess = false;
-    showMsg('报价不合适');
-}
-});
-
-var $form = $('#jFormReason');
-$jModalFail.on('click', '.btn', function() {
-var serialize = {};
-$form.find('input').each(function() {
-    serialize[this.name] = this.checked ? this.value : '';
-    // serialize[this.name] = this.checked;
-});
-serialize['desc'] = $form.find('.ipt').val();
-$.ajax({
-    url: '',
-    data: serialize,
-    success: function() {
-        ajaxSuccess = true;
-        $jModalFail.modal('hide');
-    }
-})
-});
-</script>
+<script src="{{ static_url('js/app.js') }}"></script>
+<script src="{{ static_url('js/reply.js') }}"></script>
 {% end %}
