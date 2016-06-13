@@ -233,46 +233,186 @@
 <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
 <script src="{{ static_url('js/app.js') }}"></script>
 <script>
-var $jModalDelete = $('#jModalDelete');
-var timer = 0;
-var isDel = false;
-// 关闭整个采购单
-$('.yc-reply-list').on('click', '.tools .fl', function() {
-    var txt = '<p>确认对如下采购单停止报价？停止后，该批次的所有的品种都将停止报价</p>';
-    var $pa = $(this).closest('li').find('dd>a');
-    var tags = [];
-    $pa.each(function() {
-        tags.push($(this).find('.w1').html());
+$(function() {
+    var $jModalDelete = $('#jModalDelete');
+    var timer = 0;
+    var isDel = false;
+    // 关闭整个采购单
+    $('.yc-reply-list').on('click', '.tools .fl', function() {
+        var txt = '<p>确认对如下采购单停止报价？停止后，该批次的所有的品种都将停止报价</p>';
+        var $pa = $(this).closest('li').find('dd>a');
+        var tags = [];
+        $pa.each(function() {
+            tags.push($(this).find('.w1').html());
+        });
+
+        txt += '<strong>' + tags.join('、') + '</strong>';
+
+        $jModalDelete.find('.confirm').html(txt);
+        $jModalDelete.modal();
+        return false;
     });
 
-    txt += '<strong>' + tags.join('、') + '</strong>';
-
-    $jModalDelete.find('.confirm').html(txt);
-    $jModalDelete.modal();
-    return false;
-});
-
-$jModalDelete.on('hidden.bs.modal', function() {
-    if (isDel) {
-        $('#jModalDeleteResult').modal('show');
-        timer && clearTimeout(timer);
-        timer = setTimeout(function() {
-            $('#jModalDeleteResult').modal('hide');
-        }, 3e3);
-    }
-    isDel = false;
-});
-
-$jModalDelete.on('click', '.btn', function() {
-    $.ajax({
-        url: '',
-        data: {},
-        success: function() {
-            isDel = true;
-            $jModalDelete.modal('hide');
+    $jModalDelete.on('hidden.bs.modal', function() {
+        if (isDel) {
+            $('#jModalDeleteResult').modal('show');
+            timer && clearTimeout(timer);
+            timer = setTimeout(function() {
+                $('#jModalDeleteResult').modal('hide');
+            }, 3e3);
         }
-    })
-});
+        isDel = false;
+    });
+
+    $jModalDelete.on('click', '.btn', function() {
+        $.ajax({
+            url: '',
+            data: {},
+            success: function() {
+                isDel = true;
+                $jModalDelete.modal('hide');
+            }
+        })
+    });
+
+
+    var getTitle = function(data) {
+        var temp = [];
+        if (data.status === 0) {
+            temp.push('<div class="fl"><span class="gray">关闭</span></div>');
+            temp.push('<div class="fr">', data.endTime.replace(/\//g, '-'), ' 截止</div>');
+        } else {
+            var t1 = new Date(data.serviceTime).getTime(); // 2016/10/01
+            var t2 = new Date(data.endTime).getTime();
+            var d = (t2 - t1)/1e3/60/60/24 | 0;
+            temp.push('<div class="fl"><span class="blue">等待报价</span></div>');
+            temp.push('<div class="fr">剩余<b>', d, '</b>天(', data.endTime.replace(/\//g, '-'), ' 截止)</div>');
+        }
+        return temp.join('');
+    }
+    var getDD = function(data) {
+        var temp = [];
+        $.each(data, function(i, item) {
+            var num = item.num === 0 ? '暂无报价' : item.num + '个报价' + (item.reply === 0 ? '' : '(<em>' + item.reply + '</em>个未答复)');
+            temp.push('<dd>');
+            temp.push(    '<a href="', item.href, '">');
+            temp.push(         '<span class="w1">', item.name, '</span>');
+            temp.push(         '<span class="w2">', item.tag, '</span>');
+            temp.push(         '<span class="w3">', num, '</span>');
+            temp.push(         '<i class="iconfont icon-more arrow"></i>');
+            temp.push(    '</a>');
+            temp.push('</dd>');
+        });
+        return temp.join('');
+    }
+    var getFoot = function(data) {
+        if (data.status === 0) {
+            return '';
+        }
+        var temp = [];
+        temp.push('<div class="tools cf">');
+        temp.push(  '<span class="fl"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>');
+        temp.push(  '<span class="fr"><a href="', data.href, '"><i class="iconfont icon-share"></i>查看/分享采购单</a></span>');
+        temp.push('</div>');
+        return temp.join('');
+    }
+
+    var toHtml = function(data) {
+        var html = [];
+        for (var i = 0; i < data.length; i++) {
+            var status = '<div class="status status-refuse"><i class="iconfont icon-frown"></i></div>'
+            var temp = [];
+            temp.push('<li>');
+            temp.push(     '<dl>');
+            temp.push(         '<dt class="yc-sub-title">');
+            temp.push(             '<div class="cf">');
+            temp.push(                  '<div class="fl">采购批次号：<span>', data[i].batch, '</span></div>');
+            temp.push(                  '<div class="fr"><time>', timeago.elapsedTime(data[i].time), '</time></div>');
+            temp.push(             '</div>');
+            temp.push(             '<div class="cf">');
+            temp.push(                  getTitle(data[i]));
+            temp.push(             '</div>');
+            temp.push(         '</dt>');
+            temp.push(         getDD(data[i].pro));
+            temp.push(     '</dl>');
+            temp.push(     getFoot(data[i]));
+            temp.push('</li>');
+            html.push(temp.join(''));
+        }
+        return html.join('');
+    }
+    // dropload
+    var $ol = $('.yc-reply-list ul');
+    $ol.parent().dropload({
+        scrollArea : window,
+        loadUpFn : function(me){
+            $.ajax({
+                type: 'GET',
+                url: 'json/reply.json?id=1',
+                dataType: 'json',
+                success: function(data){
+                    if (!data.list) {
+                        return false;
+                    }
+                    me.unlock();
+                    me.isDate = true;
+                    var result = toHtml(data.list);
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        $ol.html(result);
+                        // 每次数据加载完，必须重置
+                        // me.resetload();
+                        var msg = Math.random() > .5 ? '暂无新的采购单推荐' : '药材购为您新推荐8个采购单'; // 随机显示2种提示语，只做演示使用
+                        me.$domUp.html('<div class="dropload-msg">' + msg + '</div>');
+                        setTimeout(function(){
+                            me.resetload();
+                        }, 2e3);
+                    },1000);
+                },
+                error: function(xhr, type){
+                    lpPopover('网络连接超时，请您稍后重试!');
+                    // 即使加载出错，也得重置
+                    me.resetload();
+                }
+            });
+        },
+        loadDownFn : function(me){
+            $.ajax({
+                type: 'GET',
+                url: 'json/reply.json?id=1',
+                dataType: 'json',
+                success: function(data){
+                    if (!data.list) {
+                        return false;
+                    }
+                    var result = toHtml(data.list);
+
+                    if(data.status === 'nomore'){
+                        // 锁定
+                        me.lock();
+                        // 无数据
+                        me.noData();
+                        me.resetload();
+                        return;
+                    }
+
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        $ol.append(result);
+                        // 每次数据加载完，必须重置
+                        me.resetload();
+                    },1000);
+                },
+                error: function(xhr, type){
+                    lpPopover('网络连接超时，请您稍后重试!');
+                    // 即使加载出错，也得重置
+                    me.resetload();
+                }
+            });
+        },
+        threshold : 50
+    });
+})
 
 </script>
 {% end %}
