@@ -84,10 +84,10 @@ class CenterHandler(BaseHandler):
         purchaseinfos = []
         quotes = []
         if purchases:
-            purchaseinfos = self.db.query("select id from purchase_info where purchaseid in (%s)" % ",".join([p["id"] for p in purchases]))
+            purchaseinfos = self.db.query("select id from purchase_info where purchaseid in (%s)" % ",".join([str(p["id"]) for p in purchases]))
             #我的采购单收到的报价
             if purchaseinfos:
-                quotes = self.db.query("select id,state from quote where purchaseinfoid in (%s)" % ",".join([pi["id"] for pi in purchaseinfos]))
+                quotes = self.db.query("select id,state from quote where purchaseinfoid in (%s)" % ",".join([str(pi["id"]) for pi in purchaseinfos]))
                 unreadquote = 0
                 for q in quotes:
                     if q["state"] == 0:
@@ -326,7 +326,49 @@ class GetSmsCodeForPwdHandler(BaseHandler):
 class ReplayHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("reply.html")
+        userid = self.session.get("userid")
+        # 我所有的采购批次
+        purchases = self.db.query("select id from purchase where userid = %s", userid)
+        unreadquote = 0
+        purchaseinfos = []
+        quotes = []
+        if purchases:
+            purchaseinfos = self.db.query(
+                "select id from purchase_info where purchaseid in (%s)" % ",".join([str(p["id"]) for p in purchases]))
+            # 我的采购单收到的报价
+            if purchaseinfos:
+                quotes = self.db.query("select id,state from quote where purchaseinfoid in (%s)" % ",".join([str(pi["id"]) for pi in purchaseinfos]))
+                unreadquote = 0
+                for q in quotes:
+                    if q["state"] == 0:
+                        unreadquote += 1
+        self.render("reply.html", purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote)
+
+    @tornado.web.authenticated
+    def post(self):
+        userid = self.session.get("userid")
+        number = int(self.get_argument("number")) if self.get_argument("number") > 0 else 0
+        purchaseinf = defaultdict(list)
+        purchases = self.db.query("select id,term,createtime from purchase where userid = %s limit %s,%s", userid, number, config.conf['POST_NUM'])
+        if purchases:
+            purchaseids = [str(purchase["id"]) for purchase in purchases]
+            purchaseinfos = self.db.query(
+                "select p.*,q.id qid,count(q.id) quotecount,count(if(q.state=1,true,null )) intentions, count(if(q.state=0,true,null )) unread "
+                "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (" + ",".join(
+                    purchaseids) + ") group by p.id")
+            for purchaseinfo in purchaseinfos:
+                purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
+            for purchase in purchases:
+                purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
+                purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
+                if purchase["term"] != 0:
+                    purchase["expire"] = datetime.datetime.fromtimestamp(
+                        float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
+                    purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
+            self.api_response({'status': 'success', 'list': purchases, 'message': '请求成功'})
+        else:
+            self.api_response({'status': 'nomore', 'message': '没有更多的采购订单'})
+
 
 class ReplayDetailHandler(BaseHandler):
     @tornado.web.authenticated
