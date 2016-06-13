@@ -1,5 +1,6 @@
 {% extends "basenofoot.html" %}
 {% block container %}
+{% import time %}
 {% raw xsrf_form_html() %}
 <header class="yc-header">
     <div class="yc-header-back">
@@ -121,7 +122,7 @@ $(function() {
             temp.push('<div class="fl"><span class="gray">关闭</span></div>');
             temp.push('<div class="fr">', timeago.shortDate(parseInt(data.expire), 10), ' 截止</div>');
         } else {
-            var t1 = data.now || new Date;
+            var t1 = {{int(time.time())}} || new Date;
             var t2 = parseInt(data.expire, 10);
             var t = t2 - t1;
             var d = (t/1e3/60/60/24) | 0;
@@ -148,7 +149,7 @@ $(function() {
         $.each(data, function(i, item) {
             var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '</em>个未答复)');
             temp.push('<dd>');
-            temp.push(    '<a href="/replydetail?pid=', item.pid, '">');
+            temp.push(    '<a href="/replydetail?pid=', item.id, '">');
             temp.push(         '<span class="w1">', item.name, '</span>');
             temp.push(         '<span class="w2">', item.specification, '</span>');
             temp.push(         '<span class="w3">', num, '</span>');

@@ -353,7 +353,7 @@ class ReplayHandler(BaseHandler):
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
             purchaseinfos = self.db.query(
-                "select p.id purchaseid,p.name,p.specification,q.id qid,count(q.id) quotecount,count(if(q.state=0,true,null )) unreply "
+                "select p.id,p.purchaseid,p.name,p.specification,q.id qid,count(q.id) quotecount,count(if(q.state=0,true,null )) unreply "
                 "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (" + ",".join(
                     purchaseids) + ") group by p.id")
             for purchaseinfo in purchaseinfos:
@@ -371,7 +371,53 @@ class ReplayHandler(BaseHandler):
 class ReplayDetailHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("reply_detail.html")
+        userid = self.session.get("userid")
+        pid = self.get_argument("pid")
+        purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
+                                   "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+                                   "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
+                                   "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",
+                                   pid)
+        # 获得采购品种图片
+        attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
+        for attachment in attachments:
+            base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
+            attachment["attachment"] = config.img_domain + attachment["attachment"][
+                                                           attachment["attachment"].find("static"):].replace(base,
+                                                                                                             base + "_thumb")
+        user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
+        purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(int(purchaseinfo["createtime"])))
+        if purchaseinfo["term"] != 0:
+            purchaseinfo["expire"] = datetime.datetime.fromtimestamp(
+                float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
+            purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
+        purchaseinfo["attachments"] = attachments
+        #此采购单收到报价情况
+        quotes = self.db.query("select q.id,userid,q.price,q.quality,q.state,q.message,q.createtime,u.name uname,u.nickname,u.type usertype,u.phone "
+                               "from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s",pid)
+        quoteids = []
+        if quotes:
+            for quote in quotes:
+                quoteids.append(str(quote.id))
+                quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+                quote["unit"] = purchaseinfo["unit"]
+            quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
+            myquoteattachments = {}
+            for quoteattachment in quoteattachments:
+                base, ext = os.path.splitext(os.path.basename(quoteattachment.attachment))
+                quoteattachment.attachment = config.img_domain + quoteattachment.attachment[
+                                                                 quoteattachment.attachment.find("static"):].replace(
+                    base, base + "_thumb")
+                if myquoteattachments.has_key(quoteattachment.quoteid):
+                    myquoteattachments[quoteattachment.quoteid].append(quoteattachment)
+                else:
+                    myquoteattachments[quoteattachment.quoteid] = [quoteattachment]
+            for mq in quotes:
+                if myquoteattachments.has_key(mq.id):
+                    mq["attachments"] = myquoteattachments[mq.id]
+                else:
+                    mq["attachments"] = []
+        self.render("reply_detail.html", purchase=purchaseinfo, quotes=quotes)
 
     @tornado.web.authenticated
     def post(self):

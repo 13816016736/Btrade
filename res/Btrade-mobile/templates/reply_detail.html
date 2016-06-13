@@ -1,5 +1,6 @@
 {% extends "basenofoot.html" %}
 {% block container %}
+{% import time,config %}
 <header class="yc-header">
     <div class="yc-header-back">
         <a href="javascript:history.back();">
@@ -12,26 +13,41 @@
 <section class="yc-content">
     <div class="yc-sub-title">
         <div class="cf">
-            <div class="fl">采购编码：<span>HJ283M001</span></div>
-            <div class="fr"><time data-time="2016/01/28 10:28:59">2016/01/28 10:28:59</time></div>
+            <div class="fl">采购编码：<span>{{ purchase.id }}</span></div>
+            <div class="fr"><time data-time="{{ purchase.datetime }}">{{ purchase.datetime }}</time></div>
         </div>
         <div class="cf">
-            <div class="fl"><span class="blue">等待报价</span>(剩余<b>12</b>天)</div>
-            <div class="fr">已有<b>332</b>热门浏览，<b>5</b>个报价</div>
+            {% if purchase.status == 0%}
+            <div class="fl"><span class="red">关闭</span></div>
+            {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
+            <div class="fl">
+                <span class="blue">等待报价</span>
+                {% if purchase.term != 0%}
+                （剩余<b>{{purchase.timedelta}}</b>天）
+                {% else%}
+                常年采购
+                {% end %}
+            </div>
+            <div class="fr">已有<b>{{purchase.views}}</b>次浏览，<b>{{quotes}}</b>个报价</div>
+            {% else %}
+            <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            {% end %}
         </div>
     </div>
 
     <div class="yc-purchase-detail">
         <h3>采购品种及要求</h3>
         <div class="bd">
-            <h4 class="name">黄连</h4>
-            <div class="tag">鸡爪统 重庆</div>
-            <div class="weight">3000公斤</div>
+            <h4 class="name">{{ purchase.name }}</h4>
+            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
+            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
             <div class="desc">
-                <p>2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变色，硫不超标2010药典标准，无虫蛀，无霉，无变</p>
-                <p><span>意向价格</span> 74元/公斤 封顶</p>
+                <p>{{ purchase.quality }}</p>
+                <p><span>封顶价</span> {% if purchase.price > 0 %}{{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}{% else %}面议{% end %}</p>
                 <p><span>合格品样例照</span></p>
-                <p class="thumb"><img src="uploads/001.jpeg" data-src="http://localhost/webapp\yaocai\uploads\bing-1.jpg" alt=""><img src="uploads/001.jpeg" data-src="http://localhost/webapp\yaocai\uploads\bing-2.jpg" alt=""><img src="uploads/001.jpeg" data-src="http://localhost/webapp\yaocai\uploads\bing-3.jpg" alt=""><img src="uploads/001.jpeg" data-src="http://localhost/webapp\yaocai\uploads\bing-4.jpg" alt=""></p>
+                {% for attachment in purchase.attachments %}
+                <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>
+                {% end %}
             </div>
         </div>
     </div>
@@ -40,23 +56,37 @@
         <h3>交收要求<i class="iconfont icon-fold"></i></h3>
         <dl class="yc-demand yc-demand-fold">
             <dt>交货地：</dt>
-            <dd>湖北 武汉</dd>
+            <dd>{% if purchase.areaid %}{{ purchase.position }}{% else %}亲自上门看货提货{% end %}</dd>
             <dt>发票要求：</dt>
-            <dd>普通发票</dd>
+            <dd>
+                {% if purchase.invoice == 1%}
+                无需发票
+                {% elif purchase.invoice == 2%}
+                普通发票
+                {% elif purchase.invoice == 3 %}
+                增值税发票
+                {% end %}
+            </dd>
             <dt>交易及付款：</dt>
-            <dd>双方直接交易，验收合格后<b>45</b>天付款</dd>
+            <dd>
+                {% if purchase.pay == 1%}
+                药采购"安心交易"(预付全款)
+                {% elif purchase.pay == 2%}
+                双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
+                {% else %}
+                {{purchase.payinfo}}
+                {% end %}
+            </dd>
             <dt>验证及包装：</dt>
             <dd>
                 <ol>
-                    <li>1、我公司对中药材的水分做严格的限度要求，经检测超出要求的，公司根据实际情况折扣处理。</li>
-                    <li>2、中药饮片需提供合格的检验报告书</li>
-                    <li>3、中药饮片必须双层包装严密，包装袋（箱）应干净、结实、无破损、封口严密，每袋配挂标准吊签，方便识别、储存、运输和使用。</li>
+                    <li id="accept">{{ purchase.accept }}</li>
                 </ol>
             </dd>
             <dt>寄样：</dt>
-            <dd>要求报价后必须寄样<span>报价后会告知详细的寄样要求</span></dd>
+            <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span id="receive">{{ purchase.receive }}</span></dd>
             <dt>补充说明：</dt>
-            <dd>无</dd>
+            <dd id="other">{{ purchase.other }}</dd>
         </dl>
     </div>
 
@@ -65,125 +95,75 @@
         <h3>供应商要求<i class="iconfont icon-fold"></i></h3>
         <dl class="yc-demand yc-demand-fold">
             <dt>供应商资质：</dt>
-            <dd>必须有营业执照（公司/合作社供/经营户），不接受个人</dd>
+            <dd>
+                {% if '1' in purchase.supplier.split("&") %}
+                必须有营业执照（公司、合作社、经营户），不接收个人
+                <br>
+                {% end %}
+                {% if '2' in purchase.supplier.split("&") %}
+                具备GSP资质
+                <br>
+                {% end %}
+                {% if '3' in purchase.supplier.split("&") %}
+                具备GMP资质
+                {% end %}
+            </dd>
             <dt>其它要求：</dt>
-            <dd>无</dd>
+            <dd id="remark">{{purchase.remark}}</dd>
         </dl>
     </div>
 
     <div class="yc-quote-receive">
-        <h3>共收到4个报价</h3>
+        <h3>共收到{{len(quotes)}}个报价</h3>
         <ol>
+            {% for quote in quotes %}
             <li>
                 <div class="hd">
                     <div class="tl">
                         <span class="type">供货商</span>
-                        <strong class="name">亳州永刚中药饮片有限公司亳州永刚中药饮片有限公司亳州永刚中药饮片有限公司亳州永刚中药饮片有限公司</strong>
+                        <strong class="name">{{quote.uname}}</strong>
                     </div>
                     <div class="tr">
-                        <time>12-23 08:32</time>
-                        <span class="yc-cat">药材经营公司</span>
+                        <time>{{quote.datetime}}</time>
+                        <span class="yc-cat">{{config.usertype[quote.usertype]}}</span>
                     </div>
                     <div class="user">
-                        <i class="iconfont icon-user"></i><span>严飞</span>
-                        <i class="iconfont icon-mobile"></i><span>15500001111</span>
-                        <a href="tel:15500001111">立即拨号</a>
+                        <i class="iconfont icon-user"></i><span>{{quote.nickname}}</span>
+                        <i class="iconfont icon-mobile"></i><span>{{quote.phone}}</span>
+                        <a href="tel:{{quote.phone}}">立即拨号</a>
                     </div>
                 </div>
                 <div class="bd">
                     <div class="tit">报价</div>
                     <div class="unit">
-                        <div class="t1">178.5</div>
+                        <div class="t1">{{quote.price}}</div>
                         <div class="t2">元/公斤</div>
                         <div class="t3">裸价</div>
                     </div>
                     <div class="desc">
-                        鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、碎渣，含量1.5左右
+                        {{quote.quality}}
                     </div>
                     <div class="thumb">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt="">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-2.jpg" alt="">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-3.jpg" alt="">
+                        {% for attachment in quote.attachments %}
+                        <img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt="">
+                        {% end %}
                     </div>
                 </div>
+                {% if quote.state == 0 %}
                 <div class="tools">
                     <a class="smile" href="#"><i class="iconfont icon-face"></i>不错，请供应商联系我</a><a class="sad" href="#"><i class="iconfont icon-frown"></i>不合适，再看看</a>
                 </div>
-            </li>
-
-            <li>
-                <div class="hd">
-                    <div class="tl">
-                        <span class="type">供货商</span>
-                        <strong class="name">秦连发</strong>
-                    </div>
-                    <div class="tr">
-                        <time>12-23 08:32</time>
-                        <span class="yc-cat">个人</span>
-                    </div>
-                    <div class="user">
-                        <i class="iconfont icon-user"></i><span>严飞</span>
-                        <i class="iconfont icon-mobile"></i><span>15500001111</span>
-                        <a href="tel:15500001111">立即拨号</a>
-                    </div>
-                </div>
-                <div class="bd">
-                    <div class="tit">报价</div>
-                    <div class="unit">
-                        <div class="t1">178.5</div>
-                        <div class="t2">元/公斤</div>
-                        <div class="t3">裸价</div>
-                    </div>
-                    <div class="desc">
-                        鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、碎渣，含量1.5左右
-                    </div>
-                    <div class="thumb">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt="">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-2.jpg" alt="">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-3.jpg" alt="">
-                    </div>
-                </div>
-                <div class="ft">
-                    <div class="status status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：价格偏高</div>
-                </div>
-            </li>
-
-            <li>
-                <div class="hd">
-                    <div class="tl">
-                        <span class="type">供货商</span>
-                        <strong class="name">秦连发</strong>
-                    </div>
-                    <div class="tr">
-                        <time>12-23 08:32</time>
-                        <span class="yc-cat">个人</span>
-                    </div>
-                    <div class="user">
-                        <i class="iconfont icon-user"></i><span>严飞</span>
-                        <i class="iconfont icon-mobile"></i><span>15500001111</span>
-                        <a href="tel:15500001111">立即拨号</a>
-                    </div>
-                </div>
-                <div class="bd">
-                    <div class="tit">报价</div>
-                    <div class="unit">
-                        <div class="t1">178.5</div>
-                        <div class="t2">元/公斤</div>
-                        <div class="t3">裸价</div>
-                    </div>
-                    <div class="desc">
-                        鸡爪统货，石柱当地种植，两年，纯干，间有少量碎节、碎渣，含量1.5左右
-                    </div>
-                    <div class="thumb">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-1.jpg" alt="">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-2.jpg" alt="">
-                        <img src="uploads/001.jpeg" data-src="uploads/bing-3.jpg" alt="">
-                    </div>
-                </div>
+                {% elif quote.state == 1 %}
                 <div class="ft">
                     <div class="status status-accept"><i class="iconfont icon-face"></i>已甄选为意向供应商</div>
                 </div>
+                {% elif quote.state == 2 %}
+                <div class="ft">
+                    <div class="status status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：{{quote.message}}</div>
+                </div>
+                {% end %}
             </li>
+            {% end %}
         </ol>
     </div>
 
