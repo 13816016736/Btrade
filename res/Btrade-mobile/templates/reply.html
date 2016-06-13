@@ -119,13 +119,27 @@ $(function() {
         var temp = [];
         if (data.status === 0) {
             temp.push('<div class="fl"><span class="gray">关闭</span></div>');
-            temp.push('<div class="fr">', data.expire.replace(/\//g, '-'), ' 截止</div>');
+            temp.push('<div class="fr">', timeago.shortDate(parseInt(data.expire), 10), ' 截止</div>');
         } else {
-            var t1 = new Date(data.createtime).getTime(); // 2016/10/01
-            var t2 = new Date(data.expire).getTime();
-            var d = (t2 - t1)/1e3/60/60/24 | 0;
+            var t1 = data.now || new Date;
+            var t2 = parseInt(data.expire, 10);
+            var t = t2 - t1;
+            var d = (t/1e3/60/60/24) | 0;
+            var h = (t/1e3/60/60%24) | 0;
+            var m = (t/1e3/60%60) | 0;
+
+            if (d > 0) {
+                d = '<b>' + d + '</b>天';
+            } else if (h > 0) {
+                d = '<b>' + h + '</b>时';
+            } else if (m > 0) {
+                d = '<b>' + m + '</b>分';
+            } else {
+                d = '<b>' + d + '</b>天';
+            }
+
             temp.push('<div class="fl"><span class="blue">等待报价</span></div>');
-            temp.push('<div class="fr">剩余<b>', d, '</b>天(', data.expire.replace(/\//g, '-'), ' 截止)</div>');
+            temp.push('<div class="fr">剩余', d, '(', timeago.shortDate(parseInt(data.expire), 10), ' 截止)</div>');
         }
         return temp.join('');
     }
@@ -166,7 +180,7 @@ $(function() {
             temp.push(         '<dt class="yc-sub-title">');
             temp.push(             '<div class="cf">');
             temp.push(                  '<div class="fl">采购批次号：<span>', data[i].id, '</span></div>');
-            temp.push(                  '<div class="fr"><time>', timeago.elapsedTime(data[i].createtime), '</time></div>');
+            temp.push(                  '<div class="fr"><time>', timeago.fullTime(parseInt(data[i].createtime, 10)), '</time></div>');
             temp.push(             '</div>');
             temp.push(             '<div class="cf">');
             temp.push(                  getTitle(data[i]));

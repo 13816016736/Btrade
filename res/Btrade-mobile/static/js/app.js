@@ -73,7 +73,7 @@ function gallery(weChatImagePreview) {
 	}
 	function bindEvent() {
 		$('body').on('click', '.gallery-close, .gallery-back, .gallery', closeGallery);
-		$('.thumb').on('click', 'img', function() {
+		$('body').on('click', '.thumb img', function() {
             var index = $(this).index();
             var imgUrls = [];
             $(this).parent().find('img').each(function() {
@@ -174,6 +174,12 @@ var timeago = {
     fullTime: function(e) {
         var t = new Date(e);
         return this.format(t);
+    },
+    shortDate: function(e) {
+        var t = new Date(e);
+        return t.getFullYear() + "-"
+            + this.fillZero(t.getMonth() + 1) + "-"
+            + this.fillZero(t.getDate());
     },
     elapsedTime: function(e) {
         var t = new Date(e),
