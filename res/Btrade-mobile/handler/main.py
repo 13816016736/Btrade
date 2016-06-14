@@ -372,7 +372,7 @@ class ReplayDetailHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         #更新通知状态为已读
-        nid = self.get_argument("nid")
+        nid = self.get_argument("nid", None)
         if nid:
             self.db.execute("update notification set status = 1 where id = %s", nid)
         userid = self.session.get("userid")
