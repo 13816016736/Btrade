@@ -150,8 +150,8 @@
                     </div>
                 </div>
                 {% if quote.state == 0 %}
-                <div class="tools">
-                    <a class="smile" href="#" qid="{{quote.id}}"><i class="iconfont icon-face"></i>不错，请供应商联系我</a><a class="sad" href="#" qid="{{quote.id}}"><i class="iconfont icon-frown"></i>不合适，再看看</a>
+                <div class="tools" id="qid{{quote.id}}">
+                    <a class="smile" href="#" data-qid="{{quote.id}}"><i class="iconfont icon-face"></i>不错，请供应商联系我</a><a class="sad" href="#" data-qid="{{quote.id}}"><i class="iconfont icon-frown"></i>不合适，再看看</a>
                 </div>
                 {% elif quote.state == 1 %}
                 <div class="ft">
@@ -260,17 +260,31 @@
             }, 3e3);
         }
 
+        var setFoot = function(status, msg) {
+            var $tools = $('#qid' + qid);
+            var temp = [];
+            temp.push('<div class="ft">');
+            if (status === 1) {
+                temp.push('<div class="status status-accept"><i class="iconfont icon-face">', msg , '</i></div>');
+            } else {
+                temp.push('<div class="status status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：', msg,'</div>');
+            }
+            temp.push('</div>');
+            $tools.after(temp.join(''));
+            $tools.remove();
+        }
+
         // 报价合适
         $('.yc-quote-receive').on('click', '.smile', function() {
             // $jModalOk.find("input[name='qid']").val($(this).attr("qid"));
-            qid = $(this).attr('qid');
+            qid = $(this).data('qid');
             $jModalOk.modal();
             return false;
         });
         // 报价不合适
         $('.yc-quote-receive').on('click', '.sad', function() {
             // $jModalFail.find("input[name='qid']").val($(this).attr("qid"));
-            qid = $(this).attr('qid');
+            qid = $(this).data('qid');
             $jModalFail.modal();
             return false;
         });
@@ -287,7 +301,8 @@
                 },
                 success: function(data) {
                     $jModalOk.modal('hide');
-                    showMsg('报价合适');
+                    showMsg('报价合适');  
+                    setFoot(1, '已甄选为意向供应商');                  
                 }
             })
         });
@@ -312,6 +327,7 @@
                 success: function(data) {
                     $jModalFail.modal('hide');
                     showMsg('报价不合适');
+                    setFoot(2, message.join('、'));      
                 }
             })
         });
