@@ -179,7 +179,7 @@
             </div>
             <div class="modal-body">
                 <div class="confirm">
-                    <p>您确认要认可此报价吗？</p>
+                    <strong>您确认要认可此报价吗？</strong>
                 </div>
                 <div class="button">
                     <input type="hidden" name="qid" value=""/>
@@ -298,7 +298,8 @@
             $form.find('input:checked').each(function() {
                 message.push(this.value);
             });
-            message.push($form.find('textarea').val());
+            var desc = $.trim($form.find('textarea').val());
+            desc.length > 0 && message.push(desc);
             $.ajax({
                 type: 'post',
                 url: '/updatequotestate',

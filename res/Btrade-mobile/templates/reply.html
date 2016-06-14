@@ -37,7 +37,7 @@
             </div>
             <div class="modal-body">
                 <div class="confirm">
-                    <p>您确认要关闭此采购单吗？</p>
+                    <strong>您确认要关闭此采购单吗？</strong>
                 </div>
                 <div class="button">
                     <input id="pid" type="hidden" name="pid" value=""/>
@@ -128,7 +128,11 @@ $(function() {
         var t2 = parseInt(data.expire, 10);
         var t = t2 - t1;
 
-        if (data.status === 0 || t < 0) {
+        if (!data.expire) {
+            temp.push('<div class="fl"><span class="blue">等待报价</span></div>');
+            temp.push('<div class="fr">常年采购</div>');
+
+        } else if (data.status === 0 || t < 0) {
             temp.push('<div class="fl"><span class="gray">关闭</span></div>');
             temp.push('<div class="fr">', timeago.shortDate(parseInt(data.expire, 10) * 1e3), ' 截止</div>');
 
@@ -223,7 +227,7 @@ $(function() {
                     me.unlock();
                     me.isDate = true;
                     var result = toHtml(data.list);
-                    $('.yc-reply-list ul').html(result);
+                    $ol.html(result);
                     var msg = Math.random() > .5 ? '暂无新的采购单推荐' : '药材购为您新推荐5个采购单'; // 随机显示2种提示语，只做演示使用
                     me.$domUp.html('<div class="dropload-msg">' + msg + '</div>');
                     me.resetload();
@@ -238,25 +242,25 @@ $(function() {
         loadDownFn : function(me){
             $.ajax({
                 type: 'post',
-                url: '/reply?number='+$(".list li").length,
+                url: '/reply?number=' + $ol.children().length,
                 dataType: 'json',
                 beforeSend: function(jqXHR, settings) {
                     jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
                 },
                 success: function(data){
-                    if (!data.list) {
-                        return false;
-                    }
-                    var result = toHtml(data.list);
-                    $('.yc-reply-list ul').append(result);
-                    /*if(data.status === 'nomore'){
+                    if(data.status === 'nomore'){
                         // 锁定
                         me.lock();
                         // 无数据
                         me.noData();
                         me.resetload();
+                        lpPopover(data.message);
                         return;
-                    }*/
+                    }
+                    if (!data.list) {
+                        return false;
+                    }
+                    $ol.append(toHtml(data.list));
                     // 每次数据加载完，必须重置
                     me.resetload();
                 },

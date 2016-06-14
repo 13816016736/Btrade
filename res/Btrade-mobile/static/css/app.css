@@ -312,7 +312,7 @@ input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0;}
 .yc-quote-receive .hd .user span{margin-right:14px;}
 .yc-quote-receive .bd{padding:0 10px 20px;overflow:hidden;}
 .yc-quote-receive .bd .tit{color:#f90;}
-.yc-quote-receive .bd .unit{float:left;text-align:right;}
+.yc-quote-receive .bd .unit{float:left;width:70px;text-align:right;}
 .yc-quote-receive .bd .unit .t1{color:#f90;font-size:2.6rem;line-height:1;}
 .yc-quote-receive .bd .unit .t2{color:#333;}
 .yc-quote-receive .bd .unit .t3{color:#aaa;font-size:1.2rem;}
