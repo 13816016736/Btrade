@@ -190,7 +190,7 @@ def regSuccessWx(openid, name, username):
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     username = username.encode('utf-8') if isinstance(username, unicode) else username
     templateId = 'R49JXzySURAo-dgzpGtH1EDYXzgxgWVPYg3rQcuNzes'
-    link = 'm.yaocai.pro'
+    link = 'http://m.yaocai.pro'
     data = {
         "first": {
            "value":"%s，欢迎成为药材购会员！" % name,
@@ -211,8 +211,86 @@ def regSuccessWx(openid, name, username):
     }
     thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
+#供应商报价,通知给采购方
+def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime):
+    openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+    variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    price = price.encode('utf-8') if isinstance(price, unicode) else price
+    unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
+    quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
+    templateId = 'aUADL3alEqWYfs5pEM1X5dtm3pstmrxMt1ktrMNs1qk'
+    link = 'http://m.yaocai.pro/replydetail?pid=%s' % purchaseinfoid
+    data = {
+        "first": {
+           "value":"您好，%s收到新报价" % variety,
+           "color":"#173177"
+        },
+        "keyword1":{
+           "value":time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+           "color":"#173177"
+        },
+        "keyword2": {
+           "value":name,
+           "color":"#173177"
+        },
+        "keyword3": {
+           "value":variety,
+           "color":"#173177"
+        },
+        "keyword4": {
+           "value":"%s元/%s，%s" % (price, unit, quality),
+           "color":"#173177"
+        },
+        "remark":{
+           "value":"点击“详情”立即查看，并请尽快答复！及早答复报价，将为您累计信用，能收到更多优质报价。",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
+
+#供应商报价,通知给供应商报价成功
+def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, qtime):
+    openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+    name = name.encode('utf-8') if isinstance(name, unicode) else name
+    variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
+    spec = spec.encode('utf-8') if isinstance(spec, unicode) else spec
+    quantity = quantity.encode('utf-8') if isinstance(quantity, unicode) else quantity
+    price = price.encode('utf-8') if isinstance(price, unicode) else price
+    unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
+    quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
+    templateId = 'RGAztJ6ocuwvJosRCsCCJd8imGif6TT8B7vXYPa_KGs'
+    link = 'http://m.yaocai.pro'
+    data = {
+        "first": {
+           "value":"报价成功",
+           "color":"#173177"
+        },
+        "keyword1": {
+           "value":"%s 采购 %s（%s）%s%s" % (name,variety,spec,quantity,unit),
+           "color":"#173177"
+        },
+        "keyword2": {
+           "value":quality,
+           "color":"#173177"
+        },
+        "keyword3": {
+           "value":"%s元/%s" % (price, config.unit),
+           "color":"#173177"
+        },
+        "keyword4":{
+           "value":time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+           "color":"#173177"
+        },
+        "remark":{
+           "value":"药材购已通知采购商尽快查看并给您答复！点击“详情”可以查看更多您在经营品种的采购单，立刻报价",
+           "color":"#173177"
+        }
+    }
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
+
 #采购方对报价进行回复（认可报价）,通知给供应方
-def acceptQuoteWx(openid, name, variety, price, nickname, phone, qtime):
+def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
@@ -220,7 +298,7 @@ def acceptQuoteWx(openid, name, variety, price, nickname, phone, qtime):
     nickname = nickname.encode('utf-8') if isinstance(nickname, unicode) else nickname
     phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
-    link = 'http://m.yaocai.pro/quotelist'
+    link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
            "value":"报价被认可，请尽快联系",
@@ -247,14 +325,14 @@ def acceptQuoteWx(openid, name, variety, price, nickname, phone, qtime):
     thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
 #采购方对报价进行回复（拒绝报价）,通知给供应方
-def rejectQuoteWx(openid, name, variety, price, message, qtime):
+def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     message = message.encode('utf-8') if isinstance(message, unicode) else message
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
-    link = 'http://m.yaocai.pro/quotelist'
+    link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
            "value":"报价被拒绝",

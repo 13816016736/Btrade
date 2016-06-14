@@ -40,7 +40,7 @@ def pushPurchase(phones, purchase):
     thread.start_new_thread(sendx, (templateId, tos))
 
 #采购方对报价进行回复（认可报价）,通知给供应方
-def acceptQuoteWx(openid, name, variety, price, nickname, phone, qtime):
+def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
@@ -48,7 +48,7 @@ def acceptQuoteWx(openid, name, variety, price, nickname, phone, qtime):
     nickname = nickname.encode('utf-8') if isinstance(nickname, unicode) else nickname
     phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
-    link = 'http://m.yaocai.pro/quotelist'
+    link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
            "value":"报价被认可，请尽快联系",
@@ -75,14 +75,14 @@ def acceptQuoteWx(openid, name, variety, price, nickname, phone, qtime):
     thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
 #采购方对报价进行回复（拒绝报价）,通知给供应方
-def rejectQuoteWx(openid, name, variety, price, message, qtime):
+def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     message = message.encode('utf-8') if isinstance(message, unicode) else message
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
-    link = 'http://m.yaocai.pro/quotelist'
+    link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
            "value":"报价被拒绝",
