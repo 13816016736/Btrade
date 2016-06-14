@@ -99,7 +99,7 @@
                     {% break %}
                     {% end %}
                     <li>
-                        <a {% if p.status == 0 %}class="unread"{% end %} href="/replydetail?id={{p.content}}">
+                        <a {% if p.status == 0 %}class="unread"{% end %} href="/replydetail?pid={{p.content}}&nid={{p.id}}">
                             <i class="iconfont icon-envelope status"></i>
                             <span>{{p.title}}</span>
                             <i class="iconfont icon-more arrow"></i>

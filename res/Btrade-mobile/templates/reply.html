@@ -16,9 +16,11 @@
         <span>共发布<b>{{len(purchaseinfos)}}</b>个采购批次，收到<b>{{len(quotes)}}</b>个报价</span>
     </div>
     <div class="yc-reply-list">
+        {% if unreadquote %}
         <div class="dispose">
             <i class="iconfont icon-exclamation"></i>您有<span>{{unreadquote}}</span>个报价未答复，请尽快答复
         </div>
+        {% end %}
 
         <ul>
 

@@ -39,10 +39,22 @@
             </ul>
         </div>
         <div class="item" {% if type==2 %}style="display:block"{% end %}>
-            <div class="yc-news-none">
-                <i class="iconfont icon-face"></i>
-                <span>采购消息请在电脑上登录www.yaocai.pro查看</span>
-            </div>
+            <ul class="yc-news-list">
+                {% for i,p in enumerate(purchase) %}
+                <li>
+                    <a {% if p.status == 0 %}class="unread"{% end %} href="/replydetail?pid={{p.content}}&nid={{p.id}}">
+                        <i class="iconfont icon-envelope status"></i>
+                        <span>{{p.title}}</span>
+                    </a>
+                </li>
+                {% end %}
+                {% if len(purchase) == 0 %}
+                <div class="yc-news-none">
+                    <i class="iconfont icon-face"></i>
+                    <span>暂无采购消息</span>
+                </div>
+                {% end %}
+            </ul>
         </div>
         <div class="item" {% if type==3 %}style="display:block"{% end %}>
             <ul class="yc-news-list">

@@ -371,6 +371,10 @@ class ReplayHandler(BaseHandler):
 class ReplayDetailHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        #更新通知状态为已读
+        nid = self.get_argument("nid")
+        if nid:
+            self.db.execute("update notification set status = 1 where id = %s", nid)
         userid = self.session.get("userid")
         pid = self.get_argument("pid")
         purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
@@ -379,7 +383,7 @@ class ReplayDetailHandler(BaseHandler):
                                    "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",
                                    pid)
         # 获得采购品种图片
-        attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
+        attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", pid)
         for attachment in attachments:
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
             attachment["attachment"] = config.img_domain + attachment["attachment"][
