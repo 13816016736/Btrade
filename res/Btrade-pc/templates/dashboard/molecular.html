@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <title>子账号列表-药材购</title>
+    <!-- 浏览器高速模式 -->
+    <meta name="renderer" content="webkit" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/center.css" />
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+
+<section class="sec">
+    <div class="main-cont">
+        <div class="menu">
+            <ul class="yc-ul">
+                <li><a href="account.html" title=""><i class="icons pen"></i>账户资料</a></li>
+                <li class="curr"><a href="#" title=""><i class="icons sub"></i>子账户</a></li>
+            </ul>
+        </div>
+        
+        <div class="box">
+            <div class="filter">
+                <div class="pull-left">
+                    <a class="btn btn-white btn-sm" href="molecular_add.html" id="jAdd">新增子账号</a>
+                </div>
+                <div class="pull-right search">
+                    <input class="ipt" type="text" placeholder="请输入员工真是姓名">
+                    <button class="btn btn-orange btn-sm" type="button">搜索</button>
+                </div>
+            </div>
+
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>会员名</th>
+                            <th>姓名</th>
+                            <th>手机号</th>
+                            <th>
+                                <div class="dropdown">
+                                    <div class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        状态<i class="caret"></i>
+                                    </div>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li>
+                                            <a href="#">使用中</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">已冻结</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid1">使用中<i title="冻结子账号" class="status used" data-qid="1"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr class="gray">
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid2">已冻结<i title="解冻子账号" class="status freeze" data-qid="2"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid3">使用中<i title="冻结子账号" class="status used" data-qid="3"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid4">使用中<i title="冻结子账号" class="status used" data-qid="4"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid5">使用中<i title="冻结子账号" class="status used" data-qid="5"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid6">已冻结<i title="解冻子账号" class="status freeze" data-qid="6"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid7">使用中<i title="冻结子账号" class="status used" data-qid="7"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid8">使用中<i title="冻结子账号" class="status used" data-qid="8"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid9">使用中<i title="冻结子账号" class="status used" data-qid="9"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid10">已冻结<i title="解冻子账号" class="status freeze" data-qid="10"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid11">使用中<i title="冻结子账号" class="status used" data-qid="11"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                        <tr>
+                            <td>yf001</td>
+                            <td>严飞</td>
+                            <td>150****4141</td>
+                            <td><div class="op" id="qid12">使用中<i title="冻结子账号" class="status used" data-qid="12"></i></div></td>
+                            <td><a href="#">修改权限</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagin">
+                <div class="skip">
+                    共17页，到第<input type="text" id="jPageSkip" maxlength="4" value="1" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" onkeydown="javascript:if(event.keyCode==13){page_jump();return false;}" class="ipt">页
+                    <button onclick="page_jump();" type="button" class="btn-skip">确定</button>
+                </div>
+                <div class="num">
+                    <span class="disabled">&lt;</span>
+                    <span class="curr">1</span>
+                    <a href="?page=2">2</a>
+                    <a href="?page=3">3</a>
+                    <a href="?page=4">4</a>
+                    <a href="?page=5">5</a>
+                    <a href="?page=6">6</a>
+                    <a href="?page=7">7</a>
+                    <i>...</i>
+                    <a href="?page=199">199</a>
+                    <a href="?page=200">200</a>
+                    <a href="?page=2">&gt;</a>
+                </div>
+            </div>
+
+            <div class="table">
+                <div class="null">
+                    <h3>为您的员工创建子账号！</h3>
+                    <p>您可以方便地管理所有子账号发布的采购，还能实时地跟踪采购进度。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="side">
+        <ul class="yc-ul">
+            <li><a href="#"><i class="icons home"></i>首页</a></li>
+            <li><a href="order.html"><i class="icons menu"></i>我的采购</a><em>4</em></li>
+            <li><a href="#"><i class="icons talk"></i>洽谈</a></li>
+            <li><a href="#"><i class="icons envelope"></i>通知</a></li>
+            <li class="curr"><a href="account.html"><i class="icons setting"></i>账户</a></li>
+        </ul>
+    </div>
+</section>
+
+<!-- 药材品种 -->
+<div class="variety-tags" id="jVarietyTags">
+    <div class="inner">
+        <dl class="search"><dd></dd></dl>
+        <dl>
+            <dt>最近采购品种</dt>
+            <dd>
+                <span>黄连</span>
+                <span>三七</span>
+                <span>当归</span>
+                <span>白芍</span>
+                <span>浙贝母</span>
+                <span>景天红花散</span>
+                <span>最多容纳六字</span>
+            </dd>
+        </dl>
+        <dl>
+            <dt>主要经营/采购品种</dt>
+            <dd>
+                <span>黄连</span>
+                <span>三七</span>
+                <span>当归</span>
+                <span>白芍</span>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="modal fade" id="jModalTips" tabindex="-1" role="dialog" aria-labelledby="tit1">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit1">消息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="confirm">
+                    <strong>使用中的子账号已达到10个</strong>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-orange" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="jModalConfirm" tabindex="-1" role="dialog" aria-labelledby="tit2">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit2">消息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="confirm">
+                    <strong></strong>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-orange">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 成功提示 -->
+<div class="modal fade" id="jModalResult" tabindex="-1" role="dialog" aria-labelledby="tit3">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit3">消息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="result">
+                    <p class="success"><i class="icons icons-ok"></i>操作成功</p>
+                    <p class="tips">3秒后自动关闭</p>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-gray" data-dismiss="modal">立即关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/center.js"></script>
+
+
+<script>
+    $(function() {
+        var sum = $('.table .used').length || 10; // 冻结账号的个数
+        var $jModalTips = $('#jModalTips');
+        var $jModalConfirm = $('#jModalConfirm');
+        var $jModalResult = $('#jModalResult');
+        var timer = 0;
+        var isModal = false;
+        var qid, op;
+
+        var showConfirm = function(msg) {
+            $jModalConfirm.find('.confirm strong').html(msg);
+            $jModalConfirm.modal();
+        }
+        var setOp = function() {
+            var html = '';
+            if (op === 1) {
+                html = '使用中<i title="冻结子账号" class="status used" data-qid="' + qid + '"></i>';
+                sum ++;
+
+            } else if (op === 0) {
+                html = '已冻结<i title="解冻子账号" class="status freeze" data-qid="' + qid + '"></i>';
+                sum --;
+            }
+
+            $('#qid' + qid).html(html);
+            qid = -1;
+            op = -1;
+        }
+        $('#jAdd').on('click', function() {
+            if (sum === 10) {
+                $jModalTips.modal();
+                return false;
+            }
+        })
+        // 解冻子账号
+        $('.table').on('click', '.freeze', function() {
+            if (sum === 10) {
+                $jModalTips.modal();
+                return false;
+            } else {
+                showConfirm('确认要解冻子账号？');
+                qid = $(this).data('qid');
+                op = 1;
+            }
+        })
+        // 冻结子账号
+        $('.table').on('click', '.used', function() {
+            showConfirm('确认要冻结子账号？');
+            qid = $(this).data('qid');
+            op = 0;
+        })
+
+        // 确认
+        $jModalConfirm.on('click', '.btn-orange', function() {
+            $.ajax({
+                url: '',
+                data: {qid: qid},
+                success: function() {
+                    isModal = true;
+                    $jModalConfirm.modal('hide');
+                    setOp();
+                    qid = 0;
+                }
+            })
+        })
+
+        $jModalConfirm.on('hidden.bs.modal', function() {
+            if (isModal) {
+                $jModalResult.modal('show');
+                timer && clearTimeout(timer);
+                timer = setTimeout(function() {
+                    $jModalResult.modal('hide');
+                }, 3e3);
+            }
+            isModal = false;
+        });
+
+    })
+    // 防抖处理
+    function debounce(func, wait) {
+        this.timer && clearTimeout(this.timer);
+        this.timer = setTimeout(function() {func()}, wait);
+    }
+
+    $('.form-primary').on({
+        'input': function() {
+            if ($.trim(this.value) == '') {
+                showTags(false, $varietyTags);
+            } else {
+                debounce(getKeywords, 400);
+            }
+        }
+    }, '.tr .ipt');
+
+</script>
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
+</script>
+</body>
+
+</html>
