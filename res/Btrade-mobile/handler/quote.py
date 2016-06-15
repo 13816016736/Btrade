@@ -123,7 +123,7 @@ class QuoteHandler(BaseHandler):
         #给采购商发送通知
         #获得采购商userid
         quoter = self.db.get("select name,phone,openid from users where id = %s", self.session.get("userid"))
-        title = quoter["name"].encode('utf-8') + "对您的采购品种【" + purchase["name"].encode('utf-8') + "】进行了报价"
+        title = quoter["name"].encode('utf-8') + "对【" + purchase["name"].encode('utf-8') + "】提交了报价，立即处理"
 
         self.db.execute("insert into notification(sender,receiver,type,title,content,status,createtime)value(%s, %s, %s, %s, %s, %s, %s)",
                         self.session.get("userid"),purchase["userid"],2,title,self.get_argument("purchaseinfoid"),0,int(time.time()))

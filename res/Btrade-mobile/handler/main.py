@@ -38,8 +38,9 @@ class YaocaigouHandler(BaseHandler):
 class CenterHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        user = self.db.get("select * from users where id = %s", self.session.get("userid"))
-        news = self.db.query("select * from notification where receiver = %s order by createtime desc", self.session.get("userid"))
+        userid = self.session.get("userid")
+        user = self.db.get("select * from users where id = %s", userid)
+        news = self.db.query("select * from notification where receiver = %s order by createtime desc", userid)
 
         unread = 0
         unreadtype = 0
@@ -65,21 +66,22 @@ class CenterHandler(BaseHandler):
         #报价收到回复消息的表情
         results = []
         if quoteid:
-            results = self.db.query("select id,state from quote where userid = %s and id in ("+",".join(quoteid)+")", self.session.get("userid"))
+            results = self.db.query("select id,state from quote where userid = %s and id in ("+",".join(quoteid)+")", userid)
         faces = {}
         for result in results:
             faces[str(result["id"])] = int(result["state"])
         print faces
-        #最近一周报价次数
-        t = time.time()
-        week_begin = get_week_begin(t,0)
-        week_end = get_week_begin(t,1)
+        #最近一周报价次数 去掉统计最近一周了，全部统计所有
+        # t = time.time()
+        # week_begin = get_week_begin(t,0)
+        # week_end = get_week_begin(t,1)
         #我对别人的采购单进行的报价
-        quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
-                                 , self.session.get("userid"), week_begin,week_end)
+        quotestat = self.db.get("select count(id) quotenum,count(if(state!=0,true,null )) replynum from quote where userid = %s"
+                                 , self.session.get("userid"))
+        quotenum = quotestat["quotenum"]
+        replynum = quotestat["replynum"]
         #统计一周的采购批次
-        purchases = self.db.query("select id from purchase where userid = %s and createtime > %s and createtime < %s"
-                                    , self.session.get("userid"), week_begin, week_end)
+        purchases = self.db.query("select id from purchase where userid = %s", userid)
         unreadquote = 0
         purchaseinfos = []
         quotes = []
@@ -94,8 +96,8 @@ class CenterHandler(BaseHandler):
                         unreadquote += 1
 
 
-        self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces, quotecount=quotecount
-                    , purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote)
+        self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces
+                    , quotenum=quotenum, replynum=replynum, purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote)
 
     @tornado.web.authenticated
     def post(self):
@@ -382,6 +384,8 @@ class ReplayDetailHandler(BaseHandler):
                                    "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
                                    "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",
                                    pid)
+        if userid != purchaseinfo["userid"]:
+            self.error("这个采购单不属于你哦！","/reply")
         # 获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", pid)
         for attachment in attachments:
@@ -440,6 +444,7 @@ class RemovePurchaseHandler(BaseHandler):
 class UpdateQuoteStateHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
+        userid = self.session.get("userid")
         qid = self.get_argument("qid", 0)
         state = self.get_argument("state", 0)
         message = self.get_argument("message", "")
