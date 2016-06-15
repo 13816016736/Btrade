@@ -39,10 +39,20 @@
         </div>
         <div class="bd">
             <div class="total">
-                <a href="/quotelist">
-                    <p>最近一周共发出</p>
-                    <p class="sum"><span>{{quotecount}}</span>个报价</p>
-                </a>
+                <div class="sum clearfix">
+                    <div class="col">
+                        <a href="/quotelist">
+                            <span>{{quotecount}}</span>个<em>发出报价</em>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="#">
+                            <span>22</span>个<em>收到答复</em>
+                        </a>
+                    </div>
+                </div>
+
+                
             </div>
             <div class="list">
                 <ul>
@@ -77,7 +87,6 @@
         <div class="bd">
             <!-- start 有消息 -->
             <div class="total">
-                <p>最近一周</p>
                 <div class="sum clearfix">
                     <div class="col">
                         <a href="/reply">

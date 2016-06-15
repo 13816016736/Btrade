@@ -16,12 +16,6 @@
         <span>共发布<b>{{len(purchaseinfos)}}</b>个采购批次，收到<b>{{len(quotes)}}</b>个报价</span>
     </div>
     <div class="yc-reply-list">
-        {% if unreadquote %}
-        <div class="dispose">
-            <i class="iconfont icon-exclamation"></i>您有<span>{{unreadquote}}</span>个报价未答复，请尽快答复
-        </div>
-        {% end %}
-
         <ul>
 
         </ul>
@@ -164,7 +158,7 @@ $(function() {
         $.each(data, function(i, item) {
             var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '</em>个未答复)');
             temp.push('<dd>');
-            temp.push(    '<a href="/replydetail?pid=', item.id, '">');
+            temp.push(    '<a', (item.unreply === 0 ? '' : ' class="unreply"'), ' href="/replydetail?pid=', item.id, '">');
             temp.push(         '<span class="w1">', item.name, '</span>');
             temp.push(         '<span class="w2">', item.specification, '</span>');
             temp.push(         '<span class="w3">', num, '</span>');
@@ -180,7 +174,7 @@ $(function() {
         }
         var temp = [];
         temp.push('<div class="tools cf">');
-        temp.push(  '<span class="fl" pid="', data.id, '"><a href="#"><i class="iconfont icon-close"></i>停止报价</a></span>');
+        temp.push(  '<span class="fl" pid="', data.id, '"><a href="#"><i class="iconfont icon-close"></i>关闭采购单</a></span>');
         temp.push(  '<span class="fr"><a href="/purchaseinfobatch/purchaseid/', data.id, '"><i class="iconfont icon-share"></i>查看/分享采购单</a></span>');
         temp.push('</div>');
         return temp.join('');
