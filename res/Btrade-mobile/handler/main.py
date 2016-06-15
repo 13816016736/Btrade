@@ -349,13 +349,13 @@ class ReplayHandler(BaseHandler):
         userid = self.session.get("userid")
         number = int(self.get_argument("number")) if self.get_argument("number") > 0 else 0
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select id,term,status,createtime from purchase where userid = %s limit %s,%s", userid, number, config.conf['POST_NUM'])
+        purchases = self.db.query("select id,term,status,createtime from purchase where userid = %s order by createtime desc limit %s,%s", userid, number, config.conf['POST_NUM'])
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
             purchaseinfos = self.db.query(
                 "select p.id,p.purchaseid,p.name,p.specification,q.id qid,count(q.id) quotecount,count(if(q.state=0,true,null )) unreply "
                 "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (" + ",".join(
-                    purchaseids) + ") group by p.id order by id desc")
+                    purchaseids) + ") group by p.id")
             for purchaseinfo in purchaseinfos:
                 purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
             for purchase in purchases:
