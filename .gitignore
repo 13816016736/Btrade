@@ -1,4 +1,5 @@
 ### Code ###
 .git/
+.idea/
 *.pyc
 nohup.out
