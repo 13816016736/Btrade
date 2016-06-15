@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <title>新增子账号-药材购</title>
+    <!-- 浏览器高速模式 -->
+    <meta name="renderer" content="webkit" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/center.css" />
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+
+<section class="sec">
+    <div class="main-cont">
+        <div class="menu">
+            <ul class="yc-ul">
+                <li><a href="account.html" title=""><i class="icons pen"></i>账户资料</a></li>
+                <li class="curr"><a href="#" title=""><i class="icons sub"></i>子账户</a></li>
+            </ul>
+        </div>
+        
+        <div class="box">
+            <div class="filter">
+                <div class="pull-left">
+                    <a class="btn" href="molecular.html" id="jAdd">&lt; 返回</a>
+                </div>
+            </div>
+
+            <div class="form">
+                <div class="bd">
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>姓名</span>
+                        </div>
+                        <div class="cont">
+                            <input type="text" value="" id="jName" name="name" class="ipt" placeholder="员工的真实姓名">
+                            <span class="error"></span>
+                            <span class="explain">最长32个字符（16个汉字）</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>手机</span>
+                        </div>
+                        <div class="cont">
+                            <input type="text" value="" id="jMobile" name="mobile" class="ipt" placeholder="员工的手机号">
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>会员名</span>
+                        </div>
+                        <div class="cont">
+                            <input type="text" value="" id="jUsername" name="username" class="ipt" placeholder="2-20位字母、数字">
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>权限</span>
+                        </div>
+                        <div class="cont">
+                            <label><input type="radio" name="type" class="cbx" checked>管理个人采购订单</label>
+                            <label><input type="radio" name="type" class="cbx">管理所有采购订单</label>
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <button class="btn btn-orange submit" id="jSave1" type="submit">提交</button>
+                        <span class="msg hide"><i class="icons icons-ok"></i>操作成功</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!--start  编辑表单 -->
+            <div class="form">
+                <div class="bd">
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>权限</span>
+                        </div>
+                        <div class="cont">
+                            <label><input type="radio" name="type" class="cbx" checked>管理个人采购订单</label>
+                            <label><input type="radio" name="type" class="cbx">管理所有采购订单</label>
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <button class="btn btn-orange submit" id="jSave2" type="submit">提交</button>
+                        <span class="msg hide"><i class="icons icons-ok"></i>操作成功</span>
+                    </div>
+                </div>
+            </div><!-- end 编辑表单 -->
+
+        </div>
+    </div>
+
+
+    <div class="side">
+        <ul class="yc-ul">
+            <li><a href="#"><i class="icons home"></i>首页</a></li>
+            <li><a href="order.html"><i class="icons menu"></i>我的采购</a><em>4</em></li>
+            <li><a href="#"><i class="icons talk"></i>洽谈</a></li>
+            <li><a href="#"><i class="icons envelope"></i>通知</a></li>
+            <li class="curr"><a href="account.html"><i class="icons setting"></i>账户</a></li>
+        </ul>
+    </div>
+</section>
+
+<!-- 药材品种 -->
+<div class="variety-tags" id="jVarietyTags">
+    <div class="inner">
+        <dl class="search"><dd></dd></dl>
+        <dl>
+            <dt>最近采购品种</dt>
+            <dd>
+                <span>黄连</span>
+                <span>三七</span>
+                <span>当归</span>
+                <span>白芍</span>
+                <span>浙贝母</span>
+                <span>景天红花散</span>
+                <span>最多容纳六字</span>
+            </dd>
+        </dl>
+        <dl>
+            <dt>主要经营/采购品种</dt>
+            <dd>
+                <span>黄连</span>
+                <span>三七</span>
+                <span>当归</span>
+                <span>白芍</span>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="modal fade" id="jModalTips" tabindex="-1" role="dialog" aria-labelledby="tit1">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit1">消息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="confirm">
+                    <strong>使用中的子账号已达到10个</strong>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-orange" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="jModalConfirm" tabindex="-1" role="dialog" aria-labelledby="tit2">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit2">消息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="confirm">
+                    <strong></strong>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-orange">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 成功提示 -->
+<div class="modal fade" id="jModalResult" tabindex="-1" role="dialog" aria-labelledby="tit3">
+    <div class="modal-dialog modal-mid" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit3">消息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="result">
+                    <p class="success"><i class="icons icons-ok"></i>操作成功</p>
+                    <p class="tips">3秒后自动关闭</p>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-gray" data-dismiss="modal">立即关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/center.js"></script>
+<script src="js/zh.js"></script>
+
+
+<script>
+    $(function() {
+        var $jName = $('#jName');
+        var $jMobile = $('#jMobile');
+        var $jUsername = $('#jUsername');
+        var $jSubmit = $('#jSave1');
+
+        var getLength = function(str) {
+            var d = /[^\x00-\xff]/g;
+            str = str.replace(d,"**");  
+            return str.length;
+        }
+
+        var _setUsername = function() {
+            var val1 = pinyin.getFullChars($jName.val()).toLowerCase().substring(0, 16);
+            var val2 = $jMobile.val().substring(7);
+            var val3 = $jUsername.val();
+
+            if (!val3 && val1 && val2) {
+                $jUsername.val(val1 + val2);
+            }
+
+        }
+
+        var _showMsg = function($el, txt) {
+            if (txt) {
+                $el.next('.error').html(txt).next('.explain').hide();
+            } else {
+                $el.next('.error').html('').next('.explain').show();
+            }
+        }
+        var _checkName = function() {
+            var val = $jName.val();
+            var msg = '';
+            if (!val) {
+                msg = '请输入员工姓名';
+
+            } else if (!/^([a-zA-Z0-9]|[\u4e00-\u9fa5]){1,}$/.test(val)) {
+                msg = '只能输入字母、数字和汉字';
+
+            } else if (getLength(val) > 32) {
+                msg = '姓名太长了，最长32个字符（16个汉字）';
+
+            } else {
+                _showMsg($jName, false);
+                _setUsername();
+                return true;
+            }
+            _showMsg($jName, msg);
+            $jName.focus();
+            return false;
+        }
+
+        var _checkMobile = function() {
+            var val = $jMobile.val();
+            var msg = '';
+            if (!val) {
+                msg = '请输入手机号码';
+
+            } else if (!/^1\d{10}$|^01\d{10}$/.test(val)) {
+                msg = '手机号码格式错误';
+
+            } else {
+                _showMsg($jMobile, false);
+                _setUsername();
+                return true;
+            }
+            _showMsg($jMobile, msg);
+            $jMobile.focus();
+            return false;
+        }
+
+        var _checkUsername = function() {
+            var val = $jUsername.val();
+            var msg = '';
+            if (!val) {
+                msg = '请输入会员名';
+
+            } else if (!/^[a-zA-Z0-9]{3,20}$/.test(val)) {
+                msg = '只能输入3-20位字母和数字';
+
+            } else {
+                _showMsg($jUsername, false);
+                return true;
+            }
+            _showMsg($jUsername, msg);
+            $jUsername.focus();
+            return false;
+        }
+
+
+        function checkIpt() {
+            var c3 = _checkUsername();
+            var c2 = _checkMobile();
+            var c1 = _checkName();
+            if (c1 && c2 && c3) {
+                return true;
+            } 
+            return false;
+        }
+
+        $jName.on('blur', _checkName);
+        $jMobile.on('blur', _checkMobile);
+        $jUsername.on('blur', _checkUsername);
+
+        $jSubmit.on('click', function() {
+            return checkIpt();
+        });
+
+        $('#jSave2').on('click', function() {
+            alert('编辑')
+        });
+    });
+</script>
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
+</script>
+</body>
+
+</html>
