@@ -133,9 +133,11 @@ class PushPurchaseHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         purchaseinfoid = self.get_argument("purchaseinfoid")
-        purchaser = self.get_argument("purchaser")
-        purchaseinfo = self.db.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
-        purchaseinfo["name"] = purchaser
+        purchaser = self.get_argument("purchaser")#其实不需要这个参数
+        purchaseinfo = self.db.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
+        u = self.db.get("select name,nickname from users where id = %s", purchaseinfo["userid"])
+        purchaseinfo["name"] = u["name"]
+        purchaseinfo["nickname"] = u["nickname"]
         users = self.db.query("select phone,openid from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
         yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and source = %s and mobile != ''", purchaseinfo["varietyid"], 'yt1998')
         phones = set()

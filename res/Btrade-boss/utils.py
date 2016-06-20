@@ -135,8 +135,12 @@ def pushPurchaseWx(openids, purchase):
                "color":"#173177"
             },
             "keyword3":{
-               "value":time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+               "value":purchase["nickname"],
                "color":"#173177"
+            },
+            "keyword4": {
+                "value": time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+                "color": "#173177"
             },
             "remark":{
                "value":"点击“详情”，立即报价",
