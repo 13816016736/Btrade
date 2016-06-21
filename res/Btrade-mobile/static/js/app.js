@@ -79,6 +79,7 @@ function gallery(weChatImagePreview) {
             $(this).parent().find('img').each(function() {
                 imgUrls.push($(this).data('src'));
             });
+            console.log(imgUrls)
             if (weChatImagePreview && window.WeixinJSBridge) {
                 window.WeixinJSBridge.invoke('imagePreview', {
                     current: imgUrls[index],
@@ -121,7 +122,7 @@ function gallery(weChatImagePreview) {
         });
 	}
 
-	$('.thumb').length > 0 && initGallery();
+	initGallery();
 } 
 
 function debounce(func, wait, immediate) {
@@ -189,7 +190,7 @@ var timeago = {
     }
 }
 
-!(function($){
+$(function(){
 	// 主页我的标签文字处理
 	$('.yc-tag-list').each(function(){
 		$(this).find('li').each(function(){
@@ -217,6 +218,4 @@ var timeago = {
         var time = $(this).data('time');
         $(this).attr('title', timeago.fullTime(time)).html(timeago.elapsedTime(time));
     });
-
-
-}(jQuery));
+});

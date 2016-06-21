@@ -16,9 +16,7 @@
         <span>共发布<b>{{len(purchaseinfos)}}</b>个采购批次，收到<b>{{len(quotes)}}</b>个报价</span>
     </div>
     <div class="yc-reply-list">
-        <ul>
-
-        </ul>
+        <ul></ul>
     </div>
 
 </section><!-- /yc-content -->
@@ -65,17 +63,16 @@
     </div>
 </div>
 
-
-<script src="{{ static_url('js/jquery.min.js') }}"></script>
-<script src="{{ static_url('js/bootstrap.min.js') }}"></script>
-<script src="{{ static_url('js/app.js') }}"></script>
 <script>
 $(function() {
     var $jModalDelete = $('#jModalDelete');
+    var $ol = $('.yc-reply-list ul');
+    var pid = 0;
+    var lateest = 0;
     var timer = 0;
     var isDel = false;
     // 关闭整个采购单
-    $('.yc-reply-list').on('click', '.tools .fl', function() {
+    $ol.on('click', '.tools .fl', function() {
         $("#pid").val($(this).attr("pid"));
         var txt = '<p>确认对如下采购单停止报价？停止后，该批次的所有的品种都将停止报价</p>';
         var $pa = $(this).closest('li').find('dd>a');
@@ -125,11 +122,10 @@ $(function() {
         var t = t2 - t1;
 
         if (!data.expire) {
-            temp.push('<div class="fl"><span class="blue">等待报价</span></div>');
-            temp.push('<div class="fr">常年采购</div>');
+            temp.push('<em class="status-sustain">常年采购</em>');
 
         } else if (data.status === 0 || t < 0) {
-            temp.push('<div class="fl"><span class="gray">关闭</span></div>');
+            temp.push('<div class="fl"><em class="status-closed">关闭</em></div>');
             temp.push('<div class="fr">', timeago.shortDate(parseInt(data.expire, 10) * 1e3), ' 截止</div>');
 
         } else {
@@ -148,7 +144,7 @@ $(function() {
                 txt = '<b>' + d + '</b>天';
             }
 
-            temp.push('<div class="fl"><span class="blue">等待报价</span></div>');
+            temp.push('<div class="fl"><em class="status-wait">等待报价</em></div>');
             temp.push('<div class="fr">剩余', txt, '(', timeago.shortDate(parseInt(data.expire, 10) * 1e3), ' 截止)</div>');
         }
         return temp.join('');
@@ -156,7 +152,7 @@ $(function() {
     var getDD = function(data) {
         var temp = [];
         $.each(data, function(i, item) {
-            var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '</em>个未答复)');
+            var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '1个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '2</em>个未答复)');
             temp.push('<dd>');
             temp.push(    '<a', (item.unreply === 0 ? '' : ' class="unreply"'), ' href="/replydetail?pid=', item.id, '">');
             temp.push(         '<span class="w1">', item.name, '</span>');
@@ -183,7 +179,6 @@ $(function() {
     var toHtml = function(data) {
         var html = [];
         for (var i = 0; i < data.length; i++) {
-            var status = '<div class="status status-refuse"><i class="iconfont icon-frown"></i></div>'
             var temp = [];
             temp.push('<li>');
             temp.push(     '<dl>');
@@ -202,16 +197,25 @@ $(function() {
             temp.push('</li>');
             html.push(temp.join(''));
         }
+        if (pid === 0) {
+            pid = data[0].id;
+        }
+        
+        lateest = data[0].id;
+        if (lateest > pid) {
+            pid = lateest;
+        } else {
+            lateest = 0;
+        }
         return html.join('');
     }
     // dropload
-    var $ol = $('.yc-reply-list ul');
     $ol.parent().dropload({
         scrollArea : window,
         loadUpFn : function(me){
             $.ajax({
                 type: 'post',
-                url: '/reply',
+                url: '/reply?number=0',
                 dataType: 'json',
                 beforeSend: function(jqXHR, settings) {
                     jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
@@ -223,14 +227,18 @@ $(function() {
                     me.unlock();
                     me.isDate = true;
                     var result = toHtml(data.list);
+                    var msg = '暂无新的采购单推荐';
+                    if (lateest > 0) {
+                        msg = '药材购为您新推荐' + data.list.length + '个采购单';
+                    }
                     $ol.html(result);
-                    var msg = Math.random() > .5 ? '暂无新的采购单推荐' : '药材购为您新推荐5个采购单'; // 随机显示2种提示语，只做演示使用
                     me.$domUp.html('<div class="dropload-msg">' + msg + '</div>');
-                    me.resetload();
+                    setTimeout(function(){
+                        me.resetload();
+                    }, 2e3);
                 },
                 error: function(xhr, type){
                     lpPopover('网络连接超时，请您稍后重试!');
-                    // 即使加载出错，也得重置
                     me.resetload();
                 }
             });
@@ -245,9 +253,7 @@ $(function() {
                 },
                 success: function(data){
                     if(data.status === 'nomore'){
-                        // 锁定
                         me.lock();
-                        // 无数据
                         me.noData();
                         me.resetload();
                         lpPopover(data.message);
@@ -257,12 +263,10 @@ $(function() {
                         return false;
                     }
                     $ol.append(toHtml(data.list));
-                    // 每次数据加载完，必须重置
                     me.resetload();
                 },
                 error: function(xhr, type){
                     lpPopover('网络连接超时，请您稍后重试!');
-                    // 即使加载出错，也得重置
                     me.resetload();
                 }
             });

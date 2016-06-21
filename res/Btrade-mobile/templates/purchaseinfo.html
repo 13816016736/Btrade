@@ -4,7 +4,7 @@
 {% raw xsrf_form_html() %}
 <header class="yc-header">
     <div class="yc-header-back">
-        <a href="/">
+        <a href="javascript:history.back();">
             <i class="iconfont icon-back"></i>
         </a>
     </div>
@@ -19,19 +19,19 @@
         </div>
         <div class="cf">
             {% if purchase.status == 0%}
-            <div class="fl"><span class="red">关闭</span></div>
+            <div class="fl"><em class="status-closed">关闭</em></div>
             {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
             <div class="fl">
-                <span class="blue">等待报价</span>
                 {% if purchase.term != 0%}
+                <em class="status-wait">等待报价</em>
                 （剩余<b>{{purchase.timedelta}}</b>天）
                 {% else%}
-                常年采购
+                <em class="status-sustain">常年采购</em>
                 {% end %}
             </div>
             <div class="fr">已有<b>{{purchase.views}}</b>次浏览，<b>{{quotes}}</b>个报价</div>
             {% else %}
-            <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            <div class="fl"><em class="status-finish">报价结束</em></div>
             {% end %}
         </div>
     </div>
@@ -84,11 +84,13 @@
                 {% end %}
             </div>
             <div class="total">
+                <!--
                 <span class="yc-star yc-star-4">
                     <i></i><i></i><i></i><i></i><i></i>
                 </span>
                 <span class="txt">成功采购：<b>{{purchases}}单</b></span>
-                <span class="txt">报价答复率：<b>{{reply}}%</b></span>
+                -->
+                <span class="fr">报价答复率：<b>{{reply}}%</b></span>
             </div>
         </div>
     </div>
@@ -168,7 +170,6 @@
     </div>
 </footer>
 {% end %}
-<script src="{{ static_url('js/app.js') }}"></script>
 <script>
 $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
 $("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));

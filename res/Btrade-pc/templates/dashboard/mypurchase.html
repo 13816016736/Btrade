@@ -49,16 +49,16 @@
                     <div class="td2"><!--发布人：<em>金庸</em>-->发布时间：<time>{{ purchase.datetime }}</time></div>
                     <div class="td3">
                         {% if purchase.status == 0%}
-                        <span>关闭</span>
+                        <span class="status status-closed">关闭</span>
                         {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
-                        <span class="status wait">等待报价</span>
                         {% if purchase.term != 0%}
+                        <span class="status status-wait">等待报价</span>
                         剩余{{purchase.timedelta}}天（{{purchase.expire}} 截止）
                         {% else%}
-                        常年采购
+                        <span class="status status-sustain">常年采购</span>
                         {% end %}
                         {% else %}
-                        <span class="status finish">报价结束，甄选供应商</span>
+                        <span class="status status-finish">报价结束</span>
                         {% end %}
                     </div>
                     <div class="td4">

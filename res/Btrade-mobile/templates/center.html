@@ -51,8 +51,6 @@
                         </a>
                     </div>
                 </div>
-
-                
             </div>
             <div class="list">
                 <ul>
@@ -61,18 +59,18 @@
                     {% break %}
                     {% end %}
                     <li>
-                        <a href="/quotedetail/quoteid/{{s.content}}/nid/{{s.id}}">
-                            <i class="iconfont {% if faces.has_key(s.content) and faces[s.content] == 1 %}icon-face{% elif faces.has_key(s.content) and faces[s.content] == 2 %}icon-frown{% else %}icon-envelope{% end %} status"></i>
+                        <a class="title" href="/quotedetail/quoteid/{{s.content}}/nid/{{s.id}}">
+                            <i class="iconfont {% if faces.has_key(s.content) and faces[s.content] == 1 %}icon-face{% elif faces.has_key(s.content) and faces[s.content] == 2 %}icon-frown{% else %}icon-envelope{% end %} icon"></i>
                             <span>{{s.title}}</span>
-                            <span class="time">{{s.datetime}}</span>
-                            <i class="iconfont icon-more arrow"></i>
+                            <time class="time">{{s.datetime}}</time>
+                            <i class="iconfont icon-more"></i>
                         </a>
                     </li>
                     {% end %}
                     <li class="more">
                         <a href="/news/type/1">
                             <span>更多卖货消息</span>
-                            <i class="iconfont icon-more arrow"></i>
+                            <i class="iconfont icon-more"></i>
                         </a>
                     </li>
                 </ul>
@@ -109,9 +107,9 @@
                     {% end %}
                     <li>
                         <a {% if p.status == 0 %}class="unread"{% end %} href="/replydetail?pid={{p.content}}&nid={{p.id}}">
-                            <i class="iconfont icon-envelope status"></i>
+                            <i class="iconfont icon-envelope icon"></i>
                             <span>{{p.title}}</span>
-                            <i class="iconfont icon-more arrow"></i>
+                            <i class="iconfont icon-more"></i>
                         </a>
                     </li>
                     {% end %}
@@ -124,7 +122,7 @@
                     <li class="more">
                         <a href="/news/type/2">
                             <span>更多采购消息</span>
-                            <i class="iconfont icon-more arrow"></i>
+                            <i class="iconfont icon-more"></i>
                         </a>
                     </li>
                 </ul>
