@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>药采购工作平台</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../static/images/favicon.ico?v=2bfa7da6952343414cbf3475b4d02b97" media="screen" />
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css?v=9eef70bd56979ad7c0b8e009e11e009b">
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrapValidator.css?v=4ffa7e02e49e80837cdd018363098d78">
+    <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css?v=f667e6132f8470a39d2395b81ab4ef09">
+    <link rel="stylesheet" href="../static/plugins/datetimepicker/css/datetimepicker.min.css?v=a0fd73f29dfc4eca19ff9a61af29a96e">
+    <link rel="stylesheet" href="../static/dist/css/zyc-boss.css?v=6691f55ad43601a8056f672ce11f6a07">
+    <link rel="stylesheet" href="../static/dist/css/skins/_all-skins.min.css?v=409d387ee91fbe82eeecf94e1b5d5db6">
+    <script src="../static/js/jquery.min.js?v=b327509226baa10f2d2e89c42c2c49fb"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js?v=e7d9a06cf9053c51cd4ad3386da0659a"></script>
+    <script src="../static/dist/js/app.min.js?v=70f46360fb2efaf0abfe2910575d1037"></script>
+    <script src="../static/plugins/datetimepicker/datetimepicker.js?v=6abe7f2c7aa92396763031856062109a"></script>
+    <script src="../static/bootstrap/js/bootstrapValidator.js?v=2751bb0b2bf4a26d456722ff18244244"></script>
+    <style>
+    body {
+        font-family: Microsoft YaHei;
+    }
+    </style>
+</head>
+
+<body class="skin-blue sidebar-mini">
+    <header class="main-header">
+        <a class="logo" href="#">
+            <span class="logo-mini">B</span>
+            <span class="logo-lg">BOSS管理系统</span>
+        </a>
+        <nav class="navbar navbar-static-top">
+            <a class="sidebar-toggle" role="button" data-toggle="offcanvas" href="#">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                            <i class="fa fa-user"></i> yanfei <i class="fa fa-angle-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">编辑个人资料</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/logout">
+                            <i class="fa fa-power-off"></i> 退出
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#">
+                        <i class="fa fa-tachometer"></i> <span>操作中心</span>
+                    </a>
+                </li>
+                <li class="treeview active">
+                    <a href="#">
+                        <i class="fa fa-th"></i> <span>会员管理</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu menu-open">
+                        <li class="active">
+                            <a href="/users/userlist">
+                                <i class="fa fa-circle-o"></i> 前台会员管理
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="treeview ">
+                    <a href="#">
+                        <i class="fa fa-cart-plus"></i> <span>采购管理</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu ">
+                        <li><a href="/purchase/purchaselist/type/-1/starttime//endtime/"><i class="fa fa-circle-o"></i> 订单查询</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>业务路径</h1>
+        </section>
+        <section class="filter">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label>日期范围：</label>
+                    <div class="input-group date form_datetime">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control" id="starttime" value="">
+                    </div>
+                    至
+                    <div class="input-group date form_datetime">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control" id="endtime" value="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <a class="label label-warning" href="#">近1天</a>
+                </div>
+                <div class="form-group">
+                    <a class="label label-default" href="#">近1周</a>
+                </div>
+                <div class="form-group">
+                    <a class="label label-default" href="#">近1月</a>
+                </div>
+                <div class="form-group">
+                    <a class="label label-default" href="#">全部</a>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-query" id="pquery">查询</button>
+                </div>
+            </form>
+        </section>
+        <section class="content">  
+            <div class="mychart">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="3">采购情况</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">
+                                <p>收到的报价个数，平均：<b>2.4</b>　　最多的：<b>6</b></p>
+                                <p>收到第一个报价耗时，平均<b>24小时</b>，最快：<b>0.2小时</b></p>
+                                <p>被查看次数，平均：<b>23</b>，最高：<b>246</b></p>
+                            </td>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr>
+                            <td rowspan="4"> 
+                                <em>发布的采购单 100</em>
+                                <span>4个采购商</span>
+                                <span>78个品种</span>
+                            </td>
+                            <td rowspan="3">
+                                <em>收到了报价</em>
+                                <span>50(50%)</span>
+                            </td>
+                            <td>
+                                <em>有认可的报价</em>
+                                <span>10(10%)</span>                         
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <em>答复过，但没有认可的</em>
+                                <span>30(30%)</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <em>完全没答复</em>
+                                <span>10(10%)</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <em>没收到报价</em>
+                                <span>50(50%)</span>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+
+            <div class="mychart">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="4">报价情况</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">
+                                <p>报价收到答复的耗时，平均：<b>48小时</b>，最快：<b>2小时</b></p>
+                            </td>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr>
+                            <td rowspan="4"> 
+                                <em>收到的报价</em>
+                                <span>100</span>
+                                <span>56个供货商</span>
+                                <span>89个品种</span>
+                            </td>
+                            <td rowspan="3">
+                                <em>收到了答复</em>
+                                <span>50(50%)</span>
+                            </td>
+                            <td>
+                                <em>获得认可</em>
+                                <span>10(10%)</span>                         
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">
+                                <em>被拒绝</em>
+                                <span>40(40%)</span>
+                            </td>
+                            <td>
+                                <em>价格偏高</em>
+                                <span>30(30%)</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <em>质量不符</em>
+                                <span>10(10%)</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <em>没收到答复</em>
+                                <span>50(50%)</span>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+        </section>
+    </div>
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0
+        </div>
+        &copy; <a href="#">速采科技（武汉）有限公司</a> 版权所有.
+    </footer>
+    <script>
+        $(document).ready(function() {
+            $(".form_datetime").datetimepicker({
+                language: "zh-CN",
+                autoclose: true,
+                todayBtn: true
+            });
+
+
+            $("#pquery").click(function() {
+                var starttime = $("#starttime").val();
+                var endtime = $("#endtime").val();
+
+                if (starttime != "" && endtime != "") {
+                    // window.location.href='/purchase/purchaselist/type/-1/starttime/'+starttime+'/endtime/'+endtime;
+                } else {
+                    alert("时间范围或品种名需填写完整");
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

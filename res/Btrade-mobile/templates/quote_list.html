@@ -85,7 +85,7 @@
                         <div class="status status-refuse"><i class="iconfont icon-frown"></i>采购商回绝了您的报价{% if quote.message is not None %}，原因：{{quote.message}}{% end %}</div>
                         {% else %}
                         {% if quote.timedelta > 0 %}
-                        <div class="status">采购商暂未回应</div>
+                        <div class="status status-finish">采购商暂未回应</div>
                         <div class="time"><i class="iconfont icon-time"></i>剩余<b>{{quote.timedelta}}</b>天</div>
                         {% else %}
                         <div class="status status-finish">采购已结束，采购商未答复</div>
@@ -98,5 +98,4 @@
         </ul>
     </div>
 </section><!-- /yc-content -->
-<script src="{{ static_url('js/app.js') }}"></script>
 {% end %}

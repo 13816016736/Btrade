@@ -18,19 +18,19 @@
         </div>
         <div class="cf">
             {% if purchase.status == 0%}
-            <div class="fl"><span class="red">关闭</span></div>
+            <div class="fl"><em class="status-closed">关闭</em></div>
             {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
             <div class="fl">
-                <span class="blue">等待报价</span>
                 {% if purchase.term != 0%}
+                <em class="status-wait">等待报价</em>
                 （剩余<b>{{purchase.timedelta}}</b>天）
                 {% else%}
-                常年采购
+                <em class="status-sustain">常年采购</em>
                 {% end %}
             </div>
             <div class="fr">已有<b>{{purchase.views}}</b>次浏览，<b>{{len(quotes)}}</b>个报价</div>
             {% else %}
-            <div class="fl"><span class="red">报价结束，甄选供应商</span></div>
+            <div class="fl"><em class="status-finish">报价结束</em></div>
             {% end %}
         </div>
     </div>
@@ -155,11 +155,11 @@
                 </div>
                 {% elif quote.state == 1 %}
                 <div class="ft">
-                    <div class="status status-accept"><i class="iconfont icon-face"></i>已甄选为意向供应商</div>
+                    <div class="status-accept"><i class="iconfont icon-face"></i>已甄选为意向供应商</div>
                 </div>
                 {% elif quote.state == 2 %}
                 <div class="ft">
-                    <div class="status status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：{{quote.message}}</div>
+                    <div class="status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：{{quote.message}}</div>
                 </div>
                 {% end %}
             </li>
@@ -238,12 +238,6 @@
 </div>
 </div>
 
-
-
-
-<script src="{{ static_url('js/jquery.min.js') }}"></script>
-<script src="{{ static_url('js/bootstrap.min.js') }}"></script>
-<script src="{{ static_url('js/app.js') }}"></script>
 <script>
     $(function() {
         var $jModalOk = $('#jModalOk');
@@ -265,9 +259,9 @@
             var temp = [];
             temp.push('<div class="ft">');
             if (status === 1) {
-                temp.push('<div class="status status-accept"><i class="iconfont icon-face">', msg , '</i></div>');
+                temp.push('<div class="status-accept"><i class="iconfont icon-face">', msg , '</i></div>');
             } else {
-                temp.push('<div class="status status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：', msg,'</div>');
+                temp.push('<div class="status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：', msg,'</div>');
             }
             temp.push('</div>');
             $tools.after(temp.join(''));

@@ -24,7 +24,6 @@ header,footer,.sec,.container{min-width:1170px;}
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
 }
-
 .icon-mobile:before { content: "\e603"; }
 .icon-fold:before { content: "\e60a"; }
 .icon-pass:before { content: "\e60d"; }
@@ -53,8 +52,16 @@ header,footer,.sec,.container{min-width:1170px;}
 .icon-arrow-right{color:#ffa902;}
 .icon-time{color:#ffa902;}
 
+/* status color */
+.status-finish{color:#e33737;}
+.status-wait{color:#418caf;}
+.status-sustain{color:#418caf;}
+.status-closed{color:#999;}
+.status-refuse{color:#f52;}
+.status-accept{color:#8bc34a;}
+
 /* button */
-.btn{padding:9px 12px;border:1px solid #fff;-webkit-border-radius:3px;border-radius:3px;}
+.btn{-webkit-border-radius:3px;border-radius:3px;}
 .btn-orange,
 .btn-orange:focus,
 .btn-orange:hover{background-color:#ffa902;color:#fff;border-color:#ffa902;text-decoration:none;}
@@ -187,3 +194,4 @@ footer .logo-mini{position:absolute;top:-25px;right:15px;}
 .yc-page-error .links{margin-top:50px;}
 .yc-page-error .links .btn{margin:0 5px;padding:13px 51px;}
 .yc-page-error .links .back{width:20px;height:20px;background-position:-177px -157px;}
+
