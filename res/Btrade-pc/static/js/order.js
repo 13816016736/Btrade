@@ -1,4 +1,4 @@
-!(function($){
+$(function(){
 // 注册验证
 var $username = $('#jUsername'),
     $mobile = $('#jMobile'),
@@ -124,10 +124,23 @@ $send.prop('disabled', false).on('click', function() {
     }
 });
 
-//})(jQuery);
+});
 
 
-//!(function($){
+$(function(){
+
+var $body = $('body'),
+	$table = $('#jInventory'),
+	temp = $table.find('tbody').html(),
+	$tags = null,
+	$varietyTags = $('#jVarietyTags'),
+	$qualityTags = $('#jQualityTags'),
+	$areaTags = $('#jAreaTags'),
+	url = '/uploadfile' ,
+    maxUploadFileSize = 5 * 1024 *1024, // 限制上传的文件大小(bytes)
+    acceptFileTypes = /\.(jpe?g|png|gif|bmp)$/i; // 限制的上传文件类型(正则匹配)
+
+
 // 防抖处理
 function debounce(func, wait) {
 	this.timer && clearTimeout(this.timer);
@@ -146,15 +159,14 @@ function hidePop() {
 }
 
 // 阻止冒泡到body关闭当前弹层
-$('body').on('click', '.variety-tags, .quality-tags, .area-tags, .custom .ipt', function() {
+$body.on('click', '.variety-tags, .quality-tags, .area-tags, .custom .ipt', function() {
 	return false;
 });
 
 // 下拉菜单
-$('body').on('click', function() {
-	hidePop();
-})	
-$('body').on('click', '.yc-select', function() {
+$body.on('click', hidePop);
+
+$body.on('click', '.yc-select', function() {
 	if ($(this).data('disabled')) {
 		return false;
 	}
@@ -162,7 +174,7 @@ $('body').on('click', '.yc-select', function() {
 	$(this).find('dd').show().scrollTop(0);
 	return false;
 });
-$('body').on('click', '.yc-select span', function() {
+$body.on('click', '.yc-select span', function() {
 	var val = $(this).attr('data-val'),
 		txt = $(this).html(),
 		$pa = $(this).closest('.yc-select');
@@ -178,19 +190,6 @@ $('body').on('click', '.yc-select span', function() {
 	return false;
 });
 
-// table
-var $table = $('#jInventory'),
-	$temp = $table.find('tfoot'),
-	temp = $temp.html(),
-	$tags = null,
-	$varietyTags = $('#jVarietyTags'),
-	$qualityTags = $('#jQualityTags'),
-	$areaTags = $('#jAreaTags'),
-	url = '/uploadfile' ,
-    maxUploadFileSize = 5 * 1024 *1024, // 限制上传的文件大小(bytes)
-    acceptFileTypes = /\.(jpe?g|png|gif|bmp)$/i; // 限制的上传文件类型(正则匹配)
-
-$temp.remove(); // 移除模板
 
 var fileuploadOptions = {
 	url: url,
@@ -269,6 +268,9 @@ $table.on('click', '.del', function() {
 
 // 删除行
 $('#jModalDelete').on('click', '.btn-orange', function() {
+	$('#purchaseForm').after($areaTags);
+	$('#purchaseForm').after($qualityTags);
+	$('#purchaseForm').after($varietyTags);
 	$table.find('.tr-remove').remove();
 	$('#jModalDelete').modal('hide');
 });
@@ -345,8 +347,8 @@ function showTags(status, $wrap) {
 // 药材品种
 function getKeywords() {
     var keywords = $tags.val();
-	var reg = /^[u4E00-u9FA5]+$/;
-	if(keywords != "" && !reg.test(keywords)) {
+	var reg = /^[\u4e00-\u9fa5]+$/;
+	if(reg.test(keywords)) {
 		$.ajax({
 			url: '/getvarietyinfo',
 			dataType: 'json',
@@ -371,7 +373,7 @@ function getKeywords() {
     }
 }
 
-$('body').on('click', '.custom .btn', function() {
+$body.on('click', '.custom .btn', function() {
 	var txt = $(this).prev().val(),
 		val = txt;
 	if (txt == '') {
@@ -406,7 +408,6 @@ function fillIpt(el) {
 }
 
 window.fillIpt = fillIpt;
-
 
 function fillSelect(data, $wrap, input) {
     var html = [];
@@ -526,7 +527,7 @@ $table.on({
 	}
 }, '.ipt-quality');
 
-$('body').on('click', '.tags span', function() {
+$body.on('click', '.tags span', function() {
 	$(this).remove();
 	matchingCheck();
 	return false;
@@ -742,7 +743,7 @@ $('#jSubmit').on('click', function() {
 	var result = checkForm();
 	if (result.pass) {
 		isSubmit = true;
-		$('body').append('<div class="loading"><i></i></div>');
+		$body.append('<div class="loading"><i></i></div>');
 		$.ajax({
 			url: $("#registerForm").attr('action'),
 			type: 'POST',
@@ -800,19 +801,6 @@ $('#jAddress').prop('checked', false).on('click', function() {
 		$(this).data('disabled', flag)[flag ? 'addClass' : 'removeClass']('disabled');
 	});
 	$('#jAddressError').addClass('hide');
-
-
-	// if (flag) {
-	// 	$('#address').val('亲自上门看货提货');
-	// } else {
-	// 	var val1 = $('#jProvince dt').attr('data-val');
-	// 	var val2 = $('#jCity dt').attr('data-val');
-	// 	if (val1 !== '0' && val2 !== '0') {
-	// 		$('#address').val(val1 + val2);
-	// 	} else {
-	// 		$('#address').val('');
-	// 	}
-	// }
 });
 
 $('#jProvince').on('click', 'span', function() {
@@ -866,16 +854,6 @@ $('#jCity').on('click', 'span', function() {
 			alert(errorThrown);
 		}
 	 });
-	// var val = $(this).attr('data-val'),
-	// 	txt = $(this).html(),
-	// 	$pa = $(this).closest('.yc-select');
-
-	// $pa.find('dt').html(txt).attr('data-val', val);
-	// $pa.next('input:hidden').val(val);
-	// $pa.nextAll('.error').css('display','none').html('');
-	// $(this).parent().hide();
-	// return false;
 })
 
-
-}(jQuery));
+})

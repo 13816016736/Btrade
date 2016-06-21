@@ -4839,3 +4839,16 @@ table.text-center th {
 .datetimepicker {
     border: 1px solid rgba(0, 0, 0, 0.2);
 }
+
+.mychart{margin-bottom:20px;overflow:hidden;*zoom:1;}
+.mychart table{width:90%;border:1px solid #ccc;font-size:12px;background:#fff;}
+.mychart tbody:nth-child(even){background:#ebf2d3;}
+.mychart th{padding:10px 0;font-size:14px;border:1px solid #a6c53a;background:#dbe8b0;text-align:center;}
+.mychart td{padding:10px;border:1px solid #a6c53a;}
+.mychart .cat{font-size:14px;text-align:center;}
+.mychart .name{width:170px;text-align:left;}
+.mychart .tr{text-align:right;}
+.mychart em{font-style:normal;}
+.mychart b{margin:0 4px;}
+.mychart p{line-height:24px;margin:0;}
+

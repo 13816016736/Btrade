@@ -45,6 +45,7 @@
 .yc-purchase-form td{padding:10px 0;border-bottom:1px dotted #ccc;vertical-align:top;}
 .yc-purchase-form td .error{display:block;color:#f00;}
 .yc-purchase-form i{cursor:pointer;color:#ffa902;line-height:1;}
+.yc-purchase-form .del{display:inline-block;margin-top:5px;}
 .yc-purchase-form .upload{width:24px;}
 .yc-purchase-form .thumb{position:relative;display:none;width:50px;height:50px;}
 .yc-purchase-form .thumb img{width:100%;height:100%;border:1px solid #ddd;}
@@ -90,7 +91,7 @@
 .variety-tags dl:nth-child(n+3){margin-top:10px;}
 .variety-tags dt{color:#333;font-weight:100;}
 .variety-tags span{display:inline-block;margin:5px 5px 5px 0;padding:1px 4px;color:#333;border:1px solid #999;border-radius:3px;cursor:pointer;}
-.variety-tags .search{display:none;width:220px;padding:0;}
+.variety-tags .search{display:none;width:220px;max-height:260px;padding:0;overflow:hidden;overflow-y:auto;}
 .variety-tags .search dd span{display:block;margin:0;line-height:24px;border:none;border-radius:0;}
 .variety-tags .search dd span:hover{background-color:#ffa902;color:#fff;}
 .variety-tags .search dd span.on{background-color:#ffa902;color:#fff;}
