@@ -15,3 +15,13 @@ class YaoboItem(scrapy.Item):
     mobile = scrapy.Field()
     qq = scrapy.Field()
     address = scrapy.Field()
+
+
+class ZycItem(scrapy.Item):
+    variety = scrapy.Field()
+    name = scrapy.Field()
+    phone = scrapy.Field()
+    mobile = scrapy.Field()
+    address = scrapy.Field()
+    company=scrapy.Field()
+
