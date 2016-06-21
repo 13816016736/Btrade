@@ -158,7 +158,7 @@ $(function(){
                         return false;
                     }
                     var result = toHtml(data.list);
-                    $ol.html(result);
+                    $ol.append(result);
                     me.resetload();
                 },
                 error: function(xhr, type){
