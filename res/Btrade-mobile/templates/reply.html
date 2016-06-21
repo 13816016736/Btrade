@@ -70,7 +70,6 @@ $(function() {
     var pid = 0;
     var lateest = 0;
     var timer = 0;
-    var isDel = false;
     // 关闭整个采购单
     $ol.on('click', '.tools .fl', function() {
         $("#pid").val($(this).attr("pid"));
@@ -89,14 +88,11 @@ $(function() {
     });
 
     $jModalDelete.on('hidden.bs.modal', function() {
-        if (isDel) {
-            $('#jModalDeleteResult').modal('show');
-            timer && clearTimeout(timer);
-            timer = setTimeout(function() {
-                $('#jModalDeleteResult').modal('hide');
-            }, 3e3);
-        }
-        isDel = false;
+        $('#jModalDeleteResult').modal('show');
+        timer && clearTimeout(timer);
+        timer = setTimeout(function() {
+            $('#jModalDeleteResult').modal('hide');
+        }, 3e3);
     });
 
     $jModalDelete.on('click', '.btn', function() {
@@ -109,7 +105,6 @@ $(function() {
                 jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
             },
             success: function(data) {
-                isDel = true;
                 $jModalDelete.modal('hide');
             }
         })
@@ -224,8 +219,6 @@ $(function() {
                     if (!data.list) {
                         return false;
                     }
-                    me.unlock();
-                    me.isDate = true;
                     var result = toHtml(data.list);
                     var msg = '暂无新的采购单推荐';
                     if (lateest > 0) {
@@ -234,6 +227,8 @@ $(function() {
                     $ol.html(result);
                     me.$domUp.html('<div class="dropload-msg">' + msg + '</div>');
                     setTimeout(function(){
+                        me.unlock();
+                        me.isDate = true;
                         me.resetload();
                     }, 2e3);
                 },

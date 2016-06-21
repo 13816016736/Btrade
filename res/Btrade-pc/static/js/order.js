@@ -124,10 +124,6 @@ $send.prop('disabled', false).on('click', function() {
     }
 });
 
-});
-
-
-$(function(){
 
 var $body = $('body'),
 	$table = $('#jInventory'),

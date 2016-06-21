@@ -51,7 +51,9 @@ $(function(){
         10: '销售经理'
     }
 
-    var $ol = $('.list ul');
+    var $ol = $('.list ul');    
+    var pid = 0;
+    var lateest = 0;
 
     var toHtml = function(data) {
         var html = [];
@@ -105,6 +107,16 @@ $(function(){
 
             temp.push('</li>');
             html.push(temp.join(''));
+        }        
+        if (pid === 0) {
+            pid = data[0].id;
+        }
+        
+        lateest = data[0].id;
+        if (lateest > pid) {
+            pid = lateest;
+        } else {
+            lateest = 0;
         }
         return html.join('');
     }
@@ -124,12 +136,17 @@ $(function(){
                         return false;
                     }
                     var result = toHtml(data.list);
+                    var msg = '暂无新的采购单推荐';
+                    if (lateest > 0) {
+                        msg = '药材购为您新推荐' + data.list.length + '个采购单';
+                    }
                     $ol.html(result);
-                    var msg = Math.random() > .5 ? '暂无新的采购单推荐' : '药材购为您新推荐5个采购单'; // 随机显示2种提示语，只做演示使用
                     me.$domUp.html('<div class="dropload-msg">' + msg + '</div>');
-                    me.unlock();
-                    me.isDate = true;
-                    me.resetload();
+                    setTimeout(function(){
+                        me.unlock();
+                        me.isDate = true;
+                        me.resetload();
+                    }, 2e3);
                 },
                 error: function(xhr, type){
                     lpPopover('网络连接超时，请您稍后重试!');

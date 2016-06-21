@@ -309,7 +309,7 @@ em,i{font-style:normal;}
 .yc-quote-receive .hd{padding:10px;position:relative;}
 .yc-quote-receive .hd .tl{padding-right:120px;}
 .yc-quote-receive .hd .tr{position:absolute;top:10px;right:10px;text-align:right;}
-.yc-quote-receive .hd .tr time{display:block;width:114px;margin-bottom:5px;color:#999;white-space:nowrap;overflow:hidden;}
+.yc-quote-receive .hd .tr time{display:block;margin-bottom:5px;color:#999;}
 .yc-quote-receive .hd .type{color:#f90;}
 .yc-quote-receive .hd .type:before{margin-right:10px;content: counter(a, decimal-leading-zero);}
 .yc-quote-receive .hd .name{display:block;height:22px;margin-top:9px;font-weight:700;overflow:hidden;}
@@ -343,7 +343,7 @@ em,i{font-style:normal;}
 .yc-message .head{position:relative;padding:20px;background-color:#f90;text-align:center;color:#fff;}
 .yc-message .head:after{content:"";position:absolute;left:50%;bottom:-20px;display:inline-block;width:0;height:0;margin-left:-10px;border:10px solid #eee;border-top:10px solid #f90;}
 .yc-message .head .title{margin:0;font-size:2rem;}
-.yc-message .head .title i{font-size:6rem;display:block;margin-bottom:20px;}
+.yc-message .head .title i{display:block;font-size:6rem;margin-bottom:20px;color:#fff;}
 .yc-message .head .text{margin-top:6px;}
 .yc-message .success{background-color:#11c211;}
 .yc-message .success:after{border-top-color:#11c211;}
