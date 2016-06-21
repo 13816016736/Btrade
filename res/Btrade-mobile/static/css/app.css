@@ -566,7 +566,7 @@ em,i{font-style:normal;}
 .yc-news-list li a .icon-envelope{color:#f90;line-height:1;}
 .yc-news-list li a .time{height:auto;margin-top:4px;text-align:right;color:#aaa;font-weight:100;}
 .yc-news-none{padding:40px 0;text-align:center;color:#f90;}
-.yc-news-none i{font-size:3.4rem;}
+.yc-news-none i{font-size:3.4rem;color:#f90;}
 .yc-news-none span{display:block;margin-top:10px;}
 
 /* 气泡式弹出层组件 */

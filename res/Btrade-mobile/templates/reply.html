@@ -147,7 +147,7 @@ $(function() {
     var getDD = function(data) {
         var temp = [];
         $.each(data, function(i, item) {
-            var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '1个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '2</em>个未答复)');
+            var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '</em>个未答复)');
             temp.push('<dd>');
             temp.push(    '<a', (item.unreply === 0 ? '' : ' class="unreply"'), ' href="/replydetail?pid=', item.id, '">');
             temp.push(         '<span class="w1">', item.name, '</span>');
