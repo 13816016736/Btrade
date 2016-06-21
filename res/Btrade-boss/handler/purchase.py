@@ -139,7 +139,7 @@ class PushPurchaseHandler(BaseHandler):
         purchaseinfo["name"] = u["name"]
         purchaseinfo["nickname"] = u["nickname"]
         users = self.db.query("select phone,openid from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
-        yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and source = %s and mobile != ''", purchaseinfo["varietyid"], 'yt1998')
+        yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and mobile != ''", purchaseinfo["varietyid"])
         phones = set()
         openids = set()
         for i in users:
