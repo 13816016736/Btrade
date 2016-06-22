@@ -79,7 +79,6 @@ function gallery(weChatImagePreview) {
             $(this).parent().find('img').each(function() {
                 imgUrls.push($(this).data('src'));
             });
-            console.log(imgUrls)
             if (weChatImagePreview && window.WeixinJSBridge) {
                 window.WeixinJSBridge.invoke('imagePreview', {
                     current: imgUrls[index],

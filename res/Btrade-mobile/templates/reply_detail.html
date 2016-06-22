@@ -91,6 +91,8 @@
     </div>
 
 
+
+
     <div class="yc-purchase-detail">
         <h3>供应商要求<i class="iconfont icon-fold"></i></h3>
         <dl class="yc-demand yc-demand-fold">
@@ -240,6 +242,11 @@
 
 <script>
     $(function() {
+$("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
+$("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
+$("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
+$("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
+
         var $jModalOk = $('#jModalOk');
         var $jModalFail = $('#jModalFail');
         var $jModalMsg = $('#jModalMsg');
