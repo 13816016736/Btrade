@@ -124,10 +124,20 @@ class MyPurchaseHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, type=-1, starttime=0, endtime=0, page=0):
         page = (int(page) - 1) if page > 0 else 0
+        login_userid=self.session.get("userid")
+        show_userid=[]
+        show_userid.append(str(login_userid))
+        child_userid=self.db.query("select * from child_user where parent_user_id= %s",login_userid)
+        if(len(child_userid)!=0):
+            for item in child_userid:
+                show_userid.append(str(item.child_user_id))
+        status_conditon =""
+        if(int(type))!=-1:
+            status_conditon="and status="+type
         nav = {
             'model': 'mypurchase/type/'+type+'/starttime/'+starttime+'/endtime/'+endtime,
             'cur': page + 1,
-            'num': self.db.execute_rowcount("select id from purchase where userid = %s", self.session.get("userid")),
+            'num': self.db.execute_rowcount("select id from purchase where userid in (%s)"%(",".join(show_userid))+status_conditon),
         }
         #查询条件
         condition = []
@@ -139,7 +149,10 @@ class MyPurchaseHandler(BaseHandler):
         conditionstr = ""
         if condition:
             conditionstr = ("and "+(" and ".join(condition)))
-        purchases = self.db.query("select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id where p.userid = %s "+conditionstr+" order by p.createtime desc limit %s,%s", self.session.get("userid"), page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        #purchases = self.db.query("select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id where p.userid = %s "+conditionstr+" order by p.createtime desc limit %s,%s", self.session.get("userid"), page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        purchases = self.db.query(
+            "select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id where p.userid in (%s)"%(",".join(show_userid))+conditionstr+" order by p.createtime desc limit %s,%s",
+            page * config.conf['POST_NUM'], config.conf['POST_NUM'])
         purchaseids = [str(purchase["id"]) for purchase in purchases]
         purchaseinf = defaultdict(list)
         if purchaseids:
@@ -163,7 +176,7 @@ class MyPurchaseHandler(BaseHandler):
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
         #统计采购单各状态的数量
-        results = self.db.query("select status, count(*) count from purchase where userid = %s group by status", self.session.get("userid"))
+        results = self.db.query("select status, count(*) count from purchase where userid in (%s)"%(",".join(show_userid))+"group by status" )
         stat = {}
         for r in results:
             stat[r.status] = r.count
@@ -178,10 +191,17 @@ class MyPurchaseInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, id):
         print id
+        login_userid=self.session.get("userid")
+        show_userid=[]
+        show_userid.append(str(login_userid))
+        child_userid=self.db.query("select * from child_user where parent_user_id= %s",login_userid)
+        if(len(child_userid)!=0):
+            for item in child_userid:
+                show_userid.append(str(item.child_user_id))
         purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
         "p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.userid = %s and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",self.session.get("userid"), id)
+        "where p.userid  in (%s) "%(",".join(show_userid))+" and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", id)
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:
