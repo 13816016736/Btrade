@@ -219,11 +219,7 @@ class MonitorBusinessHandler(BaseHandler):
         format = "%Y-%m-%d"
         if starttime!="" and endtime!="":
             #查指定时间段内的数据
-            try:
-                starttime = datetime.strptime(str(starttime), "%Y-%m-%d %H:%M")
-                endtime = datetime.strptime(str(endtime), "%Y-%m-%d %H:%M")
-            except:
-                self.send_error(404)
+            pass
         else:
             if type=='0':
                 starttime=datetime.strptime("%s-%s-%s" % (year,  mon , day), format)
@@ -295,8 +291,8 @@ class MonitorBusinessHandler(BaseHandler):
 
         # 采购情况
         if starttime!="" and endtime!="":
-            start_time = int(time.mktime(starttime.timetuple()))
-            end_time = int(time.mktime(endtime.timetuple()))
+            start_time = int(time.mktime(datetime.strptime(str(starttime), "%Y-%m-%d %H:%M").timetuple()))
+            end_time = int(time.mktime(datetime.strptime(str(endtime), "%Y-%m-%d %H:%M").timetuple()))
             date_between="and cast(createtime as unsigned) between %d and %d " % (start_time, end_time)
         else:
             date_between =""
