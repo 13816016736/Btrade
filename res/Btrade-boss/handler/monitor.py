@@ -216,21 +216,31 @@ class MonitorBusinessHandler(BaseHandler):
         mon = strftime("%m", localtime())
         day = strftime("%d", localtime())
 
-        format = "%Y-%m-%d"
+        format = "%Y-%m-%d %H:%M"
         if starttime!="" and endtime!="":
             #查指定时间段内的数据
-            pass
+            try:
+                if(len(starttime.split(':'))==2):
+                    starttime = datetime.strptime(str(starttime), "%Y-%m-%d %H:%M")
+                else:
+                    starttime = datetime.strptime(str(starttime), "%Y-%m-%d %H:%M:%S")
+                if(len(endtime.split(':'))==2):
+                    endtime = datetime.strptime(str(endtime), "%Y-%m-%d %H:%M")
+                else:
+                    endtime = datetime.strptime(str(endtime), "%Y-%m-%d %H:%M:%S")
+            except:
+                self.send_error(404)
         else:
             if type=='0':
-                starttime=datetime.strptime("%s-%s-%s" % (year,  mon , day), format)
+                starttime=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , day), format)
                 endtime=starttime + timedelta(days=1)
             elif type=='1':
-                now=datetime.strptime("%s-%s-%s" % (year,  mon , day), format)
+                now=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , day), format)
                 dayOfWeek = now.weekday()
                 starttime=now+timedelta(days=(-1*(dayOfWeek)))
                 endtime=starttime + timedelta(days=7)
             elif type=='2':
-                starttime=datetime.strptime("%s-%s-%s" % (year,  mon , '1'), format)
+                starttime=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , '1'), format)
                 endtime=starttime + timedelta(days=30)
             else:
                 starttime =""
@@ -291,8 +301,8 @@ class MonitorBusinessHandler(BaseHandler):
 
         # 采购情况
         if starttime!="" and endtime!="":
-            start_time = int(time.mktime(datetime.strptime(str(starttime), "%Y-%m-%d %H:%M").timetuple()))
-            end_time = int(time.mktime(datetime.strptime(str(endtime), "%Y-%m-%d %H:%M").timetuple()))
+            start_time = int(time.mktime(starttime.timetuple()))
+            end_time = int(time.mktime(endtime.timetuple()))
             date_between="and cast(createtime as unsigned) between %d and %d " % (start_time, end_time)
         else:
             date_between =""
