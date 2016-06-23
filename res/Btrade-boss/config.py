@@ -3,6 +3,7 @@ import os.path
 from handler.main import *
 from handler.login import *
 from handler.purchase import *
+from handler.monitor import *
 
 #显示设置
 app = {
@@ -46,6 +47,8 @@ handlers = [
     (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/removepurchase", RemovePurchaseHandler),
     (r"/pushpurchase", PushPurchaseHandler),
+    (r"/monitor/statistics/month/([0-9]+)", MonitorStatisticsHandler),
+    (r"/monitor/business", MonitorBusinessHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 

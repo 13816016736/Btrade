@@ -96,7 +96,7 @@ http://lightthewoods.me/2013/11/18/Python%E5%A4%9A%E8%BF%9B%E7%A8%8Blog%E6%97%A5
 
 采购表
 purchase
-status 0关闭 1等待报价 2报价结束 3成功采购
+status 0关闭 1等待报价 3成功采购
 
 通知表设计
 notification
