@@ -18,7 +18,7 @@ class MonitorStatisticsHandler(BaseHandler):
             date_str="%s-%s-%s"%(year,month,'1')
             dt=datetime.strptime(date_str, format)
             dayOfWeek = dt.weekday()
-            print dayOfWeek
+            #print dayOfWeek
             # 偶数月显示带上个月的那周，奇熟月份只显示本月的
             regions = []
             start_date=""
@@ -66,7 +66,7 @@ class MonitorStatisticsHandler(BaseHandler):
                 purchase_id_list=[]
                 for p in purchase_list:
                     purchase_id_list.append(str(p.id))
-                print "采购单数"+str(len(purchase_id_list))
+                #print "采购单数"+str(len(purchase_id_list))
 
                 purchaseinfo_num=0
                 quote_rate=0
@@ -77,7 +77,7 @@ class MonitorStatisticsHandler(BaseHandler):
                 if (len(purchase_id_list) != 0):
                     purchaseinfo_list=self.db.query("select * from purchase_info where  purchaseid in (%s)"% ",".join(purchase_id_list))
                     purchaseinfo_num = len(purchaseinfo_list)
-                    print "新发布采购批次数"+str(purchaseinfo_num)
+                    #print "新发布采购批次数"+str(purchaseinfo_num)
                     #新发布采购批次数
 
                     purchaseinfo_id_list=[]
@@ -86,19 +86,19 @@ class MonitorStatisticsHandler(BaseHandler):
 
                     quote_list=self.db.query("select * from quote where purchaseinfoid in (%s)"% ",".join(purchaseinfo_id_list))
                     quote_rate=round((len(quote_list)/(purchaseinfo_num*1.0))*100, 2)
-                    print "报价率"+str(quote_rate)
+                    #print "报价率"+str(quote_rate)
                     #报价率
 
                     quote_accepte_list = self.db.query(
                         "select * from quote where  purchaseinfoid in (%s) and state=1" % ",".join(purchaseinfo_id_list))
-                    print (len(quote_accepte_list) / (purchaseinfo_num * 1.0))
+                    #print (len(quote_accepte_list) / (purchaseinfo_num * 1.0))
                     quote_accepte_rate = round((len(quote_accepte_list) / (purchaseinfo_num * 1.0)) * 100, 2)
                     #认可率
-                    print "认可率"+str(quote_accepte_rate)
+                    #print "认可率"+str(quote_accepte_rate)
 
 
                     quote_average=round((len(quote_list)/(purchaseinfo_num*1.0)), 2)
-                    print "平均收到的报价数"+str(quote_average)
+                    #print "平均收到的报价数"+str(quote_average)
                     #平均收到的报价个数
                     first_quote_list = self.db.query(
                         "select distinct purchaseinfoid,createtime from quote where purchaseinfoid in (%s) order by cast(createtime as unsigned)" % ",".join(purchaseinfo_id_list))
@@ -112,10 +112,10 @@ class MonitorStatisticsHandler(BaseHandler):
                             purchase_time=purchase.createtime
                             cost=int(quote_time)-int(purchase_time)
                             total_cost=cost+total_cost
-                        print total_cost
+                        #print total_cost
                         firt_quote_cost=round((total_cost*1.0)/(len(first_quote_list)*(60*60)),2)
 
-                    print "收到第一个报价平均耗时"+str(firt_quote_cost)
+                    #print "收到第一个报价平均耗时"+str(firt_quote_cost)
                     #收到第一个报价平均耗时
 
                 #报价
@@ -123,7 +123,7 @@ class MonitorStatisticsHandler(BaseHandler):
                     "select * from quote where cast(createtime as unsigned)  between %d and %d " % (
                     start_time, end_time))
                 all_quoto_num=len(all_quoto_list)
-                print "报价个数"+str(all_quoto_num)
+                #print "报价个数"+str(all_quoto_num)
                 all_quoto_id_list=[]
                 for aqil in all_quoto_list:
                     all_quoto_id_list.append(str(aqil.id))
@@ -134,12 +134,12 @@ class MonitorStatisticsHandler(BaseHandler):
                     replay_quote_list = self.db.query(
                         "select * from quote where id in (%s) and state!=0 " % ",".join(all_quoto_id_list))
                     replay_quote_rate = round((len(replay_quote_list) / (all_quoto_num * 1.0)) * 100, 2)
-                    print "答复率" + str(replay_quote_rate)
+                    #print "答复率" + str(replay_quote_rate)
 
                     replay_aceept_quote_list = self.db.query(
                         "select * from quote where id in (%s) and state=1 " % ",".join(all_quoto_id_list))
                     replay_aceept_quote_rate = round((len(replay_aceept_quote_list) / (all_quoto_num * 1.0)) * 100, 2)
-                    print "认可率" + str(replay_aceept_quote_rate)
+                    #print "认可率" + str(replay_aceept_quote_rate)
                     if(len(replay_quote_list)!=0):
                         total_cost=0
                         for qut in replay_quote_list:
@@ -149,7 +149,7 @@ class MonitorStatisticsHandler(BaseHandler):
                             total_cost=cost+total_cost
                         print total_cost
                         replay_quote_cost=round((total_cost*1.0)/(len(replay_quote_list)*(60*60)),2)
-                    print "平均答复时间"+str(replay_quote_cost)
+                    #print "平均答复时间"+str(replay_quote_cost)
 
 
                 region_item={"new_user_count":new_user_count.num,"new_purchase":new_purchase.num,"new_quote":new_quote.num,
@@ -303,7 +303,7 @@ class MonitorBusinessHandler(BaseHandler):
         purchase_list = self.db.query(
                 "select * from purchase where 1=1 %s" %(date_between))
         purchase_num=len(purchase_list)
-        print "发布采购单"+str(purchase_num)
+        #print "发布采购单"+str(purchase_num)
 
         if purchase_num!=0:
             purchase_id_list = []
@@ -312,64 +312,64 @@ class MonitorBusinessHandler(BaseHandler):
 
             ret=self.db.get("select count(distinct userid) as num from purchase where 1=1 %s" %(date_between))
             user_num=ret.num
-            print "采购商"+str(user_num)
+            #print "采购商"+str(user_num)
 
             purchaseinfo_list = self.db.query(
                 "select * from purchase_info where  purchaseid in (%s)" % ",".join(purchase_id_list))
             purchaseinfo_id_list = []
 
             purchaseinfo_num = len(purchaseinfo_list)
-            print "发布采购单批次" + str(purchaseinfo_num)
+            #print "发布采购单批次" + str(purchaseinfo_num)
 
             for pi in purchaseinfo_list:
                 purchaseinfo_id_list.append(str(pi.id))
 
             ret = self.db.get("select count(distinct varietyid) as num from purchase_info where  purchaseid in (%s)" % ",".join(purchase_id_list))
             variety_num = ret.num
-            print "品种" + str(variety_num)
+            #print "品种" + str(variety_num)
 
             quote_list = self.db.query(
                 "select * from quote where purchaseinfoid in (%s)" % ",".join(purchaseinfo_id_list))
             quote_num=len(quote_list)
             quote_rate=round((quote_num / (len(purchaseinfo_list) * 1.0)) * 100, 2)
-            print "收到报价"+str(quote_num)
+            #print "收到报价"+str(quote_num)
             all_quoto_id_list = []
             for aqil in  quote_list:
                 all_quoto_id_list.append(str(aqil.id))
 
             ret = self.db.query("select views  from purchase_info where  purchaseid in (%s) order by views desc" % ",".join(purchase_id_list))
             max_view= ret[0].views
-            print "被查看次数最多的是" + str(max_view)
+            #print "被查看次数最多的是" + str(max_view)
             total_view = 0
             for item in ret:
                 total_view = total_view + item.views
             average_view = round(total_view / (len(ret) * 1.0), 2)
-            print "平均查看次数" + str(average_view)
+            #print "平均查看次数" + str(average_view)
 
             if quote_num!=0:
                 ret = self.db.get(
                     "select count(distinct purchaseinfoid) as num from quote where  purchaseinfoid in (%s)" % ",".join(purchaseinfo_id_list))
                 not_quote_num=len(purchaseinfo_list)-ret.num
                 not_quote_rate = round((not_quote_num / (len(purchaseinfo_list) * 1.0)) * 100, 2)
-                print "未收到报价"+str(not_quote_num)
+                #print "未收到报价"+str(not_quote_num)
 
                 ret = self.db.get(
                     "select count(*) as num from quote where id in (%s) and state=0 " % ",".join(all_quoto_id_list))
                 no_reply_num=ret.num
                 no_reply_rate = round((no_reply_num/ (quote_num * 1.0)) * 100, 2)
-                print "没有答复到报价" + str(no_reply_num)
+                #print "没有答复到报价" + str(no_reply_num)
 
                 ret = self.db.get(
                     "select count(*) as num from quote where id in (%s) and state=1 " % ",".join(all_quoto_id_list))
                 accept_num=ret.num
                 accept_rate = round((accept_num/ (quote_num * 1.0)) * 100, 2)
-                print "认可的报价" + str(accept_num)
+                #print "认可的报价" + str(accept_num)
 
                 ret = self.db.get(
                     "select count(*) as num from quote where id in (%s) and state=2 " % ",".join(all_quoto_id_list))
                 no_accept_num=ret.num
                 no_accept_rate = round((no_accept_num/ (quote_num * 1.0)) * 100, 2)
-                print "没有认可的报价" + str(no_accept_num)
+                #print "没有认可的报价" + str(no_accept_num)
 
                 ret = self.db.query(
                     "SELECT count(*) as num from quote where id in (%s) GROUP BY purchaseinfoid ORDER BY num desc  " % ",".join(all_quoto_id_list))
@@ -379,8 +379,8 @@ class MonitorBusinessHandler(BaseHandler):
                     total_quote =total_quote+item.num
                 average_quote=round(total_quote/ (len(ret) * 1.0), 2)
 
-                print "平均报价个数"+str(average_quote)
-                print "报价个数最多" + str(max_quote)
+                #print "平均报价个数"+str(average_quote)
+                #print "报价个数最多" + str(max_quote)
 
                 first_quote_list = self.db.query(
                     "select distinct purchaseinfoid,createtime from quote where purchaseinfoid in (%s) order by cast(createtime as unsigned)" % ",".join(
@@ -405,22 +405,22 @@ class MonitorBusinessHandler(BaseHandler):
                         total_cost = cost + total_cost
                     firt_quote_cost = round((total_cost * 1.0) / (len(first_quote_list) * (60 * 60)), 2)
                     min_cost=round((min_cost * 1.0) / (60 * 60), 2)
-                    print "平均耗时"+str(firt_quote_cost)
-                    print "最快耗时"+str(min_cost)
+                    #print "平均耗时"+str(firt_quote_cost)
+                    #print "最快耗时"+str(min_cost)
 
 
         #报价情况
         all_quoto_list = self.db.query(
             "select * from quote where 1=1 %s" %(date_between))
         all_quoto_num = len(all_quoto_list)
-        print "收到报价" + str(all_quoto_num)
+        #print "收到报价" + str(all_quoto_num)
         all_quoto_id_list = []
         for aqil in all_quoto_list:
             all_quoto_id_list.append(str(aqil.id))
         ret = self.db.get(
             "select count(distinct userid) as num from quote where 1=1 %s" % (date_between))
         apply_user_num = ret.num
-        print "供货商" + str(apply_user_num)
+        #print "供货商" + str(apply_user_num)
 
         quoto_purchinfo_list=self.db.query(
             "select distinct purchaseinfoid from quote where 1=1 %s" %(date_between))
@@ -432,18 +432,18 @@ class MonitorBusinessHandler(BaseHandler):
                 "select count(distinct varietyid) as num from purchase_info where id in (%s)" % ",".join(
                 all_quoto_purchinfo_list))
             supply_variety_num = ret.num
-            print "品种" + str(supply_variety_num)
+            #print "品种" + str(supply_variety_num)
 
         if (all_quoto_num != 0):
             replay_quote_list = self.db.query(
                 "select * from quote where id in (%s) and state!=0 " % ",".join(all_quoto_id_list))
             replay_quote_num=len(replay_quote_list)
             replay_quote_rate = round((replay_quote_num / (all_quoto_num * 1.0)) * 100, 2)
-            print "答复率" + str(replay_quote_rate)
+            #print "答复率" + str(replay_quote_rate)
 
             no_replay_quote_num = all_quoto_num-replay_quote_num
             no_replay_quote_rate = round((no_replay_quote_num / (all_quoto_num * 1.0)) * 100, 2)
-            print "没有答复率" + str(no_replay_quote_rate)
+            #print "没有答复率" + str(no_replay_quote_rate)
 
 
 
@@ -451,17 +451,17 @@ class MonitorBusinessHandler(BaseHandler):
                 "select * from quote where id in (%s) and state=1 " % ",".join(all_quoto_id_list))
             replay_aceept_quote_num=len(replay_aceept_quote_list)
             replay_aceept_quote_rate = round((replay_aceept_quote_num / (all_quoto_num * 1.0)) * 100, 2)
-            print "认可率" + str(replay_aceept_quote_rate)
+            #print "认可率" + str(replay_aceept_quote_rate)
 
             replay_refuse_quote_num = replay_quote_num-replay_aceept_quote_num
             replay_refuse_quote_rate = round((replay_refuse_quote_num / (all_quoto_num * 1.0)) * 100, 2)
-            print "被拒绝" + str(replay_refuse_quote_rate)
+            #print "被拒绝" + str(replay_refuse_quote_rate)
 
             ret = self.db.get(
                 "select count(*) as num from quote where id in (%s) and find_in_set('价格偏高',message) " % ",".join(all_quoto_id_list))
             high_price_num=ret.num
             high_price_rate= round((high_price_num / (all_quoto_num * 1.0)) * 100, 2)
-            print "价格偏高"+str(high_price_rate)
+            #print "价格偏高"+str(high_price_rate)
 
 
 
@@ -470,7 +470,7 @@ class MonitorBusinessHandler(BaseHandler):
                     all_quoto_id_list))
             low_quality_num = ret.num
             low_quality_rate=round((low_quality_num / (all_quoto_num * 1.0)) * 100, 2)
-            print "质量不符"+str(low_quality_rate)
+            #print "质量不符"+str(low_quality_rate)
 
 
 
@@ -488,9 +488,9 @@ class MonitorBusinessHandler(BaseHandler):
                         min_reply_cost = cost
 
                 replay_quote_cost = round((total_cost * 1.0) / (len(replay_quote_list) * (60 * 60)), 2)
-                print "平均答复时间" + str(replay_quote_cost)
+                #print "平均答复时间" + str(replay_quote_cost)
                 min_reply_cost= round((min_reply_cost * 1.0) / (60 * 60), 2)
-                print "最快答复"+str(min_reply_cost)
+                #print "最快答复"+str(min_reply_cost)
         purchase_step={
             "purchaseinfo_num":purchaseinfo_num,"user_num":user_num,"variety_num":variety_num,"quote_num":quote_num,"quote_rate":quote_rate,
             "not_quote_num":not_quote_num,"not_quote_rate":not_quote_rate,"no_reply_num":no_reply_num,"no_reply_rate":no_reply_rate,
