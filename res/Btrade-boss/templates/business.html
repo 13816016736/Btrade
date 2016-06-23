@@ -13,28 +13,28 @@
                         <div class="input-group-addon">
                             <i class="fa fa-calendar"></i>
                         </div>
-                        <input type="text" class="form-control" id="starttime" value="">
+                        <input type="text" class="form-control" id="starttime" value="{{starttime}}">
                     </div>
                     至
                     <div class="input-group date form_datetime">
                         <div class="input-group-addon">
                             <i class="fa fa-calendar"></i>
                         </div>
-                        <input type="text" class="form-control" id="endtime" value="">
+                        <input type="text" class="form-control" id="endtime" value="{{endtime}}">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <a class="label label-warning" href="#">近1天</a>
+                    <a {% if int(type)==0 %} class="label label-warning" {% else %} class="label label-default"  {% end %} href="/users/business/type/0/starttime//endtime/">近1天</a>
                 </div>
                 <div class="form-group">
-                    <a class="label label-default" href="#">近1周</a>
+                    <a {% if int(type)==1 %} class="label label-warning" {% else %} class="label label-default"  {% end %} href="/users/business/type/1/starttime//endtime/">近1周</a>
                 </div>
                 <div class="form-group">
-                    <a class="label label-default" href="#">近1月</a>
+                    <a {% if int(type)==2 %} class="label label-warning" {% else %} class="label label-default"  {% end %}href="/users/business/type/2/starttime//endtime/">近1月</a>
                 </div>
                 <div class="form-group">
-                    <a class="label label-default" href="#">全部</a>
+                    <a {% if int(type)==3 %} class="label label-warning" {% else %} class="label label-default"  {% end %}  href="/users/business/type/3/starttime//endtime/">全部</a>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-primary btn-query" id="pquery">查询</button>
@@ -52,45 +52,45 @@
                     <tfoot>
                         <tr>
                             <td colspan="3">
-                                <p>收到的报价个数，平均：<b>2.4</b>　　最多的：<b>6</b></p>
-                                <p>收到第一个报价耗时，平均<b>24小时</b>，最快：<b>0.2小时</b></p>
-                                <p>被查看次数，平均：<b>23</b>，最高：<b>246</b></p>
+                                <p>收到的报价个数，平均：<b>{{purchase_step["average_quote"]}}</b>　　最多的：<b>{{ purchase_step["max_quote"] }}</b></p>
+                                <p>收到第一个报价耗时，平均<b>{{purchase_step["firt_quote_cost"]}}小时</b>，最快：<b>{{ purchase_step["min_cost"] }}小时</b></p>
+                                <p>被查看次数，平均：<b>{{purchase_step["max_view"]}}</b>，最高：<b>{{purchase_step["average_view"]}}</b></p>
                             </td>
                         </tr>
                     </tfoot>
                     <tbody>
                         <tr>
                             <td rowspan="4"> 
-                                <em>发布的采购单 100</em>
-                                <span>4个采购商</span>
-                                <span>78个品种</span>
+                                <em>发布的采购单批次 {{purchase_step["purchaseinfo_num"]}}</em>
+                                <span>{{purchase_step["user_num"]}}个采购商</span>
+                                <span>{{purchase_step["variety_num"]}}个品种</span>
                             </td>
                             <td rowspan="3">
                                 <em>收到了报价</em>
-                                <span>50(50%)</span>
+                                <span>{{purchase_step["quote_num"]}}({{purchase_step["quote_rate"]}}%)</span>
                             </td>
                             <td>
                                 <em>有认可的报价</em>
-                                <span>10(10%)</span>                         
+                                <span>{{purchase_step["accept_num"]}}({{purchase_step["accept_rate"]}}%)</span>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <em>答复过，但没有认可的</em>
-                                <span>30(30%)</span>
+                                <span>{{purchase_step["no_accept_num"]}}({{purchase_step["no_accept_rate"]}}%)</span>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <em>完全没答复</em>
-                                <span>10(10%)</span>
+                                <span>{{purchase_step["no_reply_num"]}}({{purchase_step["no_reply_rate"]}}%)</span>
                             </td>
                         </tr>
 
                         <tr>
                             <td>
                                 <em>没收到报价</em>
-                                <span>50(50%)</span>
+                                <span>{{purchase_step["not_quote_num"]}}({{purchase_step["not_quote_rate"]}}%)</span>
                             </td>
                             <td></td>
                         </tr>
@@ -108,7 +108,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="4">
-                                <p>报价收到答复的耗时，平均：<b>48小时</b>，最快：<b>2小时</b></p>
+                                <p>报价收到答复的耗时，平均：<b>{{quote_step["replay_quote_cost"]}}</b>，最快：<b>{{quote_step["min_reply_cost"]}}小时</b></p>
                             </td>
                         </tr>
                     </tfoot>
@@ -116,40 +116,40 @@
                         <tr>
                             <td rowspan="4"> 
                                 <em>收到的报价</em>
-                                <span>100</span>
-                                <span>56个供货商</span>
-                                <span>89个品种</span>
+                                <span>{{quote_step["all_quoto_num"]}}</span>
+                                <span>{{quote_step["apply_user_num"]}}个供货商</span>
+                                <span>{{quote_step["supply_variety_num"]}}个品种</span>
                             </td>
                             <td rowspan="3">
                                 <em>收到了答复</em>
-                                <span>50(50%)</span>
+                                <span>{{quote_step["replay_quote_num"]}}({{quote_step["replay_quote_rate"]}}%)</span>
                             </td>
                             <td>
                                 <em>获得认可</em>
-                                <span>10(10%)</span>                         
+                                <span>{{quote_step["replay_aceept_quote_num"]}}({{quote_step["replay_aceept_quote_rate"]}}%)</span>
                             </td>
                             <td></td>
                         </tr>
                         <tr>
                             <td rowspan="2">
                                 <em>被拒绝</em>
-                                <span>40(40%)</span>
+                                <span>{{quote_step["replay_refuse_quote_num"]}}({{quote_step["replay_refuse_quote_rate"]}}%)</span>
                             </td>
                             <td>
                                 <em>价格偏高</em>
-                                <span>30(30%)</span>
+                                <span>{{quote_step["high_price_num"]}}({{quote_step["high_price_rate"]}}%)</span>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <em>质量不符</em>
-                                <span>10(10%)</span>
+                                <span>{{quote_step["replay_quote_num"]}}({{quote_step["replay_quote_rate"]}}%)</span>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <em>没收到答复</em>
-                                <span>50(50%)</span>
+                                <span>{{quote_step["low_quality_num"]}}({{quote_step["low_quality_rate"]}}%)</span>
                             </td>
                             <td></td>
                             <td></td>
@@ -173,9 +173,9 @@
                 var endtime = $("#endtime").val();
 
                 if (starttime != "" && endtime != "") {
-                    // window.location.href='/purchase/purchaselist/type/-1/starttime/'+starttime+'/endtime/'+endtime;
+                    window.location.href='/users/business/type/-1/starttime/'+starttime+'/endtime/'+endtime;
                 } else {
-                    alert("时间范围或品种名需填写完整");
+                    alert("时间范围需填写完整");
                 }
             });
         })

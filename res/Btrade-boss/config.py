@@ -47,8 +47,8 @@ handlers = [
     (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/removepurchase", RemovePurchaseHandler),
     (r"/pushpurchase", PushPurchaseHandler),
-    (r"/monitor/statistics/month/([0-9]+)", MonitorStatisticsHandler),
-    (r"/monitor/business", MonitorBusinessHandler),
+    (r"/users/statistics/month/([0-9]+)", MonitorStatisticsHandler),
+    (r"/users/business/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MonitorBusinessHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 
