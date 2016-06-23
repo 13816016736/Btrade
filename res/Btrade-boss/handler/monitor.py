@@ -184,13 +184,14 @@ class MonitorStatisticsHandler(BaseHandler):
                 total_replay_quote_rate =total_replay_quote_rate + item["replay_quote_rate"]
                 total_replay_aceept_quote_rate =total_replay_aceept_quote_rate  + item["replay_aceept_quote_rate"]
                 total_replay_quote_cost = total_replay_quote_cost + item["replay_quote_cost"]
-            total_quote_rate=total_quote_rate/4
-            total_quote_average=total_quote_average/4
-            total_firt_quote_cost=total_firt_quote_cost/4
-            total_replay_quote_rate=total_replay_quote_rate/4
-            total_replay_aceept_quote_rate=total_replay_aceept_quote_rate/4
-            total_replay_quote_cost=total_replay_quote_cost/4
-            total_quote_accepte_rate=total_quote_accepte_rate/4
+
+            total_quote_rate=total_quote_rate/len(format_regions)
+            total_quote_average=total_quote_average/len(format_regions)
+            total_firt_quote_cost=total_firt_quote_cost/len(format_regions)
+            total_replay_quote_rate=total_replay_quote_rate/len(format_regions)
+            total_replay_aceept_quote_rate=total_replay_aceept_quote_rate/len(format_regions)
+            total_replay_quote_cost=total_replay_quote_cost/len(format_regions)
+            total_quote_accepte_rate=total_quote_accepte_rate/len(format_regions)
 
 
 
