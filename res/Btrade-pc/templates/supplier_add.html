@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <title>添加供货商-供货商管理-药材购</title>
+    <!-- 浏览器高速模式 -->
+    <meta name="renderer" content="webkit" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <link rel="stylesheet" href="../static/css/center.css" />
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+
+<section class="sec">
+    <div class="main-cont">
+        <div class="box">
+            <div class="filter">
+                <div class="pull-left">
+                    <a href="supplier.html" class="btn">&lt; 返回供货商查询</a>
+                </div>
+            </div>
+
+            <div class="yc-form">
+                <form action="" id="jForm">
+                    <div class="bd">
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>手机</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jMobile" name="mobile" class="ipt" placeholder="请填写手机号" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>公司/姓名</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jName" name="name" class="ipt ipt-wide" placeholder="单位填写公司名，个人写真实姓名" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>联系人</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jLinkman" name="linkman" class="ipt" placeholder="请填写真实姓名" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>主营品种</span>
+                            </div>
+                            <div class="cont yc-tag-list">
+                                <ul class="yc-ul" id="jMyTags"></ul>
+                                <input value="" id="jVariety" name="variety" class="ipt" placeholder="请输入关键字查询" type="text">
+                                <button class="btn btn-gray" type="button">添加</button>
+                                <div class="variety-tags" id="jVarietyTags">
+                                    <div class="inner">
+                                        <dl class="search"><dd></dd></dl>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="jVarietys" name="varietys">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bd">
+                        <div class="group">
+                            <div class="txt">
+                                <span>经营地</span>
+                            </div>
+                            <div class="cont">
+                                <dl class="yc-select" id="jProvince">
+                                    <dt data-val="0">省</dt>
+                                    <dd>
+                                        <span data-val="0">省</span>
+                                    </dd>
+                                </dl>
+                                <dl class="yc-select" id="jCity">
+                                    <dt data-val="0">省/县</dt>
+                                    <dd>
+                                        <span data-val="0">省/县</span>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>详细地址</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jAddress" name="address" class="ipt ipt-wide" placeholder="" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>经营规模</span>
+                            </div>
+                            <div class="cont">
+                                <label><input class="cbx" name="scale" type="radio">小</label>
+                                <label><input class="cbx" name="scale" type="radio">中</label>
+                                <label><input class="cbx" name="scale" type="radio">大</label>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>其他联系方式</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jTel" name="tel" class="ipt" placeholder="" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>备注</span>
+                            </div>
+                            <div class="cont">
+                                <textarea class="ipt ipt-area" name="note" id="jNote" cols="30" rows="10"></textarea>
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bd">
+                        <div class="group">
+                            <div class="txt">
+                                <span>推荐人</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jReferrer" name="referrer" class="ipt" placeholder="推荐人姓名或手机号" type="text">
+                                <button class="btn btn-gray" type="button">检测</button>
+                                <span class="error"></span>
+                                <div class="referrer-list" id="jReferrerList"></div>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>录入人</span>
+                            </div>
+                            <div class="cont">
+                                <input value="yanfei" id="jReferrer" name="referrer" class="ipt" placeholder="" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bd">
+                        <div class="ft">
+                            <button class="btn btn-orange submit" id="jSave1" type="button">提交</button>
+                            <span class="msg hide"><i class="icons icons-ok"></i>操作成功</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="side">
+        <ul class="yc-ul">
+            <li><a href="order.html"><i class="icons menu"></i>我的采购</a><em>4</em></li>
+            <li><a href="account.html"><i class="icons setting"></i>账户</a></li>
+            <li class="curr"><a href="supplier.html"><i class="icons setting"></i>供货商管理</a></li>
+        </ul>
+    </div>
+</section>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/center.js"></script>
+<script src="js/center.js"></script>
+<script src="js/supplier.js"></script>
+
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+        
+$('.nav-icon').on('click', function() {
+    $(this).parent().toggleClass('active');
+})
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
+</script>
+</body>
+
+</html>

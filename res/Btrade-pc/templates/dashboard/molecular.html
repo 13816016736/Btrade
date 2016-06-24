@@ -197,34 +197,6 @@
     </div>
 </section>
 
-<!-- 药材品种 -->
-<div class="variety-tags" id="jVarietyTags">
-    <div class="inner">
-        <dl class="search"><dd></dd></dl>
-        <dl>
-            <dt>最近采购品种</dt>
-            <dd>
-                <span>黄连</span>
-                <span>三七</span>
-                <span>当归</span>
-                <span>白芍</span>
-                <span>浙贝母</span>
-                <span>景天红花散</span>
-                <span>最多容纳六字</span>
-            </dd>
-        </dl>
-        <dl>
-            <dt>主要经营/采购品种</dt>
-            <dd>
-                <span>黄连</span>
-                <span>三七</span>
-                <span>当归</span>
-                <span>白芍</span>
-            </dd>
-        </dl>
-    </div>
-</div>
-
 <div class="modal fade" id="jModalTips" tabindex="-1" role="dialog" aria-labelledby="tit1">
     <div class="modal-dialog modal-mid" role="document">
         <div class="modal-content">
@@ -368,21 +340,6 @@
         });
 
     })
-    // 防抖处理
-    function debounce(func, wait) {
-        this.timer && clearTimeout(this.timer);
-        this.timer = setTimeout(function() {func()}, wait);
-    }
-
-    $('.form-primary').on({
-        'input': function() {
-            if ($.trim(this.value) == '') {
-                showTags(false, $varietyTags);
-            } else {
-                debounce(getKeywords, 400);
-            }
-        }
-    }, '.tr .ipt');
 
 </script>
 <script>
