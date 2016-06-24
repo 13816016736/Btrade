@@ -54,7 +54,7 @@
                             <td colspan="3">
                                 <p>收到的报价个数，平均：<b>{{purchase_step["average_quote"]}}</b>　　最多的：<b>{{ purchase_step["max_quote"] }}</b></p>
                                 <p>收到第一个报价耗时，平均<b>{{purchase_step["firt_quote_cost"]}}小时</b>，最快：<b>{{ purchase_step["min_cost"] }}小时</b></p>
-                                <p>被查看次数，平均：<b>{{purchase_step["max_view"]}}</b>，最高：<b>{{purchase_step["average_view"]}}</b></p>
+                                <p>被查看次数，平均：<b>{{purchase_step["average_view"]}}</b>，最高：<b>{{purchase_step["max_view"]}}</b></p>
                             </td>
                         </tr>
                     </tfoot>
@@ -62,7 +62,9 @@
                         <tr>
                             <td rowspan="4"> 
                                 <em>发布的采购单批次 {{purchase_step["purchaseinfo_num"]}}</em>
+                                <br>
                                 <span>{{purchase_step["user_num"]}}个采购商</span>
+                                <br>
                                 <span>{{purchase_step["variety_num"]}}个品种</span>
                             </td>
                             <td rowspan="3">
