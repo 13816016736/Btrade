@@ -25,17 +25,28 @@ class MonitorStatisticsHandler(BaseHandler):
             format_regions = []
             if int(month)%2==0:
                 start_date=dt+timedelta(days=(-1*(dayOfWeek)))
+                end_date = start_date + timedelta(days=35)
+
+                region = {"start_time": start_date.strftime("%Y-%m-%d"), "end_time": end_date.strftime("%Y-%m-%d")}
+                regions.append(region)
+
                 for i in range(0,5):
-                    end_date = start_date + timedelta(days=6)
+                    end_date = start_date + timedelta(days=7)
                     region={"start_time":start_date.strftime("%Y-%m-%d"),"end_time":end_date.strftime("%Y-%m-%d")}
                     regions.append(region)
                     region = {"start_time": start_date.strftime("%m.%d"), "end_time": end_date.strftime("%m.%d")}
                     format_regions.append(region)
                     start_date = start_date + timedelta(days=7)
+
+
             else:
                 start_date = dt+timedelta(days=7 - dayOfWeek)
+                end_date = start_date + timedelta(days=28)
+
+                region = {"start_time": start_date.strftime("%Y-%m-%d"), "end_time": end_date.strftime("%Y-%m-%d")}
+                regions.append(region)
                 for i in range(0, 4):
-                    end_date = start_date + timedelta(days=6)
+                    end_date = start_date + timedelta(days=7)
                     region={"start_time":start_date.strftime("%Y-%m-%d"),"end_time":end_date.strftime("%Y-%m-%d")}
                     regions.append(region)
                     region = {"start_time": start_date.strftime("%m.%d"), "end_time": end_date.strftime("%m.%d")}
@@ -44,6 +55,7 @@ class MonitorStatisticsHandler(BaseHandler):
 
             user_statistics=[]
             for item in regions:
+                #print item
                 start= datetime.strptime(item["start_time"], format)
                 end=datetime.strptime(item["end_time"], format)
                 start_time=int(time.mktime(start.timetuple()))
@@ -157,7 +169,7 @@ class MonitorStatisticsHandler(BaseHandler):
                              "all_quoto_num":all_quoto_num,"replay_quote_rate":replay_quote_rate,"replay_aceept_quote_rate":replay_aceept_quote_rate,"replay_quote_cost": replay_quote_cost
                              }
                 user_statistics.append(region_item)
-
+            '''
             total_new_user_count=0
             total_new_purchase=0
             total_new_qute=0
@@ -203,8 +215,9 @@ class MonitorStatisticsHandler(BaseHandler):
                            "all_quoto_num": total_all_quoto_num, "replay_quote_rate": total_replay_quote_rate,
                            "replay_aceept_quote_rate": total_replay_aceept_quote_rate, "replay_quote_cost": total_replay_quote_cost
                            }
+            '''
 
-            self.render("statistics.html",regions=format_regions,statistics=user_statistics,total=total,month=month)
+            self.render("statistics.html",regions=format_regions,statistics=user_statistics,month=month)
         else:
             self.send_error(404)
 

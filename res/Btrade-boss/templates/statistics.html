@@ -29,7 +29,7 @@
                             <th>分类</th>
                             <th>指标</th>
                             <th>总体平均</th>
-                            {% for date in regions%}
+                            {% for date in regions %}
                             <th>{{date["start_time"]}}-{{ date["end_time"]}}</th>
                             {% end %}
                         </tr>
@@ -44,8 +44,6 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="本周期内新注册会员数">新注册会员数</div>
                              </td>
-
-                            <td>{{total["new_user_count"]}}</td>
                             {% for item in statistics %}
                             <td>{{item["new_user_count"]}}</td>
                             {% end %}
@@ -63,7 +61,7 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，有多少会员发过采购单，去重统计">当周发采购的会员数</div>
                              </td>
-                             <td>{{total["new_purchase"]}}</td>
+
                             {% for item in statistics %}
                             <td>{{item["new_purchase"]}}</td>
                             {% end %}
@@ -72,7 +70,7 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，有多少会员报价过，去重统计">当周报价的会员数</div>
                              </td>
-                            <td>{{total["new_quote"]}}</td>
+
                             {% for item in statistics %}
                             <td>{{item["new_quote"]}}</td>
                             {% end %}
@@ -85,7 +83,7 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，新发布了多少采购批次">新发布采购批次数</div>
                              </td>
-                              <td>{{total["purchaseinfo_num"]}}</td>
+
                            {% for item in statistics %}
                             <td>{{item["purchaseinfo_num"]}}</td>
                             {% end %}
@@ -94,7 +92,7 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内发布的采购批次中，有多少占比收到了1个以上的报价">报价率</div>
                              </td>
-                            <td>{{total["quote_rate"]}}%</td>
+
                             {% for item in statistics %}
                             <td>{{item["quote_rate"]}}%</td>
                             {% end %}
@@ -103,7 +101,7 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内发布的采购批次中，有多少占比，不仅收到了报价，还有被认可的报价">认可率</div>
                              </td>
-                             <td>{{total["quote_accepte_rate"]}}%</td>
+
                             {% for item in statistics %}
                             <td>{{item["quote_accepte_rate"]}}%</td>
                             {% end %}
@@ -112,7 +110,7 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，新发布的采购批次中，针对收到报价的采购批次，他们平均收到报价的个数">平均收到报价个数</div>
                              </td>
-                             <td>{{total["quote_average"]}}</td>
+
                             {% for item in statistics %}
                             <td>{{item["quote_average"]}}</td>
                             {% end %}
@@ -122,11 +120,7 @@
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，新发布的采购批次中，针对收到报价的采购批次，他们从发布到收到第一个报价的平均耗时（
                              小时）">收到第一个报价平均耗时</div>
                              </td>
-                              {% if total["firt_quote_cost"]!=0 %}
-                             <td>{{total["firt_quote_cost"]}}</td>
-                              {% else %}
-                              <td>-</td>
-                            {% end %}
+
                             {% for item in statistics %}
                               {% if item["firt_quote_cost"]!=0 %}
                              <td>{{item["firt_quote_cost"]}}</td>
@@ -143,7 +137,7 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，提交报价的个人">报价个数</div>
                              </td>
-                             <td>{{total["all_quoto_num"]}}</td>
+
                             {% for item in statistics %}
                             <td>{{item["all_quoto_num"]}}</td>
                             {% end %}
@@ -152,7 +146,6 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，提交的报价中，收到答复的占比（无论被认可或被拒绝）">收到答复率</div>
                              </td>
-                             <td>{{total["replay_quote_rate"]}}%</td>
                              {% for item in statistics %}
                             <td>{{item["replay_quote_rate"]}}%</td>
                             {% end %}
@@ -161,7 +154,6 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，提交的报价中，被认可的占比">认可率</div>
                              </td>
-                             <td>{{total["replay_aceept_quote_rate"]}}%</td>
                            {% for item in statistics %}
                             <td>{{item["replay_aceept_quote_rate"]}}%</td>
                             {% end %}
@@ -170,11 +162,6 @@
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，提交报价中，针对收到了答复的报价，他们从提交报价到收到答复的平均耗时（小时）">平均答复时间</div>
                             </td>
-                             {% if total["replay_quote_cost"]!=0 %}
-                             <td>{{total["replay_quote_cost"]}}</td>
-                              {% else %}
-                              <td>-</td>
-                            {% end %}
                             {% for item in statistics %}
                               {% if item["replay_quote_cost"]!=0 %}
                              <td>{{item["replay_quote_cost"]}}</td>
