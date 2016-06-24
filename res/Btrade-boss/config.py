@@ -4,6 +4,7 @@ from handler.main import *
 from handler.login import *
 from handler.purchase import *
 from handler.monitor import *
+from handler.supplier import *
 
 #显示设置
 app = {
@@ -49,6 +50,8 @@ handlers = [
     (r"/pushpurchase", PushPurchaseHandler),
     (r"/users/statistics/month/([0-9]+)", MonitorStatisticsHandler),
     (r"/users/business/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MonitorBusinessHandler),
+    (r"/supplier/supplierdetail", SupplierDetailHandler),
+    (r"/supplier/supplierlist/(.*)", SupplierHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 
@@ -83,3 +86,14 @@ unit = "公斤"
 appid = "wx90e04052c49aa63e"
 secret = "b1146d3ec7e0a8a483064406f361a07b"
 token = ""
+
+#爬虫爬的网站的对应代码
+{
+    "Kmzyw":"康梅",
+    "yobo360":"药博",
+    "yt1998":"药通网",
+    "zyccst":"诚实通",
+    "zyccst_sjh":"诚实通",
+    "zyczyc":"东方"
+}
+
