@@ -114,7 +114,7 @@
     </aside>
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>供货商详情</h1>
+            <h1>修改供货商</h1>
         </section>
 
         <section class="content">
@@ -124,125 +124,137 @@
                 <a href="supplier.html">&lt; 返回供货商查询</a>
             </div>
             <div class="yc-form">
-                <div class="bd">
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>手机</span>
+                <form action="" id="jForm">
+                    <div class="bd">
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>手机</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jMobile" name="mobile" class="ipt" placeholder="请填写手机号" type="text">
+                                <span class="error"></span>
+                            </div>
                         </div>
-                        <div class="cont">
-                            <span>15500001111</span>
-                            <a href="tel:15500001111">拨号</a>
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>公司/姓名</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jName" name="name" class="ipt ipt-wide" placeholder="单位填写公司名，个人写真实姓名" type="text">
+                                <span class="error"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>公司/姓名</span>
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>联系人</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jLinkman" name="linkman" class="ipt" placeholder="请填写真实姓名" type="text">
+                                <span class="error"></span>
+                            </div>
                         </div>
-                        <div class="cont">
-                            <span>三台县浩凌商贸有限公司</span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>联系人</span>
-                        </div>
-                        <div class="cont">
-                            <span>严飞</span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>主营品种</span>
-                        </div>
-                        <div class="cont yc-tag-list">
-                            <ul class="cf yc-ul">
-                                <li data-key="1120"><span>黄芪</span></li>
-                                <li data-key="1121"><span>当归</span></li>
-                                <li data-key="1122"><span>白芍</span></li>
-                                <li data-key="1123"><span>浙贝母</span></li>
-                                <li data-key="1124"><span>景天红花</span></li>
-                                <li data-key="1125"><span>白芍</span></li>
-                                <li data-key="1126"><span>浙贝母</span></li>
-                                <li data-key="1127"><span>景天红花散</span></li>
-                                <li data-key="1128"><span>最多容纳六字</span></li>
-                            </ul>
+                        <div class="group">
+                            <div class="txt">
+                                <i>*</i>
+                                <span>主营品种</span>
+                            </div>
+                            <div class="cont yc-tag-list">
+                                <ul class="yc-ul" id="jMyTags"></ul>
+                                <input value="" id="jVariety" name="variety" class="ipt" placeholder="请输入关键字查询" type="text">
+                                <div class="list" id="jVarietyTags"></div>
+                                <input type="hidden" id="jVarietys" name="varietys">
+                                <span class="error"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="bd">
-                    <div class="group">
-                        <div class="txt">
-                            <span>经营地</span>
+                    <div class="bd">
+                        <div class="group">
+                            <div class="txt">
+                                <span>经营地</span>
+                            </div>
+                            <div class="cont">
+                                <ul class="cf yc-ul slt">
+                                    <li>
+                                        <select name="" id="jProvince">
+                                            <option value="">省</option>
+                                        </select>
+                                    </li>
+                                    <li>
+                                        <select name="" id="jCity">
+                                            <option value="">省/县</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="cont">
-                            <span>湖北省 武汉市</span>
+                        <div class="group">
+                            <div class="txt">
+                                <span>详细地址</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jAddress" name="address" class="ipt ipt-wide" placeholder="" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>经营规模</span>
+                            </div>
+                            <div class="cont">
+                                <label><input class="cbx" value="small" name="scale" type="radio">小</label>
+                                <label><input class="cbx" value="middle" name="scale" type="radio">中</label>
+                                <label><input class="cbx" value="big" name="scale" type="radio">大</label>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>其他联系方式</span>
+                            </div>
+                            <div class="cont">
+                                <input value="" id="jTel" name="tel" class="ipt" placeholder="" type="text">
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">
+                                <span>备注</span>
+                            </div>
+                            <div class="cont">
+                                <textarea class="ipt ipt-area" name="note" id="jNote" cols="30" rows="10"></textarea>
+                                <span class="error"></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>经营地</span>
-                        </div>
-                        <div class="cont">
-                            <span>江汉路99号</span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>经营规模</span>
-                        </div>
-                        <div class="cont">
-                            <span>大</span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>其他联系方式</span>
-                        </div>
-                        <div class="cont">
-                            <span></span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>备注</span>
-                        </div>
-                        <div class="cont">
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="bd">
-                    <div class="group">
-                        <div class="txt">
-                            <span>推荐人</span>
+                    <div class="bd">
+                        <div class="group">
+                            <div class="txt">
+                                <span>推荐人</span>
+                            </div>
+                            <div class="cont">
+                                <span>亳州艾达药材行（严飞）</span>
+                            </div>
                         </div>
-                        <div class="cont">
-                            <span>亳州艾达药材行（严飞）</span>
+                        <div class="group">
+                            <div class="txt">
+                                <span>录入人</span>
+                            </div>
+                            <div class="cont">
+                                <span>yanfei</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>录入人</span>
-                        </div>
-                        <div class="cont">
-                            <span>yanfei</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="bd">
-                    <div class="ft">
-                        <a  class="btn btn-warning submit" href="supplier_edit.html?id=012">编辑</a>
-                        <a  class="btn btn-warning submit" href="supplier_add.html?id=012">录入他的朋友</a>
-                        <span class="msg hide"><i class="icons icons-ok"></i>操作成功</span>
+                    <div class="bd">
+                        <div class="ft">
+                            <button class="btn btn-warning submit" id="jSave1" type="button">提交</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
 			<!-- 内容结束 end=========================================================== -->
 
@@ -255,5 +267,6 @@
         </div>
         &copy; <a href="#">速采科技（武汉）有限公司</a> 版权所有.
     </footer>
+    <script src="../static/js/supplier.js"></script>
 </body>
 </html>

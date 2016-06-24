@@ -1,8 +1,7 @@
-<{% extends "base.html" %}
+{% extends "base.html" %}
 {% block container %}
-{% import config %}
-
-<div class="content-wrapper">
+{% from  config import * %}
+    <div class="content-wrapper">
         <section class="content-header">
             <h1>供货商管理</h1>
         </section>
@@ -11,132 +10,119 @@
             <form class="form-inline">
                 <div class="form-group">
                     <div class="input-group">
-                        <input class="form-control" id="starttime" value="" placeholder="联系人/公司名/手机" type="text">
+                        <input class="form-control" id="search" value="{{search_str}}" placeholder="联系人/公司名/手机" type="text">
                     </div>
                     <div class="input-group">
-                        <input class="form-control" id="endtime" value="" placeholder="主营品种" type="text">
+                        <input class="form-control" id="variety" value="{{variety_name}}" placeholder="主营品种" type="text">
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-warning btn-query">查询</button>
-                    <button type="button" class="btn btn-warning btn-query">新增</button>
+                    <button type="button" id="querybtn" class="btn btn-warning btn-query">查询</button>
+                    <button type="button" id="addbtn" class="btn btn-warning btn-query">新增</button>
                 </div>
             </form>
         </section>
 
         <section class="content">
+        	
 			<!-- 内容开始 start=========================================================== -->
 
 
             <div class="supplier-list">
                 <ul class="cf yc-ul">
-                    <li>
-                        <div class="hd">
-                            <a href="supplier_detail.html">三台县浩凌商贸有限公司</a>
-                            <span>手动录入</span>
+
+                       {% for supplier in suppliers %}
+                        <li>
+                         <div class="hd">
+                            <a href="supplier_detail.html">
+                                {% if supplier.company!="" %}
+                                {{ supplier.company }}
+                                {% else %}
+                                {{ supplier.name}}
+                                {% end %}
+                            </a>
+                             {% if spider_net.has_key(supplier.source)   %}
+                              <span>爬取-{{spider_net[supplier.source]}}</span>
+                             {% elif source_code.has_key(supplier.source) %}
+                             <span>{{ source_code[supplier.source] }}</span>
+                             { % else %}
+                              <span>未定义</span>
+                             {% end %}
                         </div>
                         <div class="bd">
                             <i class="fa fa-user"></i>
-                            严飞
-                            <span>15500001111</span>
-                            <a href="tel:15500001111">拨号</a>
+                            {{ supplier.name }}
+                            <span> {{ supplier.mobile }}</span>
+                            <a href="tel:{{ supplier.mobile }}">拨号</a>
                         </div>
                         <div class="bd">
                             <i class="fa fa-file-text-o"></i>
-                            黄连、僵蚕、三七、麦冬、黄柏、陈皮、金荞麦、百部、当归、肉苁蓉、半边莲
+                            {{ ",".join(supplier.supply_variety_name)}}
                         </div>
                         <div class="bd">
                             <i class="fa fa-map-marker"></i>
-                            安徽省亳州市
+                             {{ supplier.address }}
                         </div>
                     </li>
-                    <li>
-                        <div class="hd">
-                            <a href="supplier_detail.html">三台县浩凌商贸有限公司</a>
-                            <span>手动录入</span>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-user"></i>
-                            严飞
-                            <span>15500001111</span>
-                            <a href="tel:15500001111">拨号</a>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-file-text-o"></i>
-                            黄连、僵蚕、三七、麦冬、黄柏、陈皮、金荞麦、百部、当归、肉苁蓉、半边莲
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-map-marker"></i>
-                            安徽省亳州市
-                        </div>
-                    </li>
-                    <li>
-                        <div class="hd">
-                            <a href="supplier_detail.html">三台县浩凌商贸有限公司</a>
-                            <span>手动录入</span>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-user"></i>
-                            严飞
-                            <span>15500001111</span>
-                            <a href="tel:15500001111">拨号</a>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-file-text-o"></i>
-                            黄连、僵蚕、三七、麦冬、黄柏、陈皮、金荞麦、百部、当归、肉苁蓉、半边莲
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-map-marker"></i>
-                            安徽省亳州市
-                        </div>
-                    </li>
-                    <li>
-                        <div class="hd">
-                            <a href="supplier_detail.html">三台县浩凌商贸有限公司</a>
-                            <span>手动录入</span>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-user"></i>
-                            严飞
-                            <span>15500001111</span>
-                            <a href="tel:15500001111">拨号</a>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-file-text-o"></i>
-                            黄连、僵蚕、三七、麦冬、黄柏、陈皮、金荞麦、百部、当归、肉苁蓉、半边莲
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-map-marker"></i>
-                            安徽省亳州市
-                        </div>
-                    </li>
-                    <li>
-                        <div class="hd">
-                            <a href="supplier_detail.html">三台县浩凌商贸有限公司</a>
-                            <span>手动录入</span>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-user"></i>
-                            严飞
-                            <span>15500001111</span>
-                            <a href="tel:15500001111">拨号</a>
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-file-text-o"></i>
-                            黄连、僵蚕、三七、麦冬、黄柏、陈皮、金荞麦、百部、当归、肉苁蓉、半边莲
-                        </div>
-                        <div class="bd">
-                            <i class="fa fa-map-marker"></i>
-                            安徽省亳州市
-                        </div>
-                    </li>
+                    {% end %}
+
                 </ul>
             </div>
 
-            {% module PageNav(nav=nav, show=True) %}
-			<!-- 内容结束 end=========================================================== -->
+            <div class="pagin">
+               <div>
+                    <ul class="pagination">
+                        {% set start = nav['cur'] - 5 if nav['cur'] - 5 > 0 else 1 %}
+                        {% set end = nav['cur'] + 5 if nav['cur'] + 5 < nav['num'] else nav['num'] %}
+                        {% if end - start < 10 and nav['num'] < 10 %}
+                        {% set start = 1 %}
+                        {% set end = nav['num'] %}
+                        {% elif end - start < 10 and nav['num'] > 10 %}
+                        {% if nav['cur'] - 5 < 0 %}
+                        {% set end = nav['num'] - start if nav['num'] - start < 10 else start + 9 %}
+                        {% end %}
+                        {% if nav['cur'] + 5 > nav['num'] %}
+                        {% set start = start - 1 if start - 1 < 10 else end - 9 %}
+                        {% end %}
+                        {% end %}
 
 
+
+                        {% if start > 1 %}
+                        <li><a href="/{{ nav['model'] }}?page=1&{% if nav.has_key('query') and nav['query'] %}{{nav['query']}}{% end %}">首页</a></li>
+                        {% end %}
+                        {% for i in range(start, end + 1) %}
+                            <li id="page-{{ i }}"><a href="/{{ nav['model'] }}?page={{ i }}&{% if nav.has_key('query') and nav['query'] %}{{nav['query']}}{% end %}">{{ i }} <span class="sr-only">(current)</span></a></li>
+                        {% end %}
+                        {% if end < nav['num'] %}
+                            <li><a href="/{{ nav['model'] }}?page={{ nav['num'] }}&{% if nav.has_key('query') and nav['query'] %}{{nav['query']}}{% end %}">末页</a></li>
+                        {% end %}
+                    </ul>
+                </div>
+            </div>
         </section>
     </div>
+  <script>
+        $(document).ready(function() {
+          $("#querybtn").click(function() {
+                var search = $("#search").val();
+                var variety = $("#variety").val();
+
+                if (search != "" || variety  != "") {
+                    url='/supplier/supplierlist?page=1';
+                    if(search!=""){
+                        url=url+'&search='+search;
+                        }
+                     if(variety != ""){
+                       url=url+'&variety='+variety;
+                     }
+                      window.location.href=url;
+                } else {
+                    alert("查询条件必须填写一个");
+                }
+            });
+        })
+    </script>
+<link rel="stylesheet" href="{{ static_url('dist/css/supplier.css') }}">
+
 {% end %}

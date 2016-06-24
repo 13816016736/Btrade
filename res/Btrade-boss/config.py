@@ -51,7 +51,7 @@ handlers = [
     (r"/users/statistics/month/([0-9]+)", MonitorStatisticsHandler),
     (r"/users/business/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MonitorBusinessHandler),
     (r"/supplier/supplierdetail", SupplierDetailHandler),
-    (r"/supplier/supplierlist/(.*)", SupplierHandler),
+    (r"/supplier/supplierlist", SupplierHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 
@@ -88,12 +88,19 @@ secret = "b1146d3ec7e0a8a483064406f361a07b"
 token = ""
 
 #爬虫爬的网站的对应代码
-{
-    "Kmzyw":"康梅",
+spider_net={
+    "Kmzyw":"康美",
     "yobo360":"药博",
     "yt1998":"药通网",
     "zyccst":"诚实通",
     "zyccst_sjh":"诚实通",
     "zyczyc":"东方"
+}
+#自己录入和自主注册的
+source_code={
+    "manual_record":"人工录入",
+    "manual_recommend":"人工推荐",
+    "self_recommend":"自主推荐",
+    "self_register":"自主注册"
 }
 
