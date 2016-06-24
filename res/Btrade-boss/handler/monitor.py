@@ -348,12 +348,19 @@ class MonitorBusinessHandler(BaseHandler):
                 for item in ret:
                     accept_purchaseinfoid.append(str(item.purchaseinfoid))
 
+                if accept_num!=0:
+                    ret = self.db.get(
+                    "select count(distinct purchaseinfoid) as num from quote where purchaseinfoid in (%s)  and state=%d and purchaseinfoid not in (%s) " % (",".join(purchaseinfo_id_list),2,",".join(accept_purchaseinfoid)))
+                    no_accept_num=ret.num
+                    no_accept_rate = round((no_accept_num/ (len(purchaseinfo_list) * 1.0)) * 100, 2)
+                    print "没有认可的报价" + str(no_accept_num)
+                else:
+                    ret = self.db.get(
+                    "select count(distinct purchaseinfoid) as num from quote where purchaseinfoid in (%s)  and state=%d " % (",".join(purchaseinfo_id_list),2))
+                    no_accept_num=ret.num
+                    no_accept_rate = round((no_accept_num/ (len(purchaseinfo_list) * 1.0)) * 100, 2)
+                    print "没有认可的报价" + str(no_accept_num)
 
-                ret = self.db.get(
-                    "select count(distinct purchaseinfoid) as num from quote where purchaseinfoid in (%s)  and state=2 and purchaseinfoid not in (%s) " % (",".join(purchaseinfo_id_list),",".join(accept_purchaseinfoid)))
-                no_accept_num=ret.num
-                no_accept_rate = round((no_accept_num/ (len(purchaseinfo_list) * 1.0)) * 100, 2)
-                print "没有认可的报价" + str(no_accept_num)
 
                 #ret = self.db.get(
                 #    "select count(distinct purchaseinfoid) as num from quote where  purchaseinfoid in (%s) and state=0 and purchaseinfoid not in (%s)" %(",".join(purchaseinfo_id_list),",".join(purchaseinfo_id_list)))
@@ -363,7 +370,13 @@ class MonitorBusinessHandler(BaseHandler):
 
 
                 ret = self.db.query(
-                    "SELECT count(*) as num from quote where id in (%s) GROUP BY purchaseinfoid ORDER BY num desc  " % ",".join(all_quoto_id_list))
+                    "select distinct purchaseinfoid  from quote where  purchaseinfoid in (%s)" % ",".join(purchaseinfo_id_list))
+                has_quote_purchaseinfo_list=[]
+                for item in ret:
+                    has_quote_purchaseinfo_list.append(str(item.purchaseinfoid))
+
+                ret = self.db.query(
+                    "SELECT count(*) as num from quote where purchaseinfoid in (%s) GROUP BY purchaseinfoid ORDER BY num desc  " % ",".join(has_quote_purchaseinfo_list))
                 max_quote=ret[0].num
                 total_quote=0
                 for item in ret:
