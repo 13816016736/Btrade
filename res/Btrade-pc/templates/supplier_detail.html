@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <title>供货商管理详情-药材购</title>
+    <!-- 浏览器高速模式 -->
+    <meta name="renderer" content="webkit" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <link rel="stylesheet" href="../static/css/center.css" />
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+
+<section class="sec">
+    <div class="main-cont">
+        <div class="box">
+            <div class="filter">
+                <div class="pull-left">
+                    <a href="supplier.html" class="btn">&lt; 返回供货商查询</a>
+                </div>
+            </div>
+
+            <div class="yc-form">
+                <div class="bd">
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>手机</span>
+                        </div>
+                        <div class="cont">
+                            <span>15500001111</span>
+                            <a href="tel:15500001111">拨号</a>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>公司/姓名</span>
+                        </div>
+                        <div class="cont">
+                            <span>三台县浩凌商贸有限公司</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>联系人</span>
+                        </div>
+                        <div class="cont">
+                            <span>严飞</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>主营品种</span>
+                        </div>
+                        <div class="cont yc-tag-list">
+                            <ul class="cf yc-ul">
+                                <li data-key="1120"><span>黄芪</span></li>
+                                <li data-key="1121"><span>当归</span></li>
+                                <li data-key="1122"><span>白芍</span></li>
+                                <li data-key="1123"><span>浙贝母</span></li>
+                                <li data-key="1124"><span>景天红花</span></li>
+                                <li data-key="1125"><span>白芍</span></li>
+                                <li data-key="1126"><span>浙贝母</span></li>
+                                <li data-key="1127"><span>景天红花散</span></li>
+                                <li data-key="1128"><span>最多容纳六字</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bd">
+                    <div class="group">
+                        <div class="txt">
+                            <span>经营地</span>
+                        </div>
+                        <div class="cont">
+                            <span>湖北省 武汉市</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>经营地</span>
+                        </div>
+                        <div class="cont">
+                            <span>江汉路99号</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>经营规模</span>
+                        </div>
+                        <div class="cont">
+                            <span>大</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>其他联系方式</span>
+                        </div>
+                        <div class="cont">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>备注</span>
+                        </div>
+                        <div class="cont">
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bd">
+                    <div class="group">
+                        <div class="txt">
+                            <span>推荐人</span>
+                        </div>
+                        <div class="cont">
+                            <span>亳州艾达药材行（严飞）</span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>录入人</span>
+                        </div>
+                        <div class="cont">
+                            <span>yanfei</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bd">
+                    <div class="ft">
+                        <a  class="btn btn-orange submit" href="supplier_edit.html?id=012">编辑</a>
+                        <a  class="btn btn-orange button" href="supplier_add.html?id=012">录入他的朋友</a>
+                        <span class="msg hide"><i class="icons icons-ok"></i>操作成功</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="side">
+        <ul class="yc-ul">
+            <li><a href="order.html"><i class="icons menu"></i>我的采购</a><em>4</em></li>
+            <li><a href="account.html"><i class="icons setting"></i>账户</a></li>
+            <li class="curr"><a href="supplier.html"><i class="icons setting"></i>供货商管理</a></li>
+        </ul>
+    </div>
+</section>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/center.js"></script>
+
+
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+        
+$('.nav-icon').on('click', function() {
+    $(this).parent().toggleClass('active');
+})
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
+</script>
+</body>
+
+</html>
