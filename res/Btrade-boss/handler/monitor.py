@@ -169,54 +169,6 @@ class MonitorStatisticsHandler(BaseHandler):
                              "all_quoto_num":all_quoto_num,"replay_quote_rate":replay_quote_rate,"replay_aceept_quote_rate":replay_aceept_quote_rate,"replay_quote_cost": replay_quote_cost
                              }
                 user_statistics.append(region_item)
-            '''
-            total_new_user_count=0
-            total_new_purchase=0
-            total_new_qute=0
-            total_purchaseinfo_num=0
-            total_quote_rate=0
-            total_quote_average=0
-            total_quote_accepte_rate=0
-            total_firt_quote_cost=0
-            total_all_quoto_num=0
-            total_replay_quote_rate=0
-            total_replay_aceept_quote_rate=0
-            total_replay_quote_cost=0
-
-            for item in  user_statistics:
-                total_new_user_count=total_new_user_count+item["new_user_count"]
-                total_new_purchase=total_new_purchase+item["new_purchase"]
-                total_new_qute=total_new_qute+item["new_quote"]
-                total_purchaseinfo_num = total_purchaseinfo_num + item["purchaseinfo_num"]
-                total_quote_rate =  total_quote_rate + item["quote_rate"]
-                total_quote_average = total_quote_average  + item["quote_average"]
-                total_quote_accepte_rate= total_quote_accepte_rate + item["quote_accepte_rate"]
-                total_firt_quote_cost= total_firt_quote_cost + item["firt_quote_cost"]
-                total_all_quoto_num = total_all_quoto_num + item["all_quoto_num"]
-                total_replay_quote_rate =total_replay_quote_rate + item["replay_quote_rate"]
-                total_replay_aceept_quote_rate =total_replay_aceept_quote_rate  + item["replay_aceept_quote_rate"]
-                total_replay_quote_cost = total_replay_quote_cost + item["replay_quote_cost"]
-
-            total_quote_rate=total_quote_rate/len(format_regions)
-            total_quote_average=total_quote_average/len(format_regions)
-            total_firt_quote_cost=total_firt_quote_cost/len(format_regions)
-            total_replay_quote_rate=total_replay_quote_rate/len(format_regions)
-            total_replay_aceept_quote_rate=total_replay_aceept_quote_rate/len(format_regions)
-            total_replay_quote_cost=total_replay_quote_cost/len(format_regions)
-            total_quote_accepte_rate=total_quote_accepte_rate/len(format_regions)
-
-
-
-            total = {"new_user_count": total_new_user_count, "new_purchase": total_new_purchase,
-                           "new_quote": total_new_qute,
-                           "purchaseinfo_num": total_purchaseinfo_num, "quote_rate": total_quote_rate,
-                           "quote_average": total_quote_average, "firt_quote_cost": total_firt_quote_cost,
-                           "quote_accepte_rate": total_quote_accepte_rate,
-                           "all_quoto_num": total_all_quoto_num, "replay_quote_rate": total_replay_quote_rate,
-                           "replay_aceept_quote_rate": total_replay_aceept_quote_rate, "replay_quote_cost": total_replay_quote_cost
-                           }
-            '''
-
             self.render("statistics.html",regions=format_regions,statistics=user_statistics,month=month)
         else:
             self.send_error(404)
