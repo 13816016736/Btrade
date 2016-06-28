@@ -44,8 +44,18 @@ class BaseHandler(tornado.web.RequestHandler):
   def api_response(self, data):
         """将数据转成json返回给客户端"""
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        data = json.dumps(data)
+        data = json.dumps(data,cls=CJsonEncoder)
         self.finish(data)
 
   def on_finish(self):
       self.db.close()
+
+from  datetime import date,datetime
+class CJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)

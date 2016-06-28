@@ -1,117 +1,6 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>药采购工作平台</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
-    <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico?v=2bfa7da6952343414cbf3475b4d02b97" media="screen" />
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css?v=9eef70bd56979ad7c0b8e009e11e009b">
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrapValidator.css?v=4ffa7e02e49e80837cdd018363098d78">
-    <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css?v=f667e6132f8470a39d2395b81ab4ef09">
-    <link rel="stylesheet" href="../static/plugins/datetimepicker/css/datetimepicker.min.css?v=a0fd73f29dfc4eca19ff9a61af29a96e">
-    <link rel="stylesheet" href="../static/dist/css/zyc-boss.css?v=93de0f68762d197206ab33dfda43349a">
-    <link rel="stylesheet" href="../static/dist/css/skins/_all-skins.min.css?v=409d387ee91fbe82eeecf94e1b5d5db6">
-    <link rel="stylesheet" href="../static/dist/css/supplier.css?v=409d387ee91fbe82eeecf94e1b5d5db6">
-    <script src="../static/js/jquery.min.js?v=b327509226baa10f2d2e89c42c2c49fb"></script>
-    <script src="../static/bootstrap/js/bootstrap.min.js?v=e7d9a06cf9053c51cd4ad3386da0659a"></script>
-    <script src="../static/dist/js/app.min.js?v=70f46360fb2efaf0abfe2910575d1037"></script>
-    <script src="../static/plugins/datetimepicker/datetimepicker.js?v=6abe7f2c7aa92396763031856062109a"></script>
-    <script src="../static/bootstrap/js/bootstrapValidator.js?v=2751bb0b2bf4a26d456722ff18244244"></script>
-    <style>
-    body {
-        font-family: Microsoft YaHei;
-    }
-    </style>
-</head>
-
-<body class="skin-blue sidebar-mini">
-    <header class="main-header">
-        <a class="logo" href="#">
-            <span class="logo-mini">B</span>
-            <span class="logo-lg">BOSS管理系统</span>
-        </a>
-        <nav class="navbar navbar-static-top">
-            <a class="sidebar-toggle" role="button" data-toggle="offcanvas" href="#">
-                <span class="sr-only">Toggle navigation</span>
-            </a>
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown user user-menu">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                            <i class="fa fa-user"></i> yanfei <i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#">编辑个人资料</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="/logout">
-                            <i class="fa fa-power-off"></i> 退出
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <aside class="main-sidebar">
-        <section class="sidebar">
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="#">
-                        <i class="fa fa-tachometer"></i> <span>操作中心</span>
-                    </a>
-                </li>
-                <li class="treeview active">
-                    <a href="#">
-                        <i class="fa fa-th"></i> <span>会员管理</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu menu-open">
-                        <li>
-                            <a href="/users/userlist">
-                                <i class="fa fa-circle-o"></i> 前台会员管理
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/users/statistics/month/0">
-                                <i class="fa fa-circle-o"></i> 关键指标检测
-                            </a>
-                        </li>
-                        <li class="active">
-                            <a href="/users/business/type/0/starttime//endtime/">
-                                <i class="fa fa-circle-o"></i> 业务路径
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="treeview ">
-                    <a href="#">
-                        <i class="fa fa-cart-plus"></i> <span>采购管理</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu ">
-                        <li><a href="/purchase/purchaselist/type/-1/starttime//endtime/"><i class="fa fa-circle-o"></i> 订单查询</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-cart-plus"></i> <span>供货商管理</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li>
-                            <a href="http://192.168.1.190/yaocai/Btrade/res/Btrade-boss/templates/supplier.html">供货商管理</a>
-                            <a href="http://192.168.1.190/yaocai/Btrade/res/Btrade-boss/templates/supplier_add.html">新建供货商</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-    </aside>
+{% extends "base.html" %}
+{% block container %}
+{% from  config import * %}
     <div class="content-wrapper">
         <section class="content-header">
             <h1>业务路径</h1>
@@ -119,9 +8,10 @@
         
         <section class="content">
             <div class="site-map">
-                <a href="supplier.html">&lt; 返回供货商查询</a>
+                <a href="/supplier/supplierlist">&lt; 返回供货商查询</a>
             </div>
 			<!-- 内容开始 start=========================================================== -->
+            {% if rtype=="add" %}
             <div class="result">
                 <div class="fa fa-check-circle"></div>
                 <div class="txt">
@@ -129,33 +19,29 @@
                     <span>请进一步引导关注微信公众号、注册会员</span>
                 </div>
                 <div class="links">
-                    <a class="btn btn-warning" href="supplier_add.html?id=012">录入他的朋友</a>
-                    <a class="btn btn-warning" href="supplier_add.html">再录一个</a>
+                    <a class="btn btn-warning" href="/supplier/supplieradd?id={{current_id}}">录入他的朋友</a>
+                    <a class="btn btn-warning" href="/supplier/supplieradd?id={{last_id}}">再录一个</a>
                 </div>
                 <div class="links">
-                    <a class="btn btn-primary" href="supplier.html">返回查询</a>
+                    <a class="btn btn-primary" href="/supplier/supplierlist">返回查询</a>
                 </div>
             </div>
-
+            {% end %}
+            {% if rtype=="edit" %}
             <div class="result">
                 <div class="fa fa-check-circle"></div>
                 <div class="txt">
                     <strong>修改成功！</strong>
                 </div>
                 <div class="links">
-                    <a class="btn btn-primary" href="supplier.html">返回</a>
+                    <a class="btn btn-primary" href="/supplier/supplierdetail?id={{current_id}}">返回</a>
                 </div>
             </div>
+            {% end %}
 			<!-- 内容结束 end=========================================================== -->
 
 
         </section>
     </div>
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-        &copy; <a href="#">速采科技（武汉）有限公司</a> 版权所有.
-    </footer>
-</body>
-</html>
+<link rel="stylesheet" href="{{ static_url('dist/css/supplier.css') }}">
+{% end %}

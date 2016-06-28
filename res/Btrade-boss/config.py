@@ -52,6 +52,13 @@ handlers = [
     (r"/users/business/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MonitorBusinessHandler),
     (r"/supplier/supplierdetail", SupplierDetailHandler),
     (r"/supplier/supplierlist", SupplierHandler),
+    (r"/supplier/supplieradd", SupplierInsertHandler),
+    (r"/supplier/supplieredit", SupplierEditHandler),
+    (r"/supplier/getByMobile", SupplierMobileHandler),
+    (r"/supplier/search", SupplierSearchHandler),
+    (r"/supplier/area", SupplierAreaHandler),
+    (r"/supplier/variety", SupplierVarietyHandler),
+    (r"/supplier/result", SupplierResultHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 

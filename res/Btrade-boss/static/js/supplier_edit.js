@@ -38,7 +38,8 @@ $(function() {
                     data: {mobile: val},
                     success: function(data) {
                         if (data.status=="success") {
-                            if(data.supplier){
+                            supplierid=$("#supplierinfo").attr("supplierid")
+                            if(data.supplier&&supplierid!=data.supplier.id){
                                 supplier=data.supplier
                                 name=""
                                 if(supplier.company!=""){
@@ -156,8 +157,9 @@ $(function() {
         if (result.pass) {
             isSubmit = true;
             $('body').append('<div class="form-wait"><i></i></div>');
+            result.id=$("#supplierinfo").attr("supplierid")
             $.ajax({
-                url: '/supplier/supplieradd',
+                url: '/supplier/supplieredit',
                 type: 'POST',
                 data: {data: JSON.stringify(result)},
                 beforeSend: function(jqXHR, settings) {
@@ -169,9 +171,7 @@ $(function() {
                         $('.form-wait').remove();
                     }, 1e3);
                     if(data.status === 'success'){
-                        current_id=data.supplier.current_id
-                        last_id=data.supplier.last_id
-                        location.href="/supplier/result?rtype=add&current_id="+current_id+"&last_id="+last_id
+                        location.href="/supplier/result?rtype=edit&current_id="+result.id
                     }
                     else{
                        alert(data.message)
@@ -195,7 +195,7 @@ $(function() {
 
     var $jMyTags = $('#jMyTags');
     var $varietyTags = $('#jVarietyTags');
-    var attentionArr = [];
+    var attentionArr =[];
 
     $jVariety.on({
         'input': function() {
@@ -265,12 +265,15 @@ $(function() {
 
     $jMyTags.find('li').each(function() {
         var key = $(this).data('key');
-        attentionArr.push(key);
+        if(attentionArr.indexOf(key)==-1){
+            attentionArr.push(key);
+        }
+
     });
 
     function addVariety($this) {
         var key = $this.data('key');
-        if (attentionArr.join("/").indexOf(key) === -1) {
+        if (attentionArr.join("/").indexOf(key) == -1) {
             attentionArr.push(key);
             $jMyTags.append('<li data-key="' + key + '"><span>' + $this.html() + '<i title="删除" class="fa fa-times-circle"></i></span></li>');
             _showMsg($jVarietys, false);

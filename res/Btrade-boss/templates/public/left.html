@@ -45,10 +45,16 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu {% if request.uri.split('/')[1] == "supplier" %}menu-open{% end %}">
-                    <li class="active">
+                    <li {% if request.uri.split('/')[2] == "supplierlist" %}class="active"{% end %} >
                      <a href="/supplier/supplierlist">
                          <i class="fa fa-circle-o"></i>
                          供货商管理
+                     </a>
+                    </li>
+                    <li {% if request.uri.split('/')[2] == "supplieradd" %}class="active"{% end %} >
+                     <a href="/supplier/supplieradd">
+                         <i class="fa fa-circle-o"></i>
+                         添加供应商
                      </a>
                     </li>
                 </ul>
