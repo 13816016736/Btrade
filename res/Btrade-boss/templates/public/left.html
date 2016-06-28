@@ -6,25 +6,33 @@
                     <i class="fa fa-tachometer"></i> <span>操作中心</span>
                 </a>
             </li>
+            <li class="treeview {% if request.uri.split('/')[1] == "stat" %}active{% end %}">
+                <a href="#">
+                    <i class="fa fa-th"></i> <span>指标统计</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu menu-open">
+                     <li {% if request.uri.split('/')[2] == "statistics" %}class="active"{% end %}>
+                    <a href="/stat/statistics/month/0">
+                        <i class="fa fa-circle-o"></i> 关键指标检测
+                    </a>
+                     </li>
+                    <li {% if request.uri.split('/')[2] == "business" %}class="active"{% end %}>
+                    <a href="/stat/business/type/0/starttime//endtime/">
+                        <i class="fa fa-circle-o"></i> 业务路径
+                    </a>
+                    </li>
+                </ul>
+            </li>
             <li class="treeview {% if request.uri.split('/')[1] == "users" %}active{% end %}">
                 <a href="#">
-                    <i class="fa fa-th"></i> <span>会员管理</span>
+                    <i class="fa fa-user"></i> <span>会员管理</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu menu-open">
                     <li {% if request.uri.split('/')[2] == "userlist" %}class="active"{% end %}>
                     <a href="/users/userlist">
                         <i class="fa fa-circle-o"></i> 前台会员管理
-                    </a>
-                    </li>
-                     <li {% if request.uri.split('/')[2] == "statistics" %}class="active"{% end %}>
-                    <a href="/users/statistics/month/0">
-                        <i class="fa fa-circle-o"></i> 关键指标检测
-                    </a>
-                     </li>
-                    <li {% if request.uri.split('/')[2] == "business" %}class="active"{% end %}>
-                    <a href="/users/business/type/0/starttime//endtime/">
-                        <i class="fa fa-circle-o"></i> 业务路径
                     </a>
                     </li>
                 </ul>
@@ -41,7 +49,7 @@
             </li>
         <li class="treeview {% if request.uri.split('/')[1] == "supplier" %}active{% end %}">
                 <a href="#">
-                    <i class="fa fa-cart-plus"></i> <span>供货商管理</span>
+                    <i class="fa fa-list-alt"></i> <span>供货商管理</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu {% if request.uri.split('/')[1] == "supplier" %}menu-open{% end %}">
