@@ -88,7 +88,7 @@ class SupplierInsertHandler(BaseHandler):
         data=self.get_argument("data",None)
         if data:
             user=json.loads(data)
-            print user
+            #print user
             mobile=user["mobile"]
             name=user["linkman"]
             varietys=user["varietys"]
