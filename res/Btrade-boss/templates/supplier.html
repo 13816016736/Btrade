@@ -97,6 +97,7 @@
                         {% end %}
                         {% if end < nav['num'] %}
                             <li><a href="/{{ nav['model'] }}?page={{ nav['num'] }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">末页</a></li>
+                        <span style="margin-left:10px;padding-top:10px;">(共{{total}}条记录)</span>
                         {% end %}
                     </ul>
                 </div>

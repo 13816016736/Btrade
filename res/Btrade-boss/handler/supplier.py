@@ -72,7 +72,7 @@ class SupplierHandler(BaseHandler):
                search_str=""
            if variety_name == None:
                variety_name = ""
-           self.render("supplier.html",suppliers=suppliers,nav=nav,search_str=search_str,variety_name=variety_name)
+           self.render("supplier.html",suppliers=suppliers,nav=nav,search_str=search_str,variety_name=variety_name,total=result_num)
 
 class SupplierInsertHandler(BaseHandler):
     @tornado.web.authenticated
