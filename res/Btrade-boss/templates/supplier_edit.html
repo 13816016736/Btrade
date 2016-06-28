@@ -134,7 +134,11 @@
                                 <span>推荐人</span>
                             </div>
                             <div class="cont">
-                                <span>{{sponsor.company}}（{{sponsor.name}}）</span>
+                                <span>
+                                    {% if sponsor %}
+                                    {{sponsor.company}}（{{sponsor.name}}）
+                                    {% end %}
+                                </span>
                             </div>
                         </div>
                         <div class="group">
@@ -142,7 +146,7 @@
                                 <span>录入人</span>
                             </div>
                             <div class="cont">
-                                <span>{{supplier.record}}</span>
+                                <span>{{supplier.record_name}}</span>
                             </div>
                         </div>
                     </div>

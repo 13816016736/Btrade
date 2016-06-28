@@ -110,8 +110,13 @@ class SupplierInsertHandler(BaseHandler):
                 remark = user["remark"]
             else:
                 remark= ""
-            if user.has_key("record"):
-                record = user["record"]
+
+            #if user.has_key("record"):
+            #    record = user["record"]
+            #else:
+            #    record = ""
+            if  self.session["adminid"]:
+                record =self.session["adminid"]
             else:
                 record = ""
             if user.has_key("note"):
@@ -145,10 +150,8 @@ class SupplierEditHandler(BaseHandler):
             supplier=self.db.get("select * from supplier where id=%s",id)
             if supplier:
                 sponsor_id=supplier.sponsor
-                if sponsor_id==0:
-                    sponsor.id=0
-                else:
-                    sponsor=self.db.get("select * from supplier where id=%s",id)
+                if sponsor_id!=0:
+                    sponsor=self.db.get("select * from supplier where id=%s",sponsor_id)
                 business=supplier.businessplace.split(",")
                 provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
                 cities=self.db.query("SELECT id,areaname FROM area WHERE parentid = %s",business[0])
@@ -159,6 +162,14 @@ class SupplierEditHandler(BaseHandler):
                         vl.append(str(v))
                 supply_variety_name = self.db.query("select name,id from variety where id in (%s) " % ','.join(vl))
                 supplier["supply_variety_name"] = supply_variety_name
+                if supplier.record:
+                    ret=self.db.get("select username from admin where id=%s",supplier.record)
+                    if ret:
+                        supplier["record_name"]=ret.username
+                    else:
+                        supplier["record_name"] =""
+                else:
+                    supplier["record_name"] = ""
                 self.render("supplier_edit.html",provinces=provinces ,cities=cities,sponsor=sponsor,supplier=supplier)
             else:
                 self.send_error(404)
@@ -255,6 +266,14 @@ class SupplierDetailHandler(BaseHandler):
                    supplier["businessplace_name"] = businessplace_name
                 else:
                    supplier["businessplace_name"] = []
+                if supplier.record:
+                    ret=self.db.get("select username from admin where id=%s",supplier.record)
+                    if ret:
+                        supplier["record_name"]=ret.username
+                    else:
+                        supplier["record_name"] =""
+                else:
+                    supplier["record_name"] = ""
                 self.render("supplier_detail.html",supplier=supplier)
             else:
                 self.send_error(404)
