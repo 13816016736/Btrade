@@ -59,20 +59,24 @@ class SupplierHandler(BaseHandler):
                     'model': 'supplier/supplierlist',
                     'cur': page,
                     'num': page_num,
-                    'query':"&".join(querystr)
+                    'query':"&".join(querystr),
+                    'style':0,
+                    'total': result_num
                 }
            else:
                nav = {
                    'model': 'supplier/supplierlist',
                    'cur': page,
                    'num': page_num,
+                   'style': 0,
+                   'total':result_num
                }
 
            if search_str==None:
                search_str=""
            if variety_name == None:
                variety_name = ""
-           self.render("supplier.html",suppliers=suppliers,nav=nav,search_str=search_str,variety_name=variety_name,total=result_num)
+           self.render("supplier.html",suppliers=suppliers,nav=nav,search_str=search_str,variety_name=variety_name)
 
 class SupplierInsertHandler(BaseHandler):
     @tornado.web.authenticated
