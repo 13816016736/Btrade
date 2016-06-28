@@ -28,7 +28,7 @@ class SupplierHandler(BaseHandler):
            conditionstr = ""
            if search_condition:
                conditionstr = ("where " + (" and ".join(search_condition)))
-           print conditionstr
+           #print conditionstr
            suppliers=self.db.query("select * from supplier "+conditionstr+" order by createtime desc limit %s, %s",
                                    (page-1)*page_show_num, page_show_num)
            for item in suppliers:
