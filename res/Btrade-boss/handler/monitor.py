@@ -14,7 +14,7 @@ class MonitorStatisticsHandler(BaseHandler):
         if int(month)<=12 and int(month)>=0:
             if month=='0':
                 month = strftime("%m", localtime())
-            format = "%Y-%m-%d";
+            format = "%Y-%m-%d"
             date_str="%s-%s-%s"%(year,month,'1')
             dt=datetime.strptime(date_str, format)
             dayOfWeek = dt.weekday()
@@ -113,8 +113,12 @@ class MonitorStatisticsHandler(BaseHandler):
                             purchaseinfo_id_list))
 
                     quote_num =  ret.num#收到报价总数
+                    #print "收到的报价总数"+str(quote_num)
+                    if(len(quote_list)!=0):
+                        quote_average=round(quote_num/((len(quote_list)*1.0)), 2)
+                    else:
+                        quote_average =0
 
-                    quote_average=round(quote_num/((len(quote_list)*1.0)), 2)
                     #print "平均收到的报价数"+str(quote_average)
                     #平均收到的报价个数
                     first_quote_list = self.db.query(
