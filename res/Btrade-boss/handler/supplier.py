@@ -80,7 +80,7 @@ class SupplierInsertHandler(BaseHandler):
         id=self.get_argument("id",None)
         sponsor=None
         if id:
-            sponsor=self.db.get("select * from supplier where id=%s",id)
+            sponsor=self.db.get("select * from users where id=%s",id)
         provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
         cities=self.db.query("SELECT id,areaname FROM area WHERE parentid = %s",provinces[0].id)#默认取第一个省份的城市
         self.render("supplier_add.html",provinces=provinces ,cities=cities,sponsor=sponsor)
@@ -110,11 +110,6 @@ class SupplierInsertHandler(BaseHandler):
                 remark = user["remark"]
             else:
                 remark= ""
-
-            #if user.has_key("record"):
-            #    record = user["record"]
-            #else:
-            #    record = ""
             if  self.session["adminid"]:
                 record =self.session["adminid"]
             else:
@@ -151,10 +146,14 @@ class SupplierEditHandler(BaseHandler):
             if supplier:
                 sponsor_id=supplier.sponsor
                 if sponsor_id!=0:
-                    sponsor=self.db.get("select * from supplier where id=%s",sponsor_id)
-                business=supplier.businessplace.split(",")
+                    sponsor=self.db.get("select * from users where id=%s",sponsor_id)
                 provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
-                cities=self.db.query("SELECT id,areaname FROM area WHERE parentid = %s",business[0])
+                if supplier.businessplace!="":
+                    business=supplier.businessplace.split(",")
+                    cities = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", business[0])
+                else:
+                    cities = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", provinces[0].id)
+
                 variety_list = supplier.variety.split(",")
                 vl = []
                 for v in variety_list:
@@ -247,13 +246,9 @@ class SupplierDetailHandler(BaseHandler):
                     supply_variety_name.append(r.name)
                 supplier["supply_variety_name"] = supply_variety_name
                 if supplier.sponsor!=None:
-                    sponsor = self.db.get("select * from supplier where id = %s", supplier.sponsor)
+                    sponsor = self.db.get("select * from users where id = %s", supplier.sponsor)
                     if sponsor:
-                        sponsor_name=""
-                        if sponsor.company!="":
-                            sponsor_name=sponsor_name+ '(%s)'%sponsor.company
-                        if sponsor.name!="":
-                            sponsor_name = sponsor_name + sponsor.name
+                        sponsor_name=sponsor.name+ '(%s)'%sponsor.nickname
                         supplier["sponsor_name"] = sponsor_name
                     else:
                         supplier["sponsor_name"]=""
@@ -289,13 +284,16 @@ class SupplierMobileHandler(BaseHandler):
             self.api_response({"status":"success","supplier":supplier})
         else:
             self.api_response({"data":"没有mobile参数","status":"fail"})
-class SupplierSearchHandler(BaseHandler):
+class SupplierSearchHandler(BaseHandler):#改为用户查询
     @tornado.web.authenticated
     def get(self):
         search=self.get_argument("search",None)
         if search:
-            suppliers= self.db.query("select * from supplier where CONCAT(supplier.name,supplier.mobile) like '%%%%%s%%%%' order by createtime limit 0,10"% search)
-            self.api_response({"status":"success","suppliers":suppliers})
+            suppliers= self.db.query("select * from users where CONCAT(users.name,users.phone,users.nickname) like '%%%%%s%%%%' limit 0,10"% search)
+            if len(suppliers)!=0:
+                self.api_response({"status":"success","suppliers":suppliers})
+            else:
+                self.api_response({"status": "null", "suppliers": suppliers})
         else:
             self.api_response({"data":"参数不能为空","status":"fail"})
 class SupplierAreaHandler(BaseHandler):

@@ -75,14 +75,14 @@
                                     <li>
                                         <select name="" id="provinces">
                                             {%  for province in provinces %}
-                                            <option value="{{ province.id }}"  {%  if province.id== int(supplier.businessplace.split(',')[0]) %} selected {% end %}>{{ province.areaname }}</option>
+                                            <option value="{{ province.id }}"  {%  if supplier.businessplace!="" and  province.id== int(supplier.businessplace.split(',')[0]) %} selected {% end %}>{{ province.areaname }}</option>
                                             {%  end    %}
                                         </select>
                                     </li>
                                     <li>
                                         <select name="" id="cityies">
                                             {%  for city in cities %}
-                                            <option value="{{ city.id }}" {%  if city.id == int(supplier.businessplace.split(',')[1]) %} selected {% end %}>{{ city.areaname }}</option>
+                                            <option value="{{ city.id }}" {%  if supplier.businessplace!="" and  city.id == int(supplier.businessplace.split(',')[1]) %} selected {% end %}>{{ city.areaname }}</option>
                                             {% end %}
                                         </select>
                                     </li>
@@ -136,7 +136,7 @@
                             <div class="cont">
                                 <span>
                                     {% if sponsor %}
-                                    {{sponsor.company}}（{{sponsor.name}}）
+                                    {{sponsor.name}}（{{sponsor.nickname}}）
                                     {% end %}
                                 </span>
                             </div>

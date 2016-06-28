@@ -335,16 +335,12 @@ $(function() {
                     if (data.status === 'success') {
                         var html = [];
                         $.each(data.suppliers, function(i, v){
-                            name=""
-                            if(v.company!=""){
-                                    name=name+v.company
-                            }
-                            name=name+"("+v.name+")"
+                            name=v.name+"("+v.nickname+")"
                             html.push('<label><input type="radio" class="cbx" value="'+v.id+'">', name, '</label>');
                         });
 
                     } else if (data.status === 'null') {
-                        html.push('<em style="padding:4px;color:#f00;">搜索不到匹配的供货商</em>');
+                        html.push('<em style="padding:4px;color:#f00;">该用户还未注册</em>');
 
                     } else {
                         html.push(data.msg);
