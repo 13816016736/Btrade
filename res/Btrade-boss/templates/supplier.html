@@ -89,6 +89,7 @@
                      if(variety != ""){
                        url=url+'&variety='+variety;
                      }
+                      url=encodeURI(url)
                       window.location.href=url;
                 } else {
                     alert("查询条件必须填写一个");

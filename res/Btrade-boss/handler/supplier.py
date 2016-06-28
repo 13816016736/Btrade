@@ -2,6 +2,7 @@
 import tornado.web
 from base import BaseHandler
 import json
+from urllib import urlencode
 class SupplierHandler(BaseHandler):
        @tornado.web.authenticated
        def get(self):
@@ -24,7 +25,7 @@ class SupplierHandler(BaseHandler):
                    # 返回查询不到的页面
                    search_condition.append("find_in_set(%s,variety)" % -1)
                    pass
-           page_show_num=6
+           page_show_num=10
            conditionstr = ""
            if search_condition:
                conditionstr = ("where " + (" and ".join(search_condition)))
@@ -43,23 +44,23 @@ class SupplierHandler(BaseHandler):
                    supply_variety_name.append(r.name)
                item["supply_variety_name"]=supply_variety_name
 
-           querystr=[]
+           querystr={}
            if search_str:
-               querystr.append("search=%s"%search_str)
+               querystr["search"]=search_str.encode('utf8')
            if variety_name:
-                querystr.append("variety=%s" % variety_name)
+               querystr["variety"] = variety_name.encode('utf8')
            result_num=self.db.execute_rowcount("select * from  supplier " + conditionstr)
            page_num=0
            if result_num%page_show_num==0:
                page_num= (result_num/page_show_num)
            else:
                page_num = (result_num/page_show_num)+1
-           if querystr:
+           if querystr!={}:
                 nav = {
                     'model': 'supplier/supplierlist',
                     'cur': page,
-                    'num': page_num,
-                    'query':"&".join(querystr),
+                    'num': result_num,
+                    'query':urlencode(querystr),
                     'style':0,
                     'total': result_num
                 }
@@ -67,7 +68,7 @@ class SupplierHandler(BaseHandler):
                nav = {
                    'model': 'supplier/supplierlist',
                    'cur': page,
-                   'num': page_num,
+                   'num': result_num,
                    'style': 0,
                    'total':result_num
                }
