@@ -414,6 +414,11 @@ class RemovePurchaseHandler(BaseHandler):
                                       self.session.get("userid"), purchase[0].purchaseid):
                          self.db.execute("UPDATE purchase_info SET status = 0 WHERE  id = %s",
                                          self.get_argument("pid"))
+                         notclose=self.db.query("select * from purchase_info where purchaseid = %s and status=1",purchase[0].purchaseid)
+                         print notclose
+                         if len(notclose)==0:
+                             self.db.execute("UPDATE purchase SET status = 0 WHERE userid = %s and id = %s",
+                                             self.session.get("userid"), purchase[0].purchaseid)
                          self.api_response({'status': 'success', 'message': '请求成功'})
                      else:
                          self.api_response({'status': 'fail', 'message': '请求失败，此采购订单不属于你'})
