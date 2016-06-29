@@ -16,18 +16,20 @@
 
                         {% if nav.has_key('style') and nav["style"]==0 %}
                         {% set link ="?page=" %}
+                        {% set connect="&" %}
                         {% else %}
                         {% set link= '/page/' %}
+                        {% set connect="" %}
                         {% end %}
 
                         {% if start > 1 %}
-                        <li><a href="/{{ nav['model'] }}{{link}}1{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">首页</a></li>
+                        <li><a href="/{{ nav['model'] }}{{link}}1{% if nav.has_key('query') and nav['query'] %}{{connect}}{{nav['query']}}{% end %}">首页</a></li>
                         {% end %}
                         {% for i in range(start, end + 1) %}
-                            <li id="page-{{ i }}"><a href="/{{ nav['model'] }}{{link}}{{ i }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">{{ i }} <span class="sr-only">(current)</span></a></li>
+                            <li id="page-{{ i }}"><a href="/{{ nav['model'] }}{{link}}{{ i }}{% if nav.has_key('query') and nav['query'] %}{{connect}}{{nav['query']}}{% end %}">{{ i }} <span class="sr-only">(current)</span></a></li>
                         {% end %}
                         {% if end < nav['num'] %}
-                            <li><a href="/{{ nav['model'] }}{{link}}{{ nav['num'] }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">末页</a></li>
+                            <li><a href="/{{ nav['model'] }}{{link}}{{ nav['num'] }}{% if nav.has_key('query') and nav['query'] %}{{connect}}{{nav['query']}}{% end %}">末页</a></li>
                         {% end %}
                         {% if nav.has_key('total') %}
                         <span style="margin-left:10px;padding-top:10px;">(共{{nav['total']}}条记录)</span>

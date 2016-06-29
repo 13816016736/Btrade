@@ -6,6 +6,7 @@ import json, os, datetime, random, time
 from utils import *
 from config import *
 from collections import defaultdict
+from urllib import urlencode
 
 class PurchaseHandler(BaseHandler):
 
@@ -28,12 +29,20 @@ class PurchaseHandler(BaseHandler):
         conditionstr = ""
         if condition:
             conditionstr = ("where "+(" and ".join(condition)))
-        nav = {
+        if query:
+            query_str={"query":query.encode('utf8')}
+            nav = {
             'model': 'purchase/purchaselist/type/'+type+'/starttime/'+starttime+'/endtime/'+endtime,
             'cur': page + 1,
             'num': self.db.execute_rowcount("select id from purchase p "+conditionstr),
-            'query': "?query=%s" % query,
-        }
+            'query': "?%s" % urlencode(query_str),
+            }
+        else:
+            nav = {
+                'model': 'purchase/purchaselist/type/' + type + '/starttime/' + starttime + '/endtime/' + endtime,
+                'cur': page + 1,
+                'num': self.db.execute_rowcount("select id from purchase p " + conditionstr),
+            }
         purchaseinf = defaultdict(list)
         purchases = self.db.query("select t.*,a.position from "
                                   "(select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id "+

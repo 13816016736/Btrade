@@ -97,7 +97,11 @@
                         <tr class="info">
                             <td></td>
                             <td colspan="2">
-                                交货地：{{purchase.position}}<br>
+                                交货地：
+                                {% if purchase.position %}
+                                {{purchase.position}}
+                                {% end %}
+                                <br>
                                 发票要求：
                                 {% if purchase.invoice == 1 %}
                                 无需发票
@@ -275,7 +279,7 @@ $(document).ready(function(){
         var endtime = $("#endtime").val();
         var query = $("#query").val();
         if ((starttime != "" && endtime != "") || query !="") {
-            window.location.href='/purchase/purchaselist/type/{{type}}/starttime/'+starttime+'/endtime/'+endtime+'?query='+query;
+            window.location.href=encodeURI('/purchase/purchaselist/type/{{type}}/starttime/'+starttime+'/endtime/'+endtime+'?query='+query);
         }else{
             alert("时间范围或品种名需填写完整");
         }
