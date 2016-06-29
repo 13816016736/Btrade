@@ -141,11 +141,16 @@ $(function() {
         if (!data.expire) {
             temp.push('<em class="status-sustain">常年采购</em>');
 
-        } else if (data.status === 0 || t < 0) {
+        } else if (data.status === 0) {
             temp.push('<div class="fl"><em class="status-closed">关闭</em></div>');
             temp.push('<div class="fr">', timeago.shortDate(parseInt(data.expire, 10) * 1e3), ' 截止</div>');
 
-        } else {
+        }
+        else if (t < 0) {
+            temp.push('<div class="fl"><em class="status-closed">报价结束</em></div>');
+            temp.push('<div class="fr">', timeago.shortDate(parseInt(data.expire, 10) * 1e3), ' 截止</div>');
+
+        }else {
             var d = (t/60/60/24) | 0;
             var h = (t/60/60%24) | 0;
             var m = (t/60%60) | 0;

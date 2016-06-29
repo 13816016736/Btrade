@@ -288,7 +288,7 @@ class SaveVarietyHandler(BaseHandler):
         if varietyids == "":
             self.api_response({'status':'fail','message':'请填写品种'})
         else:
-            print
+            #print
             result = self.db.execute("update users set varietyids = %s where id = %s", varietyids, self.session.get("userid"))
             if result:
                 self.api_response({'status':'fail','message':'没有该品种'})
