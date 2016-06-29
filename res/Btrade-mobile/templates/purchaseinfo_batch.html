@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <div class="ft">
-                            {% if purchase.status == 0%}
+                            {% if purchase.status == 0 or purchaseinfo.status==0%}
                             <div class="status-closed">关闭</div>
                             {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                             {% if purchase.term != 0%}

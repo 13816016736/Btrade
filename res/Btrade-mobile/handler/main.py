@@ -355,7 +355,7 @@ class ReplayHandler(BaseHandler):
         if purchases:
             purchaseids = [str(purchase["id"]) for purchase in purchases]
             purchaseinfos = self.db.query(
-                "select p.id,p.purchaseid,p.name,p.specification,q.id qid,count(q.id) quotecount,count(if(q.state=0,true,null )) unreply "
+                "select p.id,p.purchaseid,p.name,p.status,p.specification,q.id qid,count(q.id) quotecount,count(if(q.state=0,true,null )) unreply "
                 "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (" + ",".join(
                     purchaseids) + ") group by p.id")
             for purchaseinfo in purchaseinfos:

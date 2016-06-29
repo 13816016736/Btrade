@@ -91,6 +91,7 @@
                         <span>{{purchaseinfo.specification}}</span>
                     </div>
                     <div class="td3">
+                        {% if purchaseinfo.status==1 %}
                         {% if purchaseinfo.quotecount %}
                         <em>{{purchaseinfo.quotecount}}个报价{% if purchaseinfo.unread > 0 %}<sup>{{purchaseinfo.unread}}</sup>{% end %}</em>
                         <span class="price">最低价{{purchaseinfo.qprice}}元</span>
@@ -102,10 +103,15 @@
                         {% else %}
                         <span class="match">暂无报价，正在努力撮合</span>
                         {% end %}
+                        {% else %}
+                        <span class="match">关闭</span>
+                        {% end %}
                     </div>
                     <div class="td4">
                         <a class="icons icons-share" href="#" title="分享" purchaseinfoid="{{purchaseinfo.id}}"></a>
-                        <!--<a class="icons icons-delete" href="#" title="删除"></a>-->
+                        {% if purchaseinfo.status==1 %}
+                        <a class="icons icons-delete" href="#" title="关闭" purchaseinfoid="{{purchaseinfo.id}}"></a>
+                        {% end %}
                     </div>
                 </div>
                 {% end %}
@@ -191,6 +197,7 @@ var isDel = false;
 $('.list').on('click', '.tit .icons-delete', function() {
     var pid = $(this).attr("pid");
     $jModalDelete.attr("pid", pid);
+    $jModalDelete.attr("ptype", 0);
     var txt = '<p>确认关闭采购单？关闭后，该批次的所有的品种都将停止报价</p>';
     var $pa = $(this).closest('.tit');
     txt += '<strong>' + $pa.find('.td1').html() + $pa.next().html() + '</strong>';
@@ -201,6 +208,9 @@ $('.list').on('click', '.tit .icons-delete', function() {
 });
 // 结束单个品种报价
 $('.list').on('click', '.group .icons-delete', function() {
+    var pid= $(this).attr("purchaseinfoid");
+    $jModalDelete.attr("pid", pid);
+    $jModalDelete.attr("ptype", 1);
     var txt = '<p>确认对如下采购单停止报价？</p>';
     var $pa = $(this).closest('.group');
     txt += '<strong>' + $pa.prevAll('.tit').find('.td1').html() + $pa.find('.td2').html() + '</strong>';
@@ -224,7 +234,7 @@ $jModalDelete.on('hidden.bs.modal', function() {
 $jModalDelete.on('click', '.btn', function() {
     $.ajax({
         url: "/removepurchase",
-        data: "pid="+$jModalDelete.attr("pid"),
+        data: {pid:$jModalDelete.attr("pid"),"ptype":$jModalDelete.attr("ptype")},
         dataType: 'json',
         type: 'POST',
         beforeSend: function(jqXHR, settings) {

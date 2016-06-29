@@ -56,7 +56,7 @@ class PurchaseHandler(BaseHandler):
                                   "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
                                   "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid,"
                                   "(case when pi.varietyid in ("+str(myvarietyid)+") then 1 else 0 end) myvariety from "
-                                  "purchase_info pi left join purchase p on p.id = pi.purchaseid where p.status != 0 order by orderid desc,"
+                                  "purchase_info pi left join purchase p on p.id = pi.purchaseid where p.status != 0 and pi.status=1 order by orderid desc,"
                                   "myvariety desc,p.createtime desc,p.id desc limit %s,%s) "
                                   "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by orderid desc,myvariety desc,pis.createtime desc) ta "
                                   "left join users u on ta.userid = u.id order by orderid desc,myvariety desc,ta.pid desc", number, config.conf['POST_NUM'])
@@ -299,5 +299,22 @@ class RemovePurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
-        self.db.execute("UPDATE purchase SET status = 0 WHERE id = %s", self.get_argument("pid"))
-        self.api_response({'status':'success','message':'请求成功'})
+        rtype=self.get_argument("rtype",None)
+        pid=self.get_argument("pid",None)
+        if rtype and pid:
+            if int(rtype)==0:
+                self.db.execute("UPDATE purchase SET status = 0 WHERE id = %s", pid)
+                self.db.execute("UPDATE purchase_info SET status = 0 WHERE  purchaseid = %s",
+                                pid)  # 关闭所有该批次的采购单
+                self.api_response({'status':'success','message':'请求成功'})
+            else:
+                purchase = self.db.query("SELECT distinct purchaseid FROM purchase_info WHERE id = %s",
+                                         pid)
+                if purchase:
+                    self.db.execute("UPDATE purchase_info SET status = 0 WHERE  id = %s",
+                                    pid)
+                    self.api_response({'status': 'success', 'message': '请求成功'})
+                else:
+                    self.api_response({'status': 'fail', 'message': '请求失败，没有该采购单'})
+        else:
+            self.api_response({'status': 'fail', 'message': '参数不全'})

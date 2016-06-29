@@ -35,6 +35,7 @@
                 </div>
                 <div class="button">
                     <input id="pid" type="hidden" name="pid" value=""/>
+                    <input id="rtype" type="hidden" name="rtype" value=""/>
                     <button type="button" class="btn btn-warning">关闭采购单</button>
                 </div>
             </div>
@@ -73,6 +74,7 @@ $(function() {
     // 关闭整个采购单
     $ol.on('click', '.tools .fl', function() {
         $("#pid").val($(this).attr("pid"));
+        $("#rtype").val(0);
         var txt = '<p>确认对如下采购单停止报价？停止后，该批次的所有的品种都将停止报价</p>';
         var $pa = $(this).closest('li').find('dd>a');
         var tags = [];
@@ -86,6 +88,25 @@ $(function() {
         $jModalDelete.modal();
         return false;
     });
+    //关闭单项
+     $ol.on('click', '.rv-info', function() {
+        $("#pid").val($(this).attr("pinfoid"));
+        $("#rtype").val(1);
+        var txt = '<p>确认对如下采购单停止报价？</p>';
+        var $pa = $(this).parent();
+        var tags = [];
+        $pa.each(function() {
+            tags.push($(this).find('.w1').html());
+        });
+
+        txt += '<strong>' + tags.join('、') + '</strong>';
+
+        $jModalDelete.find('.confirm').html(txt);
+        $jModalDelete.modal();
+        return false;
+    });
+
+
 
     $jModalDelete.on('hidden.bs.modal', function() {
         $('#jModalDeleteResult').modal('show');
@@ -98,7 +119,7 @@ $(function() {
     $jModalDelete.on('click', '.btn', function() {
         $.ajax({
             url: '/removepurchase',
-            data: {pid:$("#pid").val()},
+            data: {pid:$("#pid").val(),rtype:$("#rtype").val()},
             type: 'post',
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
@@ -153,6 +174,9 @@ $(function() {
             temp.push(         '<span class="w1">', item.name, '</span>');
             temp.push(         '<span class="w2">', item.specification, '</span>');
             temp.push(         '<span class="w3">', num, '</span>');
+            if(item.status==1){
+                temp.push(  '<span class="rv-info" pinfoid="', item.id, '"><i class="iconfont icon-close"></i>关闭</span>');
+             }
             temp.push(         '<i class="iconfont icon-more arrow"></i>');
             temp.push(    '</a>');
             temp.push('</dd>');
