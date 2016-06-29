@@ -88,9 +88,10 @@ $(function() {
         $jModalDelete.modal();
         return false;
     });
+
     //关闭单项
      $ol.on('click', '.rv-info', function() {
-        $("#pid").val($(this).attr("pinfoid"));
+        $("#pid").val($(this).data("pinfoid"));
         $("#rtype").val(1);
         var txt = '<p>确认对如下采购单停止报价？</p>';
         var $pa = $(this).parent();
@@ -168,14 +169,14 @@ $(function() {
     var getDD = function(data) {
         var temp = [];
         $.each(data, function(i, item) {
-            var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '</em>个未答复)');
+            var num = item.quotecount === 0 ? '暂无报价' : item.quotecount + '个报价' + (item.unreply === 0 ? '' : '(<em>' + item.unreply + '</em>)');
             temp.push('<dd>');
             temp.push(    '<a', (item.unreply === 0 ? '' : ' class="unreply"'), ' href="/replydetail?pid=', item.id, '">');
             temp.push(         '<span class="w1">', item.name, '</span>');
             temp.push(         '<span class="w2">', item.specification, '</span>');
             temp.push(         '<span class="w3">', num, '</span>');
-            if(item.status==1){
-                temp.push(  '<span class="rv-info" pinfoid="', item.id, '"><i class="iconfont icon-close"></i>关闭</span>');
+            if(item.status == 1){
+                temp.push(     '<i data-pinfoid="', item.id, '"><i class="iconfont icon-close rv-info"></i>');
              }
             temp.push(         '<i class="iconfont icon-more arrow"></i>');
             temp.push(    '</a>');
@@ -292,6 +293,7 @@ $(function() {
         },
         threshold : 50
     });
+
 })
 
 </script>
