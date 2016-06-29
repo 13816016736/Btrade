@@ -435,9 +435,10 @@ em,i{font-style:normal;}
 .yc-reply-list li{margin-bottom:20px;background:#fffce3;}
 .yc-reply-list dl{margin:0;border-bottom:1px solid #ddd;}
 .yc-reply-list dt{font-weight:400;background:#fffcdb;border-bottom:1px solid #ddd;background:#e8e8e8;}
-.yc-reply-list dd{margin:0 10px;padding:12px 0;border-top:1px dotted #ddd;}
+.yc-reply-list dd{margin:0 10px;border-top:1px dotted #ddd;}
 .yc-reply-list dd:nth-child(2){border:none;}
-.yc-reply-list dd a{position:relative;display:block;height:20px;overflow:hidden;}
+.yc-reply-list dd .rv-info{position:absolute;top:50%;right:14px;font-size:2.6rem;line-height:1;color:#f90;-webkit-transform:translate(0,-50%);transform:translate(0,-50%);}
+.yc-reply-list dd a{position:relative;display:block;height:44px;padding:12px 0;overflow:hidden;}
 .yc-reply-list dd a strong{margin-right:4px;font-weight:700;}
 .yc-reply-list dd a .status{position:absolute;top:2px;left:0;line-height:1;}
 .yc-reply-list dd a .arrow{position:absolute;top:50%;right:-4px;color:#aaa;font-size:2.2rem;-webkit-transform:translate(0,-50%);transform:translate(0,-50%);}
