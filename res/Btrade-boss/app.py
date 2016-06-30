@@ -1,3 +1,9 @@
+
+import sys
+sys.path.append("../public")
+sys.path.append("../public/handler")
+
+
 import tornado.autoreload
 import tornado.web
 import tornado.ioloop
@@ -7,6 +13,7 @@ import session,platform
 from tornado.options import options
 from config import settings, handlers, log, log_file
 from uimodule import uimodule
+
 
 class Application(tornado.web.Application):
     def __init__(self):

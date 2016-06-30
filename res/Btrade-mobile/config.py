@@ -6,15 +6,7 @@ from handler.register import *
 from handler.purchase import *
 from handler.quote import *
 
-#显示设置
-app = {
-    #应用名称
-    'name': '药采购',
-    #应用附加信息(简短的说明)
-    'title': '药材买卖的专业助手',
-    #联系邮箱
-    'email': '2011zhouhang@gmail.com',
-}
+from globalconfig import *
 
 settings = {
     "app": app,
@@ -24,7 +16,7 @@ settings = {
     "login_url": "/login",
     "cookie_secret": "e446976943b4e8442f099fed1f3fea28462d5832f483a0ed9a3d5d3859f==78d",
     "session_secret": "3cdcb1f00803b6e78ab50b466a40b9977db396840c28307f428b25e2277f1bcc",
-    "session_timeout": 24*60*60,
+    "session_timeout": 60*60,
     "store_options": {
         'redis_host': 'localhost',
         'redis_port': 6379,
@@ -97,31 +89,5 @@ log = True
 #日志记录位置
 log_file = 'Btrade-mobile/log/tornado.log'
 
-#用户密码的salt
-salt = "ycg20151012"
 
-#图片服务器域名
-img_domain = "http://static.yaocai.pro/"
-# img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
-# img_path = "F:\\nginx-1.8.1\\html\\static\\uploadfiles"
-img_path = "/opt/resources/static/uploadfiles"
-host = "http://m.yaocai.pro"
 
-unit = "公斤"
-
-appid = "wx90e04052c49aa63e"
-secret = "b1146d3ec7e0a8a483064406f361a07b"
-token = ""
-
-usertype={
-    1:"饮片厂",
-    2:"药厂",
-    3:"药材经营公司",
-    4:"个体经营户",
-    5:"合作社",
-    6:"种植基地",
-    7:"其他",
-    8:"个人经营",
-    9:"采购经理",
-    10:"销售经理"
-}

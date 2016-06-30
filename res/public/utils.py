@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import random,thread,config,config,time
+
+import thread,config
 from sendsms import *
 from sendwechart import *
 
@@ -139,23 +140,55 @@ def getSmsCode(phone, code):
     vars = '{"%code%":"'+code+'"}'
     return send(templateId, phone, vars)
 
+def sendRegInfo(phone, username, password):
+    templateId = 815
+    phone = phone
+    vars = '{"%username%":"'+username+'","%password%":"'+password+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars))
+def regInfo(phone, name, password):
+    templateId = 861
+    phone = phone
+    vars = '{"%name%":"'+name+'","%password%":"'+password+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+def regSuccess(phone, name, username):
+    templateId = 862
+    phone = phone
+    vars = '{"%name%":"'+name+'","%username%":"'+username+'"}'
+    thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
+
 def regSuccess(phone, name, username):
     templateId = 863
     phone = phone
     vars = '{"%name%":"'+name+'","%username%":"'+username+'"}'
     thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
 
+
+
+
 def acceptQuote(phone, name, variety, price, unit, number):
     templateId = 865
     phone = phone
-    vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+str(price)+'","%unit%":"'+unit+'","%phone%":"'+number+'"}'
+    vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+price+'","%unit%":"'+unit+'","%phone%":"'+number+'"}'
+    print vars
     thread.start_new_thread(send, (templateId, phone, vars))
 
 def rejectQuote(phone, name, variety, price, unit, message):
     templateId = 868
     phone = phone
-    vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+str(price)+'","%unit%":"'+unit+'","%message%":"'+message+'"}'
+    vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+price+'","%unit%":"'+unit+'","%message%":"'+message+'"}'
     thread.start_new_thread(send, (templateId, phone, vars))
+
+def pushPurchase(phones, purchase):
+    templateId = 870
+    for (k,v) in purchase.items():
+        purchase[k] = purchase[k].encode('utf-8') if isinstance(purchase[k], unicode) else purchase[k]
+    vars = '{"%purchaseinfoid%":"'+str(purchase["purchaseinfoid"])+'","%variety%":"'+purchase["variety"]+'","%name%":"'+purchase["name"]+'","%specification%":"'+purchase["specification"]+'","%quantity%":"'+purchase["quantity"]+'","%unit%":"'+purchase["unit"]+'"}'
+    tos = []
+    for phone in phones:
+        phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
+        tos.append('{"phone": "'+phone+'", "vars": '+vars+'}')
+    tos = "["+",".join(tos)+"]"
+    thread.start_new_thread(sendx, (templateId, tos))
 
 def quoteSms(phone, variety, name, price, unit):
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
@@ -184,7 +217,6 @@ def is_cn(check_unicode):
         if ch < u'\u4e00' or ch > u'\u9fff':
             return False
     return bool
-
 def regSuccessWx(openid, name, username):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
@@ -288,7 +320,6 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
         }
     }
     thread.start_new_thread(sendwx, (templateId, openid, link, data))
-
 #采购方对报价进行回复（认可报价）,通知给供应方
 def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
@@ -318,7 +349,7 @@ def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime)
         },
 
         "remark":{
-           "value":"点击“详情”立即查看，并请尽快答复！及早答复报价，将为您累计信用，能收到更多优质报价。",
+           "value":"点击“详情”，立即联系采购商",
            "color":"#173177"
         }
     }
@@ -352,37 +383,147 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime):
         },
 
         "remark":{
-           "value":"点击“详情”立即查看，并请尽快答复！及早答复报价，将为您累计信用，能收到更多优质报价。",
+           "value":"点击“详情”，您可重新报价",
            "color":"#173177"
         }
     }
     thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
-if __name__ == '__main__':
-    ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
-    IMG_PATH = os.path.join(ROOT_PATH, 'img')
-    THUMB_PATH = os.path.join(IMG_PATH, 'thumbs')
-    if not os.path.exists(THUMB_PATH):
-        os.makedirs(THUMB_PATH)
+def pushPurchaseWx(openids, purchase):
+    templateId = 'OxXsRhlyc17kt6ubwV7F0fD8ffRl12rGGS3mnpvpoU4'
+    link = 'http://m.yaocai.pro/purchase/purchaseinfo/%s' % purchase["purchaseinfoid"]
+    qtime = int(purchase["createtime"])
+    purchase["name"] = purchase["name"].encode('utf-8') if isinstance(purchase["name"], unicode) else purchase["name"]
+    purchase["variety"] = purchase["variety"].encode('utf-8') if isinstance(purchase["variety"], unicode) else purchase["variety"]
+    purchase["specification"] = purchase["specification"].encode('utf-8') if isinstance(purchase["specification"], unicode) else purchase["specification"]
+    purchase["origin"] = purchase["origin"].encode('utf-8') if isinstance(purchase["origin"], unicode) else purchase["origin"]
+    purchase["quality"] = purchase["quality"].encode('utf-8') if isinstance(purchase["quality"], unicode) else purchase["quality"]
+    purchase["quantity"] = purchase["quantity"].encode('utf-8') if isinstance(purchase["quantity"], unicode) else purchase["quantity"]
+    purchase["unit"] = purchase["unit"].encode('utf-8') if isinstance(purchase["unit"], unicode) else purchase["unit"]
+    for openid in openids:
+        openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
+        data = {
+            "first": {
+               "value":"%s 邀请您报价" % purchase["name"],
+               "color":"#173177"
+            },
+            "keyword1": {
+               "value":"%s（%s），产地：%s，%s" % (purchase["variety"],purchase["specification"],purchase["origin"],purchase["quality"]),
+               "color":"#173177"
+            },
+            "keyword2": {
+               "value":"%s%s" % (purchase["quantity"],purchase["unit"]),
+               "color":"#173177"
+            },
+            "keyword3":{
+               "value":purchase["nickname"],
+               "color":"#173177"
+            },
+            "keyword4": {
+                "value": time.strftime("%Y年%m月%d日 %H:%M", time.localtime(qtime)),
+                "color": "#173177"
+            },
+            "remark":{
+               "value":"点击“详情”，立即报价",
+               "color":"#173177"
+            }
+        }
+        thread.start_new_thread(sendwx, (templateId, openid, link, data))
+        time.sleep(5)
 
-    # 生成缩略图
-    files = glob.glob(os.path.join(IMG_PATH, '*.jpg'))
-    begin_time = time.clock()
-    for file in files:
-        make_thumb(file, THUMB_PATH, 90)
-    end_time = time.clock()
-    print ('make_thumb time:%s' % str(end_time - begin_time))
+import MySQLdb
 
-    # 合并图片
-    files = glob.glob(os.path.join(THUMB_PATH, '*_thumb.jpg'))
-    merge_output = os.path.join(THUMB_PATH, 'thumbs.jpg')
-    begin_time = time.clock()
-    merge_thumb(files, merge_output)
-    end_time = time.clock()
-    print ('merge_thumb time:%s' % str(end_time - begin_time))
+def purchasetransaction(self, data):
+    if self.db._db is None:
+        self.db._ensure_connected()
+    self.db._db.begin()
+    cursor = self.db._cursor()
+    status = True
+    try:
+        purchaseid = get_purchaseid()
+        cursor.execute("insert into purchase (id, userid, areaid, invoice, pay, payday, payinfo,"
+                                                  " send, receive, accept, other, supplier, remark, limited, term, createtime)"
+                                                  "value(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                                  (purchaseid, self.session.get("userid"), data["address"], data['invoice'], data['paytype'],
+                                                  data['payday'], data['payinfo'], data['sample'], data['contact'],
+                                                  data['demand'], data['replenish'], data['permit'], data['others'],0,
+                                                  data['deadline'], int(time.time())))
+        #存储采购品种信息
+        varids = []
+        for i,purchase in data['purchases'].iteritems():
+            varids.append(purchase["nVarietyId"])
+            purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
+            cursor.execute("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
+                            " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                             (purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+                            purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice']))
+            print cursor.lastrowid
+            #插入图片
+            if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+                for attachment in self.session.get("uploadfiles")[i]:
+                    cursor.execute("insert into purchase_attachment (purchase_infoid, attachment)"
+                                      "value(%s, %s)", (cursor.lastrowid, attachment))
+                self.session["uploadfiles"] = {}
+                self.session.save()
+        self.db._db.commit()
+    except MySQLdb.OperationalError, e:
+        self.db._db.rollback()
+        status = False
+        raise Exception(e.args[1], e.args[0])
+    finally:
+        cursor.close()
+    return status,purchaseid,varids
 
-    t = time.time()
-    print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_day_begin(t,1)))
-    print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_week_begin(t,1)))
-    print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(get_month_begin(t,-3)))
-    print get_purchaseid()
+def updatepurchase(self, id, data):
+    if self.db._db is None:
+        self.db._ensure_connected()
+    self.db._db.begin()
+    cursor = self.db._cursor()
+    status = True
+    try:
+        cursor.execute("update purchase set areaid=%s, invoice=%s, pay=%s, payday=%s, payinfo=%s,"
+                                                  " send=%s, receive=%s, accept=%s, other=%s, supplier=%s, remark=%s,"
+                                                  " limited=%s, term=%s, createtime=%s where id = %s and userid = %s",
+                                                  (data["address"], data['invoice'], data['paytype'], data['payday'],
+                                                  data['payinfo'], data['sample'], data['contact'], data['demand'],
+                                                  data['replenish'], data['permit'], data['others'], 0,
+                                                  data['deadline'], int(time.time()), id, self.session.get("userid")))
+        #搜出当前采购单中的品种，以备下面插入新采购单后删除
+        cursor.execute("select id from purchase_info where purchaseid = %s" % (id))
+        purchaseinfoids = [str(purchaseinfo[0]) for purchaseinfo in cursor.fetchall()]
+        #存储采购品种信息
+        varids = []
+        for i,purchase in data['purchases'].iteritems():
+            varids.append(purchase["nVarietyId"])
+            purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
+            cursor.execute("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
+                            " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                           (id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
+                            purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
+                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice']))
+            #插入图片
+            if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
+                for attachment in self.session.get("uploadfiles")[i]:
+                    cursor.execute("insert into purchase_attachment (purchase_infoid, attachment)"
+                                      "value(%s, %s)", (cursor.lastrowid, attachment))
+        self.session["uploadfiles"] = {}
+        self.session.save()
+        #删除采购品种带的附件
+        cursor.execute("select attachment from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+        # try:
+        #     for attachment in cursor.fetchall():
+        #         os.remove(attachment[0])
+        # except Exception,ex:
+        #     print Exception,":",ex
+        cursor.execute("delete from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+        #删除采购品种
+        cursor.execute("delete from purchase_info where id in ("+",".join(purchaseinfoids)+")")
+        self.db._db.commit()
+    except MySQLdb.OperationalError, e:
+        self.db._db.rollback()
+        status = False
+        raise Exception(e.args[1], e.args[0])
+    finally:
+        cursor.close()
+    return status,varids

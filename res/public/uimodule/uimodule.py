@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import tornado.web
+
 from config import conf
+
 
 class PageNav(tornado.web.UIModule):
     """分页导航
