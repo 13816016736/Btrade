@@ -8,6 +8,7 @@ from config import *
 import random
 import time
 from collections import defaultdict
+from urllib import urlencode
 
 class PurchaseHandler(BaseHandler):
 
@@ -123,6 +124,11 @@ class MyPurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, type=-1, starttime=0, endtime=0, page=0):
+        page=self.get_argument("page",0)
+        type=self.get_argument("type",-1)
+        starttime=self.get_argument("starttime","")
+        endtime=self.get_argument("endtime","")
+
         page = (int(page) - 1) if page > 0 else 0
         login_userid=self.session.get("userid")
         show_userid=[]
@@ -134,10 +140,18 @@ class MyPurchaseHandler(BaseHandler):
         status_conditon =""
         if(int(type))!=-1:
             status_conditon="and status="+type
+        query_str = {}
+        query_str["type"] = type
+        if starttime != "":
+            query_str["starttime"] = starttime
+        if endtime != "":
+            query_str["endtime"] = endtime
         nav = {
-            'model': 'mypurchase/type/'+type+'/starttime/'+starttime+'/endtime/'+endtime,
+            'model': 'mypurchase',
             'cur': page + 1,
             'num': self.db.execute_rowcount("select id from purchase where userid in (%s)"%(",".join(show_userid))+status_conditon),
+            'query': "%s" % urlencode(query_str),
+            'style': 0,
         }
         #查询条件
         condition = []

@@ -46,14 +46,12 @@ class PurchaseHandler(BaseHandler):
             'cur': page + 1,
             'num': self.db.execute_rowcount("select id from purchase p "+conditionstr),
             'query': "%s" % urlencode(query_str),
-            'style':0,
             }
         else:
             nav = {
                 'model': 'purchase/purchaselist',
                 'cur': page + 1,
                 'num': self.db.execute_rowcount("select id from purchase p " + conditionstr),
-                'style': 0,
                 'query': "%s" % urlencode(query_str),
 
             }

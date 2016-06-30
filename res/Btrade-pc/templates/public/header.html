@@ -14,7 +14,7 @@
             <ul class="yc-ul">
                  <li><a {% if request.uri =="/" %}class="current"{% end %} href="/">首页</a></li>
                 <li><a {% if request.uri =="/purchase" %}class="current"{% end %} href="/purchase">发采购</a></li>
-                <li><a {% if request.uri =="/account" %}class="current"{% end %} href="/mypurchase/type/-1/starttime//endtime/">我的工作台</a></li>
+                <li><a {% if request.uri =="/account" %}class="current"{% end %} href="/mypurchase">我的工作台</a></li>
                 <li class="bl"><a {% if request.uri =="/quote" %}class="current"{% end %} href="/quote">我要供货·去报价</a></li>
             </ul>
         </nav>
@@ -23,11 +23,11 @@
         {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
         <div class="login">
             <div class="menu">
-                <a href="/mypurchase/type/-1/starttime//endtime/">我的工作台，{{ handler.session.get('user') }}</a>
+                <a href="/mypurchase">我的工作台，{{ handler.session.get('user') }}</a>
                 <em>0</em>
                 <i></i>
                 <div class="submenu">
-                    <a href="/mypurchase/type/-1/starttime//endtime/">我的采购</a>
+                    <a href="/mypurchase">我的采购</a>
                     <a href="/account">账户设置</a>
                     <a href="/logout">退出</a>
                 </div>

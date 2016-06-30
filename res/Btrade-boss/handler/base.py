@@ -50,6 +50,8 @@ class BaseHandler(tornado.web.RequestHandler):
   def on_finish(self):
       self.db.close()
 
+
+
 from  datetime import date,datetime
 class CJsonEncoder(json.JSONEncoder):
     def default(self, obj):

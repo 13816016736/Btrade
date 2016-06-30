@@ -16,9 +16,9 @@
         <div class="filter">
             <div class="choose">
                 <ul class="yc-ul">
-                    <li><a {% if int(type) < 0%}class="curr"{%end%} href="/mypurchase/type/-1/starttime/{{starttime}}/endtime/{{endtime}}">全部（{{stat.get(0,0) + stat.get(1,0)}}）</a></li>
-                    <li><a {% if int(type) == 1%}class="curr"{%end%} href="/mypurchase/type/1/starttime/{{starttime}}/endtime/{{endtime}}">进行中（{{stat.get(1,0)}}）</a></li>
-                    <li><a {% if int(type) == 0%}class="curr"{%end%} href="/mypurchase/type/0/starttime/{{starttime}}/endtime/{{endtime}}">关闭（{{stat.get(0,0)}}）</a></li>
+                    <li><a {% if int(type) < 0%}class="curr"{%end%} href="/mypurchase?type=-1">全部（{{stat.get(0,0) + stat.get(1,0)}}）</a></li>
+                    <li><a {% if int(type) == 1%}class="curr"{%end%} href="/mypurchase?type=1">进行中（{{stat.get(1,0)}}）</a></li>
+                    <li><a {% if int(type) == 0%}class="curr"{%end%} href="/mypurchase?type=0">关闭（{{stat.get(0,0)}}）</a></li>
                 </ul>
             </div>
             <div class="date">
@@ -280,7 +280,7 @@ $("#pquery").click(function(){
     var starttime = $("#d1").val();
     var endtime = $("#d2").val();
     if (starttime != "" && endtime != "") {
-        window.location.href='/mypurchase/type/{{type}}/starttime/'+starttime+'/endtime/'+endtime;
+        window.location.href='/mypurchase?type={{type}}&starttime='+starttime+'&endtime='+endtime;
     }else{
         alert("时间范围需填写完整");
     }

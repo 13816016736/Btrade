@@ -61,7 +61,6 @@ class SupplierHandler(BaseHandler):
                     'cur': page,
                     'num': result_num,
                     'query':urlencode(querystr),
-                    'style':0,
                     'total': result_num
                 }
            else:
@@ -69,7 +68,6 @@ class SupplierHandler(BaseHandler):
                    'model': 'supplier/supplierlist',
                    'cur': page,
                    'num': result_num,
-                   'style': 0,
                    'total':result_num
                }
 
