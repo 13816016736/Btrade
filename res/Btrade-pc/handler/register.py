@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import config
-import random
-import re
-import utils
-
-from uimodule import geetest
-
 from base import BaseHandler
-from res.public.sendsms import *
+from uimodule import geetest
+import re, random, utils, config
+from sendsms import *
 
 #极验证
 BASE_URL = "api.geetest.com/get.php?gt="
