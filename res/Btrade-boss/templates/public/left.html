@@ -13,12 +13,12 @@
                 </a>
                 <ul class="treeview-menu menu-open">
                      <li {% if request.uri.split('/')[2] == "statistics" %}class="active"{% end %}>
-                    <a href="/stat/statistics/month/0">
+                    <a href="/stat/statistics">
                         <i class="fa fa-circle-o"></i> 关键指标检测
                     </a>
                      </li>
                     <li {% if request.uri.split('/')[2] == "business" %}class="active"{% end %}>
-                    <a href="/stat/business/type/0/starttime//endtime/">
+                    <a href="/stat/business">
                         <i class="fa fa-circle-o"></i> 业务路径
                     </a>
                     </li>
@@ -43,7 +43,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu {% if request.uri.split('/')[1] == "purchase" %}menu-open{% end %}">
-                    <li {% if request.uri.split('/')[2] == "purchaselist" %}class="active"{% end %}><a href="/purchase/purchaselist/type/-1/starttime//endtime/"><i class="fa fa-circle-o"></i> 订单查询</a>
+                    <li {% if request.uri.split('/')[2] == "purchaselist" %}class="active"{% end %}><a href="/purchase/purchaselist"><i class="fa fa-circle-o"></i> 订单查询</a>
                     </li>
                 </ul>
             </li>

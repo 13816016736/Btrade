@@ -13,6 +13,10 @@ class PurchaseHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, type=-1, starttime=0, endtime=0, page=0):
         query = self.get_argument("query", None)
+        page=self.get_argument("page",0)
+        type=self.get_argument("type",-1)
+        starttime=self.get_argument("starttime","")
+        endtime=self.get_argument("endtime","")
         page = (int(page) - 1) if page > 0 else 0
         #查询条件
         condition = []
@@ -29,19 +33,29 @@ class PurchaseHandler(BaseHandler):
         conditionstr = ""
         if condition:
             conditionstr = ("where "+(" and ".join(condition)))
+        query_str={}
+        query_str["type"]=type
+        if starttime!="":
+            query_str["starttime"]=starttime
+        if endtime!="":
+            query_str["endtime"] = endtime
         if query:
-            query_str={"query":query.encode('utf8')}
+            query_str["query"]=query.encode('utf8')
             nav = {
-            'model': 'purchase/purchaselist/type/'+type+'/starttime/'+starttime+'/endtime/'+endtime,
+            'model': 'purchase/purchaselist',
             'cur': page + 1,
             'num': self.db.execute_rowcount("select id from purchase p "+conditionstr),
-            'query': "?%s" % urlencode(query_str),
+            'query': "%s" % urlencode(query_str),
+            'style':0,
             }
         else:
             nav = {
-                'model': 'purchase/purchaselist/type/' + type + '/starttime/' + starttime + '/endtime/' + endtime,
+                'model': 'purchase/purchaselist',
                 'cur': page + 1,
                 'num': self.db.execute_rowcount("select id from purchase p " + conditionstr),
+                'style': 0,
+                'query': "%s" % urlencode(query_str),
+
             }
         purchaseinf = defaultdict(list)
         purchases = self.db.query("select t.*,a.position from "
