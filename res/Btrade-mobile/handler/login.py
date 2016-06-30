@@ -3,8 +3,7 @@
 from base import BaseHandler
 from utils import *
 import config,re
-import requests,json
-import logging
+
 class LoginHandler(BaseHandler):
     def get(self):
         if self.current_user:
@@ -52,16 +51,3 @@ class LogoutHandler(BaseHandler):
 
     def post(self):
         pass
-class OauthLoginHandler(BaseHandler):
-    def get(self):
-        code = self.get_argument("code", None)
-        if code:
-            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
-            config.appid, config.secret, code)
-            res = requests.get(url)
-            message = json.loads(res.text.encode("utf-8"))
-            access_token = message.get("access_token", None)
-            if access_token:
-                openid = message.get("openid")
-                logging.info("openid========="+openid)
-        self.render("login.html", next_url=self.get_argument("next", "/"))
