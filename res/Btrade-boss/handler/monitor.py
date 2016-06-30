@@ -211,15 +211,15 @@ class MonitorBusinessHandler(BaseHandler):
             except:
                 self.send_error(404)
         else:
-            if type==0:
+            if int(type)==0:
                 starttime=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , day), format)
                 endtime=starttime + timedelta(days=1)
-            elif type==1:
+            elif int(type)==1:
                 now=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , day), format)
                 dayOfWeek = now.weekday()
                 starttime=now+timedelta(days=(-1*(dayOfWeek)))
                 endtime=starttime + timedelta(days=7)
-            elif type==2:
+            elif int(type)==2:
                 starttime=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , '1'), format)
                 endtime=starttime + timedelta(days=30)
             else:
@@ -519,5 +519,4 @@ class MonitorBusinessHandler(BaseHandler):
             "high_price_num":high_price_num,"high_price_rate":high_price_rate,"low_quality_num":low_quality_num,"low_quality_rate":low_quality_rate,"replay_quote_cost":replay_quote_cost,
             "min_reply_cost":min_reply_cost
         }
-
         self.render("business.html",purchase_step=purchase_step,quote_step=quote_step,type=type,starttime=starttime, endtime=endtime)

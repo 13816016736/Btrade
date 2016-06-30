@@ -12,4 +12,9 @@ class BaseHandler(WebBaseHandler):
        return self.session.get("admin")
 
 
+  def error(self, message="出现错误了", url=''):
+    """操作失败提示
+    """
+    self.render('message/error.html', message=message, url=url)
+
 
