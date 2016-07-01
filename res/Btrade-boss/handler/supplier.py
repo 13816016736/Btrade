@@ -91,6 +91,7 @@ class SupplierInsertHandler(BaseHandler):
         data=self.get_argument("data",None)
         if data:
             user=json.loads(data)
+            print user
             mobile=user["mobile"]
             name=user["linkman"]
             varietys=user["varietys"]
@@ -117,19 +118,20 @@ class SupplierInsertHandler(BaseHandler):
             else:
                 record = ""
             if user.has_key("note"):
-                sponsor = int(user["note"])
+                sponsor = ",".join(user["note"])
             else:
-                sponsor= 0
-            if sponsor==0:
+                sponsor= ""
+            if sponsor=="":
                 source="manual_record"
             else:
                 source = "manual_recommend"
+
             try:
                 lastrowid = self.db.execute_lastrowid(
                 "insert into supplier (mobile, variety, company, name,businessplace,address,scale,phone,remark,record,sponsor,source)"
                     "value(%s, %s, %s, %s, %s, %s, %s, %s,%s,%s,%s,%s)",
                     mobile, varietys, company, name,businessplace,address,scale,phone,remark,record,sponsor,source)
-                self.api_response({'status': 'success', 'message': '添加供应商成功', 'supplier': {'current_id': lastrowid,"last_id":sponsor}})
+                self.api_response({'status': 'success', 'message': '添加供应商成功', 'supplier': {'current_id': lastrowid,"last_id":0}})
             except Exception,ex:
                 self.api_response({'status': 'success', 'message': '添加供应商失败（str(ex)）'})
 
@@ -147,8 +149,8 @@ class SupplierEditHandler(BaseHandler):
             supplier=self.db.get("select * from supplier where id=%s",id)
             if supplier:
                 sponsor_id=supplier.sponsor
-                if sponsor_id!=0:
-                    sponsor=self.db.get("select * from users where id=%s",sponsor_id)
+                if sponsor_id!="":
+                    sponsor=self.db.query("select id,name,nickname from users where id in(%s)"% sponsor_id)
                 provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
                 if supplier.businessplace!="":
                     business=supplier.businessplace.split(",")
@@ -201,10 +203,18 @@ class SupplierEditHandler(BaseHandler):
                 remark = user["remark"]
             else:
                 remark= ""
+            if user.has_key("record"):
+                record = user["record"]
+            else:
+                record = ""
+            if user.has_key("note"):
+                sponsor = ",".join(user["note"])
+            else:
+                sponsor = ""
             try:
                 self.db.execute(
-                "update supplier set mobile=%s, variety=%s, company=%s, name=%s,businessplace=%s,address=%s,scale=%s,phone=%s,remark=%s where id=%s",
-                    mobile, varietys, company, name,businessplace,address,scale,phone,remark,user["id"])
+                "update supplier set mobile=%s, variety=%s, company=%s, name=%s,businessplace=%s,address=%s,scale=%s,phone=%s,remark=%s,record=%s,sponsor=%s where id=%s",
+                    mobile, varietys, company, name,businessplace,address,scale,phone,remark,record,sponsor,user["id"])
                 self.api_response({'status': 'success', 'message': '修改供应商成功'})
             except Exception,ex:
                 self.api_response({'status': 'success', 'message': '修改供应商失败（str(ex)）'})
@@ -247,13 +257,18 @@ class SupplierDetailHandler(BaseHandler):
                 for r in ret:
                     supply_variety_name.append(r.name)
                 supplier["supply_variety_name"] = supply_variety_name
-                if supplier.sponsor!=None:
-                    sponsor = self.db.get("select * from users where id = %s", supplier.sponsor)
+                if supplier.sponsor!="" and supplier.sponsor!="0":
+                    print supplier.sponsor
+                    sponsor = self.db.query("select name ,nickname from users where id in(%s)"% supplier.sponsor)
                     if sponsor:
-                        sponsor_name=sponsor.name+ '(%s)'%sponsor.nickname
+                        sponsor_name=""
+                        for item in sponsor:
+                            sponsor_name=sponsor_name+item.name+ '(%s)'%item.nickname+'  '
                         supplier["sponsor_name"] = sponsor_name
                     else:
                         supplier["sponsor_name"]=""
+                else:
+                    supplier["sponsor_name"] = ""
                 if supplier.businessplace!="":
                    pos=supplier.businessplace.split(',')
                    area = self.db.query("select areaname from area where id in(%s)"%','.join(pos))
