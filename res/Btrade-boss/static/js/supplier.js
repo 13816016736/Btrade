@@ -340,7 +340,7 @@ $(function() {
                         });
 
                     } else if (data.status === 'null') {
-                        html.push('<em style="padding:4px;color:#f00;">该用户还未注册</em>');
+                        html.push('<span class="error">该用户还未注册</span>');
 
                     } else {
                         html.push(data.msg);
