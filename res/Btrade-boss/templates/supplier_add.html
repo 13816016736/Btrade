@@ -132,6 +132,13 @@
                                 <span>推荐人</span>
                             </div>
                             <div class="cont">
+                                <div class="item" id="sponsor_list">
+                                    {% if sponsor %}
+                                    {% for item in sponsor %}
+                                    <div class="item"><span sponsorid="{{item.id}}">{{item.name}}</span><a  sponsorid="{{item.id}}" class="del" href="#">删除</a></div>
+                                    {% end %}
+                                    {% end %}
+                                </div>
                                 {% if sponsor %}
                                 <input value="{{sponsor.name}}" id="jReferrer" name="referrer" class="ipt" placeholder="推荐人姓名或手机号" type="text">
                                 {% else %}

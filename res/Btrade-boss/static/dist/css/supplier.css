@@ -9,7 +9,7 @@
 .supplier-list i{vertical-align:middle;}
 .supplier-list .hd{position:relative;height:26px;margin-bottom:6px;padding-right:100px;overflow:hidden;}
 .supplier-list .hd a{font-size:18px;font-weight:700;color:#333;}
-.supplier-list .hd span{position:absolute;top:0;right:0;min-width:80px;font-size:14px;background:#f90;color:#fff;text-align:center;border-radius:2px;}
+.supplier-list .hd span{position:absolute;top:0;right:0;min-width:80px;padding:0 5px;font-size:14px;background:#f90;color:#fff;text-align:center;border-radius:2px;}
 .supplier-list .bd{height:26px;overflow:hidden;}
 .supplier-list .bd span{margin:0 4px 0 20px;}
 .supplier-list .bd i{margin-right:4px;}
@@ -38,6 +38,7 @@
 .yc-form .group .txt{float:left;width:90px;text-align:right;color:#999;}
 .yc-form .group .txt i{color:#f00;vertical-align:middle;font-style:normal;}
 .yc-form .group .cont{margin-left:100px;}
+.yc-form .group .cont .item a{margin-left:40px;}
 .yc-form .group .cont label{margin-right:20px;color:#333;}
 .yc-form .group .cont .ipt{width:160px;height:34px;line-height:18px;margin:0;padding:7px 5px;font-size:14px;color:#333;border:1px solid #999;vertical-align:middle;}
 .yc-form .group .cont .ipt-wide{width:260px;}

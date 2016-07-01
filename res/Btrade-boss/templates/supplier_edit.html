@@ -103,9 +103,9 @@
                                 <span>经营规模</span>
                             </div>
                             <div class="cont">
-                                <label><input class="cbx" value="small" name="scale" type="radio" {% if supplier.scale==u'小'%} checked {% end %}>小</label>
-                                <label><input class="cbx" value="middle" name="scale" type="radio" {% if supplier.scale==u'中'%} checked {% end %}>中</label>
-                                <label><input class="cbx" value="big" name="scale" type="radio" {% if supplier.scale==u'大'%} checked {% end %}>大</label>
+                                <label><input class="cbx" value="小" name="scale" type="radio" {% if supplier.scale==u'小'%} checked {% end %}>小</label>
+                                <label><input class="cbx" value="中" name="scale" type="radio" {% if supplier.scale==u'中'%} checked {% end %}>中</label>
+                                <label><input class="cbx" value="大" name="scale" type="radio" {% if supplier.scale==u'大'%} checked {% end %}>大</label>
                             </div>
                         </div>
                         <div class="group">
@@ -134,11 +134,21 @@
                                 <span>推荐人</span>
                             </div>
                             <div class="cont">
-                                <span>
-                                    {% if sponsor %}
-                                    {{sponsor.name}}（{{sponsor.nickname}}）
+                                <div class="item" id="sponsor_list">
+                                  {% if sponsor %}
+                                    {% for item in sponsor %}
+                                    <div class="item"><span sponsorid="{{item.id}}">{{item.name}}</span><a  sponsorid="{{item.id}}" class="del" href="#">删除</a></div>
                                     {% end %}
-                                </span>
+                                    {% end %}
+                                </div>
+
+
+                            <input value="" id="jReferrer" name="referrer" class="ipt" placeholder="推荐人姓名或手机号" type="text">
+                            <button class="btn btn-primary btn-sm" type="button">检测</button>
+                            <button class="btn btn-primary btn-sm" type="button">清空</button>
+                            <span class="error">(引导用户注册后，才能录入他的朋友)</span>
+                            <span class="error"></span>
+                            <div class="referrer-list" id="jReferrerList">
                             </div>
                         </div>
                         <div class="group">
@@ -146,7 +156,9 @@
                                 <span>录入人</span>
                             </div>
                             <div class="cont">
-                                <span>{{supplier.record_name}}</span>
+                            <input value="{{supplier.record_name}}" id="jrecord" uid="{{supplier.record}}"name="referrer" class="ipt" placeholder="" type="text" readonly>
+                            <button class="btn btn-primary btn-sm" id="modify" uid="{{handler.session.get('adminid')}}" type="button" name="{{handler.session.get('admin') }}">修改为我</button>
+                            <span class="error"></span>
                             </div>
                         </div>
                     </div>
