@@ -269,6 +269,8 @@ class SupplierDetailHandler(BaseHandler):
                         supplier["sponsor_name"] = sponsor_name
                     else:
                         supplier["sponsor_name"]=""
+                else:
+                    supplier["sponsor_name"] = ""
                 if supplier.businessplace!="":
                    pos=supplier.businessplace.split(',')
                    area = self.db.query("select areaname from area where id in(%s)"%','.join(pos))
