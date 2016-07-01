@@ -21,8 +21,13 @@ class MainHandler(BaseHandler):
                 varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
 
             #用户报过价的品种
-            quotevariety = self.db.query("select v.name name from (select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s and pi.varietyid is not null) t"
-                          " left join variety v on t.varietyid = v.id group by name", userid)
+            quotevariety =self.db.query("select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s and pi.varietyid is not null",userid)
+            if quotevariety:
+                quotevarietyids=[str(item["varietyid"]) for item in quotevariety ]
+                quotevariety = self.db.query("select name from variety where id in (%s) group by name  " % ",".join(quotevarietyids))
+            #quotevariety = self.db.query(
+            #    "select v.name name from (select pi.varietyid from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where userid = %s and pi.varietyid is not null) t"
+            #    " left join variety v on t.varietyid = v.id group by name", userid)
 
         self.render("index.html", varieties=varieties, quotevariety=quotevariety)
 
@@ -356,8 +361,7 @@ class ReplayHandler(BaseHandler):
             purchaseids = [str(purchase["id"]) for purchase in purchases]
             purchaseinfos = self.db.query(
                 "select p.id,p.purchaseid,p.name,p.status,p.specification,q.id qid,count(q.id) quotecount,count(if(q.state=0,true,null )) unreply "
-                "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (" + ",".join(
-                    purchaseids) + ") group by p.id")
+                "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (%s) group by p.id"%",".join(purchaseids))
             for purchaseinfo in purchaseinfos:
                 purchaseinf[purchaseinfo["purchaseid"]].append(purchaseinfo)
             for purchase in purchases:

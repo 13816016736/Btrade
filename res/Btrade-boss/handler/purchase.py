@@ -41,30 +41,37 @@ class PurchaseHandler(BaseHandler):
             query_str["endtime"] = endtime
         if query:
             query_str["query"]=query.encode('utf8')
-            nav = {
+        nav = {
             'model': 'purchase/purchaselist',
             'cur': page + 1,
             'num': self.db.execute_rowcount("select id from purchase p "+conditionstr),
             'query': "%s" % urlencode(query_str),
-            }
-        else:
-            nav = {
-                'model': 'purchase/purchaselist',
-                'cur': page + 1,
-                'num': self.db.execute_rowcount("select id from purchase p " + conditionstr),
-                'query': "%s" % urlencode(query_str),
+        }
 
-            }
         purchaseinf = defaultdict(list)
-        purchases = self.db.query("select t.*,a.position from "
-                                  "(select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id "+
-                                  conditionstr + " order by p.createtime desc limit %s,%s) t "
-                                  "left join area a on t.areaid = a.id", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        purchases=self.db.query("select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id  %s"% conditionstr
+                                   + " order by p.createtime desc limit %s,%s",page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+
+        #获取采购单的详细信息，包括user和area信息
+
+        #purchases = self.db.query("select t.*,a.position from "
+        #                          "(select p.*,u.nickname,u.name from purchase p left join users u on p.userid = u.id "+
+        #                          conditionstr + " order by p.createtime desc limit %s,%s) t "
+        #                          "left join area a on t.areaid = a.id", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
 
         if purchases:
+            areaids = [str(purchase["areaid"]) for purchase in purchases]
+            areaids = list(set(areaids))  # 去重
+            allpositions = self.db.query("select id,position from area where id in (%s)" % ",".join(areaids))
+            positions = defaultdict(list)
+            for item in allpositions:
+                positions[item["id"]] = item["position"]
+            for purchase in purchases:
+                purchase["position"] = positions.get(purchase["areaid"])
             purchaseids = [str(purchase["id"]) for purchase in purchases]
             purchaseinfos = self.db.query("select p.*,q.id qid,count(q.id) quotecount,count(if(q.state=1,true,null )) intentions, count(if(q.state=0,true,null )) unread "
-                                          "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id")
+                                          "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (%s) group by p.id"%",".join(purchaseids))
+            #获取采购单报价信息
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
             purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
             attachments = defaultdict(list)
@@ -94,10 +101,23 @@ class PurchaseInfoHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, id):
-        purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        #获取单个采购单信息，包括user和area信息
+        #purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        #"p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
+        #"pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
+       # "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
+
+        purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
         "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
+        "where p.id = pi.purchaseid and pi.id = %s",id)
+
+
+        ret = self.db.get("select position from area where id =%s",purchaseinfo["areaid"])
+        if ret:
+            purchaseinfo["position"]=ret.position
+        else:
+            purchaseinfo["position"] =""
 
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
         #获得采购品种图片
