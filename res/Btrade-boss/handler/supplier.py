@@ -61,14 +61,16 @@ class SupplierHandler(BaseHandler):
                     'cur': page,
                     'num': result_num,
                     'query':urlencode(querystr),
-                    'total': result_num
+                    'total': result_num,
+                    'style':0,
                 }
            else:
                nav = {
                    'model': 'supplier/supplierlist',
                    'cur': page,
                    'num': result_num,
-                   'total':result_num
+                   'total':result_num,
+                   'style': 0,
                }
 
            if search_str==None:
