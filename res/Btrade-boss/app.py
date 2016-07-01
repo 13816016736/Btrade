@@ -1,7 +1,6 @@
-
-import sys
-sys.path.append("../public")
-sys.path.append("../public/handler")
+import sys,os
+sys.path.append(os.path.join(sys.path[0],"../public"))
+sys.path.append(os.path.join(sys.path[0],"../public/handler"))
 
 
 import tornado.autoreload
