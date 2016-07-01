@@ -107,24 +107,7 @@
                             <span>推荐人</span>
                         </div>
                         <div class="cont">
-                            <div class="item">
-                                <span>严飞</span><a href="#!">删除</a>
-                            </div>
-
-                            {% if supplier %}
-                            <input value="{{supplier.sponsor_name}}" id="jReferrer" name="referrer" class="ipt" placeholder="推荐人姓名或手机号" type="text">
-                            {% else %}
-                            <input value="" id="jReferrer" name="referrer" class="ipt" placeholder="推荐人姓名或手机号" type="text">
-                            {% end       %}
-                            <button class="btn btn-primary btn-sm" type="button">检测</button>
-                            <button class="btn btn-primary btn-sm" type="button">清空</button>
-                            <span class="error">(引导用户注册后，才能录入他的朋友)</span>
-                            <span class="error"></span>
-                            <div class="referrer-list" id="jReferrerList">
-                                {% if supplier %}
-                                <label><input type="radio" class="cbx" value="{{supplier.id}}" checked>{{supplier.sponsor_name}}</label>
-                                {%   end         %}
-                            </div>
+                         <span>{{ supplier.sponsor_name}}</span>
                         </div>
                     </div>
 
@@ -133,9 +116,7 @@
                             <span>录入人</span>
                         </div>
                         <div class="cont">
-                            <input value="{{ supplier.record_name }}" id="jrecord" name="referrer" class="ipt" placeholder="" type="text">
-                            <button class="btn btn-primary btn-sm" type="button">修改为我</button>
-                            <span class="error"></span>
+                            <span>{{ supplier.record_name}}</span>
                         </div>
                     </div>
                 </div>

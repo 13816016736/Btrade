@@ -5,6 +5,7 @@ $(function() {
     var $jVariety = $('#jVariety');
     var $jVarietys = $('#jVarietys');
     var $jSubmit = $('#jSave1');
+    var $sponsorList=$('#sponsor_list');
     var isCheckMobile = {};
     var _posY = false;
 
@@ -131,8 +132,12 @@ $(function() {
             result.scale = $('.cbx[name="scale"]:checked').val();
             result.tel = $('#jTel').val();
             result.remark = $('#jNote').val();
-            result.note = $jReferrerList.find('.cbx:checked').val();
-            result.record = $("#jrecord").val();
+            //result.note = $jReferrerList.find('.cbx:checked').val();
+            result.note=[];
+            $("#sponsor_list span").each(function(){
+                       result.note.push($(this).attr("sponsorid"));
+                    });
+            result.record = $("#jrecord").attr("uid");
             result.pass = true;
             return result;
         } 
@@ -339,7 +344,7 @@ $(function() {
                         var html = [];
                         $.each(data.suppliers, function(i, v){
                             name=v.name+"("+v.nickname+")"
-                            html.push('<label><input type="radio" class="cbx" value="'+v.id+'">', name, '</label>');
+                            html.push('<label><input type="radio" class="cbx" name="'+v.name+'" value="'+v.id+'">', name, '</label>');
                         });
 
                     } else if (data.status === 'null') {
@@ -360,6 +365,35 @@ $(function() {
        $('#jReferrer').val("")
         $('#jReferrerList').empty()
     })
+
+       $sponsorList.on('click','.del',function(){
+        sponsorid=$(this).attr("sponsorid")
+        $sponsorList.find("[sponsorid="+sponsorid+"]").remove();
+        return false;
+   });
+
+    $("#jReferrerList").on('click','.cbx',function() {
+        id=$(this).attr("value");
+        name=$(this).attr("name");
+        idList=[]
+        $("#sponsor_list span").each(function(){
+                      idList.push($(this).attr("sponsorid"));
+         });
+         if (idList.indexOf(id)==-1){
+            $sponsorList.append("<div class='item'><span sponsorid='"+id+"'>"+name+"</span><a class='del' sponsorid='"+id+"' href='#'>删除</a></div>")
+            $('#jReferrer').val("")
+            $('#jReferrerList').empty()
+         }
+         else{
+          $jReferrerList.html("<span class='error'>请勿重复添加同一推荐人</span>")
+         }
+
+    });
+    $("#modify").on('click',function() {
+      $("#jrecord").val($(this).attr("name"));
+       $("#jrecord").attr("uid",$(this).attr("uild"));
+    });
+
 
     $('#provinces').on('change',function(){
           id=$(this).val();
@@ -384,5 +418,6 @@ $(function() {
             }
         })
     })
+
 
 });
