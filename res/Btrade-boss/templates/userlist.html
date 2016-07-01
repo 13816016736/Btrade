@@ -85,7 +85,7 @@
 $(document).ready(function(){
     $("#queryb").click(function(){
         var query = $("#query").val();
-        location.href = "/users/userlist?query="+query ;
+        location.href =encodeURI("/users/userlist?query="+query);
     });
 })
 </script>

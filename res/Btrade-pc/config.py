@@ -5,16 +5,9 @@ from handler.login import *
 from handler.purchase import *
 from handler.register import *
 from handler.dashboard import *
+from globalconfig import *
 
-#显示设置
-app = {
-    #应用名称
-    'name': '药采购',
-    #应用附加信息(简短的说明)
-    'title': '药材买卖的专业助手',
-    #联系邮箱
-    'email': '2011zhouhang@gmail.com',
-}
+
 
 settings = {
     "app": app,
@@ -49,8 +42,9 @@ handlers = [
     (r"/getvarinfobyid", GetVarInfoByIdHandler),
     (r"/purchasesuccess", PurchaseSuccessHandler),
     (r"/dashboard", DashboardHandler),
-    (r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", MyPurchaseHandler),
-    (r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MyPurchaseHandler),
+    #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", MyPurchaseHandler),
+    #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MyPurchaseHandler),
+    (r"/mypurchase", MyPurchaseHandler),
     (r"/mypurchase/update/([0-9]+)", MyPurchaseUpdateHandler),
     (r"/removepurchase", RemovePurchaseHandler),
     (r"/mypurchase/info/([0-9]+)", MyPurchaseInfoHandler),
@@ -86,18 +80,3 @@ log = True
 #日志记录位置
 log_file = 'Btrade-pc/log/tornado.log'
 
-#用户密码的salt
-salt = "ycg20151012"
-
-#图片服务器域名
-img_domain = "http://static.yaocai.pro/"
-# img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
-# img_path = "F:\\nginx-1.8.1\\html\\static\\uploadfiles"
-img_path = "/opt/resources/static/uploadfiles"
-host = "http://m.yaocai.pro"
-
-unit = "公斤"
-
-appid = "wx90e04052c49aa63e"
-secret = "b1146d3ec7e0a8a483064406f361a07b"
-token = ""

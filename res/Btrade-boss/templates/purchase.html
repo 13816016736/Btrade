@@ -8,13 +8,13 @@
     <section class="filter">
         <form class="form-inline">
             <div class="form-group">
-                <a href="/purchase/purchaselist/type/-1/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) < 0%}label-warning{%else%}label-default{%end%}">全部（{{stat.get(0,0) + stat.get(1,0) + stat.get(3,0)}}）</span></a>
+                <a href="/purchase/purchaselist?type=-1&starttime={{starttime}}&endtime={{endtime}}"><span class="label {% if int(type) < 0%}label-warning{%else%}label-default{%end%}">全部（{{stat.get(0,0) + stat.get(1,0) + stat.get(3,0)}}）</span></a>
             </div>
             <div class="form-group">
-                <a href="/purchase/purchaselist/type/1/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 1%}label-warning{%else%}label-default{%end%}">进行中（{{stat.get(1,0)}}）</span></a>
+                <a href="/purchase/purchaselist?type=1&starttime={{starttime}}&endtime={{endtime}}"><span class="label {% if int(type) == 1%}label-warning{%else%}label-default{%end%}">进行中（{{stat.get(1,0)}}）</span></a>
             </div>
             <div class="form-group">
-                <a href="/purchase/purchaselist/type/0/starttime/{{starttime}}/endtime/{{endtime}}"><span class="label {% if int(type) == 0%}label-warning{%else%}label-default{%end%}">关闭（{{stat.get(0,0)}}）</span></a>
+                <a href="/purchase/purchaselist?type=0&starttime={{starttime}}&endtime={{endtime}}"><span class="label {% if int(type) == 0%}label-warning{%else%}label-default{%end%}">关闭（{{stat.get(0,0)}}）</span></a>
             </div>
             <div class="form-group">
                 <label >发布时间：</label>
@@ -279,7 +279,7 @@ $(document).ready(function(){
         var endtime = $("#endtime").val();
         var query = $("#query").val();
         if ((starttime != "" && endtime != "") || query !="") {
-            window.location.href=encodeURI('/purchase/purchaselist/type/{{type}}/starttime/'+starttime+'/endtime/'+endtime+'?query='+query);
+            window.location.href=encodeURI('/purchase/purchaselist?type={{type}}&starttime='+starttime+'&endtime='+endtime+'&query='+query);
         }else{
             alert("时间范围或品种名需填写完整");
         }

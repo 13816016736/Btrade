@@ -9,10 +9,11 @@ from utils import *
 
 class MonitorStatisticsHandler(BaseHandler):
     @tornado.web.authenticated
-    def get(self,month):
+    def get(self,month=0):
+        month=self.get_argument("month",0)
         year = strftime("%Y", localtime())
         if int(month)<=12 and int(month)>=0:
-            if month=='0':
+            if month==0:
                 month = strftime("%m", localtime())
             format = "%Y-%m-%d"
             date_str="%s-%s-%s"%(year,month,'1')
@@ -188,7 +189,9 @@ class MonitorStatisticsHandler(BaseHandler):
 class MonitorBusinessHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self,type=0, starttime=0, endtime=0):
-
+        type=self.get_argument("type",0)
+        starttime = self.get_argument("starttime", "")
+        endtime = self.get_argument("endtime", "")
         year = strftime("%Y", localtime())
         mon = strftime("%m", localtime())
         day = strftime("%d", localtime())
@@ -208,15 +211,15 @@ class MonitorBusinessHandler(BaseHandler):
             except:
                 self.send_error(404)
         else:
-            if type=='0':
+            if int(type)==0:
                 starttime=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , day), format)
                 endtime=starttime + timedelta(days=1)
-            elif type=='1':
+            elif int(type)==1:
                 now=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , day), format)
                 dayOfWeek = now.weekday()
                 starttime=now+timedelta(days=(-1*(dayOfWeek)))
                 endtime=starttime + timedelta(days=7)
-            elif type=='2':
+            elif int(type)==2:
                 starttime=datetime.strptime("%s-%s-%s 00:00" % (year,  mon , '1'), format)
                 endtime=starttime + timedelta(days=30)
             else:
@@ -516,5 +519,4 @@ class MonitorBusinessHandler(BaseHandler):
             "high_price_num":high_price_num,"high_price_rate":high_price_rate,"low_quality_num":low_quality_num,"low_quality_rate":low_quality_rate,"replay_quote_cost":replay_quote_cost,
             "min_reply_cost":min_reply_cost
         }
-
         self.render("business.html",purchase_step=purchase_step,quote_step=quote_step,type=type,starttime=starttime, endtime=endtime)

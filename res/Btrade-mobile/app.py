@@ -1,3 +1,7 @@
+import sys
+sys.path.append("../public")
+sys.path.append("../public/handler")
+
 import tornado.autoreload
 import tornado.web
 import tornado.ioloop

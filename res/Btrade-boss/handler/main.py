@@ -14,15 +14,17 @@ class UserListHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, page=0):
         query = self.get_argument("query", None)
+        page=self.get_argument("page",0)
         condition = ""
         if query:
-            condition = " where phone = %s" % query
+            condition = " where phone = '%s'" % query
         page = (int(page) - 1) if page > 0 else 0
         nav = {
             'model': 'users/userlist',
             'cur': page + 1,
             'num': self.db.execute_rowcount("SELECT * FROM users" + condition),
-            'query': "?query=%s" % query if query else "",
+            'style':0,
+            'query': "query=%s" % query if query else "",
         }
         users = self.db.query("SELECT * FROM users" + condition + " LIMIT %s,%s", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
         self.render("userlist.html", users=users, nav=nav, query=query)
