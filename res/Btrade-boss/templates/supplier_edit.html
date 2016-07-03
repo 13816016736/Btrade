@@ -156,7 +156,7 @@
                                 <span>录入人</span>
                             </div>
                             <div class="cont">
-                            <input value="{{supplier.record_name}}" id="jrecord" uid="{{supplier.record}}"name="referrer" class="ipt" placeholder="" type="text" readonly>
+                            <input value="{{supplier.record_name}}" id="jrecord" uid="{% if supplier.record %}{{ supplier.record }} {% end %}"name="referrer" class="ipt" placeholder="" type="text" readonly>
                             <button class="btn btn-primary btn-sm" id="modify" uid="{{handler.session.get('adminid')}}" type="button" name="{{handler.session.get('admin') }}">修改为我</button>
                             <span class="error"></span>
                             </div>

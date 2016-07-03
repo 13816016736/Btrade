@@ -184,6 +184,7 @@ class SupplierEditHandler(BaseHandler):
         data=self.get_argument("data",None)
         if data:
             user=json.loads(data)
+            #print user
             mobile=user["mobile"]
             name=user["linkman"]
             varietys=user["varietys"]
@@ -205,21 +206,23 @@ class SupplierEditHandler(BaseHandler):
                 remark = user["remark"]
             else:
                 remark= ""
-            if user.has_key("record"):
+            #print user["record"]
+            if user.has_key("record") and user["record"]:
                 record = user["record"]
             else:
-                record = ""
-            if user.has_key("note"):
+                record = None
+            if user.has_key("note") and user["note"] :
                 sponsor = ",".join(user["note"])
             else:
                 sponsor = ""
+           #print mobile, varietys, company, name,businessplace,address,scale,phone,remark,record,sponsor,user["id"]
             try:
                 self.db.execute(
                 "update supplier set mobile=%s, variety=%s, company=%s, name=%s,businessplace=%s,address=%s,scale=%s,phone=%s,remark=%s,record=%s,sponsor=%s where id=%s",
                     mobile, varietys, company, name,businessplace,address,scale,phone,remark,record,sponsor,user["id"])
                 self.api_response({'status': 'success', 'message': '修改供应商成功'})
             except Exception,ex:
-                self.api_response({'status': 'success', 'message': '修改供应商失败（str(ex)）'})
+                self.api_response({'status': 'fail', 'message': '修改供应商失败'})
 
 
 
