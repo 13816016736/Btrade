@@ -257,7 +257,7 @@ class SupplierDetailHandler(BaseHandler):
                 for r in ret:
                     supply_variety_name.append(r.name)
                 supplier["supply_variety_name"] = supply_variety_name
-                if supplier.sponsor!="" and supplier.sponsor!="0":
+                if supplier.sponsor!=None and supplier.sponsor!='0'and supplier.sponsor!="":
                     print supplier.sponsor
                     sponsor = self.db.query("select name ,nickname from users where id in(%s)"% supplier.sponsor)
                     if sponsor:
