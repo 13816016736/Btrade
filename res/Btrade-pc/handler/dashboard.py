@@ -156,6 +156,7 @@ class UpdateQuoteStateHandler(BaseHandler):
             #获取报价信息
             purchasesinfos=self.db.query("select q.id,q.price qprice,q.userid quoteuserid ,pi.purchaseid,pi.varietyid,pi.price from"
                                          " quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in (%s)"%qid)
+
             if purchasesinfos:
                 purchaseinfoids=[str(purchasesinfo["purchaseid"]) for purchasesinfo in purchasesinfos]
                 purchaseinfoids=list(set(purchaseinfoids))#去重采购单id
@@ -183,7 +184,7 @@ class UpdateQuoteStateHandler(BaseHandler):
                     purchase["phone"]=purchaseuserinfo[purchase.purchaseid][0]
                     purchase["userid"] = purchaseuserinfo[purchase.purchaseid][1]
             params = []
-            for purchase in purchases:
+            for purchase in purchasesinfos:
                 purchase["name"] = purchase["name"].encode('utf-8') if isinstance(purchase["name"], unicode) else purchase["name"]
                 purchase["variety"] = purchase["variety"].encode('utf-8') if isinstance(purchase["variety"], unicode) else purchase["variety"]
                 purchase["quotephone"] = purchase["quotephone"].encode('utf-8') if isinstance(purchase["quotephone"], unicode) else purchase["quotephone"]

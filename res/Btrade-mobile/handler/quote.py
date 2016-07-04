@@ -26,7 +26,8 @@ class QuoteHandler(BaseHandler):
         # 获取采购单area信息
         areaid = purchaseinfo["areaid"]
         areainfo = self.db.get("select position from area where id =%s", areaid)
-        purchaseinfo["position"] = areainfo.position
+        if areainfo:
+            purchaseinfo["position"] = areainfo.position
 
 
         #获得采购品种图片
@@ -211,7 +212,8 @@ class QuoteDetailHandler(BaseHandler):
         # 获取采购单area信息
         areaid = purchaseinfo["areaid"]
         areainfo = self.db.get("select position from area where id =%s", areaid)
-        purchaseinfo["position"] = areainfo.position
+        if areainfo:
+            purchaseinfo["position"] = areainfo.position
 
 
 

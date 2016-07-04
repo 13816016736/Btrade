@@ -128,8 +128,9 @@ class PurchaseInfoHandler(BaseHandler):
         #获取采购单area信息
         areaid = purchaseinfo["areaid"]
         areainfo=self.db.get("select position,parentid from area where id =%s",areaid)
-        purchaseinfo["position"]=areainfo.position
-        purchaseinfo["parentid"] = areainfo.parentid
+        if areainfo:
+            purchaseinfo["position"]=areainfo.position
+            purchaseinfo["parentid"] = areainfo.parentid
 
 
 
