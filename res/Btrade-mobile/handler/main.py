@@ -383,11 +383,24 @@ class ReplayDetailHandler(BaseHandler):
             self.db.execute("update notification set status = 1 where id = %s", nid)
         userid = self.session.get("userid")
         pid = self.get_argument("pid")
-        purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
-                                   "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+        #查询采购单详细信息包括user,area信息
+
+        purchaseinfo = self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
                                    "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
-                                   "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",
-                                   pid)
+                                   "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",pid)
+
+        ret = self.db.get("select position from area where id =%s", purchaseinfo["areaid"])
+        if ret:
+            purchaseinfo["position"] = ret.position
+        else:
+            purchaseinfo["position"] = ""
+
+
+        #purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
+        #                           "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+        #                           "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
+       #                            "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",
+       #                            pid)
         if userid != purchaseinfo["userid"]:
             self.error("这个采购单不属于你哦！","/reply")
         # 获得采购品种图片

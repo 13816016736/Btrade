@@ -11,20 +11,20 @@
             <div class="form">
             <form action="/login" method="post" id="jLoginForm">
 				{% raw xsrf_form_html() %}<input name="next_url" type="hidden" value="{{ next_url }}"/>
-                <div class="msg" id="jMsg">{% if 'error' in globals() %}{{error}}{% end %}</div>
+                <div class="msg" id="msg">{% if 'error' in globals() %}{{error}}{% end %}</div>
                 <div class="group">
-                    <i class="iconfont icon-user"></i><input type="text" placeholder="会员名/手机号" value="" name="username" class="ipt" autocomplete="off">
+                    <i class="iconfont icon-user"></i><input type="text" placeholder="会员名/手机号" value="" name="username" id="username" class="ipt" autocomplete="off">
                 </div>
 
                 <div class="group">
-                    <i class="iconfont icon-lock"></i><input class="ipt" name="password" value="" placeholder="密码" type="password">
+                    <i class="iconfont icon-lock"></i><input type="password" placeholder="密码" value="" name="password" id="pwd" class="ipt" autocomplete="off">
                 </div>
                 <div class="tr">
                     <a href="/forgetpwd">忘记密码</a>
                 </div>
 
                 <div class="button">
-                    <button class="btn btn-orange" type="submit" id="jSubmit" class="submit">立即登录</button>
+                    <button class="btn btn-orange" type="submit" id="submit" class="submit">立即登录</button>
                     <a class="btn btn-gray" href="/register">免费注册</a>
                 </div>
 
@@ -39,32 +39,5 @@
 </section>
 {% end %}
 {% block javascript %}
-<script src="{{ static_url('js/jquery.validate.min.js')}}"></script>
-<script>
-// 登录验证
-$('#jLoginForm').validate({
-    rules: {
-        username: {
-            required: true
-        },
-        password: {
-            required: true
-        }
-    },
-    messages: {
-        username: {
-            required: '请输入用户名'
-        },
-        password: {
-            required: '请输入密码'
-        }
-    },
-    onkeyup: false,
-    errorLabelContainer: (document.getElementById('jMsg')),
-    submitHandler: function(form) {
-		form.submit();
-    }
-});
-
-</script>
+<script src="{{ static_url('js/login.js')}}"></script>
 {% end %}
