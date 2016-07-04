@@ -172,9 +172,10 @@ class MyPurchaseHandler(BaseHandler):
         if purchaseids:
             purchaseinfos = self.db.query("select p.*,q.id qid,count(q.id) quotecount,min(CAST(q.price as SIGNED)) qprice"
                 ",count(if(q.state=1,true,null )) intentions, count(if(q.state=0,true,null )) unread "
-                "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in ("+",".join(purchaseids)+") group by p.id")
+                "from purchase_info p left join quote q on p.id = q.purchaseinfoid where p.purchaseid in (%s) group by p.id"%",".join(purchaseids))
+
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
-            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in (%s)"%",".join(purchaseinfoids))
             attachments = defaultdict(list)
             for attachment in purchaseattachments:
                 attachments[attachment["purchase_infoid"]] = attachment
@@ -212,10 +213,24 @@ class MyPurchaseInfoHandler(BaseHandler):
         if(len(child_userid)!=0):
             for item in child_userid:
                 show_userid.append(str(item.child_user_id))
-        purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
-        "p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.userid  in (%s) "%(",".join(show_userid))+" and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", id)
+        #purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.invoice,p.pay,p.payday,p.payinfo,p.accept,p.send,"
+        #"p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
+        #"pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
+        #"where p.userid  in (%s) "%(",".join(show_userid))+" and p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", id)
+        #获取采购单信息
+
+        purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+        "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
+        "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
+
+        #获取采购单area信息
+        areaid = purchaseinfo["areaid"]
+        areainfo=self.db.get("select position,parentid from area where id =%s",areaid)
+        purchaseinfo["position"]=areainfo.position
+        #purchaseinfo["parentid"] = areainfo.parentid
+
+
+
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:

@@ -12,9 +12,9 @@ class MainHandler(BaseHandler):
         purchaseids = [str(purchase["id"]) for purchase in purchases]
         purchaseinf = defaultdict(list)
         if purchaseids:
-            purchaseinfos = self.db.query("select id,purchaseid,name,specification,origin,quantity,quality,unit from purchase_info where purchaseid in ("+",".join(purchaseids)+")")
+            purchaseinfos = self.db.query("select id,purchaseid,name,specification,origin,quantity,quality,unit from purchase_info where purchaseid in (%s)"%",".join(purchaseids))
             purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
-            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in (%s)"%",".join(purchaseinfoids))
             attachments = defaultdict(list)
             for attachment in purchaseattachments:
                 attachments[attachment["purchase_infoid"]] = attachment
@@ -27,10 +27,23 @@ class MainHandler(BaseHandler):
             purchase["variety"] = len(purchase["purchaseinfo"]) if purchase["purchaseinfo"] else 0
 
         #最新报价
-        quotes = self.db.query("select ta.*,u.name pname from (select t.*,u.name qname from (select qp.*,p.userid puid from "
-        "(select q.id,q.userid quid,q.quality,q.price,q.createtime,pi.id pid,pi.purchaseid,pi.name,pi.specification,pi.unit "
-        "from quote q,purchase_info pi where q.purchaseinfoid = pi.id order by q.createtime desc limit 4)"
-        " qp left join purchase p on qp.purchaseid = p.id) t left join users u on t.quid = u.id) ta left join users u on ta.puid = u.id")
+        #quotes = self.db.query("select ta.*,u.name pname from (select t.*,u.name qname from (select qp.*,p.userid puid from "
+        #"(select q.id,q.userid quid,q.quality,q.price,q.createtime,pi.id pid,pi.purchaseid,pi.name,pi.specification,pi.unit "
+        #"from quote q,purchase_info pi where q.purchaseinfoid = pi.id order by q.createtime desc limit 4)"
+        #" qp left join purchase p on qp.purchaseid = p.id) t left join users u on t.quid = u.id) ta left join users u on ta.puid = u.id")
+
+        quotes =self.db.query("select q.id,q.userid quid,q.quality,q.price,q.createtime,pi.id pid,pi.purchaseid,pi.name,pi.specification,pi.unit from "
+        "quote q,purchase_info pi where q.purchaseinfoid = pi.id order by q.createtime desc limit 4")#获取最新的4个报价
+        purchaseids = [str(quote["purchaseid"]) for quote in quotes]#采购单id list
+        purchaseuser = self.db.query(
+            "select p.id,name from purchase p left join users u on p.userid=u.id where p.id in(%s)" % ",".join(
+                purchaseids))
+        purchaseuserinfo = dict((i.id, i.name) for i in  purchaseuser)
+        for quote in quotes :
+            quote["pname"]=purchaseuserinfo[quote.purchaseid]
+
+
+
         quoteids = [str(quote["id"]) for quote in quotes]
         #取报价图片
         if quoteids:

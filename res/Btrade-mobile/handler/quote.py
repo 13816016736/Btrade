@@ -13,10 +13,21 @@ class QuoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, purchaseinfoid):
-        purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
-        "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", purchaseinfoid)
+        #purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
+        #"p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        #"pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
+        #"where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", purchaseinfoid)
+        #获取采购单信息
+        purchaseinfo = self.db.get(
+            "select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+            "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
+            "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s", purchaseinfoid)
+
+        # 获取采购单area信息
+        areaid = purchaseinfo["areaid"]
+        areainfo = self.db.get("select position from area where id =%s", areaid)
+        purchaseinfo["position"] = areainfo.position
+
 
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", purchaseinfoid)
@@ -186,10 +197,24 @@ class QuoteDetailHandler(BaseHandler):
             qa["attachment"] = config.img_domain+qa["attachment"][qa["attachment"].find("static"):].replace(base, base+"_thumb")
 
         #查询采购单信息
-        purchaseinfo = self.db.get("select t.*,a.position from "
-        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
-        "where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", quote["purchaseinfoid"])
+        #purchaseinfo = self.db.get("select t.*,a.position from "
+        #"(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
+        #"pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
+        #"where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", quote["purchaseinfoid"])
+
+        # 获取采购单信息
+        purchaseinfo = self.db.get(
+            "select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+            "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
+            "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s", quote["purchaseinfoid"])
+
+        # 获取采购单area信息
+        areaid = purchaseinfo["areaid"]
+        areainfo = self.db.get("select position from area where id =%s", areaid)
+        purchaseinfo["position"] = areainfo.position
+
+
+
 
         quote["unit"] = purchaseinfo["unit"]
 
@@ -245,16 +270,44 @@ class QuoteListHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
-        myquotes = self.db.query("select ta.*,n.id nid from (select mq.*,u.name uname,u.nickname,u.type,u.phone from "
-                                 "(select ta.*,p.createtime purchasetime,p.term,p.userid purchaseuserid from ("
-                                 "select q.*,pi.purchaseid,pi.name,pi.specification,pi.origin,pi.quantity,pi.unit "
-                                 "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s order by q.createtime desc"
-                                 ") ta,purchase p where ta.purchaseid = p.id) mq,users u where mq.purchaseuserid = u.id) ta "
-                                 "left join notification n on ta.userid = n.sender and n.content = ta.purchaseinfoid", userid)
+        #获取我发出的报价信息
+        #myquotes = self.db.query("select ta.*,n.id nid from (select mq.*,u.name uname,u.nickname,u.type,u.phone from "
+        #                         "(select ta.*,p.createtime purchasetime,p.term,p.userid purchaseuserid from ("
+        #                         "select q.*,pi.purchaseid,pi.name,pi.specification,pi.origin,pi.quantity,pi.unit "
+        #                         "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s order by q.createtime desc"
+        #                         ") ta,purchase p where ta.purchaseid = p.id) mq,users u where mq.purchaseuserid = u.id) ta "
+        #                         "left join notification n on ta.userid = n.sender and n.content = ta.purchaseinfoid", userid)
+        myquotes = self.db.query("select q.*,pi.purchaseid,pi.name,pi.specification,pi.origin,pi.quantity,pi.unit "
+                                 "from quote q,purchase_info pi where q.purchaseinfoid = pi.id and q.userid = %s order by q.createtime desc",userid)#获取我的报价信息
+        if myquotes:
+            purchaseids= [str(quote["purchaseid"]) for quote in myquotes]
+            purchaseinfoids=[str(quote["purchaseinfoid"]) for quote in myquotes]
+            purchase =self.db.query("select id,createtime purchasetime,term,userid purchaseuserid from purchase where id in(%s)" %",".join(purchaseids))#获取报价的采购单信息
+            purchasedict = dict((i.id, [i.purchasetime,i.term,i.purchaseuserid]) for i in purchase)
+            userinfo = self.db.get(
+                "select id,nickname,name,type,phone from users where id =%s ",userid)  # 获取user信息
+            notification=self.db.query("select content as purchaseinfoid, id from notification where sender=%s and content in(%s)"%(userid,",".join(purchaseinfoids)))#获取该user的notification
+            notificationdict = dict((i.purchaseinfoid, i.id) for i in notification)
+
+
+
+
         quoteids = []
         over = 0
         unreply = 0
         for myquote in myquotes:
+            #拼接信息
+            myquote["purchasetime"]=purchasedict[myquote["purchaseid"]][0]
+            myquote["term"]=purchasedict[myquote["purchaseid"]][1]
+            myquote["purchaseuserid"] = purchasedict[myquote["purchaseid"]][2]
+            myquote["nickname"]=userinfo["nickname"]
+            myquote["uname"] = userinfo["name"]
+            myquote["type"]=userinfo["type"]
+            myquote["phone"] = userinfo["phone"]
+            myquote["nid"]= notificationdict[str(myquote.purchaseinfoid)]
+
+
+
             quoteids.append(str(myquote.id))
             expire = datetime.datetime.fromtimestamp(float(myquote["purchasetime"])) + datetime.timedelta(myquote["term"])
             myquote["timedelta"] = (expire - datetime.datetime.now()).days

@@ -52,17 +52,38 @@ class PurchaseHandler(BaseHandler):
             user = self.db.get("select varietyids from users where id = %s", userid)
             if user and user.get("varietyids", None):
                 myvarietyid = user["varietyids"]
-        purchases = self.db.query("select ta.*,u.nickname,u.name uname,u.type from (select pis.*,count(q.id) quotecount from "
-                                  "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
-                                  "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid,"
-                                  "(case when pi.varietyid in ("+str(myvarietyid)+") then 1 else 0 end) myvariety from "
+
+        #获取采购单的详细信息
+        #purchases = self.db.query("select ta.*,u.nickname,u.name uname,u.type from (select pis.*,count(q.id) quotecount from "
+        #                          "(select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
+        #                          "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid,"
+        #                          "(case when pi.varietyid in ("+str(myvarietyid)+") then 1 else 0 end) myvariety from "
+        #                          "purchase_info pi left join purchase p on p.id = pi.purchaseid where p.status != 0 and pi.status=1 order by orderid desc,"
+        #                          "myvariety desc,p.createtime desc,p.id desc limit %s,%s) "
+        #                          "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by orderid desc,myvariety desc,pis.createtime desc) ta "
+        #                          "left join users u on ta.userid = u.id order by orderid desc,myvariety desc,ta.pid desc", number, config.conf['POST_NUM'])
+
+        #获取采购单信息，优先显示我关注的
+        purchases=self.db.query("select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
+                                 "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid,"
+                                  "(case when pi.varietyid in (%s)"%str(myvarietyid)+" then 1 else 0 end) myvariety from "
                                   "purchase_info pi left join purchase p on p.id = pi.purchaseid where p.status != 0 and pi.status=1 order by orderid desc,"
-                                  "myvariety desc,p.createtime desc,p.id desc limit %s,%s) "
-                                  "pis left join quote q on pis.pid = q.purchaseinfoid group by pis.pid order by orderid desc,myvariety desc,pis.createtime desc) ta "
-                                  "left join users u on ta.userid = u.id order by orderid desc,myvariety desc,ta.pid desc", number, config.conf['POST_NUM'])
+                                  "myvariety desc,p.createtime desc,p.id desc limit %s,%s",number, config.conf['POST_NUM'])
+
+
         if purchases:
+            #拆分sql
             purchaseinfoids = [str(purchase["pid"]) for purchase in purchases]
-            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in ("+",".join(purchaseinfoids)+")")
+            purchaseuseids = [str(purchase["userid"]) for purchase in purchases]
+            purchaseuseids = list(set(purchaseuseids))  # 去重userid
+            quoteinfos = self.db.query(
+                "select purchaseinfoid,count(id) as quotecount from quote where purchaseinfoid in (%s) group by purchaseinfoid " % ",".join(purchaseinfoids))  # 获取报价个数
+            quotecountlist= dict((i.purchaseinfoid, i.quotecount) for i in quoteinfos)
+            userinfos = self.db.query(
+                "select id,nickname,name,type from users where id in(%s) " % ",".join(purchaseuseids))  # 获取user信息
+            purchaseuserinfo = dict((i.id, [i.nickname, i.name, i.type]) for i in userinfos)
+            purchaseinfoids = [str(purchase["pid"]) for purchase in purchases]
+            purchaseattachments = self.db.query("select * from purchase_attachment where purchase_infoid in (%s)"%",".join(purchaseinfoids))
             attachments = defaultdict(list)
             for attachment in purchaseattachments:
                 base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
@@ -70,6 +91,14 @@ class PurchaseHandler(BaseHandler):
                 attachments[attachment["purchase_infoid"]] = attachment
 
             for purchase in purchases:
+                if quotecountlist.has_key(purchase.pid):
+                    purchase["quotecount"]=quotecountlist[purchase.pid]
+                else:
+                    purchase["quotecount"] =0
+                purchase["nickname"] = purchaseuserinfo[purchase.userid][0]
+                purchase["uname"]= purchaseuserinfo[purchase.userid][1]
+                purchase["type"] = purchaseuserinfo[purchase.userid][2]
+
                 purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
                 if int(purchase["term"]) != 0:
                     # purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
@@ -87,10 +116,24 @@ class PurchaseHandler(BaseHandler):
 
 class PurchaseInfoHandler(BaseHandler):
     def get(self, id):
-        purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
-        "(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+        #purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
+        #"(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
+        #"p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
+        #"pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
+        #获取采购单详细信息
+        purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
         "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
-        "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
+        "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
+
+        #获取采购单area信息
+        areaid = purchaseinfo["areaid"]
+        areainfo=self.db.get("select position,parentid from area where id =%s",areaid)
+        purchaseinfo["position"]=areainfo.position
+        purchaseinfo["parentid"] = areainfo.parentid
+
+
+
+
         #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", id)
         for attachment in attachments:

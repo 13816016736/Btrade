@@ -475,22 +475,27 @@ class UpdateQuoteStateHandler(BaseHandler):
             #              "(select ta.id,ta.quoteuserid,ta.qprice,ta.price,ta.name,p.userid from (select t.id,t.userid quoteuserid,t.purchaseid,t.qprice,t.price,v.name from "
             #              "(select q.id,q.price qprice,q.userid,pi.purchaseid,pi.varietyid,pi.price from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in ("+qid+")) t left join variety v on t.varietyid = v.id)"
             #              " ta left join purchase p on ta.purchaseid = p.id) tab left join users u on tab.userid = u.id) ta left join users u on ta.quoteuserid = u.id")
+            #获取报价信息
             purchasesinfos=self.db.query("select q.id,q.price qprice,q.userid quoteuserid ,pi.purchaseid,pi.varietyid,pi.price from"
                                          " quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in (%s)"%qid)
             if purchasesinfos:
                 purchaseinfoids=[str(purchasesinfo["purchaseid"]) for purchasesinfo in purchasesinfos]
                 purchaseinfoids=list(set(purchaseinfoids))#去重采购单id
+                #获取采购单的采购人的信息
                 purchases=self.db.query("select p.id,u.phone,u.id userid from purchase p left join users u on p.userid=u.id where p.id in(%s)"%",".join(purchaseinfoids))
                 purchaseuserinfo = dict((i.id,[i.phone,i.userid]) for i in purchases)
                 quoteuserids=[str(purchasesinfo["quoteuserid"]) for purchasesinfo in purchasesinfos]
+                #获取报价人的信息
                 quoteusers=self.db.query("select id,phone,name,nickname,openid from users where id in (%s)"%",".join(quoteuserids))
                 quoteusersinfo=dict((i.id,[i.phone,i.name,i.nickname,i.openid]) for i in quoteusers)
                 variteyids=[str(purchasesinfo["varietyid"]) for purchasesinfo in purchasesinfos]
                 variteyids=list(set(variteyids))#去重品种id
+                #获取品种信息
                 variteyinfo=self.db.query("select id,name from variety where id in (%s)" %",".join(variteyids))
                 variteys = defaultdict(list)
                 for item in variteyinfo:
                     variteys[item.id]=item.name
+                #封装报价人和采购人的信息
                 for purchase in purchasesinfos:
                     purchase["quotephone"] = quoteusersinfo[purchase.quoteuserid][0]
                     purchase["name"]=quoteusersinfo[purchase.quoteuserid][1]
