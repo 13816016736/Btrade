@@ -418,18 +418,22 @@ class PurchaseSuccessHandler(BaseHandler):
 
 
         #获取供应商信息
-        suppliers=self.db.query("SELECT pi.id,n.sender FROM `purchase_info` pi,notification n WHERE pi.id = n.content and n.type = 2 and varietyid in (%s) "%varids+
-                                "and n.sender != %s",self.session.get("userid"))
+        #suppliers=self.db.query("SELECT pi.id,n.sender FROM `purchase_info` pi,notification n WHERE pi.id = n.content and n.type = 2 and varietyid in (%s) "%varids+
+        #                        "and n.sender != %s",self.session.get("userid"))
+        #取采购第一个品种进行展示
 
-        if suppliers:
-            supplyids = [str(supplier["sender"]) for supplier in suppliers]
-            supplyinfos = self.db.query(
-                "select u.id ,u.name,a.areaname,a.parentid from users u left join area a on u.areaid = a.id where u.id in(%s)" % ",".join(supplyids))
-            supplyinfosdict = dict((i.id, [i.name,i.areaname,i.parentid ]) for i in supplyinfos)
-            for item in suppliers:
-                item["name"]=  supplyinfosdict[item["sender"]][0]
-                item["areaname"]=  supplyinfosdict[item["sender"]][1]
-                item["parentid"] = supplyinfosdict[item["sender"]][2]
+        varid=varids.split(",")[0]
+        suppliers = self.db.query("select id ,name ,address as areaname  from supplier where find_in_set(%s,variety)",varid)
+
+        #if suppliers:
+        #    supplyids = [str(supplier["sender"]) for supplier in suppliers]
+        #    supplyinfos = self.db.query(
+        #        "select u.id ,u.name,a.areaname,a.parentid from users u left join area a on u.areaid = a.id where u.id in(%s)" % ",".join(supplyids))
+        #    supplyinfosdict = dict((i.id, [i.name,i.areaname,i.parentid ]) for i in supplyinfos)
+        #    for item in suppliers:
+        #        item["name"]=  supplyinfosdict[item["sender"]][0]
+        #        item["areaname"]=  supplyinfosdict[item["sender"]][1]
+        #        item["parentid"] = supplyinfosdict[item["sender"]][2]
 
 
 
