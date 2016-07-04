@@ -36,16 +36,15 @@
 .yc-purchase-form .group .cont .fold{color:#337ab7;cursor:pointer;}
 .yc-purchase-form .group .cbx{margin:0 4px 0 0;vertical-align:-1px;}
 .yc-purchase-form .group .tips{display:block;margin-top:4px;color:#999;}
-.yc-purchase-form .group .cont .error{color:#f00;vertical-align:middle;}
+.yc-purchase-form .group .cont .error{color:#c3272b;vertical-align:middle;}
 .yc-purchase-form .group .yc-select{width:150px;margin-right:4px;}
 .yc-purchase-form .group .block{display:inline-block;margin:0 0 0 20px;padding:9px 20px;color:#999;vertical-align:middle;}
 .yc-purchase-form .submit{min-width:160px;height:40px;margin-left:110px;}
 .yc-purchase-form table{width:100%;margin-top:10px;}
 .yc-purchase-form th{padding:10px 0;border-bottom:1px dotted #ccc;font-size:14px;font-weight:100;}
 .yc-purchase-form td{padding:10px 0;border-bottom:1px dotted #ccc;vertical-align:top;}
-.yc-purchase-form td .error{display:block;color:#f00;}
-.yc-purchase-form i{cursor:pointer;color:#ffa902;line-height:1;}
-.yc-purchase-form .del{display:inline-block;margin-top:5px;}
+.yc-purchase-form td .error{display:block;color:#c3272b;}
+.yc-purchase-form i{margin-top:4px;cursor:pointer;color:#ffa902;line-height:1;}
 .yc-purchase-form .upload{width:24px;}
 .yc-purchase-form .thumb{position:relative;display:none;width:50px;height:50px;}
 .yc-purchase-form .thumb img{width:100%;height:100%;border:1px solid #ddd;}
@@ -95,7 +94,7 @@
 .variety-tags .search dd span{display:block;margin:0;line-height:24px;border:none;border-radius:0;}
 .variety-tags .search dd span:hover{background-color:#ffa902;color:#fff;}
 .variety-tags .search dd span.on{background-color:#ffa902;color:#fff;}
-.variety-tags .search dd em{display:block;line-height:24px;padding:1px 4px;color:#f00;}
+.variety-tags .search dd em{display:block;line-height:24px;padding:1px 4px;color:#c3272b;}
 .quality-tags{position:relative;z-index:9;display:none;/*margin-top:10px;*/}
 .quality-tags .inner{position:absolute;top:0;left:-5px;width:260px;padding:5px;background-color:#fff;border:1px solid #999;border-top:0;}
 .quality-tags dl{margin:0;line-height:30px;}
@@ -148,13 +147,13 @@
 .pch-success .side .msg{display:none;height:0;color:#57c;}
 .pch-success .side .sms{float:left;width:160px;}
 .pch-success .side .sms .ipt{width:100%;height:28px;line-height:18px;padding:4px;font-size:12px;color:#333;border:1px solid #999;vertical-align:middle;}
-.pch-success .side .sms .error{display:none;margin-left:2px;color:#f00;}
+.pch-success .side .sms .error{display:none;margin-left:2px;color:#c3272b;}
 .pch-success .side .sms .btn{width:100%;margin:10px 0 6px;}
 .pch-success .side .app{margin-left:180px;padding-left:10px;color:#333;border-left:1px solid #999;text-align:center;}
 
 
 #jCity{margin-right:20px;}
-#jAddressError{color:#f00;}
+#jAddressError{color:#c3272b;}
 
 
 /* 模态框扩展 */
