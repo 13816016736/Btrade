@@ -18,32 +18,4 @@
 
 <script src="{{ static_url('js/jquery.min.js')}}"></script>
 <script src="{{ static_url('js/bootstrap.min.js')}}"></script>
-<script src="{{ static_url('js/jquery.validate.min.js')}}"></script>
-<script>
-// 登录验证
-$('#jLoginForm').validate({
-    rules: {
-        username: {
-            required: true
-        },
-        password: {
-            required: true
-        }
-    },
-    messages: {
-        username: {
-            required: '请输入用户名'
-        },
-        password: {
-            required: '请输入密码'
-        }
-    },
-    onkeyup: false,
-    errorLabelContainer: (document.getElementById('jMsg')),
-    submitHandler: function() {
-        alert(0)
-    }
-});
-
-</script>
 {% end %}
