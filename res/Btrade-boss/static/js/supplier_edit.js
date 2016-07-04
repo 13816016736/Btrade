@@ -391,7 +391,7 @@ $(function() {
     });
     $("#modify").on('click',function() {
       $("#jrecord").val($(this).attr("name"));
-       $("#jrecord").attr("uid",$(this).attr("uild"));
+       $("#jrecord").attr("uid",$(this).attr("uid"));
     });
 
 
