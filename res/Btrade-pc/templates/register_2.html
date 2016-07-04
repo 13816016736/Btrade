@@ -179,8 +179,8 @@ var registerPage = {
         // 表单验证
         formValidate: function() {
             var myformValidate = $("#myform").Validform({
-                beforeSubmit: function() {
-                    !registerPage.v.flag && myformValidate.fn.submitForm();
+                beforeSubmit: function(form) {
+                    !registerPage.v.flag && registerPage.fn.submitForm(form);
                     return registerPage.v.flag;
                 }
             });
@@ -224,7 +224,7 @@ var registerPage = {
             registerPage.v.myformValidate = myformValidate;
             return this;
         },
-        submitForm: function() {
+        submitForm: function(form) {
             $.ajax({
                 url: "/reginfo",
                 data: $("#myform").serialize(),
@@ -236,6 +236,7 @@ var registerPage = {
                 success: function(data) {
                     if(data.status == "success"){
                         registerPage.v.flag = true;
+                        form.submit();
                     }else{
                         alert(data.message);
                     }
