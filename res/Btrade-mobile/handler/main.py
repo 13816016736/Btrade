@@ -471,12 +471,37 @@ class UpdateQuoteStateHandler(BaseHandler):
             else:
                 self.db.execute("update quote set state=%s,updatetime=%s where id in ("+qid+")", state, int(time.time()))
             #回复供应商的报价后，要通知供应商
-            purchases = self.db.query("select u.phone quotephone,u.openid quoteopenid,ta.* from (select u.name,u.phone,u.nickname,tab.id,tab.quoteuserid,tab.userid,tab.name variety,tab.qprice,tab.price from "
-                          "(select ta.id,ta.quoteuserid,ta.qprice,ta.price,ta.name,p.userid from (select t.id,t.userid quoteuserid,t.purchaseid,t.qprice,t.price,v.name from "
-                          "(select q.id,q.price qprice,q.userid,pi.purchaseid,pi.varietyid,pi.price from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in ("+qid+")) t left join variety v on t.varietyid = v.id)"
-                          " ta left join purchase p on ta.purchaseid = p.id) tab left join users u on tab.userid = u.id) ta left join users u on ta.quoteuserid = u.id")
+            #purchases = self.db.query("select u.phone quotephone,u.openid quoteopenid,ta.* from (select u.name,u.phone,u.nickname,tab.id,tab.quoteuserid,tab.userid,tab.name variety,tab.qprice,tab.price from "
+            #              "(select ta.id,ta.quoteuserid,ta.qprice,ta.price,ta.name,p.userid from (select t.id,t.userid quoteuserid,t.purchaseid,t.qprice,t.price,v.name from "
+            #              "(select q.id,q.price qprice,q.userid,pi.purchaseid,pi.varietyid,pi.price from quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in ("+qid+")) t left join variety v on t.varietyid = v.id)"
+            #              " ta left join purchase p on ta.purchaseid = p.id) tab left join users u on tab.userid = u.id) ta left join users u on ta.quoteuserid = u.id")
+            purchasesinfos=self.db.query("select q.id,q.price qprice,q.userid quoteuserid ,pi.purchaseid,pi.varietyid,pi.price from"
+                                         " quote q left join purchase_info pi on q.purchaseinfoid = pi.id where q.id in (%s)"%qid)
+            if purchasesinfos:
+                purchaseinfoids=[str(purchasesinfo["purchaseid"]) for purchasesinfo in purchasesinfos]
+                purchaseinfoids=list(set(purchaseinfoids))#去重采购单id
+                purchases=self.db.query("select p.id,u.phone,u.id userid from purchase p left join users u on p.userid=u.id where p.id in(%s)"%",".join(purchaseinfoids))
+                purchaseuserinfo = dict((i.id,[i.phone,i.userid]) for i in purchases)
+                quoteuserids=[str(purchasesinfo["quoteuserid"]) for purchasesinfo in purchasesinfos]
+                quoteusers=self.db.query("select id,phone,name,nickname,openid from users where id in (%s)"%",".join(quoteuserids))
+                quoteusersinfo=dict((i.id,[i.phone,i.name,i.nickname,i.openid]) for i in quoteusers)
+                variteyids=[str(purchasesinfo["varietyid"]) for purchasesinfo in purchasesinfos]
+                variteyids=list(set(variteyids))#去重品种id
+                variteyinfo=self.db.query("select id,name from variety where id in (%s)" %",".join(variteyids))
+                variteys = defaultdict(list)
+                for item in variteyinfo:
+                    variteys[item.id]=item.name
+                for purchase in purchasesinfos:
+                    purchase["quotephone"] = quoteusersinfo[purchase.quoteuserid][0]
+                    purchase["name"]=quoteusersinfo[purchase.quoteuserid][1]
+                    purchase["nickname"]=quoteusersinfo[purchase.quoteuserid][2]
+                    purchase["quoteopenid"] = quoteusersinfo[purchase.quoteuserid][3]
+                    purchase["variety"]=variteys[purchase.varietyid]
+                    purchase["phone"]=purchaseuserinfo[purchase.purchaseid][0]
+                    purchase["userid"] = purchaseuserinfo[purchase.purchaseid][1]
+
             params = []
-            for purchase in purchases:
+            for purchase in purchasesinfos:
                 purchase["name"] = purchase["name"].encode('utf-8') if isinstance(purchase["name"], unicode) else purchase["name"]
                 purchase["variety"] = purchase["variety"].encode('utf-8') if isinstance(purchase["variety"], unicode) else purchase["variety"]
                 purchase["quotephone"] = purchase["quotephone"].encode('utf-8') if isinstance(purchase["quotephone"], unicode) else purchase["quotephone"]
@@ -492,7 +517,6 @@ class UpdateQuoteStateHandler(BaseHandler):
                     rejectQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, message)
                     rejectQuoteWx(purchase["quoteopenid"], purchase["id"], purchase["name"], purchase["variety"], purchase["qprice"], message, today)
             self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
-
             self.api_response({'status':'success','message':'操作成功'})
         else:
             self.api_response({'status':'fail','message':'请选择要标注的报价'})
