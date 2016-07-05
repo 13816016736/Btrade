@@ -9,8 +9,7 @@
 .wrap .group .ipt{width:230px;height:40px;line-height:18px;padding:9px 5px;font-size:14px;color:#333;border:1px solid #ccc;vertical-align:middle;}
 .wrap .group .code{width:86px;margin-right:10px;}
 .wrap .group i{display:inline-block;width:40px;height:40px;line-height:40px;font-size:26px;color:#fff;text-align:center;background-color:#ccc;vertical-align:middle;}
-.wrap .msg{height:24px;color:#c3272b;visibility:hidden;}
-.wrap .vis{visibility:visible;}
+.wrap .msg{height:24px;color:#c3272b;}
 .wrap .tr{padding:5px 0;text-align:right;}
 .wrap .btn{padding:9px 12px;}
 .wrap .button{padding-top:40px;text-align:right;overflow:hidden;}

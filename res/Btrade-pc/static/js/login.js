@@ -5,11 +5,7 @@ $(function() {
         $msg = $('#msg');
 
     var _showMsg = function(txt) {
-        if (!txt) {
-            $msg.removeClass('vis');
-        } else {
-            $msg.html(txt).addClass('vis');
-        }
+        $msg.html(txt);
     }
 
     var _checkUsername = function() {
