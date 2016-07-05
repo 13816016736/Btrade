@@ -3,6 +3,7 @@
 from base import BaseHandler
 import re,json,config,time,logging
 from utils import *
+#import random
 
 class RegisterHandler(BaseHandler):
     def get(self, next_url="/"):
