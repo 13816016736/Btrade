@@ -126,7 +126,7 @@
                         <strong class="name">{{quote.uname}}</strong>
                     </div>
                     <div class="tr">
-                        <time data-full-time="{{quote.datetime}}">{{quote.datetime}}</time>
+                        <time data-time="{{quote.datetime}}">{{quote.datetime}}</time>
                         <span class="yc-cat">{{config.usertype[quote.usertype]}}</span>
                     </div>
                     <div class="user">
@@ -334,10 +334,7 @@ $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"
         });
 
         
-        $('time[data-full-time]').each(function(){
-        var time = $(this).data('full-time');
-        $(this).html(timeago.fullTime(time));
-    });
+
     })
 </script>
 {% end %}
