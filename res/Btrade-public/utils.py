@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import thread,config
+import random,thread,config,time
 from sendsms import *
 from sendwechart import *
 
