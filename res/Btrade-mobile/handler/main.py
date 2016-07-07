@@ -424,7 +424,7 @@ class ReplayDetailHandler(BaseHandler):
         if quotes:
             for quote in quotes:
                 quoteids.append(str(quote.id))
-                quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+                quote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(quote["createtime"])))
                 quote["unit"] = purchaseinfo["unit"]
             quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
             myquoteattachments = {}
@@ -482,12 +482,12 @@ class UpdateQuoteStateHandler(BaseHandler):
                 purchaseinfoids=[str(purchasesinfo["purchaseid"]) for purchasesinfo in purchasesinfos]
                 purchaseinfoids=list(set(purchaseinfoids))#去重采购单id
                 #获取采购单的采购人的信息
-                purchases=self.db.query("select p.id,u.phone,u.id userid from purchase p left join users u on p.userid=u.id where p.id in(%s)"%",".join(purchaseinfoids))
-                purchaseuserinfo = dict((i.id,[i.phone,i.userid]) for i in purchases)
+                purchases=self.db.query("select p.id,u.phone,u.id userid,u.name,u.nickname from purchase p left join users u on p.userid=u.id where p.id in(%s)"%",".join(purchaseinfoids))
+                purchaseuserinfo = dict((i.id,[i.phone,i.userid,i.name,i.nickname]) for i in purchases)
                 quoteuserids=[str(purchasesinfo["quoteuserid"]) for purchasesinfo in purchasesinfos]
                 #获取报价人的信息
-                quoteusers=self.db.query("select id,phone,name,nickname,openid from users where id in (%s)"%",".join(quoteuserids))
-                quoteusersinfo=dict((i.id,[i.phone,i.name,i.nickname,i.openid]) for i in quoteusers)
+                quoteusers=self.db.query("select id,phone,openid from users where id in (%s)"%",".join(quoteuserids))
+                quoteusersinfo=dict((i.id,[i.phone,i.openid]) for i in quoteusers)
                 variteyids=[str(purchasesinfo["varietyid"]) for purchasesinfo in purchasesinfos]
                 variteyids=list(set(variteyids))#去重品种id
                 #获取品种信息
@@ -498,12 +498,12 @@ class UpdateQuoteStateHandler(BaseHandler):
                 #封装报价人和采购人的信息
                 for purchase in purchasesinfos:
                     purchase["quotephone"] = quoteusersinfo[purchase.quoteuserid][0]
-                    purchase["name"]=quoteusersinfo[purchase.quoteuserid][1]
-                    purchase["nickname"]=quoteusersinfo[purchase.quoteuserid][2]
-                    purchase["quoteopenid"] = quoteusersinfo[purchase.quoteuserid][3]
+                    purchase["quoteopenid"] = quoteusersinfo[purchase.quoteuserid][1]
                     purchase["variety"]=variteys[purchase.varietyid]
                     purchase["phone"]=purchaseuserinfo[purchase.purchaseid][0]
                     purchase["userid"] = purchaseuserinfo[purchase.purchaseid][1]
+                    purchase["name"]=purchaseuserinfo[purchase.purchaseid][2]
+                    purchase["nickname"]=purchaseuserinfo[purchase.purchaseid][3]
 
             params = []
             for purchase in purchasesinfos:

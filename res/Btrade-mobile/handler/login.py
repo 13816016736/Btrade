@@ -51,3 +51,26 @@ class LogoutHandler(BaseHandler):
 
     def post(self):
         pass
+class BindWxHandler(BaseHandler):
+    def get(self):
+        code = self.get_argument("code", None)
+        if code and (not self.current_user):
+            # 请求获取access_token和openid
+            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
+            config.appid, config.secret, code)
+            res = requests.get(url)
+            message = json.loads(res.text.encode("utf-8"))
+            access_token = message.get("access_token", None)
+            if access_token:
+                openid = message.get("openid")
+                if openid :
+                    userinfo=self.db.query("select id,username from users where openid =%s",openid)
+                    if len(userinfo)==1:#只能绑定一个
+                        notification = self.db.query("select id from notification where receiver = %s", userinfo[0].id)
+                        self.session["userid"] = userinfo[0].id
+                        self.session["user"] = userinfo[0].username
+                        self.session["notification"] = len(notification)
+                        self.session.save()
+        self.redirect(self.get_argument("next_url", "/"))
+    def post(self):
+        pass

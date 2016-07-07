@@ -52,6 +52,7 @@ handlers = [
     (r"/delfile", DeleteFileHandler),
     (r"/users/userinfo/([0-9]+)", UserInfoHandler),
     (r"/login", LoginHandler),
+    (r"/bindwx", BindWxHandler),
     (r"/logout", LogoutHandler),
     (r"/register", RegisterHandler),
     (r"/register/next_url/(.*)", RegisterHandler),
