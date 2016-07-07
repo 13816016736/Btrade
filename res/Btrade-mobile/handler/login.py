@@ -54,7 +54,7 @@ class LogoutHandler(BaseHandler):
 class BindWxHandler(BaseHandler):
     def get(self):
         code = self.get_argument("code", None)
-        if code:
+        if code and self.current_user==None:
             # 请求获取access_token和openid
             url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
             config.appid, config.secret, code)
