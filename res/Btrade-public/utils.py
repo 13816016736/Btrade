@@ -184,20 +184,20 @@ def pushPurchase(phones, purchase):
         purchase[k] = purchase[k].encode('utf-8') if isinstance(purchase[k], unicode) else purchase[k]
     vars = '{"%purchaseinfoid%":"'+str(purchase["purchaseinfoid"])+'","%variety%":"'+purchase["variety"]+'","%name%":"'+purchase["name"]+'","%specification%":"'+purchase["specification"]+'","%quantity%":"'+purchase["quantity"]+'","%unit%":"'+purchase["unit"]+'"}'
     tos = []
-    num=0
-    for index, phone  in enumerate(phones):
-        num=num+1
+    num = 0
+    for index, phone in enumerate(phones):
+        num = num + 1
         phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
         tos.append('{"phone": "'+phone+'", "vars": '+vars+'}')
-        if num==200:
+        if num > 199:
             tos = "[" + ",".join(tos) + "]"
-            thread.start_new_thread(sendx, (templateId, tos))
-            time.sleep(3)
+            sendx(templateId, tos)
             tos = []
             num = 0
-        elif index==(len(phones)-1):
+        elif index == (len(phones)-1):
             tos = "[" + ",".join(tos) + "]"
-            thread.start_new_thread(sendx, (templateId, tos))
+            sendx(templateId, tos)
+
 
 
 
@@ -443,7 +443,7 @@ def pushPurchaseWx(openids, purchase):
                "color":"#173177"
             }
         }
-        thread.start_new_thread(sendwx, (templateId, openid, link, data))
+        sendwx(templateId, openid, link, data)
         time.sleep(3)
 
 import MySQLdb
