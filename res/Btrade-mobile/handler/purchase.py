@@ -131,6 +131,8 @@ class PurchaseInfoHandler(BaseHandler):
         if areainfo:
             purchaseinfo["position"]=areainfo.position
             purchaseinfo["parentid"] = areainfo.parentid
+        else:
+            purchaseinfo["position"] =""
 
 
 

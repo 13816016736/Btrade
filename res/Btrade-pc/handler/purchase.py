@@ -228,6 +228,8 @@ class MyPurchaseInfoHandler(BaseHandler):
         areainfo=self.db.get("select position,parentid from area where id =%s",areaid)
         if areainfo:
             purchaseinfo["position"]=areainfo.position
+        else:
+            purchaseinfo["position"] =""
         #purchaseinfo["parentid"] = areainfo.parentid
 
 
