@@ -171,7 +171,7 @@
                     <div class="td4">货源质量</div>
                     <div class="td5">报价</div>
                 </div>
-                {% for index,quote in enumerate(quotes)%}
+                {% for quote in quotes%}
                 <div class="tr">
                     <div class="td1">
                         <strong>{{quote.name}}</strong>
@@ -189,9 +189,7 @@
                     <div class="td4">
                         <div class="thumb">
                             {% for attachment in quote.attachments%}
-                            <a href="{{attachment.replace('_thumb','')}}" data-lightbox="thumb-{{index}}">
-                                <img src="{{attachment}}" alt=""/>
-                            </a>
+                            <img src="{{attachment}}" data-src="{{attachment.replace('_thumb','')}}" alt=""/>
                             {% end %}
                         </div>
                         <div class="desc">
@@ -252,7 +250,7 @@
 <script src="{{ static_url('js/jquery.qrcode.min.js')}}"></script>
 <script src="{{ static_url('js/lightbox.js')}}"></script>
 <script>
-// $(function(){
+$(function(){
     // 全屏幻灯片
     $('.full-banner').slide({
         mainCell: '.bd ul',
@@ -348,7 +346,7 @@
         $(this).html(dateDiff($(this).data('time')));
     })
 
-// })
+})
 
 </script>
 {% end %}

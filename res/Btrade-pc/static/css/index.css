@@ -11,7 +11,6 @@
 .full-banner .next{right:50%;margin-right:-585px;background-position:-2px -152px;}
 .full-banner .next:hover{background-position:-62px -152px;}
 
-
 .floor{margin-top:50px;}
 .floor .tr:after{content:'';display: table;clear:both;}
 .floor .hd{overflow:hidden;}
@@ -51,7 +50,6 @@
 .floor1 ul li i.icon2{background-position:-103px 0;}
 .floor1 ul li i.icon3{background-position:-136px -4px;}
 .floor1 ul li i.icon4{background-position:-167px -4px;}
-
 .floor1 .bd{margin-top:50px;}
 .floor1 .button{clear:both;padding-top:50px;}
 .floor1 .button .btn{width:240px;font-size:16px;font-weight:700;}
@@ -99,7 +97,7 @@
 .list2 .verify{margin:0 4px;font-size:14px;color:#333;}
 .list2 .verify i{font-size:22px;}
 .list2 .thumb{height:70px;margin-bottom:6px;white-space:nowrap;overflow:hidden;}
-.list2 .thumb img{display:inline-block;width:70px;height:70px;margin-right:4px;border:1px solid #ddd;}
+.list2 .thumb img{display:inline-block;width:70px;height:70px;margin-right:4px;border:1px solid #ddd;cursor:pointer;}
 .list2 .name{height:48px;margin:0 0 40px;font-size:16px;line-height:24px;font-weight:700;color:#3c3c3c;overflow:hidden;}
 .list2 strong{display:block;line-height:24px;font-size:16px;color:#333;}
 .list2 time{display:block;margin-top:10px;font-size:12px;}
@@ -135,7 +133,3 @@
 .coop .brands .bd ul{overflow:hidden;}
 .coop .brands .bd li{float:left;width:240px;height:150px;margin:0 10px;}
 .coop .brands .bd li img{width:100%;height:100%;border:1px solid #ddd;}
-
-
-
-
