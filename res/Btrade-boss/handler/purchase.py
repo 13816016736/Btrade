@@ -7,7 +7,6 @@ from utils import *
 from config import *
 from collections import defaultdict
 from urllib import urlencode
-import thread
 
 class PurchaseHandler(BaseHandler):
 
@@ -191,10 +190,8 @@ class PushPurchaseHandler(BaseHandler):
             phones.add(j["mobile"])
         phones = list(set(phones))
         if phones:
-            thread.start_new_thread(pushPurchase, (phones, purchaseinfo))
-            thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo))
-            #pushPurchase(phones, purchaseinfo)
-            #pushPurchaseWx(openids, purchaseinfo)
+            pushPurchase(phones, purchaseinfo)
+            pushPurchaseWx(openids, purchaseinfo)
             self.api_response({'status':'success','message':'群发给了'+str(len(phones))+'个用户'})
         else:
             self.api_response({'status':'fail','message':'暂无关注此品种的用户'})

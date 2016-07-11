@@ -19,8 +19,6 @@ class Application(tornado.web.Application):
         if log and 'Linux' in platform.system():
             options.log_file_prefix = log_file
             timelog = logging.handlers.TimedRotatingFileHandler(log_file, 'midnight', 1, 0)
-            formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-            timelog.setFormatter(formatter)
             logger.addHandler(timelog)
         options.parse_command_line()
         settings['ui_modules'] = uimodule

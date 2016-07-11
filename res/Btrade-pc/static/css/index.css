@@ -11,7 +11,6 @@
 .full-banner .next{right:50%;margin-right:-585px;background-position:-2px -152px;}
 .full-banner .next:hover{background-position:-62px -152px;}
 
-
 .floor{margin-top:50px;}
 .floor .tr:after{content:'';display: table;clear:both;}
 .floor .hd{overflow:hidden;}
@@ -51,7 +50,6 @@
 .floor1 ul li i.icon2{background-position:-103px 0;}
 .floor1 ul li i.icon3{background-position:-136px -4px;}
 .floor1 ul li i.icon4{background-position:-167px -4px;}
-
 .floor1 .bd{margin-top:50px;}
 .floor1 .button{clear:both;padding-top:50px;}
 .floor1 .button .btn{width:240px;font-size:16px;font-weight:700;}
@@ -70,11 +68,10 @@
 .list1 .group{margin-bottom:15px;overflow:hidden;}
 .list1 .tfoot{padding:20px 0 0 16px;font-size:12px;}
 .list1 .qrcode{position:absolute;top:32px;left:45px;width:20px;height:28px;background:url(../images/icons.png) no-repeat -201px -5px;}
-.list1 .qrcode span{position:absolute;top:-21px;left:-166px;width:136px;height:136px;padding:6px;background-color:#fff;box-shadow:0 0 12px 1px rgba(0,0,0,.33);display:none;}
-.list1 .qrcode span img{width:124px;height:124px;background:url(../images/loading.gif) no-repeat 50%;}
-.list1 .qrcode span:after{content:"";position:absolute;top:26px;right:-20px;border:10px dashed transparent;border-left:10px solid #fff;}
+.list1 .qrcode .canvas{position:absolute;top:-21px;left:-166px;width:136px;height:136px;padding:6px;background-color:#fff;box-shadow:0 0 12px 1px rgba(0,0,0,.33);display:none;}
+.list1 .qrcode .canvas:after{content:"";position:absolute;top:26px;right:-20px;border:10px dashed transparent;border-left:10px solid #fff;}
 .list1 .td3:hover .qrcode{background-position:-228px -5px;}
-.list1 .td3:hover .qrcode span{display:block;}
+.list1 .td3:hover .qrcode .canvas{display:block;}
 .list1 .detail{position:absolute;top:90px;left:25px;width:60px;font-size:12px;text-align:center;}
 .list1 .attr{position:absolute;top:100px;left:10px;}
 .list1 .category{padding:1px 5px;font-size:12px;color:#fff;background-color:#ffa902;border:1px solid #ffa902;-webkit-border-radius:3px;border-radius:3px;}
@@ -100,18 +97,18 @@
 .list2 .verify{margin:0 4px;font-size:14px;color:#333;}
 .list2 .verify i{font-size:22px;}
 .list2 .thumb{height:70px;margin-bottom:6px;white-space:nowrap;overflow:hidden;}
-.list2 .thumb img{width:70px;height:70px;margin-right:4px;border:1px solid #ddd;}
+.list2 .thumb img{display:inline-block;width:70px;height:70px;margin-right:4px;border:1px solid #ddd;cursor:pointer;}
+.list2 .name{height:48px;margin:0 0 40px;font-size:16px;line-height:24px;font-weight:700;color:#3c3c3c;overflow:hidden;}
 .list2 strong{display:block;line-height:24px;font-size:16px;color:#333;}
 .list2 time{display:block;margin-top:10px;font-size:12px;}
-.list2 h3{height:48px;margin:0 0 40px;font-size:16px;line-height:24px;font-weight:700;color:#3c3c3c;overflow:hidden;}
 .list2 em{font-size:30px;font-family:arial;color:#fd4224;}
 .list2 small{display:block;font-size:14px;color:#999;}
 .list2 .qrcode{position:relative;display:inline-block;margin-top:10px;padding:1px 4px;font-size:14px;border:1px solid #3c3c3c;color:#3c3c3c;-webkit-border-radius:3px;border-radius:3px;cursor:default;}
-.list2 .qrcode span{position:absolute;bottom:-30px;left:-155px;z-index:8;width:136px;height:136px;padding:6px;background-color:#fff;box-shadow:0 0 12px 1px rgba(0,0,0,.33);display:none;}
-.list2 .qrcode span img{width:124px;height:124px;background:url(../images/loading.gif) no-repeat 50%;}
-.list2 .qrcode span:after{content:"";position:absolute;bottom:30px;right:-20px;border:10px dashed transparent;border-left:10px solid #fff;}
+.list2 .qrcode .btn{font-size:14px;}
+.list2 .qrcode .canvas{position:absolute;bottom:-30px;left:-155px;z-index:8;width:136px;height:136px;padding:6px;background-color:#fff;box-shadow:0 0 12px 1px rgba(0,0,0,.33);display:none;}
+.list2 .qrcode .canvas:after{content:"";position:absolute;bottom:30px;right:-20px;border:10px dashed transparent;border-left:10px solid #fff;}
 .list2 .qrcode:hover{color:#ffa902;border-color:#ffa902;}
-.list2 .qrcode:hover span{display:block;}
+.list2 .qrcode:hover .canvas{display:block;}
 .list2 .thead{height:auto;margin-top:0;font-size:16px;background-color:#fff;}
 .list2 .thead .td1{top:10px;padding:0 10px;background-color:#fff;}
 .list2 .thead .td3{border-left:none;}

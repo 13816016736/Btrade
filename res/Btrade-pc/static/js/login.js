@@ -27,7 +27,7 @@ $(function() {
             _showMsg(c1 && c2 ? '请输入用户名和密码' : c1 + c2);
             return false;
         }
-        _showMsg();
+        _showMsg('');
         return true;
     }
 
