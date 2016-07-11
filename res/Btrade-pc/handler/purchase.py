@@ -158,8 +158,8 @@ class MyPurchaseHandler(BaseHandler):
         if int(type) >= 0:
             condition.append("p.status = "+type)
         if starttime !="" and endtime != "":
-            condition.append("p.createtime > "+str(int(time.mktime(time.strptime(starttime,'%Y-%m-%d %H:%M:%S')))))
-            condition.append("p.createtime < "+str(int(time.mktime(time.strptime(endtime,'%Y-%m-%d %H:%M:%S')))))
+            condition.append("p.createtime > "+str(int(time.mktime(time.strptime(starttime,line_format_str)))))
+            condition.append("p.createtime < "+str(int(time.mktime(time.strptime(endtime,line_format_str)))))
         conditionstr = ""
         if condition:
             conditionstr = ("and "+(" and ".join(condition)))
@@ -258,7 +258,7 @@ class MyPurchaseInfoHandler(BaseHandler):
                     if mprice > quote.price:
                         mprice = quote.price
                     quoteids.append(str(quote.id))
-                    quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+                    quote["datetime"] = time.strftime(line_format_str, time.localtime(float(quote["createtime"])))
                     quote["unit"] = purchaseinfo["unit"]
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}

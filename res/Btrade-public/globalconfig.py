@@ -58,3 +58,5 @@ source_code={
     "self_recommend":"自主推荐",
     "self_register":"自主注册"
 }
+line_format_str="%Y-%m-%d %H:%M:%S"
+slant_format_str="%Y/%m/%d %H:%M:%S"

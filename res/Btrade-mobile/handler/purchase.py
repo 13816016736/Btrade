@@ -7,6 +7,7 @@ from utils import *
 from config import *
 import random
 from collections import defaultdict
+from globalconfig import *
 
 class PurchaseHandler(BaseHandler):
     def get(self):
@@ -99,7 +100,7 @@ class PurchaseHandler(BaseHandler):
                 purchase["uname"]= purchaseuserinfo[purchase.userid][1]
                 purchase["type"] = purchaseuserinfo[purchase.userid][2]
 
-                purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
+                purchase["datetime"] = time.strftime(slant_format_str, time.localtime(float(purchase["createtime"])))
                 if int(purchase["term"]) != 0:
                     # purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                     expire = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
@@ -143,7 +144,7 @@ class PurchaseInfoHandler(BaseHandler):
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
-        purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(int(purchaseinfo["createtime"])))
+        purchaseinfo["datetime"] = time.strftime(slant_format_str, time.localtime(int(purchaseinfo["createtime"])))
         if purchaseinfo["term"] != 0:
             purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
@@ -205,7 +206,7 @@ class PurchaseinfoBatchHandler(BaseHandler):
                     purchase["views"] =+ purchaseinfo["views"]
 
             purchase["purchaseinfo"] = purchaseinf.get(purchase["id"]) if purchaseinf.get(purchase["id"]) else []
-            purchase["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchase["createtime"])))
+            purchase["datetime"] = time.strftime(slant_format_str, time.localtime(float(purchase["createtime"])))
             if purchase["term"] != 0:
                 purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days

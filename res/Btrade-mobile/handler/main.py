@@ -8,6 +8,7 @@ import time,utils,re
 from collections import defaultdict
 from utils import *
 from wechatjsapi import *
+from globalconfig import *
 
 class MainHandler(BaseHandler):
 
@@ -411,7 +412,7 @@ class ReplayDetailHandler(BaseHandler):
                                                            attachment["attachment"].find("static"):].replace(base,
                                                                                                              base + "_thumb")
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
-        purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(int(purchaseinfo["createtime"])))
+        purchaseinfo["datetime"] = time.strftime(slant_format_str, time.localtime(int(purchaseinfo["createtime"])))
         if purchaseinfo["term"] != 0:
             purchaseinfo["expire"] = datetime.datetime.fromtimestamp(
                 float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
@@ -424,7 +425,7 @@ class ReplayDetailHandler(BaseHandler):
         if quotes:
             for quote in quotes:
                 quoteids.append(str(quote.id))
-                quote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+                quote["datetime"] = time.strftime(slant_format_str, time.localtime(float(quote["createtime"])))
                 quote["unit"] = purchaseinfo["unit"]
             quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
             myquoteattachments = {}

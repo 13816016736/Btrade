@@ -203,11 +203,11 @@ class MonitorBusinessHandler(BaseHandler):
                 if(len(starttime.split(':'))==2):
                     starttime = datetime.strptime(str(starttime), "%Y-%m-%d %H:%M")
                 else:
-                    starttime = datetime.strptime(str(starttime), "%Y-%m-%d %H:%M:%S")
+                    starttime = datetime.strptime(str(starttime), line_format_str)
                 if(len(endtime.split(':'))==2):
                     endtime = datetime.strptime(str(endtime), "%Y-%m-%d %H:%M")
                 else:
-                    endtime = datetime.strptime(str(endtime), "%Y-%m-%d %H:%M:%S")
+                    endtime = datetime.strptime(str(endtime), line_format_str)
             except:
                 self.send_error(404)
         else:

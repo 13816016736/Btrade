@@ -8,6 +8,7 @@ from config import *
 import random
 import time
 from collections import defaultdict
+from globalconfig import *
 
 class QuoteHandler(BaseHandler):
 
@@ -38,7 +39,7 @@ class QuoteHandler(BaseHandler):
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         purchaser = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
-        purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
+        purchaseinfo["datetime"] = time.strftime(slant_format_str, time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["term"] != 0:
             purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
@@ -193,7 +194,7 @@ class QuoteDetailHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, quoteid, nid):
         quote = self.db.get("select * from quote where id = %s", quoteid)
-        quote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(quote["createtime"])))
+        quote["datetime"] = time.strftime(slant_format_str, time.localtime(float(quote["createtime"])))
         quoteattachment = self.db.query("select * from quote_attachment where quoteid = %s", quoteid)
         for qa in quoteattachment:
             base, ext = os.path.splitext(os.path.basename(qa["attachment"]))
@@ -230,7 +231,7 @@ class QuoteDetailHandler(BaseHandler):
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
             attachment["attachment"] = config.img_domain+attachment["attachment"][attachment["attachment"].find("static"):].replace(base, base+"_thumb")
         user = self.db.get("select * from users where id = %s", purchaseinfo["userid"])
-        purchaseinfo["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(purchaseinfo["createtime"])))
+        purchaseinfo["datetime"] = time.strftime(slant_format_str, time.localtime(float(purchaseinfo["createtime"])))
         if purchaseinfo["term"] != 0:
             purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
@@ -317,7 +318,7 @@ class QuoteListHandler(BaseHandler):
             quoteids.append(str(myquote.id))
             expire = datetime.datetime.fromtimestamp(float(myquote["purchasetime"])) + datetime.timedelta(myquote["term"])
             myquote["timedelta"] = (expire - datetime.datetime.now()).days
-            myquote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(myquote["createtime"])))
+            myquote["datetime"] = time.strftime(slant_format_str, time.localtime(float(myquote["createtime"])))
             if myquote["timedelta"] <= 0:
                 over =+ 1
             if myquote.state == 0:
