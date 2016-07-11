@@ -28,9 +28,11 @@ class QuoteHandler(BaseHandler):
         areainfo = self.db.get("select position from area where id =%s", areaid)
         if areainfo:
             purchaseinfo["position"] = areainfo.position
+        else:
+            purchaseinfo["position"] =""
 
 
-        #获得采购品种图片
+            #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", purchaseinfoid)
         for attachment in attachments:
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))
@@ -214,6 +216,8 @@ class QuoteDetailHandler(BaseHandler):
         areainfo = self.db.get("select position from area where id =%s", areaid)
         if areainfo:
             purchaseinfo["position"] = areainfo.position
+        else:
+            purchaseinfo["position"]=""
 
 
 

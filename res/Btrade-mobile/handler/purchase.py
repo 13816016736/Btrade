@@ -131,6 +131,8 @@ class PurchaseInfoHandler(BaseHandler):
         if areainfo:
             purchaseinfo["position"]=areainfo.position
             purchaseinfo["parentid"] = areainfo.parentid
+        else:
+            purchaseinfo["position"] =""
 
 
 
@@ -152,6 +154,9 @@ class PurchaseInfoHandler(BaseHandler):
 
         #此采购商成功采购单数
         purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
+        # 此采购商采购批次数
+        purchasesinfocout = self.db.execute_rowcount("select * from purchase p  left join purchase_info pi on p.id=pi.purchaseid where userid = %s ", user["id"])
+
         #此采购单报价数
         quotes = self.db.execute_rowcount("select * from quote where purchaseinfoid = %s", purchaseinfo["pid"])
         #此采购商回复供应商比例
@@ -167,7 +172,7 @@ class PurchaseInfoHandler(BaseHandler):
         #浏览数加1
         self.db.execute("update purchase_info set views = views + 1 where id = %s", purchaseinfo["pid"])
 
-        self.render("purchaseinfo.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,
+        self.render("purchaseinfo.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,purchasesinfocout=purchasesinfocout,
                     quotes=quotes, reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0))
 
     def post(self):
@@ -207,6 +212,11 @@ class PurchaseinfoBatchHandler(BaseHandler):
 
             #此采购商成功采购单数
             purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
+            # 此采购商采购批次数
+            purchasesinfocout = self.db.execute_rowcount(
+                "select * from purchase p  left join purchase_info pi on p.id=pi.purchaseid where userid = %s ",
+                user["id"])
+
             #此采购商回复供应商比例
             purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
                 "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
@@ -216,7 +226,7 @@ class PurchaseinfoBatchHandler(BaseHandler):
                 if purchaser_quote.state is not None and purchaser_quote.state != 0:
                     reply = reply + 1
 
-            self.render("purchaseinfo_batch.html", user=user, purchase=purchase, purchases=purchases,
+            self.render("purchaseinfo_batch.html", user=user, purchase=purchase, purchases=purchases,purchasesinfocout=purchasesinfocout,
                         reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0))
         else:
             self.error("采购单不存在","/")

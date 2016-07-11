@@ -19,7 +19,6 @@ class MonitorStatisticsHandler(BaseHandler):
             date_str="%s-%s-%s"%(year,month,'1')
             dt=datetime.strptime(date_str, format)
             dayOfWeek = dt.weekday()
-            #print dayOfWeek
             # 偶数月显示带上个月的那周，奇熟月份只显示本月的
             regions = []
             start_date=""
