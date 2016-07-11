@@ -5,11 +5,10 @@ import session
 from database import database
 import json
 from  datetime import date,datetime
-from globalconfig import *
 class CJsonEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
-            return obj.strftime(line_format_str)
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
         elif isinstance(obj, date):
             return obj.strftime('%Y-%m-%d')
         else:

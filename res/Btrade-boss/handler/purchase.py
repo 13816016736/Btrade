@@ -8,7 +8,6 @@ from config import *
 from collections import defaultdict
 from urllib import urlencode
 import thread
-from globalconfig import *
 
 class PurchaseHandler(BaseHandler):
 
@@ -141,7 +140,7 @@ class PurchaseInfoHandler(BaseHandler):
             if quotes:
                 for quote in quotes:
                     quoteids.append(str(quote.id))
-                    quote["datetime"] = time.strftime(line_format_str, time.localtime(float(quote["createtime"])))
+                    quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
                     quote["unit"] = purchaseinfo["unit"]
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}
