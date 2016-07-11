@@ -188,7 +188,7 @@ class MyPurchaseHandler(BaseHandler):
             purchase["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchase["createtime"])))
             if purchase["term"] != 0:
                 purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
-                purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
+                purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now())
 
         #统计采购单各状态的数量
         results = self.db.query("select status, count(*) count from purchase where userid in (%s)"%(",".join(show_userid))+"group by status" )
@@ -228,6 +228,8 @@ class MyPurchaseInfoHandler(BaseHandler):
         areainfo=self.db.get("select position,parentid from area where id =%s",areaid)
         if areainfo:
             purchaseinfo["position"]=areainfo.position
+        else:
+            purchaseinfo["position"] =""
         #purchaseinfo["parentid"] = areainfo.parentid
 
 
@@ -241,7 +243,7 @@ class MyPurchaseInfoHandler(BaseHandler):
             purchaseinfo["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(purchaseinfo["createtime"])))
             if purchaseinfo["term"] != 0:
                 purchaseinfo["expire"] = datetime.datetime.fromtimestamp(float(purchaseinfo["createtime"])) + datetime.timedelta(purchaseinfo["term"])
-                purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
+                purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now())
             purchaseinfo["attachments"] = attachments
             others = self.db.query("select id from purchase_info where purchaseid = %s and id != %s",
                                           purchaseinfo["id"], purchaseinfo["pid"])
