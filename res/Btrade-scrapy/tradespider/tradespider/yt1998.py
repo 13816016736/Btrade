@@ -14,7 +14,7 @@ import MySQLdb
 #     cursor.execute("update supplier set variety = %s where id = %s ", (var, s[0]))
 # conn.commit()
 
-with open("F:\\Btrade\\res\\Btrade-scrapy\\tradespider\\tradespider\\ytSupplyList.json", "r") as f:
+with open("ytSupplyList.json", "r") as f:
     d1 = json.load(f)
     for data in d1["data"]:
         if data["ycnam"] == u'夜交藤':
