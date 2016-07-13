@@ -5,6 +5,8 @@ import session
 from database import database
 import json
 from  datetime import date,datetime
+from producer import KafkaProduceServer
+from globalconfig import *
 class CJsonEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
@@ -13,6 +15,19 @@ class CJsonEncoder(json.JSONEncoder):
             return obj.strftime('%Y-%m-%d')
         else:
             return json.JSONEncoder.default(self, obj)
+
+def purchase_push_trace(method):#商品推送链接进入的路径路由
+    def wrapper(self, *args, **kwargs):
+        if self.session.get("uuid"):
+            uuid=self.session.get("uuid")
+            producer_server = KafkaProduceServer(analysis_send_topic, kafka_server)
+            userid=self.session.get("userid")
+            if userid=="":
+                userid=-1
+            producer_server.sendJson("data", {'uuid': uuid, "url": self.request.uri, "monitor_type": "1","method":self.request.method,"userid":userid})
+            producer_server.close()
+        return method(self, *args, **kwargs)
+    return wrapper
 
 class WebBaseHandler(tornado.web.RequestHandler):
   
@@ -55,6 +70,5 @@ class WebBaseHandler(tornado.web.RequestHandler):
 
   def on_finish(self):
       self.db.close()
-
 
 

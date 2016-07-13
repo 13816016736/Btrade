@@ -4,8 +4,10 @@ from base import BaseHandler
 import re,json,config,time,logging
 from utils import *
 #import random
+from webbasehandler import purchase_push_trace
 
 class RegisterHandler(BaseHandler):
+    @purchase_push_trace
     def get(self, next_url="/"):
         userinfo = None
         code = self.get_argument("code", None)
@@ -25,6 +27,7 @@ class RegisterHandler(BaseHandler):
 	    logging.info(userinfo)
         self.render("register.html", next_url=next_url, userinfo=userinfo)
 
+    @purchase_push_trace
     def post(self):
         username = self.get_argument("username")
         pattern = re.compile(r'^[A-Za-z0-9]{3,20}$')
@@ -88,6 +91,7 @@ class GetSmsCodeHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     def post(self):
         phone = self.get_argument("phone")
         phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
@@ -113,5 +117,6 @@ class RegSuccessHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     def post(self):
         self.render("register_result.html" ,next_url=self.get_argument("next_url", "/"))

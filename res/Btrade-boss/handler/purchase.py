@@ -8,6 +8,7 @@ from config import *
 from collections import defaultdict
 from urllib import urlencode
 import thread
+from mongodb import PymongoDateBase
 
 class PurchaseHandler(BaseHandler):
 
@@ -191,8 +192,33 @@ class PushPurchaseHandler(BaseHandler):
             phones.add(j["mobile"])
         phones = list(set(phones))
         if phones:
-            thread.start_new_thread(pushPurchase, (phones, purchaseinfo))
-            thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo))
+            #测试先不发送信息，只保存信息到mongodb
+            push_user_infos = []
+            for phone in phones:
+                uuid = md5(str(time.time())+ str(phone))
+                createtime = int(time.time())
+                status = 0#0,未发送，1，已发送
+                quote=0#0,未报价，1，已报价
+                sendid = phone
+                push_user = {"uuid":uuid,"createtime":createtime,"status":status,"sendid":sendid,"quote":quote}
+                push_user_infos.append(push_user)
+            for openid in  openids:
+                uuid = md5(str(time.time()) + str(openid))
+                createtime = int(time.time())
+                status = 0  # 0,未发送，1，已发送
+                quote=0#0,未报价，1，已报价
+                sendid = openid
+                push_user = {"uuid": uuid, "createtime": createtime, "status": status, "sendid": sendid,"quote":quote}
+                push_user_infos.append(push_user)
+
+
+            db =  PymongoDateBase.instance().get_db()
+            colleciton = db.push_record
+            colleciton.insert_many(push_user_infos)
+
+
+            #thread.start_new_thread(pushPurchase, (phones, purchaseinfo))
+            #thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo))
             #pushPurchase(phones, purchaseinfo)
             #pushPurchaseWx(openids, purchaseinfo)
             self.api_response({'status':'success','message':'群发给了'+str(len(phones))+'个用户'})

@@ -3,13 +3,16 @@
 from base import BaseHandler
 from utils import *
 import config,re
+from webbasehandler import purchase_push_trace
 
 class LoginHandler(BaseHandler):
+    @purchase_push_trace
     def get(self):
         if self.current_user:
             self.redirect('/')
         self.render("login.html", next_url=self.get_argument("next", "/"))
 
+    @purchase_push_trace
     def post(self):
         username = self.get_argument("username","")
         password = self.get_argument("password","")
@@ -43,6 +46,7 @@ class LoginHandler(BaseHandler):
             self.render("login.html", error="用户名或密码错误", next_url=self.get_argument("next_url", "/"))
 
 class LogoutHandler(BaseHandler):
+    @purchase_push_trace
     def get(self):
         self.session["userid"] = ""
         self.session["user"] = ""
@@ -52,6 +56,7 @@ class LogoutHandler(BaseHandler):
     def post(self):
         pass
 class BindWxHandler(BaseHandler):
+    @purchase_push_trace
     def get(self):
         code = self.get_argument("code", None)
         if code and (not self.current_user):

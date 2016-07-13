@@ -1,7 +1,7 @@
 import sys,os
 sys.path.append(os.path.join(sys.path[0],"../Btrade-public"))
 sys.path.append(os.path.join(sys.path[0],"../Btrade-public/handler"))
-
+sys.path.append(os.path.join(sys.path[0],"../Btrade-public/kafkaserver"))
 
 import tornado.autoreload
 import tornado.web
