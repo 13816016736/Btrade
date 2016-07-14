@@ -27,7 +27,7 @@ class KafkaProduceServer(object):
 
 if __name__ == "__main__":
     producer_server = KafkaProduceServer(analysis_send_topic,kafka_server)
-    producer_server.sendJson("data",{'uuid': '2222222', "url": "/login", "monitor_type": "3"})
+    producer_server.sendJson("data",{'uuid': '2222222', "url": "/login", "monitor_type": "15"})
     #producer_server.sendMsg('raw_bytes')
     '''
     # Asynchronous by default

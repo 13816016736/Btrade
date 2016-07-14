@@ -185,22 +185,25 @@ class PushPurchaseHandler(BaseHandler):
         yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and mobile != ''", purchaseinfo["varietyid"])
         phones = set()
         openids = set()
-        for i in users:
-            phones.add(i["phone"])
-            openids.add(i["openid"])
-        for j in yt:
-            phones.add(j["mobile"])
-        phones = list(set(phones))
+        #for i in users:
+        #    phones.add(i["phone"])
+        #    openids.add(i["openid"])
+        #for j in yt:
+        #    phones.add(j["mobile"])
+        #phones = list(set(phones))
+        phones =["13638654365"]
+        openids=["oTEeNweXKZh8FXoP3Fwu_y3AGPkk"]
         if phones:
             #测试先不发送信息，只保存信息到mongodb
             push_user_infos = []
+            createtime = int(time.time())
+            status = 0  # 0,未发送，1，已发送
+            quote = 0  # 0,未报价，1，已报价
+            sendstatus = 0  # 0,未发送，1:发送成功
             for phone in phones:
                 uuid = md5(str(time.time())+ str(phone))
-                createtime = int(time.time())
-                status = 0#0,未发送，1，已发送
-                quote=0#0,未报价，1，已报价
                 sendid = phone
-                push_user = {"uuid":uuid,"createtime":createtime,"status":status,"sendid":sendid,"quote":quote}
+                push_user = {"uuid":uuid,"createtime":createtime,"status":status,"sendid":sendid,"quote":quote,"sendstatus":sendstatus}
                 push_user_infos.append(push_user)
             for openid in  openids:
                 uuid = md5(str(time.time()) + str(openid))
@@ -208,7 +211,7 @@ class PushPurchaseHandler(BaseHandler):
                 status = 0  # 0,未发送，1，已发送
                 quote=0#0,未报价，1，已报价
                 sendid = openid
-                push_user = {"uuid": uuid, "createtime": createtime, "status": status, "sendid": sendid,"quote":quote}
+                push_user = {"uuid": uuid, "createtime": createtime, "status": status, "sendid": sendid,"quote":quote,"sendstatus":sendstatus}
                 push_user_infos.append(push_user)
 
 

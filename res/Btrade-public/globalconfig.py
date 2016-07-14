@@ -59,7 +59,7 @@ source_code={
     "self_register":"自主注册"
 }
 
-analysis_send_topic="purchase_push"#推送分析的topic
+analysis_send_topic="push_monitor"#推送分析的topic
 kafka_server="localhost:9092"#kafka服务ip以及端口
 zk_server="localhost:2181"
 mongodb_ip="127.0.0.1"

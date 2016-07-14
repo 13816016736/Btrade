@@ -11,6 +11,7 @@ class KafkaConsumerServer(object):
             server=[server]
         self._consumer= KafkaConsumer(topic,
                          bootstrap_servers=server,
+                         group_id="test-group",
                          value_deserializer=lambda m: json.loads(m.decode('utf8')))
     def getConsumer(self):
         return self._consumer
