@@ -19,7 +19,7 @@ class CJsonEncoder(json.JSONEncoder):
 
 def purchase_push_trace(method):#商品推送链接进入的路径路由
     def wrapper(self, *args, **kwargs):
-        if self.session.get("uuid"):
+        if self.session.get("uuid") :
             uuid=self.session.get("uuid")
             try:
                 producer_server = KafkaProduceServer(analysis_send_topic, kafka_server)

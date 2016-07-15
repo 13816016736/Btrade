@@ -196,32 +196,31 @@ class PushPurchaseHandler(BaseHandler):
         if phones:
             #测试先不发送信息，只保存信息到mongodb
             push_user_infos = []
+            uuidmap={}
             createtime = int(time.time())
-            status = 0  # 0,未发送，1，已发送
             quote = 0  # 0,未报价，1，已报价
-            sendstatus = 0  # 0,未发送，1:发送成功
+            sendstatus = 0  # 0,未发送，1:发送成功,2:失败
             for phone in phones:
-                uuid = md5(str(time.time())+ str(phone))
+                uuid = md5(str(time.time())+ str(phone))[8:-8]
                 sendid = phone
-                push_user = {"uuid":uuid,"createtime":createtime,"status":status,"sendid":sendid,"quote":quote,"sendstatus":sendstatus}
+                push_user = {"uuid":uuid,"createtime":createtime,"sendid":sendid,"quote":quote,"sendstatus":sendstatus}
                 push_user_infos.append(push_user)
+                uuidmap[sendid]=uuid
             for openid in  openids:
-                uuid = md5(str(time.time()) + str(openid))
-                createtime = int(time.time())
-                status = 0  # 0,未发送，1，已发送
-                quote=0#0,未报价，1，已报价
+                uuid = md5(str(time.time()) + str(openid))[8:-8]
                 sendid = openid
-                push_user = {"uuid": uuid, "createtime": createtime, "status": status, "sendid": sendid,"quote":quote,"sendstatus":sendstatus}
+                push_user = {"uuid": uuid, "createtime": createtime, "sendid": sendid,"quote":quote,"sendstatus":sendstatus}
                 push_user_infos.append(push_user)
+                uuidmap[sendid] = uuid
 
 
-            db =  PymongoDateBase.instance().get_db()
-            colleciton = db.push_record
+            mongodb =  PymongoDateBase.instance().get_db()
+            colleciton = mongodb.push_record
             colleciton.insert_many(push_user_infos)
 
 
-            #thread.start_new_thread(pushPurchase, (phones, purchaseinfo))
-            #thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo))
+            thread.start_new_thread(pushPurchase, (phones, purchaseinfo,uuidmap))
+            thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo,uuidmap))
             #pushPurchase(phones, purchaseinfo)
             #pushPurchaseWx(openids, purchaseinfo)
             self.api_response({'status':'success','message':'群发给了'+str(len(phones))+'个用户'})

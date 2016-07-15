@@ -3,6 +3,7 @@
 import random,thread,config,time
 from sendsms import *
 from sendwechart import *
+from mongodb import PymongoDateBase
 
 def md5(str):
     import hashlib
@@ -178,25 +179,68 @@ def rejectQuote(phone, name, variety, price, unit, message):
     vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+price+'","%unit%":"'+unit+'","%message%":"'+message+'"}'
     thread.start_new_thread(send, (templateId, phone, vars))
 
-def pushPurchase(phones, purchase):
+def pushPurchase(phones, purchase,uuidmap):
     templateId = 870
     for (k,v) in purchase.items():
         purchase[k] = purchase[k].encode('utf-8') if isinstance(purchase[k], unicode) else purchase[k]
-    vars = '{"%purchaseinfoid%":"'+str(purchase["purchaseinfoid"])+'","%variety%":"'+purchase["variety"]+'","%name%":"'+purchase["name"]+'","%specification%":"'+purchase["specification"]+'","%quantity%":"'+purchase["quantity"]+'","%unit%":"'+purchase["unit"]+'"}'
+    #vars = '{"%purchaseinfoid%":"'+str(purchase["purchaseinfoid"])+'","%variety%":"'+purchase["variety"]+'","%name%":"'+purchase["name"]+'","%specification%":"'+purchase["specification"]+'","%quantity%":"'+purchase["quantity"]+'","%unit%":"'+purchase["unit"]+'"}'
     tos = []
     num = 0
+    phonelist=[]
     for index, phone in enumerate(phones):
         num = num + 1
         phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
+        uuid=uuidmap[phone]
+        vars = '{"%purchaseinfoid%":"' + str(purchase["purchaseinfoid"]) +'?uuid='+ uuid +'","%variety%":"' + purchase[
+            "variety"] + '","%name%":"' + purchase["name"] + '","%specification%":"' + purchase[
+                   "specification"] + '","%quantity%":"' + purchase["quantity"] + '","%unit%":"' + purchase[
+                   "unit"] + '"}'
         tos.append('{"phone": "'+phone+'", "vars": '+vars+'}')
+        phonelist.append(phone)
         if num > 199:
             tos = "[" + ",".join(tos) + "]"
-            sendx(templateId, tos)
+            result=sendx(templateId, tos)
+            if  result:
+                message = json.loads(result.encode("utf-8"))
+                mongodb = PymongoDateBase.instance().get_db()
+                colleciton = mongodb.push_record
+                if message["statusCode"] == 200:
+                    for item in phonelist:
+                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
+                elif message["statusCode"] ==311:
+                    not_send_list=[item["phone"] for item in message["info"]["items"]]
+                    for item in phonelist:
+                        if item not in not_send_list:
+                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
+                        else:
+                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
+                else:
+                    for item in phonelist:
+                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
             tos = []
             num = 0
+            phonelist=[]
         elif index == (len(phones)-1):
             tos = "[" + ",".join(tos) + "]"
-            sendx(templateId, tos)
+            result = sendx(templateId, tos)
+            if result:
+                message = json.loads(result.encode("utf-8"))
+                mongodb = PymongoDateBase.instance().get_db()
+                colleciton = mongodb.push_record
+                if message["statusCode"] == 200:
+                    for item in phonelist:
+                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
+                elif message["statusCode"] == 311:
+                    not_send_list = [item["phone"] for item in message["info"]["items"]]
+                    for item in phonelist:
+                        if item not in not_send_list:
+                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
+                        else:
+                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
+                else:
+                    for item in phonelist:
+                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
+
 
 
 
@@ -404,7 +448,7 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime):
     }
     thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
-def pushPurchaseWx(openids, purchase):
+def pushPurchaseWx(openids, purchase,uuidmap):
     templateId = 'OxXsRhlyc17kt6ubwV7F0fD8ffRl12rGGS3mnpvpoU4'
     link = 'http://m.yaocai.pro/purchase/purchaseinfo/%s' % purchase["purchaseinfoid"]
     qtime = int(purchase["createtime"])
@@ -443,7 +487,17 @@ def pushPurchaseWx(openids, purchase):
                "color":"#173177"
             }
         }
-        sendwx(templateId, openid, link, data)
+        uuid = uuidmap[openid]
+        link=link+"?uuid="+uuid
+        reuslt=sendwx(templateId, openid, link, data)
+        if reuslt:
+            message = json.loads(reuslt.encode("utf-8"))
+            db = PymongoDateBase.instance().get_db()
+            colleciton = db.push_record
+            if message["errcode"]==0:
+                colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 1}})
+            else:
+                colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 2}})
         time.sleep(3)
 
 import MySQLdb
