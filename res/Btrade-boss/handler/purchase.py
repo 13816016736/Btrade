@@ -220,6 +220,8 @@ class PushPurchaseHandler(BaseHandler):
 
             thread.start_new_thread(pushPurchase, (phones, purchaseinfo,uuidmap))
             thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo,uuidmap))
+            self.db.execute("update purchase_info set pushcount=%s where id=%s",int(purchaseinfo["pushcount"])+1, purchaseinfoid)
+
             #pushPurchase(phones, purchaseinfo)
             #pushPurchaseWx(openids, purchaseinfo)
             self.api_response({'status':'success','message':'群发给了'+str(len(phones))+'个用户'})
