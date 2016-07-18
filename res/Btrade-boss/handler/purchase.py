@@ -172,27 +172,26 @@ class RemovePurchaseHandler(BaseHandler):
         self.api_response({'status':'success','message':'请求成功'})
 
 class PushPurchaseHandler(BaseHandler):
-
     @tornado.web.authenticated
     def post(self):
         purchaseinfoid = self.get_argument("purchaseinfoid")
         purchaser = self.get_argument("purchaser")#其实不需要这个参数
-        purchaseinfo = self.db.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
+        purchaseinfo = self.db.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,pi.pushcount,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
         u = self.db.get("select name,nickname from users where id = %s", purchaseinfo["userid"])
         purchaseinfo["name"] = u["name"]
         purchaseinfo["nickname"] = u["nickname"]
         users = self.db.query("select phone,openid from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
-        yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and mobile != ''", purchaseinfo["varietyid"])
+        yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and mobile != '' and pushstatus=1", purchaseinfo["varietyid"])
         phones = set()
         openids = set()
-        #for i in users:
-        #    phones.add(i["phone"])
-        #    openids.add(i["openid"])
-        #for j in yt:
-        #    phones.add(j["mobile"])
-        #phones = list(set(phones))
-        phones =["13638654365"]
-        openids=["oTEeNweXKZh8FXoP3Fwu_y3AGPkk"]
+        for i in users:
+            phones.add(i["phone"])
+            openids.add(i["openid"])
+        for j in yt:
+            phones.add(j["mobile"])
+        phones = list(set(phones))
+        #phones =["13638654365"]
+        #openids=["oTEeNweXKZh8FXoP3Fwu_y3AGPkk"]
         if phones:
             #测试先不发送信息，只保存信息到mongodb
             push_user_infos = []
@@ -203,13 +202,13 @@ class PushPurchaseHandler(BaseHandler):
             for phone in phones:
                 uuid = md5(str(time.time())+ str(phone))[8:-8]
                 sendid = phone
-                push_user = {"uuid":uuid,"createtime":createtime,"sendid":sendid,"quote":quote,"sendstatus":sendstatus}
+                push_user = {"purchaseinfoid ":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"uuid":uuid,"createtime":createtime,"sendid":sendid,"quote":quote,"sendstatus":sendstatus,"type":1}
                 push_user_infos.append(push_user)
                 uuidmap[sendid]=uuid
             for openid in  openids:
                 uuid = md5(str(time.time()) + str(openid))[8:-8]
                 sendid = openid
-                push_user = {"uuid": uuid, "createtime": createtime, "sendid": sendid,"quote":quote,"sendstatus":sendstatus}
+                push_user = {"purchaseinfoid ":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"uuid": uuid, "createtime": createtime, "sendid": sendid,"quote":quote,"sendstatus":sendstatus,"type":2}
                 push_user_infos.append(push_user)
                 uuidmap[sendid] = uuid
 

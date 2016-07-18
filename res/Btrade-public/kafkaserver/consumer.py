@@ -23,12 +23,12 @@ class KafkaConsumerServer(object):
 
 
 if __name__ == "__main__":
-    #kafkaserver = KafkaConsumerServer(analysis_send_topic,kafka_server)
-    #for message in kafkaserver.getConsumer():
-    #    print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
-    #                                      message.offset, message.key,
-    #                                      message.value))
-    items=[{"phone":"1312222","vars":{},"message":"手机号格式错误"},{"phone":"131222456","vars":{},"message":"手机号格式错误"}]
+    kafkaserver = KafkaConsumerServer(analysis_send_topic,kafka_server)
+    for message in kafkaserver.getConsumer():
+        print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
+                                          message.offset, message.key,
+                                         message.value))
+    #items=[{"phone":"1312222","vars":{},"message":"手机号格式错误"},{"phone":"131222456","vars":{},"message":"手机号格式错误"}]
 
-    not_send_list = [item["phone"] for item in items]
-    print "1312222" not in not_send_list
+    #not_send_list = [item["phone"] for item in items]
+   # print "1312222" not in not_send_list

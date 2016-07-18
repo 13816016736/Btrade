@@ -65,4 +65,11 @@ zk_server="localhost:2181"
 mongodb_ip="127.0.0.1"
 mongodb_port=27017
 db_name="yaocai_statistical"
-
+monitor_type={
+    "1":"短信渠道",
+    "2":"微信渠道"
+}
+message_type={
+    "1": "监控用户点击",
+}
+sms_hook_app_key="xaa50do4-akgg-zlzw-bugb-dq727c867d"

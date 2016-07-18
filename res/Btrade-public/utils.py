@@ -4,7 +4,7 @@ import random,thread,config,time
 from sendsms import *
 from sendwechart import *
 from mongodb import PymongoDateBase
-
+from globalconfig import *
 def md5(str):
     import hashlib
     import types
@@ -187,6 +187,7 @@ def pushPurchase(phones, purchase,uuidmap):
     tos = []
     num = 0
     phonelist=[]
+    #producer_server = KafkaProduceServer(analysis_send_topic, kafka_server)
     for index, phone in enumerate(phones):
         num = num + 1
         phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
@@ -201,22 +202,7 @@ def pushPurchase(phones, purchase,uuidmap):
             tos = "[" + ",".join(tos) + "]"
             result=sendx(templateId, tos)
             if  result:
-                message = json.loads(result.encode("utf-8"))
-                mongodb = PymongoDateBase.instance().get_db()
-                colleciton = mongodb.push_record
-                if message["statusCode"] == 200:
-                    for item in phonelist:
-                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
-                elif message["statusCode"] ==311:
-                    not_send_list=[item["phone"] for item in message["info"]["items"]]
-                    for item in phonelist:
-                        if item not in not_send_list:
-                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
-                        else:
-                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
-                else:
-                    for item in phonelist:
-                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
+                handlePushResult(result, phonelist, uuidmap)
             tos = []
             num = 0
             phonelist=[]
@@ -224,26 +210,31 @@ def pushPurchase(phones, purchase,uuidmap):
             tos = "[" + ",".join(tos) + "]"
             result = sendx(templateId, tos)
             if result:
-                message = json.loads(result.encode("utf-8"))
-                mongodb = PymongoDateBase.instance().get_db()
-                colleciton = mongodb.push_record
-                if message["statusCode"] == 200:
-                    for item in phonelist:
-                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
-                elif message["statusCode"] == 311:
-                    not_send_list = [item["phone"] for item in message["info"]["items"]]
-                    for item in phonelist:
-                        if item not in not_send_list:
-                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
-                        else:
-                            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
-                else:
-                    for item in phonelist:
-                        colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
+                handlePushResult(result, phonelist, uuidmap)
+   # producer_server.close()
 
 
-
-
+def handlePushResult(result,phonelist,uuidmap):
+    message = json.loads(result.encode("utf-8"))
+    mongodb = PymongoDateBase.instance().get_db()
+    colleciton = mongodb.push_record
+    if message["statusCode"] == 200:  # 全部发送成功
+        for item in phonelist:
+            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
+            #producer_server.sendJson("data", {'uuid': uuidmap[item], 'sendstatus': 1, "messagetype": 2})
+    elif message["statusCode"] == 311:  # 部分发送失败
+        not_send_list = [item["phone"] for item in message["info"]["items"]]
+        for item in phonelist:
+            if item not in not_send_list:
+                colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 1}})
+                #producer_server.sendJson("data", {'uuid': uuidmap[item], 'sendstatus': 1, "messagetype": 2})
+            else:
+                colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
+                #producer_server.sendJson("data", {'uuid': uuidmap[item], 'sendstatus': 2, "messagetype": 2})
+    else:
+        for item in phonelist:
+            colleciton.update({'uuid': uuidmap[item]}, {'$set': {'sendstatus': 2}})
+            #producer_server.sendJson("data", {'uuid': uuidmap[item], 'sendstatus': 2, "messagetype": 2})
 
 
 
@@ -596,3 +587,10 @@ def updatepurchase(self, id, data):
     finally:
         cursor.close()
     return status,varids
+
+import hashlib, hmac
+def verify(appkey, token, timestamp, signature):
+    return signature == hmac.new(
+        key=appkey,
+        msg='{}{}'.format(timestamp, token),
+        digestmod=hashlib.sha256).hexdigest()

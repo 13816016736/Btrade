@@ -117,16 +117,13 @@ class PurchaseHandler(BaseHandler):
         #列表一项是一个采购单一个品种
 
 class PurchaseInfoHandler(BaseHandler):
+    @purchase_push_trace
     def get(self, id):
         #purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
         #"(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
         #"p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
         #"pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
         #获取采购单详细信息
-        uuid=self.get_argument("uuid", None)#如果是从push的链接访问进来
-        if uuid:
-            self.session["uuid"] = uuid
-            self.session.save()
 
         purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
         "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"

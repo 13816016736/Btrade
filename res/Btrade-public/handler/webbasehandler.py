@@ -8,6 +8,8 @@ from  datetime import date,datetime
 from producer import KafkaProduceServer
 from globalconfig import *
 import logging
+from mongodb import PymongoDateBase
+import time
 class CJsonEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
@@ -19,20 +21,29 @@ class CJsonEncoder(json.JSONEncoder):
 
 def purchase_push_trace(method):#商品推送链接进入的路径路由
     def wrapper(self, *args, **kwargs):
-        if self.session.get("uuid") :
+         uuid = self.get_argument("uuid", None)  # 如果是从push的链接访问进来
+         if uuid:
+             self.session["uuid"] = uuid
+             self.session.save()
+         elif  self.session.get("uuid") :
             uuid=self.session.get("uuid")
+         if uuid!=None:
             try:
                 producer_server = KafkaProduceServer(analysis_send_topic, kafka_server)
                 userid=self.session.get("userid")
                 if userid==""or userid==None:
                     userid=-1
-                producer_server.sendJson("data", {'uuid': uuid, "url": self.request.uri, "monitor_type": "1","method":self.request.method,"userid":userid})
+                mongodb = PymongoDateBase.instance().get_db()
+                colleciton = mongodb.push_record
+                record=colleciton.find_one({"uuid":uuid})
+                if record:
+                    producer_server.sendJson("data", {'uuid': uuid, "url": self.request.uri, "monitor_type": record["type"],
+                                                      "method": self.request.method, "userid": userid,"messagetype":1,"createtime":int(time.time())})
                 producer_server.close()
             except Exception,ex:
                 logger = logging.getLogger()
                 logger.error("kafkaProduce send error(%s)"%str(ex))
-
-        return method(self, *args, **kwargs)
+         return method(self, *args, **kwargs)
     return wrapper
 
 class WebBaseHandler(tornado.web.RequestHandler):
