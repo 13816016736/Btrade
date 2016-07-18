@@ -53,7 +53,7 @@ def handlestream(kvs):
 if __name__ == "__main__":
     sc = SparkContext(appName="PythonStreamingKafka")
     ssc = StreamingContext(sc, 1)
-    kvs = KafkaUtils.createStream(ssc, zk_server, "test-group", {analysis_send_topic: 1})
+    kvs = KafkaUtils.createStream(ssc, zk_server, "my-group", {analysis_send_topic: 1})
     #kvs = KafkaUtils.createDirectStream(ssc, [analysis_send_topic], {"metadata.broker.list": kafka_server})
     handlestream(kvs)
     ssc.start()
