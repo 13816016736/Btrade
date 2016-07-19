@@ -31,12 +31,13 @@
 				timer;
 
 			var winResize = function () {
-				timer && clearTimeout(timer);
-				timer = setTimeout(function () {
-					self.getSize();
-					self.changeImage(self.currentImageIndex);
-				}, self.options.resizeDuration);
-
+				if (self.album) {
+					timer && clearTimeout(timer);
+					timer = setTimeout(function () {
+						self.getSize();
+						self.changeImage(self.currentImageIndex);
+					}, self.options.resizeDuration);
+				}
 			};
 			$window.on('resize', winResize);
 			return self;
