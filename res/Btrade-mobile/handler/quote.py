@@ -133,7 +133,7 @@ class QuoteHandler(BaseHandler):
         self.session.save()
 
         #为供货商积分：
-        self.db.execute("update users set push_score=push_score+1 where id=%s",self.session.get("userid"))
+        self.db.execute("update users set pushscore=pushscore+1 where id=%s",self.session.get("userid"))
 
         #保存session上传图片的路径
         if uploadfiles:

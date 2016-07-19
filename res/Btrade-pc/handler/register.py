@@ -142,9 +142,9 @@ class RegInfoHandler(BaseHandler):
                              , type, name, nickname, 1, int(time.time()))
 
         #查看是否为供应商列表里面的供应商，如果是转移积分
-        supplier=self.db.query("select id,push_score from supplier where mobile=%s",phone)
+        supplier=self.db.query("select id,pushscore from supplier where mobile=%s",phone)
         if supplier:
-            self.db.execute("update users set push_score=%s where id=%s", supplier[0]["push_score"],lastrowid)
+            self.db.execute("update users set pushscore=%s where id=%s", supplier[0]["pushscore"],lastrowid)
             self.db.execute("update supplier set pushstatus=2 where id=%s", supplier[0]["id"])
 
 

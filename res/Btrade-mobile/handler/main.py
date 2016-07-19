@@ -540,11 +540,11 @@ class UpdateQuoteStateHandler(BaseHandler):
                 today = time.time()
                 params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(today)])
                 # 为采购商积分：
-                self.db.execute("update users set push_score=push_score+1 where id=%s", purchase["userid"])
+                self.db.execute("update users set pushscore=pushscore+1 where id=%s", purchase["userid"])
 
                 if int(state) == 1:
                     #为供货商积分：
-                    self.db.execute("update users set push_score=push_score+1 where id=%s", purchase["quoteuserid"])
+                    self.db.execute("update users set pushscore=pushscore+1 where id=%s", purchase["quoteuserid"])
 
                     acceptQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, purchase["phone"])
                     acceptQuoteWx(purchase["quoteopenid"], purchase["id"], purchase["name"], purchase["variety"], purchase["qprice"], purchase["nickname"], purchase["phone"], today)

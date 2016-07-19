@@ -115,7 +115,7 @@ class PurchaseHandler(BaseHandler):
             status,purchaseid,varids = purchasetransaction(self, data)
             if status:
                 # 为采购商积分：
-                self.db.execute("update users set push_score=push_score+1 where id=%s", self.session.get("userid"))
+                self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
 
                 self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':purchaseid})
             else:

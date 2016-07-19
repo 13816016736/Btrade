@@ -85,9 +85,9 @@ def storeClick(rdd):
                 if click==0:
                     sqldb = database.instance().get_session()
                     if type==1:#短信推送
-                        sqldb.execute("update supplier set push_score=push_score+1 where mobile=%s",sendid)
+                        sqldb.execute("update supplier set pushscore=pushscore+1 where mobile=%s",sendid)
                     elif type==2:#微信推送
-                        sqldb.execute("update  users set push_score=push_score+1 where openid=%s", sendid)
+                        sqldb.execute("update  users set pushscore=pushscore+1 where openid=%s", sendid)
                 click=click+1
                 colleciton.update({'uuid':uuid}, {'$set':{'click':click}})
 
