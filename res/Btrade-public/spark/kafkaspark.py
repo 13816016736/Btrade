@@ -85,7 +85,12 @@ def storeClick(rdd):
                 if click==0:
                     sqldb = database.instance().get_session()
                     if type==1:#短信推送
-                        sqldb.execute("update supplier set pushscore=pushscore+1 where mobile=%s",sendid)
+                        supplier=sqldb.query("select id,pushstatus from supplier where  mobile=%s ",sendid)
+                        print supplier
+                        if supplier and supplier[0]["pushstatus"]!=2:
+                            sqldb.execute("update supplier set pushscore=pushscore+1 where mobile=%s",sendid)
+                        else:
+                            sqldb.execute("update  users set pushscore=pushscore+1 where phone=%s", sendid)
                     elif type==2:#微信推送
                         sqldb.execute("update  users set pushscore=pushscore+1 where openid=%s", sendid)
                 click=click+1
