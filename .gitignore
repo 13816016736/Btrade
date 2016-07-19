@@ -1,6 +1,6 @@
 ### Code ###
 .git/
 .idea/
-.file/
+file/
 *.pyc
 nohup.out
