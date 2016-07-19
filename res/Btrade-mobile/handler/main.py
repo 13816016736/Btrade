@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import tornado.web
-from base import BaseHandler
+from base import *
 import config
 import json, os, datetime
 import time,utils,re
 from collections import defaultdict
 from utils import *
 from wechatjsapi import *
+from webbasehandler import purchase_push_trace
 
 class MainHandler(BaseHandler):
-
+    @purchase_push_trace
     def get(self):
         varieties = []
         quotevariety = []
@@ -36,11 +37,13 @@ class MainHandler(BaseHandler):
         pass
 
 class YaocaigouHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         self.render("yaocaigou.html")
 
 class CenterHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
@@ -109,6 +112,7 @@ class CenterHandler(BaseHandler):
         pass
 
 class UserAttentionHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self, page=0):
         userid = self.session.get("userid")
@@ -119,7 +123,7 @@ class UserAttentionHandler(BaseHandler):
         self.render("user_attention.html", varieties=varieties)
 
 class UserInfoHandler(BaseHandler):
-
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         user = self.db.get("SELECT * FROM users where id = %s", self.session.get("userid"))
@@ -128,12 +132,14 @@ class UserInfoHandler(BaseHandler):
             varieties = self.db.query("select name from variety where id in (" + user["varietyids"] + ")")
         self.render("user_info.html", user=user, varieties=varieties)
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         pass
 
 class NewsHandler(BaseHandler):
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self, type):
         news = self.db.query("select * from notification where receiver = %s order by createtime desc", self.session.get("userid"))
@@ -183,6 +189,7 @@ class NewsHandler(BaseHandler):
 
 class ArticleHandler(BaseHandler):
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self, articleid):
         article = self.db.get("select * from notification where receiver = %s and id = %s", self.session.get("userid"), articleid)
@@ -196,10 +203,13 @@ class ArticleHandler(BaseHandler):
         pass
 
 class UserUpdatePasswordHandler(BaseHandler):
+
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         self.render('update_password.html')
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         userid = self.session.get("userid")
@@ -217,12 +227,14 @@ class UserUpdatePasswordHandler(BaseHandler):
             self.api_response({'status':'success','message':'更新成功'})
 
 class UserUpdateNicknameHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
         user = self.db.get("SELECT * FROM users WHERE id = %s", userid)
         self.render('update_nickname.html', user=user)
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         nickname = self.get_argument("nickname")
@@ -233,12 +245,14 @@ class UserUpdateNicknameHandler(BaseHandler):
             self.api_response({'status':'fail','message':'个人称呼必填'})
 
 class UserCategoryHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
         user = self.db.get("SELECT * FROM users WHERE id = %s", userid)
         self.render('category.html', user=user)
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         type = self.get_argument("type")
@@ -249,6 +263,7 @@ class UserCategoryHandler(BaseHandler):
             self.api_response({'status':'fail','message':'请选择经营类型'})
 
 class WxcbHandler(BaseHandler):
+    @purchase_push_trace
     def get(self):
         signature = self.get_argument("signature")
         timestamp = self.get_argument("timestamp")
@@ -261,6 +276,7 @@ class WxcbHandler(BaseHandler):
             self.api_response("check signature fail")
 
 class WechartConfigHandler(BaseHandler):
+    @purchase_push_trace
     def post(self):
         wechart = WechartJSAPI(self.db).sign(self.get_argument("url",None))
         if wechart:
@@ -269,9 +285,11 @@ class WechartConfigHandler(BaseHandler):
             self.api_response({'status':'fail','message':'获取微信配置失败'})
 
 class ForgetPwdHandler(BaseHandler):
+    @purchase_push_trace
     def get(self):
         self.render("find_password.html")
 
+    @purchase_push_trace
     def post(self):
         smscode = self.get_argument("smscode")
         phone = self.get_argument("phone")
@@ -287,7 +305,7 @@ class ForgetPwdHandler(BaseHandler):
             self.error("手机号不存在","/forgetpwd")
 
 class SetPwdHandler(BaseHandler):
-
+    @purchase_push_trace
     def post(self):
         smscode = self.get_argument("smscode")
         password = self.get_argument("password")
@@ -307,7 +325,7 @@ class SetPwdHandler(BaseHandler):
             self.error("手机号存在异常，请联系客服人员","/forgetpwd")
 
 class GetSmsCodeForPwdHandler(BaseHandler):
-
+    @purchase_push_trace
     def post(self):
         phone = self.get_argument("phone")
         phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
@@ -331,6 +349,7 @@ class GetSmsCodeForPwdHandler(BaseHandler):
             self.api_response({'status':'fail','message':'短信验证码发送失败，请稍后重试'})
 
 class ReplayHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
@@ -351,6 +370,7 @@ class ReplayHandler(BaseHandler):
                         unreadquote += 1
         self.render("reply.html", purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote)
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         userid = self.session.get("userid")
@@ -375,6 +395,7 @@ class ReplayHandler(BaseHandler):
 
 
 class ReplayDetailHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         #更新通知状态为已读
@@ -450,6 +471,7 @@ class ReplayDetailHandler(BaseHandler):
 
 class RemovePurchaseHandler(BaseHandler):
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         if self.db.query("SELECT count(*) FROM purchase WHERE userid = %s and id = %s", self.session.get("userid"), self.get_argument("pid")):
@@ -459,6 +481,8 @@ class RemovePurchaseHandler(BaseHandler):
             self.api_response({'status':'fail','message':'请求失败，此采购订单不属于你'})
 
 class UpdateQuoteStateHandler(BaseHandler):
+
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         userid = self.session.get("userid")
@@ -515,12 +539,19 @@ class UpdateQuoteStateHandler(BaseHandler):
                 title = purchase["name"] + "回复了您的报价【" + purchase["variety"] + " "+ str(purchase["qprice"]) + "】"
                 today = time.time()
                 params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(today)])
+                # 为采购商积分：
+                self.db.execute("update users set pushscore=pushscore+1 where id=%s", purchase["userid"])
+
                 if int(state) == 1:
+                    #为供货商积分：
+                    self.db.execute("update users set pushscore=pushscore+1 where id=%s", purchase["quoteuserid"])
+
                     acceptQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, purchase["phone"])
                     acceptQuoteWx(purchase["quoteopenid"], purchase["id"], purchase["name"], purchase["variety"], purchase["qprice"], purchase["nickname"], purchase["phone"], today)
                 elif int(state) == 2:
                     rejectQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, message)
                     rejectQuoteWx(purchase["quoteopenid"], purchase["id"], purchase["name"], purchase["variety"], purchase["qprice"], message, today)
+                    pass
             self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
             self.api_response({'status':'success','message':'操作成功'})
         else:

@@ -4,8 +4,10 @@ from base import BaseHandler
 import re,json,config,time,logging
 from utils import *
 #import random
+from webbasehandler import purchase_push_trace
 
 class RegisterHandler(BaseHandler):
+    @purchase_push_trace
     def get(self, next_url="/"):
         userinfo = None
         code = self.get_argument("code", None)
@@ -25,6 +27,7 @@ class RegisterHandler(BaseHandler):
 	    logging.info(userinfo)
         self.render("register.html", next_url=next_url, userinfo=userinfo)
 
+    @purchase_push_trace
     def post(self):
         username = self.get_argument("username")
         pattern = re.compile(r'^[A-Za-z0-9]{3,20}$')
@@ -73,6 +76,12 @@ class RegisterHandler(BaseHandler):
         lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, openid,createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
                              , type, name, nickname, 1, openid, int(time.time()))
+        #查看是否为供应商列表里面的供应商，如果是转移积分
+        supplier=self.db.query("select id,pushscore from supplier where mobile=%s",phone)
+        if supplier:
+            self.db.execute("update users set pushscore=%s where id=%s", supplier[0]["pushscore"],lastrowid)
+            self.db.execute("update supplier set pushstatus=2 where id=%s", supplier[0]["id"])
+
         notification = self.db.query("select id from notification where receiver = %s", lastrowid)
         self.session["userid"] = lastrowid
         self.session["user"] = username
@@ -88,6 +97,7 @@ class GetSmsCodeHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     def post(self):
         phone = self.get_argument("phone")
         phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
@@ -113,5 +123,6 @@ class RegSuccessHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     def post(self):
         self.render("register_result.html" ,next_url=self.get_argument("next_url", "/"))

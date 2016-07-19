@@ -7,11 +7,13 @@ from utils import *
 from config import *
 import random
 from collections import defaultdict
+from webbasehandler import purchase_push_trace
 
 class PurchaseHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     def post(self, number=0):
         #列表一项是一个采购单多个品种
         # number = int(number) if number > 0 else 0
@@ -115,12 +117,14 @@ class PurchaseHandler(BaseHandler):
         #列表一项是一个采购单一个品种
 
 class PurchaseInfoHandler(BaseHandler):
+    @purchase_push_trace
     def get(self, id):
         #purchaseinfo = self.db.get("select t.*,a.position,a.parentid from "
         #"(select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
         #"p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
         #"pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
         #获取采购单详细信息
+
         purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
         "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
         "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
@@ -180,6 +184,7 @@ class PurchaseInfoHandler(BaseHandler):
 
 class PurchaseinfoBatchHandler(BaseHandler):
 
+    @purchase_push_trace
     def get(self, purchaseid):
         purchaseinf = defaultdict(list)
         purchase = self.db.get("select t.*,a.position from "
@@ -250,10 +255,12 @@ class PurchaseinfoBatchHandler(BaseHandler):
 
 class UploadFileHandler(BaseHandler):
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         pass
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         type = self.get_argument("type")
@@ -293,6 +300,7 @@ class DeleteFileHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         type = self.get_argument("type")
@@ -320,6 +328,7 @@ class GetVarietyInfoHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     def post(self):
         variety = self.get_argument("variety")
         if variety == "":
@@ -337,6 +346,7 @@ class GetVarietyInfoHandler(BaseHandler):
 
 class SaveVarietyHandler(BaseHandler):
 
+    @purchase_push_trace
     def post(self):
         varietyids = self.get_argument("varietyids")
         if varietyids == "":
@@ -351,6 +361,7 @@ class SaveVarietyHandler(BaseHandler):
 
 class RemovePurchaseHandler(BaseHandler):
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         rtype=self.get_argument("rtype",None)
