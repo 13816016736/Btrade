@@ -200,17 +200,17 @@ def pushPurchase(phones, purchase,uuidmap):
         phonelist.append(phone)
         if num > 199:
             tos = "[" + ",".join(tos) + "]"
-            result=sendx(templateId, tos)
-            if  result:
-                handlePushResult(result, phonelist, uuidmap)
+            sendx(templateId, tos)
+            #if  result:
+            #    handlePushResult(result, phonelist, uuidmap)
             tos = []
             num = 0
             phonelist=[]
         elif index == (len(phones)-1):
             tos = "[" + ",".join(tos) + "]"
-            result = sendx(templateId, tos)
-            if result:
-                handlePushResult(result, phonelist, uuidmap)
+            sendx(templateId, tos)
+            #if result:
+            #    handlePushResult(result, phonelist, uuidmap)
    # producer_server.close()
 
 
