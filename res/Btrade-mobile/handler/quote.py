@@ -128,6 +128,12 @@ class QuoteHandler(BaseHandler):
                                             "(%s,%s,%s,%s,%s,%s)", self.session.get("userid"),self.get_argument("purchaseinfoid"),
                                             quality,price,self.get_argument("explain"),
                                             int(today))
+        #session加上quoteid:便于统计报价单状态
+        self.session["quoteid"] = quoteid
+        self.session.save()
+
+        #为供货商积分：
+        self.db.execute("update users set push_score=push_score+1 where id=%s",self.session.get("userid"))
 
         #保存session上传图片的路径
         if uploadfiles:
@@ -136,6 +142,8 @@ class QuoteHandler(BaseHandler):
             uploadfiles = {}
             self.session["uploadfiles_quote"] = uploadfiles
             self.session.save()
+
+
 
         #给采购商发送通知
         #获得采购商userid

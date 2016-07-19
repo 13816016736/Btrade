@@ -199,21 +199,27 @@ class PushPurchaseHandler(BaseHandler):
             createtime = int(time.time())
             quote = 0  # 0,未报价，1，已报价
             sendstatus = 0  # 0,未发送，1:发送成功,2:失败
+
+            mongodb =  PymongoDateBase.instance().get_db()
+            colleciton= mongodb.transform_rate
+            push_phone_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"quote":"","type":1,"createtime":createtime})
+            push_wx_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"quote":"","type":2,"createtime":createtime})
+
             for phone in phones:
                 uuid = md5(str(time.time())+ str(phone))[8:-8]
                 sendid = phone
-                push_user = {"purchaseinfoid ":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"uuid":uuid,"createtime":createtime,"sendid":sendid,"quote":quote,"sendstatus":sendstatus,"type":1}
+                createtime = int(time.time())
+                push_user = {"pushid":push_phone_id ,"uuid":uuid,"createtime":createtime,"click":0,"sendid":sendid,"sendstatus":sendstatus,"type":1}
                 push_user_infos.append(push_user)
                 uuidmap[sendid]=uuid
             for openid in  openids:
                 uuid = md5(str(time.time()) + str(openid))[8:-8]
                 sendid = openid
-                push_user = {"purchaseinfoid ":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"uuid": uuid, "createtime": createtime, "sendid": sendid,"quote":quote,"sendstatus":sendstatus,"type":2}
+                createtime = int(time.time())
+                push_user = {"pushid":push_wx_id ,"uuid": uuid, "createtime": createtime,"click":0, "sendid": sendid,"sendstatus":sendstatus,"type":2}
                 push_user_infos.append(push_user)
                 uuidmap[sendid] = uuid
 
-
-            mongodb =  PymongoDateBase.instance().get_db()
             colleciton = mongodb.push_record
             colleciton.insert_many(push_user_infos)
 

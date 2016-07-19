@@ -19,7 +19,7 @@ salt = "ycg20151012"
 
 #图片服务器域名
 img_domain = "http://static.yaocai.pro/"
-# img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
+#img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
 img_path = "/opt/resources/static/uploadfiles"
 host = "http://m.yaocai.pro"
 
@@ -73,3 +73,9 @@ message_type={
     "1": "监控用户点击",
 }
 sms_hook_app_key="xaa50do4-akgg-zlzw-bugb-dq727c867d"
+
+supplier_push_status={
+    "1":"默认",
+    "0":"不予推送",
+    "2":"转化为用户"
+}

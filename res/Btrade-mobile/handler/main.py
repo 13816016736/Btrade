@@ -539,12 +539,19 @@ class UpdateQuoteStateHandler(BaseHandler):
                 title = purchase["name"] + "回复了您的报价【" + purchase["variety"] + " "+ str(purchase["qprice"]) + "】"
                 today = time.time()
                 params.append([purchase["userid"],purchase["quoteuserid"],1,title,purchase["id"],0,int(today)])
+                # 为采购商积分：
+                self.db.execute("update users set push_score=push_score+1 where id=%s", purchase["userid"])
+
                 if int(state) == 1:
+                    #为供货商积分：
+                    self.db.execute("update users set push_score=push_score+1 where id=%s", purchase["quoteuserid"])
+
                     acceptQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, purchase["phone"])
                     acceptQuoteWx(purchase["quoteopenid"], purchase["id"], purchase["name"], purchase["variety"], purchase["qprice"], purchase["nickname"], purchase["phone"], today)
                 elif int(state) == 2:
                     rejectQuote(purchase["quotephone"], purchase["name"], purchase["variety"], str(purchase["qprice"]), config.unit, message)
                     rejectQuoteWx(purchase["quoteopenid"], purchase["id"], purchase["name"], purchase["variety"], purchase["qprice"], message, today)
+                    pass
             self.db.executemany("insert into notification(sender,receiver,type,title,content,status,createtime)values(%s, %s, %s, %s, %s, %s, %s)",params)
             self.api_response({'status':'success','message':'操作成功'})
         else:

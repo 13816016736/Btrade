@@ -76,6 +76,12 @@ class RegisterHandler(BaseHandler):
         lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, status, openid,createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
                              , type, name, nickname, 1, openid, int(time.time()))
+        #查看是否为供应商列表里面的供应商，如果是转移积分
+        supplier=self.db.query("select id,push_score from supplier where mobile=%s",phone)
+        if supplier:
+            self.db.execute("update users set push_score=%s where id=%s", supplier[0]["push_score"],lastrowid)
+            self.db.execute("update supplier set pushstatus=2 where id=%s", supplier[0]["id"])
+
         notification = self.db.query("select id from notification where receiver = %s", lastrowid)
         self.session["userid"] = lastrowid
         self.session["user"] = username
