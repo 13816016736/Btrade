@@ -114,6 +114,9 @@ class PurchaseHandler(BaseHandler):
             #         self.session.save()
             status,purchaseid,varids = purchasetransaction(self, data)
             if status:
+                # 为采购商积分：
+                self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
+
                 self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':purchaseid})
             else:
                 self.api_response({'status':'fail','message':'发布失败，请刷新页面重试'})

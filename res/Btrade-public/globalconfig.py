@@ -19,7 +19,7 @@ salt = "ycg20151012"
 
 #图片服务器域名
 img_domain = "http://static.yaocai.pro/"
-# img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
+#img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
 img_path = "/opt/resources/static/uploadfiles"
 host = "http://m.yaocai.pro"
 
@@ -57,4 +57,25 @@ source_code={
     "manual_recommend":"人工推荐",
     "self_recommend":"自主推荐",
     "self_register":"自主注册"
+}
+
+analysis_send_topic="push_monitor"#推送分析的topic
+kafka_server="localhost:9092"#kafka服务ip以及端口
+zk_server="localhost:2181"
+mongodb_ip="127.0.0.1"
+mongodb_port=27017
+db_name="yaocai_statistical"
+monitor_type={
+    "1":"短信渠道",
+    "2":"微信渠道"
+}
+message_type={
+    "1": "监控用户点击",
+}
+sms_hook_app_key="xaa50do4-akgg-zlzw-bugb-dq727c867d"
+
+supplier_push_status={
+    "1":"默认",
+    "0":"不予推送",
+    "2":"转化为用户"
 }

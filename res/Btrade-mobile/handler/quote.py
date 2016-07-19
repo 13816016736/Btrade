@@ -8,9 +8,11 @@ from config import *
 import random
 import time
 from collections import defaultdict
+from webbasehandler import purchase_push_trace
 
 class QuoteHandler(BaseHandler):
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self, purchaseinfoid):
         #purchaseinfo = self.db.get("select t.*,a.position from (select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
@@ -75,6 +77,7 @@ class QuoteHandler(BaseHandler):
                     reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),
                     uploadfiles=uploadfiles, quotechances=quotechances)
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         purchaseinfoid = self.get_argument("purchaseinfoid")
@@ -125,6 +128,12 @@ class QuoteHandler(BaseHandler):
                                             "(%s,%s,%s,%s,%s,%s)", self.session.get("userid"),self.get_argument("purchaseinfoid"),
                                             quality,price,self.get_argument("explain"),
                                             int(today))
+        #session加上quoteid:便于统计报价单状态
+        self.session["quoteid"] = quoteid
+        self.session.save()
+
+        #为供货商积分：
+        self.db.execute("update users set pushscore=pushscore+1 where id=%s",self.session.get("userid"))
 
         #保存session上传图片的路径
         if uploadfiles:
@@ -133,6 +142,8 @@ class QuoteHandler(BaseHandler):
             uploadfiles = {}
             self.session["uploadfiles_quote"] = uploadfiles
             self.session.save()
+
+
 
         #给采购商发送通知
         #获得采购商userid
@@ -151,6 +162,7 @@ class QuoteHandler(BaseHandler):
         self.api_response({'status':'success','message':'请求成功'})
 
 class QuoteUploadHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self, purchaseinfoid, type):
         print purchaseinfoid
@@ -166,6 +178,7 @@ class QuoteSuccessHandler(BaseHandler):
     def get(self):
         pass
 
+    @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
         if self.session.get("uploadfiles_quote"):
@@ -181,6 +194,8 @@ class QuoteSuccessHandler(BaseHandler):
 
 
 class WeixinHandler(BaseHandler):
+
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         self.render("weixin.html")
@@ -190,6 +205,7 @@ class WeixinHandler(BaseHandler):
         pass
 
 class QuoteDetailHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self, quoteid, nid):
         quote = self.db.get("select * from quote where id = %s", quoteid)
@@ -273,6 +289,7 @@ class QuoteDetailHandler(BaseHandler):
         pass
 
 class QuoteListHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
