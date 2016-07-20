@@ -327,7 +327,7 @@ class QuoteListHandler(BaseHandler):
             myquote["uname"] = userinfo["name"]
             myquote["type"]=userinfo["type"]
             myquote["phone"] = userinfo["phone"]
-            myquote["nid"]= notificationdict[str(myquote.purchaseinfoid)]
+            myquote["nid"]= notificationdict.get(str(myquote.purchaseinfoid), None)
 
 
 
