@@ -5,11 +5,13 @@ from base import BaseHandler
 from mongodb import PymongoDateBase
 from globalconfig import *
 
+
 class SmsHookHandler(BaseHandler):
     def get(self):
         pass
 
     def post(self):
+        self.log.info(self.request.arguments)
         token = self.get_argument("token","")
         timestamp = self.get_argument("timestamp","")
         signature=self.get_argument("signature","")
