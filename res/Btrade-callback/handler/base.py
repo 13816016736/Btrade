@@ -4,12 +4,15 @@ import tornado.web
 import session
 from database import database
 import json
+import logging
+
 
 
 class BaseHandler(tornado.web.RequestHandler):
   def initialize(self):
       self.session = session.Session(self.application.session_manager, self)
       self.db = database.instance().get_session()
+      self.log=logging.getLogger()
 
   def api_response(self, data):
         """将数据转成json返回给客户端"""
