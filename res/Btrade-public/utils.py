@@ -479,8 +479,8 @@ def pushPurchaseWx(openids, purchase,uuidmap):
             }
         }
         uuid = uuidmap[openid]
-        link=link+"?uuid="+uuid
-        reuslt=sendwx(templateId, openid, link, data)
+        sendlink=link+"?uuid="+uuid
+        reuslt=sendwx(templateId, openid, sendlink, data)
         if reuslt:
             message = json.loads(reuslt.encode("utf-8"))
             db = PymongoDateBase.instance().get_db()
