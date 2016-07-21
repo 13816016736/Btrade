@@ -18,7 +18,7 @@ reply_rate=0.3
 notify_days=1
 
 #最大提醒次数
-max_notify_time=3
+max_notify_time=2
 
 #单次发送的最多号码个数
 max_phone_num=20

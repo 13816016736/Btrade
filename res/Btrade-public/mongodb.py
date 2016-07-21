@@ -19,12 +19,15 @@ class PymongoDateBase(object):
 if __name__ == "__main__":
     #client = pymongo.MongoClient("localhost", 27017)
     client = PymongoDateBase.instance()
+    from bson import ObjectId
     db=client.get_db()
-    import datetime
-    my_colleciton= db.my_collection
-    new_post = {"AccountID": 23, "UserName": "xccww", 'date': datetime.datetime.now()}
-    my_colleciton.insert(new_post)
+    db.transform_rate.update({'_id':ObjectId("579076e4fd758901286fc0db")}, {'$set':{'quote':"743"}})
+
+    #import datetime
+    #my_colleciton= db.my_collection
+    #new_post = {"AccountID": 23, "UserName": "xccww", 'date': datetime.datetime.now()}
+    #my_colleciton.insert(new_post)
     #post= my_colleciton.find_one({"AccountID": 22})
     #dt=post["date"]
     #print dt.strftime("%Y/%m/%d %H:%M:%S")
-    client.close()
+    #client.close()

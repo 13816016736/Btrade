@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import random,thread,config,time
+import random,thread,time
 from sendsms import *
 from sendwechart import *
 from globalconfig import *
+from mongodb import PymongoDateBase
 def md5(str):
     import hashlib
     import types
@@ -198,15 +199,15 @@ def pushPurchase(phones, purchase,uuidmap):
         phonelist.append(phone)
         if num > 199:
             tos = "[" + ",".join(tos) + "]"
-            #sendx(templateId, tos)
-            print templateId, tos
+            sendx(templateId, tos)
+            #print templateId, tos
             tos = []
             num = 0
             phonelist=[]
         elif index == (len(phones)-1):
             tos = "[" + ",".join(tos) + "]"
-            #sendx(templateId, tos)
-            print templateId, tos
+            sendx(templateId, tos)
+            #print templateId, tos
 
 
 
@@ -454,17 +455,16 @@ def pushPurchaseWx(openids, purchase,uuidmap):
             }
         }
         uuid = uuidmap[openid]
-        link=link+"?uuid="+uuid
-        print templateId, openid, link, data
-        #reuslt=sendwx(templateId, openid, link, data)
-        #if reuslt:
-        #    message = json.loads(reuslt.encode("utf-8"))
-        #    db = PymongoDateBase.instance().get_db()
-        #    colleciton = db.push_record
-        #    if message["errcode"]==0:
-        #        colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 1}})
-        #    else:
-        #        colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 2}})
+        sendlink=link+"?uuid="+uuid
+        reuslt=sendwx(templateId, openid, sendlink, data)
+        if reuslt:
+            message = json.loads(reuslt.encode("utf-8"))
+            db = PymongoDateBase.instance().get_db()
+            colleciton = db.push_record
+            if message["errcode"]==0:
+               colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 1}})
+            else:
+                colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 2}})
         time.sleep(3)
 
 import MySQLdb

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import requests, config, json
+import requests, json
+from globalconfig import *
 
 def sendwx(templateId, openid, link, data):
     if openid:
         #先获取access_token
-        accesstoken_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (config.appid, config.secret)
+        accesstoken_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (appid, secret)
         res = requests.get(accesstoken_url)
         message = json.loads(res.text.encode("utf-8"))
         access_token = message.get("access_token", None)

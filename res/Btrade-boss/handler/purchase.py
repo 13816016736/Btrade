@@ -240,11 +240,10 @@ class PushPurchaseHandler(BaseHandler):
 
         #生成celery任务，只要发送任务id
         purchaseinfoid = self.get_argument("purchaseinfoid")
-        purchaseinfo = self.db.get("select pushcount from purchase_info where id=%s",purchaseinfoid)
-        task={"purchaseinfoid":purchaseinfoid,"tasktype":1,"order":int(purchaseinfo["pushcount"]+1)}
+        task={"purchaseinfoid":purchaseinfoid,"tasktype":1,"channel":1}
         task_generate.apply_async(args=[task])
-        self.db.execute("update purchase_info set pushcount=%s where id=%s", int(purchaseinfo["pushcount"]) + 1,
-                        purchaseinfoid)
+        task={"purchaseinfoid":purchaseinfoid,"tasktype":1,"channel":2}
+        task_generate.apply_async(args=[task])
 
         self.api_response({'status':'success','message':'推送成功'})
         #else:
