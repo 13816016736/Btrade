@@ -91,7 +91,7 @@ class SupplierInsertHandler(BaseHandler):
         data=self.get_argument("data",None)
         if data:
             user=json.loads(data)
-            print user
+            #print user
             mobile=user["mobile"]
             name=user["linkman"]
             varietys=user["varietys"]
@@ -261,7 +261,7 @@ class SupplierDetailHandler(BaseHandler):
                     supply_variety_name.append(r.name)
                 supplier["supply_variety_name"] = supply_variety_name
                 if supplier.sponsor!=None and supplier.sponsor!='0'and supplier.sponsor!="":
-                    print supplier.sponsor
+                    #print supplier.sponsor
                     sponsor = self.db.query("select name ,nickname from users where id in(%s)"% supplier.sponsor)
                     if sponsor:
                         sponsor_name=""
