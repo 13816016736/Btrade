@@ -10,6 +10,10 @@ from urllib import urlencode
 import thread
 from mongodb import PymongoDateBase
 
+import tornado.gen
+from pushengine.tasks import task_generate
+
+
 class PurchaseHandler(BaseHandler):
 
     @tornado.web.authenticated
@@ -172,64 +176,76 @@ class RemovePurchaseHandler(BaseHandler):
         self.api_response({'status':'success','message':'请求成功'})
 
 class PushPurchaseHandler(BaseHandler):
+
     @tornado.web.authenticated
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
     def post(self):
-        purchaseinfoid = self.get_argument("purchaseinfoid")
-        purchaser = self.get_argument("purchaser")#其实不需要这个参数
-        purchaseinfo = self.db.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,pi.pushcount,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
-        u = self.db.get("select name,nickname from users where id = %s", purchaseinfo["userid"])
-        purchaseinfo["name"] = u["name"]
-        purchaseinfo["nickname"] = u["nickname"]
-        users = self.db.query("select phone,openid from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
-        yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and mobile != '' and pushstatus=1", purchaseinfo["varietyid"])
-        phones = set()
-        openids = set()
-        for i in users:
-            phones.add(i["phone"])
-            openids.add(i["openid"])
-        for j in yt:
-            phones.add(j["mobile"])
-        phones = list(set(phones))
+        #purchaseinfoid = self.get_argument("purchaseinfoid")
+        #purchaser = self.get_argument("purchaser")#其实不需要这个参数
+        #purchaseinfo = self.db.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,pi.pushcount,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
+        #u = self.db.get("select name,nickname from users where id = %s", purchaseinfo["userid"])
+        #purchaseinfo["name"] = u["name"]
+        #purchaseinfo["nickname"] = u["nickname"]
+        #users = self.db.query("select phone,openid from users where find_in_set(%s,varietyids)", purchaseinfo["varietyid"])
+        #yt = self.db.query("select mobile from supplier where find_in_set(%s,variety) and mobile != '' and pushstatus=1", purchaseinfo["varietyid"])
+        #phones = set()
+        #openids = set()
+        #for i in users:
+        #    phones.add(i["phone"])
+        #    openids.add(i["openid"])
+        #for j in yt:
+        #    phones.add(j["mobile"])
+        #phones = list(set(phones))
         #phones =["13638654365"]
         #openids=["oTEeNweXKZh8FXoP3Fwu_y3AGPkk"]
-        if phones:
-            #测试先不发送信息，只保存信息到mongodb
-            push_user_infos = []
-            uuidmap={}
-            createtime = int(time.time())
-            quote = 0  # 0,未报价，1，已报价
-            sendstatus = 0  # 0,未发送，1:发送成功,2:失败
+        #if phones:
+        #    #测试先不发送信息，只保存信息到mongodb
+        #   push_user_infos = []
+        #    uuidmap={}
+        #    createtime = int(time.time())
+        #    quote = 0  # 0,未报价，1，已报价
+        #    sendstatus = 0  # 0,未发送，1:发送成功,2:失败
 
-            mongodb =  PymongoDateBase.instance().get_db()
-            colleciton= mongodb.transform_rate
-            push_phone_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"quote":"","type":1,"createtime":createtime})
-            push_wx_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"quote":"","type":2,"createtime":createtime})
+        #    mongodb =  PymongoDateBase.instance().get_db()
+        #    colleciton= mongodb.transform_rate
+        #    push_phone_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"quote":"","type":1,"createtime":createtime})
+        #    push_wx_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":int(purchaseinfo["pushcount"])+1,"quote":"","type":2,"createtime":createtime})
 
-            for phone in phones:
-                uuid = md5(str(time.time())+ str(phone))[8:-8]
-                sendid = phone
-                createtime = int(time.time())
-                push_user = {"pushid":push_phone_id ,"uuid":uuid,"createtime":createtime,"click":0,"sendid":sendid,"sendstatus":sendstatus,"type":1}
-                push_user_infos.append(push_user)
-                uuidmap[sendid]=uuid
-            for openid in  openids:
-                uuid = md5(str(time.time()) + str(openid))[8:-8]
-                sendid = openid
-                createtime = int(time.time())
-                push_user = {"pushid":push_wx_id ,"uuid": uuid, "createtime": createtime,"click":0, "sendid": sendid,"sendstatus":sendstatus,"type":2}
-                push_user_infos.append(push_user)
-                uuidmap[sendid] = uuid
+        #    for phone in phones:
+        #        uuid = md5(str(time.time())+ str(phone))[8:-8]
+        #        sendid = phone
+        #        createtime = int(time.time())
+        #        push_user = {"pushid":push_phone_id ,"uuid":uuid,"createtime":createtime,"click":0,"sendid":sendid,"sendstatus":sendstatus,"type":1}
+        #        push_user_infos.append(push_user)
+        #        uuidmap[sendid]=uuid
+        #    for openid in  openids:
+        #        uuid = md5(str(time.time()) + str(openid))[8:-8]
+        #        sendid = openid
+        #        createtime = int(time.time())
+        #        push_user = {"pushid":push_wx_id ,"uuid": uuid, "createtime": createtime,"click":0, "sendid": sendid,"sendstatus":sendstatus,"type":2}
+        #        push_user_infos.append(push_user)
+        #        uuidmap[sendid] = uuid
 
-            colleciton = mongodb.push_record
-            colleciton.insert_many(push_user_infos)
+        #    colleciton = mongodb.push_record
+        #    colleciton.insert_many(push_user_infos)
 
 
-            thread.start_new_thread(pushPurchase, (phones, purchaseinfo,uuidmap))
-            thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo,uuidmap))
-            self.db.execute("update purchase_info set pushcount=%s where id=%s",int(purchaseinfo["pushcount"])+1, purchaseinfoid)
+        #    thread.start_new_thread(pushPurchase, (phones, purchaseinfo,uuidmap))
+        #    thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo,uuidmap))
+        #    self.db.execute("update purchase_info set pushcount=%s where id=%s",int(purchaseinfo["pushcount"])+1, purchaseinfoid)
 
             #pushPurchase(phones, purchaseinfo)
             #pushPurchaseWx(openids, purchaseinfo)
-            self.api_response({'status':'success','message':'群发给了'+str(len(phones))+'个用户'})
-        else:
-            self.api_response({'status':'fail','message':'暂无关注此品种的用户'})
+
+        #生成celery任务，只要发送任务id
+        purchaseinfoid = self.get_argument("purchaseinfoid")
+        purchaseinfo = self.db.get("select pushcount from purchase_info where id=%s",purchaseinfoid)
+        task={"purchaseinfoid":purchaseinfoid,"tasktype":1,"order":int(purchaseinfo["pushcount"]+1)}
+        task_generate.apply_async(args=[task])
+        self.db.execute("update purchase_info set pushcount=%s where id=%s", int(purchaseinfo["pushcount"]) + 1,
+                        purchaseinfoid)
+
+        self.api_response({'status':'success','message':'推送成功'})
+        #else:
+        #self.api_response({'status':'fail','message':'暂无关注此品种的用户'})

@@ -1,3 +1,4 @@
+#coding:utf8
 from kafka import KafkaProducer
 import json
 import sys,os
@@ -26,8 +27,10 @@ class KafkaProduceServer(object):
 
 
 if __name__ == "__main__":
-    producer_server = KafkaProduceServer(analysis_send_topic,kafka_server)
-    producer_server.sendJson("data",{u'quoteid': 758, u'uuid': u'9cb0a090fb181e73', u'url': u'/quotesuccess', u'userid': 1, u'messagetype': 1, u'createtime': 1468901613, u'method': u'POST', u'monitor_type': 1})
+    producer_server = KafkaProduceServer(send_task_topic,kafka_server)
+    producer_server.sendJson("data", {"taskid": u"中文", "messagetype": 2})
+    producer_server.close()
+
     #producer_server.sendMsg('raw_bytes')
     '''
     # Asynchronous by default

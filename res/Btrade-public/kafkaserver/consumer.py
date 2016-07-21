@@ -12,7 +12,7 @@ class KafkaConsumerServer(object):
             server=[server]
         self._consumer= KafkaConsumer(topic,
                          bootstrap_servers=server,
-                         group_id="test-group",
+                         group_id="consumer-group",
                          value_deserializer=lambda m: json.loads(m.decode('utf8')))
     def getConsumer(self):
         return self._consumer
@@ -23,7 +23,7 @@ class KafkaConsumerServer(object):
 
 
 if __name__ == "__main__":
-    kafkaserver = KafkaConsumerServer(analysis_send_topic,kafka_server)
+    kafkaserver = KafkaConsumerServer(send_task_topic,kafka_server)
     for message in kafkaserver.getConsumer():
         print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
                                           message.offset, message.key,
