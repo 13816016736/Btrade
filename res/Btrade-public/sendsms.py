@@ -41,8 +41,6 @@ def send(templateId, phone, vars):
     return res.text
 
 def sendx(templateId, tos):
-    logger = logging.getLogger()
-    logger.info("pushPurchase sendx method  start")
     url = 'http://sendcloud.sohu.com/smsapi/sendx'
 
     param = {
@@ -65,11 +63,7 @@ def sendx(templateId, tos):
 
     param['signature'] = sign
 
-    logger.info("pushPurchase sendx method  param=%s",param)
-
     res = requests.post(url,data=param)
-
-    logger.info("pushPurchase sendx method  post res=%s", res)
 
     return res.text
 

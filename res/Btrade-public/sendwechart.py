@@ -2,8 +2,6 @@
 import requests, config, json
 import logging
 def sendwx(templateId, openid, link, data):
-    logger = logging.getLogger()
-    logging.info("sendwx method start openid=%s",openid)
     if openid:
         #先获取access_token
         accesstoken_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (config.appid, config.secret)
@@ -19,9 +17,7 @@ def sendwx(templateId, openid, link, data):
                 'url' : link,
                 'data' : data
             }
-            logging.info("sendwx method post start data=%s", param)
             res = requests.post(url,data=json.dumps(param), headers=headers)
-            logging.info("sendwx method post result=%s", res)
             return res.text
         else:
             return

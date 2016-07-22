@@ -183,7 +183,7 @@ def rejectQuote(phone, name, variety, price, unit, message):
 def pushPurchase(phones, purchase,uuidmap):
     logger = logging.getLogger()
     templateId = 870
-    logger.info("pushPurchase thread sendx purchase=%s", purchase)
+    logger.info("pushPurchase thread")
     for (k,v) in purchase.items():
         purchase[k] = purchase[k].encode('utf-8') if isinstance(purchase[k], unicode) else purchase[k]
     #vars = '{"%purchaseinfoid%":"'+str(purchase["purchaseinfoid"])+'","%variety%":"'+purchase["variety"]+'","%name%":"'+purchase["name"]+'","%specification%":"'+purchase["specification"]+'","%quantity%":"'+purchase["quantity"]+'","%unit%":"'+purchase["unit"]+'"}'
@@ -191,12 +191,10 @@ def pushPurchase(phones, purchase,uuidmap):
     num = 0
     phonelist=[]
     #producer_server = KafkaProduceServer(analysis_send_topic, kafka_server)
-    logger.info("pushPurchase thread sendx phones=%s", phones)
     for index, phone in enumerate(phones):
         num = num + 1
         phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
-        logger.info("pushPurchase thread sendx uuid=%s", uuidmap[phone])
-        uuid=uuidmap[phone]
+        uuid=uuidmap.get(phone, "")
         vars = '{"%purchaseinfoid%":"' + str(purchase["purchaseinfoid"]) +'?uuid='+ uuid +'","%variety%":"' + purchase[
             "variety"] + '","%name%":"' + purchase["name"] + '","%specification%":"' + purchase[
                    "specification"] + '","%quantity%":"' + purchase["quantity"] + '","%unit%":"' + purchase[
@@ -487,11 +485,9 @@ def pushPurchaseWx(openids, purchase,uuidmap):
                "color":"#173177"
             }
         }
-        uuid = uuidmap[openid]
+        uuid = uuidmap.get(openid, "")
         sendlink=link+"?uuid="+uuid
-        logger.info("pushPurchase pushPurchaseWx sendwx,templateId=%s,openid=%s,sendlink=%s,data=%s",templateId, openid, sendlink, data)
         result=sendwx(templateId, openid, sendlink, data)
-        logger.info("pushPurchase pushPurchaseWx sendwx,result=%s", result)
         if  result:
             message = json.loads(result.encode("utf-8"))
             db = PymongoDateBase.instance().get_db()
@@ -500,7 +496,6 @@ def pushPurchaseWx(openids, purchase,uuidmap):
                 colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 1}})
             else:
                 colleciton.update({'uuid': uuid}, {'$set': {'sendstatus': 2}})
-        logger.info("pushPurchase pushPurchaseWx sendwx handle result")
         time.sleep(3)
 
 import MySQLdb
