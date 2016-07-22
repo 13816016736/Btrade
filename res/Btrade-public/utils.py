@@ -5,6 +5,7 @@ from sendsms import *
 from sendwechart import *
 from mongodb import PymongoDateBase
 from globalconfig import *
+import logging
 def md5(str):
     import hashlib
     import types
@@ -200,18 +201,19 @@ def pushPurchase(phones, purchase,uuidmap):
         phonelist.append(phone)
         if num > 199:
             tos = "[" + ",".join(tos) + "]"
-            sendx(templateId, tos)
-            #if  result:
-            #    handlePushResult(result, phonelist, uuidmap)
+            result=sendx(templateId, tos)
+            logger = logging.getLogger()
+            logger.info("pushPurchase sendx templateId=%s,tos%s", templateId, tos)
+            logger.info("pushPurchase sendx,result=%s", result)
             tos = []
             num = 0
             phonelist=[]
         elif index == (len(phones)-1):
             tos = "[" + ",".join(tos) + "]"
-            sendx(templateId, tos)
-            #if result:
-            #    handlePushResult(result, phonelist, uuidmap)
-   # producer_server.close()
+            #sendx(templateId, tos)
+            logger = logging.getLogger()
+            logger.info("pushPurchase sendx templateId=%s,tos%s", templateId, tos)
+
 
 
 def handlePushResult(result,phonelist,uuidmap):
@@ -480,9 +482,12 @@ def pushPurchaseWx(openids, purchase,uuidmap):
         }
         uuid = uuidmap[openid]
         sendlink=link+"?uuid="+uuid
-        reuslt=sendwx(templateId, openid, sendlink, data)
-        if reuslt:
-            message = json.loads(reuslt.encode("utf-8"))
+        logger = logging.getLogger()
+        logger.info("pushPurchase sendwx,templateId=%s,openid=%s,sendlink=%s,data=%s",templateId, openid, sendlink, data)
+        result=sendwx(templateId, openid, sendlink, data)
+        logger.info("pushPurchase sendwx,result=%s", result)
+        if  result:
+            message = json.loads(result.encode("utf-8"))
             db = PymongoDateBase.instance().get_db()
             colleciton = db.push_record
             if message["errcode"]==0:
