@@ -115,6 +115,9 @@ def analysis_record():#定时执行不停检测发送记录，超过一天分析
        id=item["latest_id"]
        transform=mongodb.transform_rate.find_one({"_id":id})
        type=transform["type"]
+       order=transform["order"]
+       if order > max_push_time:
+           continue
        purchaseinfoid=transform["purchaseinfoid"]
        quote_count =0
        if transform["quote"]!="":
@@ -142,9 +145,12 @@ def analysis_notify():#定时检测报价回复情况，生成提醒
     mongodb = PymongoDateBase.instance().get_db()
     func = '''
        function(obj,prev){
-         prev.all_qutote=prev.all_qutote+","+obj.quote
+         if (obj.quote!=""){
+            prev.all_qutote=prev.all_qutote+","+obj.quote
+            }
          }
        '''
     ret = mongodb.transform_rate.group(['purchaseinfoid'], None, {"all_qutote": "", "latest_id": ""}, func)
-    pass
+    for item in ret:
+        print item
 

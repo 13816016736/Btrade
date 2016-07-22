@@ -1,6 +1,5 @@
-from pushengine.tasks import analysis_record
-import time
+from pushengine.tasks import analysis_notify
 
-r = analysis_record.apply_async()
+r = analysis_notify.apply_async()
 
 print "Result:",r.get()
