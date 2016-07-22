@@ -208,7 +208,6 @@ class MyPurchaseInfoHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, id):
-        print id
         login_userid=self.session.get("userid")
         show_userid=[]
         show_userid.append(str(login_userid))
