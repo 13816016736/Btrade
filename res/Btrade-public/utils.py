@@ -210,9 +210,11 @@ def pushPurchase(phones, purchase,uuidmap):
             phonelist=[]
         elif index == (len(phones)-1):
             tos = "[" + ",".join(tos) + "]"
-            #sendx(templateId, tos)
+            result=sendx(templateId, tos)
             logger = logging.getLogger()
             logger.info("pushPurchase sendx templateId=%s,tos%s", templateId, tos)
+            logger.info("pushPurchase sendx,result=%s", result)
+
 
 
 
