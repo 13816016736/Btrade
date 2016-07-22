@@ -155,7 +155,7 @@ def analysis_notify():#定时检测报价回复情况，生成提醒
             }
          }
        '''
-    ret = mongodb.transform_rate.group(['purchaseinfoid'], None, {"all_qutote": "", "latest_id": ""}, func)
+    ret = mongodb.transform_rate.group(['purchaseinfoid'], None, {"all_qutote": ""}, func)
     for item in ret:
         print item
 
