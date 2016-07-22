@@ -8,6 +8,7 @@ from kafkaserver.producer import KafkaProduceServer
 from globalconfig import *
 from pushengine.engineconfig import *
 import pymongo
+import time
 
 
 
@@ -46,7 +47,7 @@ def task_generate(task):#生成发送任务
             if filtersend != []:
                 phonecondition = " and phone not in(%s)" % ",".join(filtersend)
             task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": 1, "order": order,
-                        "status": 0}
+                        "status": 0,"createtime":int(time.time())}
             userphones = sqldb.query(
                     "select phone from users where find_in_set(%s,varietyids)" + phonecondition + " order by pushscore  limit 0,%s",
                     purchaseinfo["varietyid"], max_wx_num)
@@ -68,7 +69,7 @@ def task_generate(task):#生成发送任务
             if filtersend!=[]:
                  wxcondition = " and openid not in(%s)" % ",".join(filtersend)
             task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": 2, "order": order,
-                        "status": 0}
+                        "status": 0,"createtime":int(time.time())}
             userwxs = sqldb.query(
                     "select openid from users where find_in_set(%s,varietyids) and openid!=''" + wxcondition + " order by pushscore limit 0,%s",
                     purchaseinfo["varietyid"], max_wx_num)
@@ -146,7 +147,11 @@ def analysis_notify():#定时检测报价回复情况，生成提醒
     func = '''
        function(obj,prev){
          if (obj.quote!=""){
-            prev.all_qutote=prev.all_qutote+","+obj.quote
+            if(prev.all_qutote=="")
+                prev.all_qutote=obj.quote
+            else{
+                prev.all_qutote=prev.all_qutote+","+obj.quote
+               }
             }
          }
        '''
