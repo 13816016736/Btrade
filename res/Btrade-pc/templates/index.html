@@ -322,7 +322,7 @@ $(function(){
             str = '刚刚';
 
         } else  if (seconds < hour){
-            str = Math.round(seconds) + '分钟前';
+            str = Math.round(seconds/minute) + '分钟前';
 
         } else  if (seconds < day){
             str = Math.round(seconds / hour) + '小时前';
