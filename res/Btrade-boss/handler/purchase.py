@@ -225,9 +225,8 @@ class PushPurchaseHandler(BaseHandler):
             colleciton.insert_many(push_user_infos)
 
             logger = logging.getLogger()
-            logger.info("pushPurchase start phone thread,phone=%s,purchaseinfo=%s,uuidmap=%s",phones, purchaseinfo,uuidmap)
+            logger.info("pushPurchase start thread,phone=%s,purchaseinfo=%s,uuidmap=%s",phones, purchaseinfo,uuidmap)
             thread.start_new_thread(pushPurchase, (phones, purchaseinfo,uuidmap))
-            logger.info("pushPurchase start wx thread,openids=%s,purchaseinfo=%s,uuidmap=%s", openids, purchaseinfo, uuidmap)
             thread.start_new_thread(pushPurchaseWx, (openids, purchaseinfo,uuidmap))
             self.db.execute("update purchase_info set pushcount=%s where id=%s",int(purchaseinfo["pushcount"])+1, purchaseinfoid)
 
