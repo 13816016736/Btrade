@@ -121,7 +121,7 @@ def sendkafka(taskid):
 
 #调度器
 @celerysever.task
-def analysis_record():#定时执行不停检测发送记录，超过一天分析是否重发
+def analysis_record():#每天九点定时检测
    mongodb = PymongoDateBase.instance().get_db()
    sqldb = database.instance().get_session()
    #items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
@@ -164,7 +164,7 @@ def analysis_record():#定时执行不停检测发送记录，超过一天分析
 
 
 @celerysever.task
-def analysis_notify():#定时检测报价回复情况，生成提醒
+def analysis_notify():#每天九点价回复情况，生成提醒
     sqldb = database.instance().get_session()
     ret=sqldb.query("select id from purchase_info where status=0")
     for item in ret:

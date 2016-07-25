@@ -30,20 +30,21 @@ def writeDB(rdd):
             quoteid=item["quoteid"]
             sqldb = database.instance().get_session()
             ret=sqldb.get("select purchaseinfoid from quote where id=%s",quoteid)
-            qinfoid=ret["purchaseinfoid"]
-            record = colleciton.find_one({"uuid": uuid})
-            if record:
-                pushid=record["pushid"]
-                transform=mongodb.transform_rate.find_one({"_id":pushid})
-                if transform:
-                    purchaseinfoid=transform["purchaseinfoid"]
-                    quote=[]
-                    if transform["quote"]!="":
-                        quote=transform["quote"].split(",")
-                    if str(qinfoid)==str(purchaseinfoid):#如果是推送的批次采购则进入统计
-                        if str(quoteid) not in quote:
-                            quote.append(str(quoteid))
-                        mongodb.transform_rate.update({"_id":pushid}, {'$set':{'quote':','.join(quote)}})
+            if ret:
+                qinfoid=ret["purchaseinfoid"]
+                record = colleciton.find_one({"uuid": uuid})
+                if record:
+                    pushid=record["pushid"]
+                    transform=mongodb.transform_rate.find_one({"_id":pushid})
+                    if transform:
+                        purchaseinfoid=transform["purchaseinfoid"]
+                        quote=[]
+                        if transform["quote"]!="":
+                            quote=transform["quote"].split(",")
+                        if str(qinfoid)==str(purchaseinfoid):#如果是推送的批次采购则进入统计
+                            if str(quoteid) not in quote:
+                                quote.append(str(quoteid))
+                            mongodb.transform_rate.update({"_id":pushid}, {'$set':{'quote':','.join(quote)}})
 
 
 
@@ -59,7 +60,7 @@ def writeAll(rdd):#纯记录用户数据
 
 def filterMethod(item):
     if item is not None:
-        if item["url"].find("/quotesuccess")== 0 and item["method"].upper() == "POST" :#报价成功
+        if item["url"].find("/quotesuccess")== 0 and item["method"].upper() == "POST" and item["quoteid"]!=-1:#报价成功
             return True
     return False
 

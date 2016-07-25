@@ -74,10 +74,12 @@ def sendPush(rdd):
                             purchaseinfo = sqldb.get("select pi.name,pi.purchaseid,pi.unit,q.price from quote q left join  purchase_info pi on q.purchaseinfoid=pi.id where q.id=%s",qid)
                             if channel==1:
                                 if sendid!="":
-                                    reply_quote_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid))
+                                    print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8")
+                                    #reply_quote_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid))
                             elif channel==2:
                                 if sendid!="":
-                                    reply_wx_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]))
+                                    print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8")
+                                    #reply_wx_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]))
                                     pass
 
 
