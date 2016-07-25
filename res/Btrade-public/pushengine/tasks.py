@@ -184,10 +184,10 @@ def analysis_notify():#每天九点报价回复情况，生成提醒
                 if (int(time.time())-int(latest_time))>notify_days*24*60*60:
                     print reply_num/(quote_num*1.0)
                     if reply_num/(quote_num*1.0)<reply_rate:
-                        task = {"purchaseinfoid": purchaseinfoid, "tasktype": 2,"channel":1}
+                        task = {"purchaseinfoid": str(purchaseinfoid), "tasktype": 2,"channel":1}
                         print task
                         task_generate.apply_async(args=[task])
-                        task = {"purchaseinfoid": purchaseinfoid, "tasktype": 2,"channel":2}
+                        task = {"purchaseinfoid": str(purchaseinfoid), "tasktype": 2,"channel":2}
                         print task
                         task_generate.apply_async(args=[task])
 
