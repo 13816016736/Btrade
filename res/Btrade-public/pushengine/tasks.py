@@ -26,7 +26,7 @@ def task_generate(task):#生成发送任务
         order = 1
     else:
         order = record[0]["order"] + 1
-    print order
+    print "start order %s"%order
     purchaseinfo = sqldb.get(
         "select pi.id purchaseinfoid,pi.varietyid,p.userid uid from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s",
         purchaseinfoid)
@@ -43,6 +43,7 @@ def task_generate(task):#生成发送任务
                     filtersend.append(item["sendid"])
         if channel == 1:
             #短信渠道
+            print "channel=%s"%channel
             phonecondition = ""
             filtersend = [str(i) for i in filtersend]
             if filtersend != []:
@@ -62,9 +63,10 @@ def task_generate(task):#生成发送任务
             for j in yt:
                 sendids.add(str(j["mobile"]))
             sendids = list(set(sendids))
-            print sendids
+            print "sendids= %s"%sendids
         elif channel==2:
             #微信渠道
+            print "channel=%s"%channel
             wxcondition=""
             filtersend = ["'"+str(i)+"'" for i in filtersend]
             if filtersend!=[]:
@@ -77,13 +79,13 @@ def task_generate(task):#生成发送任务
             for i in userwxs:
                     sendids.add(str(i["openid"]))
             sendids = list(set(sendids))
-            print sendids
+            print "sendids=%s"%sendids
         if len(sendids) != 0:
             taskid = mongodb.celery_task.insert(task)
             taskinfo = {"taskid": taskid, "sendlist": ",".join(sendids)}
             collection = mongodb.celery_task_info
             collection.insert(taskinfo)
-            sendkafka.apply_async(args=[taskid])
+            #sendkafka.apply_async(args=[taskid])
     else:
         #提醒采购商
         if order!=1:
@@ -99,6 +101,7 @@ def task_generate(task):#生成发送任务
             useropenid=sqldb.get("select id,openid from users where id=%s",purchaseinfo["uid"])
             if useropenid:
                 sendid=useropenid["openid"]
+        print "channel=%s,sendid=%s"%(channel,sendid)
         if sendid!="":
             task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": channel, "order": order,
                     "status": 0, "createtime": int(time.time())}

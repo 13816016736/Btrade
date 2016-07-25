@@ -10,6 +10,7 @@ from globalconfig import *
 import logging
 from mongodb import PymongoDateBase
 import time
+import logging
 class CJsonEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
@@ -56,6 +57,7 @@ class WebBaseHandler(tornado.web.RequestHandler):
   def initialize(self):
       self.session = session.Session(self.application.session_manager, self)
       self.db = database.instance().get_session()
+      self.log = logging.getLogger()
 
   def get(self):
       """捕获404"""
