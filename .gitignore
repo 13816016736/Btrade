@@ -4,3 +4,5 @@
 file/
 *.pyc
 nohup.out
+*.rdb
+celerybeat-schedule

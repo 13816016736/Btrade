@@ -60,6 +60,7 @@ source_code={
 }
 
 analysis_send_topic="push_monitor"#推送分析的topic
+send_task_topic="send_task"#推送任务topic
 kafka_server="localhost:9092"#kafka服务ip以及端口
 zk_server="localhost:2181"
 mongodb_ip="127.0.0.1"
@@ -78,4 +79,8 @@ supplier_push_status={
     "1":"默认",
     "0":"不予推送",
     "2":"转化为用户"
+}
+task_type={
+    "1":"采购单推送",
+    "2":"采购单回复提醒"
 }
