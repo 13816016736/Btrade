@@ -167,7 +167,7 @@ def analysis_record():#每天九点定时检测
 
 
 @celerysever.task
-def analysis_notify():#每天九点价回复情况，生成提醒
+def analysis_notify():#每天九点报价回复情况，生成提醒
     print "start analysi_notify"
     sqldb = database.instance().get_session()
     ret=sqldb.query("select id from purchase_info where status=0")
