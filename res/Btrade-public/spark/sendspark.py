@@ -57,15 +57,16 @@ def sendPush(rdd):
                         colleciton = mongodb.push_record
                         colleciton.insert_many(push_user_infos)
                         if channel==1:
-                            print sendlist, purchaseinfo, uuidmap
+                            #print sendlist, purchaseinfo, uuidmap
                             #pushPurchase(sendlist, purchaseinfo, uuidmap)
-                            #thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
+                            thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
                         else:
                             print sendlist, purchaseinfo,uuidmap
                             #pushPurchaseWx(sendlist, purchaseinfo,uuidmap)
-                            #thread.start_new_thread(pushPurchaseWx, (sendlist, purchaseinfo, uuidmap))
+                            thread.start_new_thread(pushPurchaseWx, (sendlist, purchaseinfo, uuidmap))
                     elif tasktype==2:
                         sendid=taskinfo["sendlist"]
+                        print purchaseinfoid
                         ret = sqldb.query("select id from quote where purchaseinfoid =%s and state=0", purchaseinfoid)#未回复的报价个数
                         num=len(ret)
                         if num!=0:
@@ -74,12 +75,15 @@ def sendPush(rdd):
                             purchaseinfo = sqldb.get("select pi.name,pi.purchaseid,pi.unit,q.price from quote q left join  purchase_info pi on q.purchaseinfoid=pi.id where q.id=%s",qid)
                             if channel==1:
                                 if sendid!="":
-                                    print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8")
+                                    #print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8"),str(purchaseinfo["purchaseid"])
                                     #reply_quote_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid))
+                                    thread.start_new_thread(reply_quote_notify,(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid)))
+
                             elif channel==2:
                                 if sendid!="":
-                                    print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8")
+                                    #print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8"),str(purchaseinfo["purchaseid"])
                                     #reply_wx_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]))
+                                    thread.start_new_thread(reply_wx_notify, (sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"])))
                                     pass
 
 

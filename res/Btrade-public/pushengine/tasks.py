@@ -26,6 +26,7 @@ def task_generate(task):#生成发送任务
         order = 1
     else:
         order = record[0]["order"] + 1
+    print order
     purchaseinfo = sqldb.get(
         "select pi.id purchaseinfoid,pi.varietyid,p.userid uid from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s",
         purchaseinfoid)
@@ -86,7 +87,7 @@ def task_generate(task):#生成发送任务
     else:
         #提醒采购商
         if order!=1:
-            if order>max_notify_time or (int(time.time())-int(record["createtime"]))<notify_days*24*60*60:
+            if order>max_notify_time or (int(time.time())-int(record[0]["createtime"]))<notify_days*24*60*60:
                 return
 
         sendid=""
@@ -122,6 +123,7 @@ def sendkafka(taskid):
 #调度器
 @celerysever.task
 def analysis_record():#每天九点定时检测
+   print "start analysis_record start"
    mongodb = PymongoDateBase.instance().get_db()
    sqldb = database.instance().get_session()
    #items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
@@ -158,6 +160,7 @@ def analysis_record():#每天九点定时检测
                 reject_rate=quote_aject_count/(quote_count*1.0)
             if click_count/(push_count*1.0)<click_rate or quote_count/(push_count*1.0)<quote_rate or reject_rate>reject_quote_rate :
                 task = {"purchaseinfoid": purchaseinfoid, "tasktype": 1,"channel":type}
+                print "task_generate task=%s"%task
                 task_generate.apply_async(args=[task])
 
 
@@ -165,6 +168,7 @@ def analysis_record():#每天九点定时检测
 
 @celerysever.task
 def analysis_notify():#每天九点价回复情况，生成提醒
+    print "start analysi_notify"
     sqldb = database.instance().get_session()
     ret=sqldb.query("select id from purchase_info where status=0")
     for item in ret:
@@ -178,7 +182,7 @@ def analysis_notify():#每天九点价回复情况，生成提醒
                 ret=sqldb.query("select id,createtime from quote where purchaseinfoid =%s order by createtime" , purchaseinfoid)
                 latest_time=ret[0]["createtime"]
                 if (int(time.time())-int(latest_time))>notify_days*24*60*60:
-                    print purchaseinfoid
+                    print reply_num/(quote_num*1.0)
                     if reply_num/(quote_num*1.0)<reply_rate:
                         task = {"purchaseinfoid": purchaseinfoid, "tasktype": 2,"channel":1}
                         print task
