@@ -1,19 +1,26 @@
-# core/tasks.py
-# from celery import Task
-# from celery.utils.log
-# import get_task_logger
-# def register_task_logger(module_name):
-#  """Instantiate a logger at the decorated class instance level."""
-#  def wrapper(cls):
-#  cls.log = get_task_logger('%s.%s' % (module_name, cls.__name__))
-#   return cls
-# return wrapper
-# @register_task_log(__name__)
-#  class AddTask(Task):
-# def run(self, x, y):
-# self.log.info("Calling task add(%d, %d)" % (x, y))
-#  return x - y
-#  @register_task_log(__name__)
-# class SubTask(Task):
-#  def run(self, x, y):
-# self.log.info("Calling task subtract(%d, %d)" % (x, y))         return x - y
+#coding:utf8
+from pushengine.tasks import analysis_notify,analysis_record,sendkafka
+from datetime import timedelta,datetime
+import time
+#r = analysis_record.apply_async()
+
+#print "Result:",r.get()
+#yesterday=datetime.now()-timedelta(days=1)
+#print time.time()
+#timeStamp=time.mktime(yesterday.timetuple())
+#timeArray = time.localtime(timeStamp)
+#otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+#print otherStyleTime
+
+#sendkafka.apply_async(args=["5791d391fd7589256877f1ae"])
+#from utils import reply_wx_notify
+#openid="oTEeNweXKZh8FXoP3Fwu_y3AGPkk"
+#num='3'
+#name='五味子'
+#price="10"
+#unit="斤"
+#pid="371"
+#purchaseid="146112075263"
+#reply_wx_notify(openid,num, name, price, unit,pid,purchaseid)
+
+
