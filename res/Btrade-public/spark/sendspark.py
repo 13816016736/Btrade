@@ -23,54 +23,72 @@ def sendPush(rdd):
         for item in resultList:
             taskid=item["taskid"]
             mongodb = PymongoDateBase.instance().get_db()
+            sqldb = database.instance().get_session()
             taskid=ObjectId(taskid)
             task= mongodb.celery_task.find_one({"_id":taskid})
             if task:
                 mongodb.celery_task.update({"_id":taskid}, {'$set':{'status':1}})
                 purchaseinfoid=task["purchaseinfoid"]
                 count=task["order"]
-                type=task["channel"]
+                channel=task["channel"]
+                tasktype=task["tasktype"]
                 taskinfo=mongodb.celery_task_info.find_one({"taskid":taskid})
                 if taskinfo:
                     sendlist=taskinfo["sendlist"].split(",")
-                    sqldb = database.instance().get_session()
-                    purchaseinfo = sqldb.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,pi.pushcount,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
-                    u = sqldb.get("select name,nickname from users where id = %s", purchaseinfo["userid"])
-                    purchaseinfo["name"] = u["name"]
-                    purchaseinfo["nickname"] = u["nickname"]
-                    push_user_infos = []
-                    uuidmap={}
-                    sendstatus = 0  # 0,未发送，1:发送成功,2:失败
-                    colleciton = mongodb.transform_rate
-                    createtime = int(time.time())
-                    push_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":count,"quote":"","type":type,"createtime":createtime})
-
-                    for send in sendlist:
-                        uuid = md5(str(time.time())+ str(send))[8:-8]
-                        sendid = send
+                    if tasktype==1:
+                        purchaseinfo = sqldb.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,pi.pushcount,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
+                        u = sqldb.get("select name,nickname from users where id = %s", purchaseinfo["userid"])
+                        purchaseinfo["name"] = u["name"]
+                        purchaseinfo["nickname"] = u["nickname"]
+                        push_user_infos = []
+                        uuidmap={}
+                        sendstatus = 0  # 0,未发送，1:发送成功,2:失败
+                        colleciton = mongodb.transform_rate
                         createtime = int(time.time())
-                        push_user = {"pushid":push_id ,"uuid":uuid,"createtime":createtime,"click":0,"sendid":sendid,"sendstatus":sendstatus,"type":type}
-                        push_user_infos.append(push_user)
-                        uuidmap[sendid]=uuid
+                        push_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":count,"quote":"","type":channel,"createtime":createtime})
+                        for send in sendlist:
+                            uuid = md5(str(time.time())+ str(send))[8:-8]
+                            sendid = send
+                            createtime = int(time.time())
+                            push_user = {"pushid":push_id ,"uuid":uuid,"createtime":createtime,"click":0,"sendid":sendid,"sendstatus":sendstatus,"type":channel}
+                            push_user_infos.append(push_user)
+                            uuidmap[sendid]=uuid
 
-                    colleciton = mongodb.push_record
-                    colleciton.insert_many(push_user_infos)
-                    if type==1:
-                        print sendlist, purchaseinfo, uuidmap
-                        #pushPurchase(sendlist, purchaseinfo, uuidmap)
-                        #thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
-                    else:
-                        print sendlist, purchaseinfo,uuidmap
-                        #pushPurchaseWx(sendlist, purchaseinfo,uuidmap)
-                        #thread.start_new_thread(pushPurchaseWx, (sendlist, purchaseinfo, uuidmap))
+                        colleciton = mongodb.push_record
+                        colleciton.insert_many(push_user_infos)
+                        if channel==1:
+                            print sendlist, purchaseinfo, uuidmap
+                            #pushPurchase(sendlist, purchaseinfo, uuidmap)
+                            #thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
+                        else:
+                            print sendlist, purchaseinfo,uuidmap
+                            #pushPurchaseWx(sendlist, purchaseinfo,uuidmap)
+                            #thread.start_new_thread(pushPurchaseWx, (sendlist, purchaseinfo, uuidmap))
+                    elif tasktype==2:
+                        sendid=taskinfo["sendlist"]
+                        ret = sqldb.query("select id from quote where purchaseinfoid =%s and state=0", purchaseinfoid)#未回复的报价个数
+                        num=len(ret)
+                        if num!=0:
+                            ret= sqldb.query("select id from quote where purchaseinfoid =%s and state=0 order by price", purchaseinfoid)
+                            qid=ret[0]["id"]
+                            purchaseinfo = sqldb.get("select pi.name,pi.purchaseid,pi.unit,q.price from quote q left join  purchase_info pi on q.purchaseinfoid=pi.id where q.id=%s",qid)
+                            if channel==1:
+                                if sendid!="":
+                                    reply_quote_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid))
+                            elif channel==2:
+                                if sendid!="":
+                                    reply_wx_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]))
+                                    pass
+
 
 
 
 def handlestream(kvs):
     parsed = kvs.map(lambda (k, v): json.loads(v))#获取消息的json格式
     #处理发送任务
-    send=parsed.filter(lambda x: True if x["messagetype"] == 2 else False)
+    send=parsed.filter(lambda x: True if x["messagetype"] == 2  else False)
     send.foreachRDD(sendPush)
+
 
 
 

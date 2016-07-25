@@ -15,19 +15,19 @@ CELERY_MONGODB_BACKEND_SETTINGS = {
 BROKER_URL = 'mongodb://localhost:27017/jobs'
 
 from celery.schedules import crontab
-
-from datetime import timedelta
 #定时任务
 CELERYBEAT_SCHEDULE = {
     'analysis_record': {
          'task': 'pushengine.tasks.analysis_record',
-         'schedule': timedelta(seconds=10),
+         'schedule':  crontab(hour=9),
          'args': ()
     },
     'analysis_notify': {
         'task': 'pushengine.tasks.analysis_notify',
-        'schedule': timedelta(seconds=10),
+        'schedule':  crontab(hour=9),
         'args': ()
     },
 
 }
+
+CELERYD_FORCE_EXECV = True
