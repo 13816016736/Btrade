@@ -1,1 +1,3 @@
-sudo celery -A pushengine worker -B -f pushengine/log/celery.log -l info
+sudo celery -A pushengine worker -f pushengine/log/celery.log -l info
+
+celery -A pushengine beat -f pushengine/log/celery.log -s pushengine/celerybeat-schedule

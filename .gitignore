@@ -7,3 +7,4 @@ file/
 nohup.out
 *.rdb
 celerybeat-schedule
+celerybeat.pid
