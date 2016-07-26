@@ -19,12 +19,12 @@ from celery.schedules import crontab
 CELERYBEAT_SCHEDULE = {
     'analysis_record': {
          'task': 'pushengine.tasks.analysis_record',
-         'schedule':  crontab(hour=9),
+         'schedule':  crontab(hour=10),
          'args': ()
     },
     'analysis_notify': {
         'task': 'pushengine.tasks.analysis_notify',
-        'schedule':  crontab(hour=9),
+        'schedule':  crontab(hour=10),
         'args': ()
     },
 
