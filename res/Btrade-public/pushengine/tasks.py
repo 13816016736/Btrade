@@ -85,7 +85,7 @@ def task_generate(task):#生成发送任务
             taskinfo = {"taskid": taskid, "sendlist": ",".join(sendids)}
             collection = mongodb.celery_task_info
             collection.insert(taskinfo)
-            #sendkafka.apply_async(args=[taskid])
+            sendkafka.apply_async(args=[taskid])
     else:
         #提醒采购商
         if order!=1:

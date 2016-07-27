@@ -29,5 +29,5 @@ CELERYBEAT_SCHEDULE = {
     },
 
 }
-
+CELERY_TIMEZONE = 'Asia/Shanghai'
 CELERYD_FORCE_EXECV = True
