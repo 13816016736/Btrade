@@ -24,10 +24,10 @@ CELERYBEAT_SCHEDULE = {
     },
     'analysis_notify': {
         'task': 'pushengine.tasks.analysis_notify',
-        'schedule':  crontab(hour=10),
+        'schedule': crontab(hour=10),
         'args': ()
     },
 
 }
-
+CELERY_TIMEZONE = 'Asia/Shanghai'
 CELERYD_FORCE_EXECV = True

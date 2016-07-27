@@ -9,6 +9,7 @@ from collections import defaultdict
 from urllib import urlencode
 import tornado.gen
 from pushengine.tasks import task_generate
+import logging
 
 
 class PurchaseHandler(BaseHandler):
@@ -237,11 +238,15 @@ class PushPurchaseHandler(BaseHandler):
             #pushPurchaseWx(openids, purchaseinfo)
 
         #生成celery任务，只要发送任务id
+        logger = logging.getLogger()
         purchaseinfoid = self.get_argument("purchaseinfoid")
+        logger.info("pushPurchase purchaseinfoid=%s", purchaseinfoid)
         task={"purchaseinfoid":purchaseinfoid,"tasktype":1,"channel":1}
         task_generate.apply_async(args=[task])
+        logger.info("pushPurchase push task=%s", task)
         task={"purchaseinfoid":purchaseinfoid,"tasktype":1,"channel":2}
         task_generate.apply_async(args=[task])
+        logger.info("pushPurchase push task=%s", task)
 
         self.api_response({'status':'success','message':'推送成功'})
         #else:

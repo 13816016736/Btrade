@@ -67,6 +67,7 @@ handlers = [
     (r"/getsmscodeforpwd", GetSmsCodeForPwdHandler),
     (r"/reply", ReplayHandler),
     (r"/replydetail", ReplayDetailHandler),
+    (r"/variety", VarietySearchHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
     (r".*", BaseHandler),
 ];

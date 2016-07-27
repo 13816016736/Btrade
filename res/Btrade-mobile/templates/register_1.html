@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>注册</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "basenofoot.html" %}
+{% block container %}
 <body class="yc-body-nofoot">
     <header class="yc-header">
         <div class="yc-header-back">
@@ -20,7 +9,7 @@
         </div>
         <div class="yc-header-title">注册</div>
         <div class="yc-header-right">
-            <a href="login.html">已有账号，直接登录</a>
+            <a href="/login">已有账号，直接登录</a>
         </div>
     </header><!-- /yc-header -->
 
@@ -58,11 +47,13 @@
                     <span class="error"></span>
                     <button class="btn-send" id="jSendCode" type="button">获取验证码</button>
                 </div>
+                 {% if userinfo %}
                 <div class="item">
                     <label class="txt">微信号</label>
-                    <span class="ipt">boyyafee<img src="uploads/avatar_9527.png" alt=""></span>
+                    <span class="ipt">{{userinfo['nickname'].encode('raw_unicode_escape')}}<img src="{{userinfo['headimgurl']}}" alt=""></span>
                     <span class="error"></span>
                 </div>
+                 {% end %}
                 <div class="button">
                     <button class="submit wide" id="jSubmit" type="button">下一步</button>
                 </div>
@@ -85,9 +76,6 @@
 
     </section><!-- /yc-content -->
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
     <script>
     !(function($){
 
@@ -123,7 +111,35 @@
         }
         // 保存
         $('#jSubmit').on('click', function() {
-            return checkIpt();
+            bool = checkIpt();
+            if(bool){
+                var data = {
+                    "phone":$mobile.val(),
+                    "smscode":$code.val(),
+                    "step":1,
+                    "openid":"{% if userinfo %}{{userinfo['openid']}}{% end %}"
+                };
+                $.ajax({
+                    url: '/register',
+                    dataType: 'json',
+                    data: data,
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                    },
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            location.href="/register/next_url/{{next_url}}/?step=2"
+                        } else {
+                            lpPopover(data.message);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        lpPopover('网络连接超时，请您稍后重试!');
+                    }
+                })
+            }
+            return bool;
         });
 
         $('body').on('click', function() {
@@ -137,9 +153,28 @@
         // 短信验证码
         var sendMessageCode = {
             send: function() {
-                $send.text(second + txt).prop('disabled', true);
-                lpPopover("短信验证码已发出，请注意查收短信！");
-                this.lock();
+                var obj = this;
+                $.ajax({
+                    url: '/getsmscode',
+                    dataType: 'json',
+                    data: 'phone='+$mobile.val(),
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                    },
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            $send.text(second + txt).prop('disabled', true);
+                            obj.lock();
+                            lpPopover(data.message);
+                        }else{
+                            lpPopover(data.message);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        lpPopover('网络连接超时，请您稍后重试!');
+                    }
+                })
             },
             lock: function() {
                 var that = this;
@@ -156,13 +191,17 @@
         }
 
         $send.on("click", function() {
-            if (second === 0) {
+            bool = checkMobile();
+            if (bool){
+                if (second === 0) {
                 second = 60;
                 sendMessageCode.send();
+                }
             }
+            return bool;
         })
 
     }(jQuery));
     </script>
 </body>
-</html>
+{% end %}
