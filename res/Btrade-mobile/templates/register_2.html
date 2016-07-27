@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>注册</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="yc-body-nofoot">
+    <header class="yc-header">
+        <div class="yc-header-back">
+            <a href="javascript:history.back();">
+                <i class="iconfont icon-back"></i>
+            </a>
+        </div>
+        <div class="yc-header-title">注册</div>
+        <div class="yc-header-right">
+            <a href="login.html">已有账号，直接登录</a>
+        </div>
+    </header><!-- /yc-header -->
+
+    <section class="yc-content">
+        <div class="yc-guide">
+            <ul>
+                <li>
+                    <span>1</span>
+                    <strong>验证手机</strong>
+                </li>
+                <li><i class="iconfont icon-more"></i></li>
+                <li class="curr">
+                    <span>2</span>
+                    <strong>填写基础信息</strong>
+                </li>
+                <li><i class="iconfont icon-more"></i></li>
+                <li>
+                    <span>3</span>
+                    <strong>设置主营产品</strong>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="yc-form">
+            <form action="">
+                <div class="item">
+                    <label class="txt">经营类型</label>
+                    <label class="rdo cell">
+                        <input name="type" value="Personal" type="radio" checked="">
+                        <span class="ipt-rdo">个人经营</span>
+                    </label>   
+                    <label class="rdo">
+                        <input name="type" value="Company" type="radio">
+                        <span class="ipt-rdo">药材经营公司</span>
+                    </label>  
+                    <label class="rdo">
+                        <input name="type" value="Artel" type="radio">
+                        <span class="ipt-rdo">合作社</span>
+                    </label>  
+                    <label class="rdo">
+                        <input name="type" value="PlantingBase" type="radio">
+                        <span class="ipt-rdo">种植基地</span>
+                    </label>  
+                    <label class="rdo">
+                        <input name="type" value="Others" type="radio">
+                        <span class="ipt-rdo">其他</span>
+                    </label>  
+                </div>
+                <div class="group" id="jPersonal">
+                    <div class="item">
+                        <label class="txt">真实姓名</label>
+                        <input class="ipt" type="text" value="" id="jRealName" placeholder="请填写您的真实姓名">
+                        <span class="error"></span>
+                    </div>
+                </div>
+                <div class="group hide" id="jCompany">
+                    <div class="item">
+                        <label class="txt">单位全称</label>
+                        <input class="ipt" type="text" value="" id="jCompName" placeholder="请填写工商注册的企业全称">
+                        <span class="error"></span>
+                    </div>
+                    <div class="item">
+                        <label class="txt">个人称呼</label>
+                        <input class="ipt" type="text" value="" id="jNickName" placeholder="请填写您个人的姓名或称呼，用于联系">
+                        <span class="error"></span>
+                    </div>
+                </div>
+                
+                <div class="spacing"></div>
+
+                <div class="item">
+                    <label class="txt">登录密码</label>
+                    <input class="ipt" type="password" value="" id="jPwd" placeholder="6-20位字母、数字" />
+                    <span class="error"></span>
+                </div>
+
+                <div class="button">
+                    <button class="submit wide" id="jSubmit" type="button">下一步</button>
+                </div>
+            </form>
+        </div>
+
+    </section><!-- /yc-content -->
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+    !(function($){
+        // 表单内容tab切换
+        $('.rdo').on('click', 'input:radio', function() {
+            if (this.checked && this.value === 'Personal') {
+                $('#jCompany').addClass('hide');
+                $('#jPersonal').removeClass('hide');
+            } else {
+                $('#jCompany').removeClass('hide');
+                $('#jPersonal').addClass('hide');
+            }
+        });
+
+        var $pwd = $('#jPwd'),
+            $realName = $('#jRealName'),
+            $compName = $('#jCompName'),
+            $nickName = $('#jNickName');
+
+        function checkPwd() {
+            var val = $pwd.val();
+            if (!val) {
+                $pwd.next().html('请填写登录密码').show();
+            } else if (!/[a-z0-9]{6,20}/.test(val)) {
+                $pwd.next().html('登录密码格式不正确').show();
+            } else {
+                $pwd.next().html('').hide();
+                return true;
+            }
+            $pwd.focus();
+            return false;
+        }
+        function checkRealName() {
+            var val = $realName.val();
+            if (!val) {
+                $realName.next().html('请填写真实姓名').show();
+            } else {
+                $realName.next().html('').hide();
+                return true;
+            }
+            $realName.focus();
+            return false;
+        }
+        function checkCompName() {
+            var val = $compName.val();
+            if (!val) {
+                $compName.next().html('请填写单位全称').show();
+            } else {
+                $compName.next().html('').hide();
+                return true;
+            }
+            $compName.focus();
+            return false;
+        }
+        function checkNickName() {
+            var val = $nickName.val();
+            if (!val) {
+                $nickName.next().html('请填写个人称呼').show();
+            } else {
+                $nickName.next().html('').hide();
+                return true;
+            }
+            $nickName.focus();
+            return false;
+        }
+        function checkIpt() {
+            if ($('.rdo input:radio:checked').val() === 'Personal') {
+                return checkRealName() && checkPwd();
+
+            } else {
+                return checkCompName() && checkNickName() && checkPwd();
+            }
+        }
+        // 保存
+        $('#jSubmit').on('click', function() {
+            return checkIpt();
+        });
+
+        $('body').on('click', function() {
+            $('.error').html('').hide();
+        })
+
+
+    }(jQuery));
+    </script>
+</body>
+</html>

@@ -35,12 +35,13 @@ class MainHandler(BaseHandler):
         quotes =self.db.query("select q.id,q.userid quid,q.quality,q.price,q.createtime,pi.id pid,pi.purchaseid,pi.name,pi.specification,pi.unit from "
         "quote q,purchase_info pi where q.purchaseinfoid = pi.id order by q.createtime desc limit 4")#获取最新的4个报价
         purchaseids = [str(quote["purchaseid"]) for quote in quotes]#采购单id list
-        purchaseuser = self.db.query(
+        if len(purchaseids)!=0:
+            purchaseuser = self.db.query(
             "select p.id,name from purchase p left join users u on p.userid=u.id where p.id in(%s)" % ",".join(
                 purchaseids))
-        purchaseuserinfo = dict((i.id, i.name) for i in  purchaseuser)
-        for quote in quotes :
-            quote["pname"]=purchaseuserinfo[quote.purchaseid]
+            purchaseuserinfo = dict((i.id, i.name) for i in  purchaseuser)
+            for quote in quotes :
+                quote["pname"]=purchaseuserinfo[quote.purchaseid]
 
 
 
