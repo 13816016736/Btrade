@@ -139,18 +139,17 @@
         $('#jSubmit').on('click', function(){
             if (attentionArr.length === 0) {
                 lpPopover('请添加主营品种', 5e3);
-                return
+                return;
             }
              else{
-               type=$('.rdo input:radio:checked').val()
-               var name = (type == '8') ? $realName.val() : $compName.val();
-               var nickname=(type == '8') ? name : $nickName.val();
+               browser_type="wx"
+               if(isWeixinBrowser()!=true){
+                    browser_type="not_wx"
+               }
                var data = {
-                        "type":type,
-                        "name":name,
-                        "nickname":nickname,
-                        "password":$pwd.val(),
-                        "step":2,
+                        "attention": attentionArr.join(","),
+                        "browser_type":browser_type,
+                        "step":3,
                     };
 
                 $.ajax({
@@ -163,7 +162,7 @@
                     },
                     success: function(data) {
                         if (data.status === 'success') {
-                            location.href="/register/next_url/{{next_url}}/?step=3"
+                            location.href=encodeURI("/regsuccess?next_url={{next_url}}")
                         } else {
                             lpPopover(data.message);
                         }
@@ -179,6 +178,11 @@
 
         })
 
+
+        function isWeixinBrowser(){
+            var ua = navigator.userAgent.toLowerCase();
+            return (/micromessenger/.test(ua)) ? true : false ;
+            }
 
 
     }(jQuery));

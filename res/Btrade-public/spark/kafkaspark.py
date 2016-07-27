@@ -60,7 +60,7 @@ def writeAll(rdd):#纯记录用户数据
 
 def filterMethod(item):
     if item is not None:
-        if item["url"].find("/quotesuccess")== 0 and item["method"].upper() == "POST" and item["quoteid"]!=-1:#报价成功
+        if item["url"].find("/quotesuccess")== 0 and item["method"].upper() == "POST" :#报价成功
             return True
     return False
 

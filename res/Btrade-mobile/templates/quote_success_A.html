@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>报价成功</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "basenofoot.html" %}
+{% block container %}
 <body>
     <section class="yc-content">
         <div class="yc-message">
@@ -25,10 +14,10 @@
                 </div>
                 <div class="link">
                     <p>还有31批次的采购，正等待报价</p>
-                    <a class="primany" href="purchase.html">立即查看</a>
+                    <a class="primany" href="/">立即查看</a>
                 </div>
             </div>
         </div>
     </section><!-- /yc-content -->
 </body>
-</html>
+{% end %}

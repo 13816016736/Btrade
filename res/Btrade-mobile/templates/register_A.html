@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>注册提示</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "basenofoot.html" %}
+{% block container %}
 <body>
     <section class="yc-content">
         <div class="yc-message">
@@ -21,7 +10,7 @@
             <div class="main">
                 <div class="thank">
                     <i class="iconfont icon-radio-yes"></i>
-                    <p>严飞，欢迎加入药材购！</p>
+                    <p>{{ username }}，欢迎加入药材购！</p>
                     <p>越来越多饮片长、药厂入驻药材购，发布采购计划，您可随时随地报价，药材购也将全程协助您成功卖货~</p>
                 </div>
                 <div class="tips">
@@ -29,11 +18,14 @@
                     <p><i class="iconfont icon-heart"></i>一旦有新的采购，将第一时间通知您</p>
                 </div>
                 <div class="link">
-                    <a class="primany" href="purchase.html">继续报价</a>
-                    <a class="primany" href="purchase.html">立即查看</a>
+                    {%  if type==1 %}
+                    <a class="primany" href="{{ url }}">继续报价</a>
+                    {%elif type==2  %}
+                    <a class="primany" href="{{ url }}">立即查看</a>
+                    {% end %}
                 </div>
             </div>
         </div>
     </section><!-- /yc-content -->
 </body>
-</html>
+{% end %}

@@ -25,9 +25,37 @@ class RegisterHandler(BaseHandler):
                 url = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
+        logging.info(userinfo)
+        accept_purchaseinfo=self.db.query("select distinct purchaseinfoid from quote where state=1")
+        accept_company_num=0
+        accept_purchaseinfoids=[]
+        if accept_purchaseinfo:
+            accept_purchaseinfoids=[str(item["purchaseinfoid"]) for item in accept_purchaseinfo]
+            accept_company_num=self.db.execute_rowcount("select distinct p.userid from purchase p left join  purchase_info pi on p.id=pi.purchaseid where pi.id in (%s)"%(",".join(accept_purchaseinfoids)))
+        accept_quote_user_num=self.db.execute_rowcount("select distinct userid  from quote where state=1")
+        accept_num = len(accept_purchaseinfoids)
+        sum_quantity=0
+        sum_price=0
+        for item in accept_purchaseinfoids:
+            purchaseinfo=self.db.get("select quantity,unit from purchase_info where id=%s",item)
+            if purchaseinfo:
+                quoteinfo=self.db.get("select price from quote where purchaseinfoid=%s and state=1 order by price desc limit 0,1",item)
+                if purchaseinfo["unit"]==u"公斤":
+                    sum_quantity+=int(purchaseinfo["quantity"])/1000
+                    sum_price+=int(purchaseinfo["quantity"])*float(quoteinfo["price"])
 
-	    logging.info(userinfo)
-        self.render("register_%s.html"%step, next_url=next_url, userinfo=userinfo)
+                elif purchaseinfo["unit"]==u"吨":
+                    sum_quantity += int(purchaseinfo["quantity"])
+                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])*1000
+        show_data={"accept_company_num":accept_company_num,"accept_quote_user_num":accept_quote_user_num,
+                   "accept_num":accept_num,"sum_quantity":sum_quantity,"sum_price":int(sum_price/10000)}
+
+
+
+
+
+
+        self.render("register_%s.html"%step, next_url=next_url, userinfo=userinfo,data=show_data)
 
     @purchase_push_trace
     def post(self):
@@ -98,7 +126,10 @@ class RegisterHandler(BaseHandler):
                 self.api_response({'status': 'fail', 'message': 'session过期'})
                 return
         elif step=='3':
-            pass
+            attention=self.get_argument("attention")
+            self.db.execute("update users set varietyids=%s where id=%s",attention,self.session.get("userid"))
+            self.api_response({'status': 'success', 'data': {}})
+
 
 
 
@@ -140,12 +171,53 @@ class GetSmsCodeHandler(BaseHandler):
 
 class RegSuccessHandler(BaseHandler):
     def get(self):
-        pass
+        next_url=self.get_argument("next_url", "/")
+        browser_type=self.get_argument("browser_type","wx")
+        if next_url.find("/quote/purchaseinfoid/")==0:
+            self.render("register_A.html",type=1,url=next_url,username=self.session.get("user"))
+        else:
+            if browser_type=="wx":
+                self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/checkfans&response_type=code&scope=snsapi_base&state=regsuccess#wechat_redirect")
+            else:
+                self.render("register_C.html")
 
     @purchase_push_trace
     def post(self):
         self.render("register_result.html" ,next_url=self.get_argument("next_url", "/"))
-
+class CheckFansHandler(BaseHandler):
+    def get(self):
+        is_fans=False
+        code = self.get_argument("code", None)
+        state = self.get_argument("state",None)
+        if code:
+            # 请求获取access_token和openid
+            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
+            config.appid, config.secret, code)
+            res = requests.get(url)
+            message = json.loads(res.text.encode("utf-8"))
+            access_token = message.get("access_token", None)
+            if access_token:
+                openid = message.get("openid")
+                # 请求获取用户信息
+                url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
+                res = requests.get(url)
+                userinfo = json.loads(res.text.encode("utf-8"))
+                subscribe=userinfo.get("subscribe")
+                if subscribe==1:
+                    is_fans=True
+                else:
+                    is_fans = False
+        if is_fans:
+            if state == "regsuccess":
+                self.render("register_A.html", type=2, url="/", username=self.session.get("user"))
+            elif state =="quotesuccess":
+                self.render("quote_success_A.html")
+        else:
+            if state == "regsuccess":
+                self.render("register_B.html")
+            elif state =="quotesuccess":
+                self.render("quote_success_B.html")
+        self.redirect("/")
 
 class VarietySearchHandler(BaseHandler):
     @tornado.web.authenticated

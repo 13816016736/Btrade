@@ -58,6 +58,7 @@ handlers = [
     (r"/register/next_url/(.*)", RegisterHandler),
     (r"/getsmscode", GetSmsCodeHandler),
     (r"/regsuccess", RegSuccessHandler),
+    (r"/checkfans", CheckFansHandler),
     (r"/getvarietyinfo", GetVarietyInfoHandler),
     (r"/savevariety", SaveVarietyHandler),
     (r"/wxcb", WxcbHandler),

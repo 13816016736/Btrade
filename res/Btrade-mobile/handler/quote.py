@@ -190,7 +190,15 @@ class QuoteSuccessHandler(BaseHandler):
             count = self.db.execute_rowcount("select id from quote where purchaseinfoid = %s", purchaseinfoid)
             if count == 1:
                 first = True
-        self.render("quote_success.html", first=first)
+        if first:
+            ua = self.request.headers['User-Agent']
+            if ua.lower().find("micromessenger") != -1:
+                self.redirect(
+                    "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/checkfans&response_type=code&scope=snsapi_base&state=quotesuccess#wechat_redirect")
+            else:
+                self.render("quote_success_C.html", first=first)
+        else:
+            self.render("quote_success.html", first=first)
 
 
 class WeixinHandler(BaseHandler):

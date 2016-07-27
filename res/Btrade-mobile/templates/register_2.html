@@ -191,7 +191,7 @@
                     },
                     success: function(data) {
                         if (data.status === 'success') {
-                            location.href="/register/next_url/{{next_url}}/?step=3"
+                            location.href=encodeURI("/register/next_url/{{next_url}}?step=3")
                         } else {
                             lpPopover(data.message);
                         }
