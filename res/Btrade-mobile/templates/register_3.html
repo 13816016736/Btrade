@@ -94,7 +94,9 @@
                 attentionArr.push(key);
                 $breeds.append('<li data-key="' + key + '"><span>' + $(this).html() + '<i></i></span></li>');
                 $('.search .keywords').val('');
+                $('.list').empty();
                 $total.html(maxNum - attentionArr.length);
+
             }
         });
 

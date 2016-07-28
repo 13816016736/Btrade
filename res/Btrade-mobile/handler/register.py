@@ -7,6 +7,7 @@ import random
 from webbasehandler import purchase_push_trace
 import tornado.web
 
+
 class RegisterHandler(BaseHandler):
     @purchase_push_trace
     def get(self, next_url="/"):
@@ -119,8 +120,6 @@ class RegisterHandler(BaseHandler):
                 self.session.save()
                 # 发短信通知用户注册成功
                 #regSuccess(phone, name, username)
-                # 发微信模板消息通知用户注册成功
-                #regSuccessWx(openid, name, username)
                 self.api_response({'status': 'success', 'message': '注册成功'})
             else:
                 self.api_response({'status': 'fail', 'message': 'session过期'})
@@ -159,9 +158,9 @@ class GetSmsCodeHandler(BaseHandler):
         smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
         print smscode
         #message = getSmsCode(phone, smscode)
-        message={}
-        message["result"]="11"
         #message = json.loads(message.encode("utf-8"))
+        message={}
+        message["result"]="1111"
         if message["result"]:
             self.session["smscode"] = smscode
             self.session.save()
@@ -177,7 +176,7 @@ class RegSuccessHandler(BaseHandler):
         else:
             ua = self.request.headers['User-Agent']
             if ua.lower().find("micromessenger") != -1:
-                self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/checkfans&response_type=code&scope=snsapi_base&state=regsuccess#wechat_redirect")
+                self.redirect("/checkfans?state=regsuccess")
             else:
                 self.render("register_C.html")
 
@@ -185,23 +184,28 @@ class RegSuccessHandler(BaseHandler):
     def post(self):
         self.render("register_result.html" ,next_url=self.get_argument("next_url", "/"))
 class CheckFansHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         is_fans=False
-        code = self.get_argument("code", None)
-        state = self.get_argument("state",None)
-        if code:
+        state= self.get_argument("state",None)
+        ret=self.db.get("select openid,name,username from users where id=%s",self.session.get("userid"))
+        name=ret["name"]
+        username=ret["username"]
+        openid=ret["openid"]
+        if openid!="":
+            openid = ret["openid"].strip("\r\n")
             # 请求获取access_token和openid
-            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
-            config.appid, config.secret, code)
+            url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+            config.appid, config.secret)
             res = requests.get(url)
             message = json.loads(res.text.encode("utf-8"))
             access_token = message.get("access_token", None)
             if access_token:
-                openid = message.get("openid")
                 # 请求获取用户信息
                 url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
+                logging.info(userinfo)
                 subscribe=userinfo.get("subscribe",0)
                 if subscribe==1:
                     is_fans=True
@@ -209,15 +213,20 @@ class CheckFansHandler(BaseHandler):
                     is_fans = False
         if is_fans:
             if state == "regsuccess":
+                # 发微信模板消息通知用户注册成功
+                regSuccessWx(openid, name, username)
                 self.render("register_A.html", type=2, url="/", username=self.session.get("user"))
             elif state =="quotesuccess":
                 self.render("quote_success_A.html")
+            else:
+                self.redirect("/")
         else:
             if state == "regsuccess":
                 self.render("register_B.html")
             elif state =="quotesuccess":
                 self.render("quote_success_B.html")
-        self.redirect("/")
+            else:
+                self.redirect("/")
 
 class VarietySearchHandler(BaseHandler):
     @tornado.web.authenticated
