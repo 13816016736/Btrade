@@ -269,7 +269,8 @@ $(document).ready(function(){
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                console.log(errorThrown);
+                //console.log(errorThrown);
+                 alert(errorThrown);
             }
          });
     });
@@ -304,7 +305,8 @@ function removepurchase(pid){
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(errorThrown);
+            //console.log(errorThrown);
+            alert(errorThrown);
         }
      });
 }

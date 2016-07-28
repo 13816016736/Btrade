@@ -324,7 +324,7 @@ $(document).ready(function(){
     });
     $("#replyquote").click(function() {
         var qid = $(this).attr('quoteid');
-        console.log(qid);
+        //console.log(qid);
         var message = [];
         $("input[type='checkbox'][name='msg']:checked").each(function(){
             message.push($(this).val());
@@ -346,7 +346,7 @@ $(document).ready(function(){
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                console.log(errorThrown);
+                //console.log(errorThrown);
             }
          });
     });
@@ -397,7 +397,7 @@ function updatequotestate(qid, state){
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(errorThrown);
+            //console.log(errorThrown);
         }
      });
 }
@@ -419,7 +419,7 @@ function removepurchase(pid){
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(errorThrown);
+            //console.log(errorThrown);
         }
      });
 }
