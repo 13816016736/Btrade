@@ -142,13 +142,8 @@
                 return;
             }
              else{
-               browser_type="wx"
-               if(isWeixinBrowser()!=true){
-                    browser_type="not_wx"
-               }
                var data = {
                         "attention": attentionArr.join(","),
-                        "browser_type":browser_type,
                         "step":3,
                     };
 

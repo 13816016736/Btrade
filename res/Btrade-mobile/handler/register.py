@@ -172,11 +172,11 @@ class GetSmsCodeHandler(BaseHandler):
 class RegSuccessHandler(BaseHandler):
     def get(self):
         next_url=self.get_argument("next_url", "/")
-        browser_type=self.get_argument("browser_type","wx")
         if next_url.find("/quote/purchaseinfoid/")==0:
             self.render("register_A.html",type=1,url=next_url,username=self.session.get("user"))
         else:
-            if browser_type=="wx":
+            ua = self.request.headers['User-Agent']
+            if ua.lower().find("micromessenger") != -1:
                 self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/checkfans&response_type=code&scope=snsapi_base&state=regsuccess#wechat_redirect")
             else:
                 self.render("register_C.html")
@@ -202,7 +202,7 @@ class CheckFansHandler(BaseHandler):
                 url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
-                subscribe=userinfo.get("subscribe")
+                subscribe=userinfo.get("subscribe",0)
                 if subscribe==1:
                     is_fans=True
                 else:
