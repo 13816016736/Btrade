@@ -130,8 +130,15 @@ def analysis_record():#每天九点定时检测
    mongodb = PymongoDateBase.instance().get_db()
    sqldb = database.instance().get_session()
    #items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
-   yesterday = datetime.now() - timedelta(days=1)
-   timeStamp = time.mktime(yesterday.timetuple())
+   format="%Y-%m-%d"
+   todaystr=datetime.now().strftime("%Y-%m-%d")
+   today=datetime.strptime(todaystr, format)
+   yesterday=today- timedelta(days=1)
+
+   todayStamp = time.mktime(today.timetuple())
+   yesterdayStamp =time.mktime(yesterday.timetuple())
+   print todayStamp
+   print yesterdayStamp
    func = '''
       function(obj,prev){
       if (obj.order>prev.latest_order){
@@ -140,7 +147,7 @@ def analysis_record():#每天九点定时检测
             }
         }
       '''
-   ret = mongodb.transform_rate.group(['purchaseinfoid','type'], {"createtime":{"$gt":int(timeStamp)}}, {"latest_order": 0, "latest_id": ""}, func)
+   ret = mongodb.transform_rate.group(['purchaseinfoid','type'], {"createtime":{"$gt":int(yesterdayStamp),"$lt":int(todayStamp)}}, {"latest_order": 0, "latest_id": ""}, func)
    for item in ret :
        print item
        id=item["latest_id"]
