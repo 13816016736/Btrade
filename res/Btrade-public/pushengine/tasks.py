@@ -18,7 +18,7 @@ def task_generate(task):#生成发送任务
     mongodb = PymongoDateBase.instance().get_db()
     sqldb = database.instance().get_session()
     tasktype=task["tasktype"]
-    purchaseinfoid = task["purchaseinfoid"]
+    purchaseinfoid = str(task["purchaseinfoid"])
     channel = task["channel"]
     record = mongodb.celery_task.find(
         {"purchaseinfoid": purchaseinfoid, "channel": channel, "tasktype": tasktype}).sort("order", pymongo.DESCENDING)
