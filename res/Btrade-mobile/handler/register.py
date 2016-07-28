@@ -147,6 +147,7 @@ class CheckFansHandler(BaseHandler):
                 # 请求获取用户信息
                 url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
+                logging.info(res.text)
                 userinfo = json.loads(res.text.encode("utf-8"))
                 logging.info(userinfo)
                 subscribe=userinfo.get("subscribe",0)
@@ -159,9 +160,12 @@ class CheckFansHandler(BaseHandler):
                 self.render("register_A.html", type=2, url="/", username=self.session.get("user"))
             elif state =="quotesuccess":
                 self.render("quote_success_A.html")
+            else:
+                self.redirect("/")
         else:
             if state == "regsuccess":
                 self.render("register_B.html")
             elif state =="quotesuccess":
                 self.render("quote_success_B.html")
-        self.redirect("/")
+            else:
+                self.redirect("/")
