@@ -6,7 +6,7 @@ from utils import *
 import random
 from webbasehandler import purchase_push_trace
 import tornado.web
-
+from wechatjsapi import *
 
 class RegisterHandler(BaseHandler):
     @purchase_push_trace
@@ -27,36 +27,57 @@ class RegisterHandler(BaseHandler):
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
         logging.info(userinfo)
-        accept_purchaseinfo=self.db.query("select distinct purchaseinfoid from quote where state=1")
-        accept_company_num=0
-        accept_purchaseinfoids=[]
-        if accept_purchaseinfo:
-            accept_purchaseinfoids=[str(item["purchaseinfoid"]) for item in accept_purchaseinfo]
-            accept_company_num=self.db.execute_rowcount("select distinct p.userid from purchase p left join  purchase_info pi on p.id=pi.purchaseid where pi.id in (%s)"%(",".join(accept_purchaseinfoids)))
-        accept_quote_user_num=self.db.execute_rowcount("select distinct userid  from quote where state=1")
-        accept_num = len(accept_purchaseinfoids)
-        sum_quantity=0
-        sum_price=0
-        for item in accept_purchaseinfoids:
-            purchaseinfo=self.db.get("select quantity,unit from purchase_info where id=%s",item)
-            if purchaseinfo:
-                quoteinfo=self.db.get("select price from quote where purchaseinfoid=%s and state=1 order by price desc limit 0,1",item)
-                if purchaseinfo["unit"]==u"公斤":
-                    sum_quantity+=int(purchaseinfo["quantity"])/1000
-                    sum_price+=int(purchaseinfo["quantity"])*float(quoteinfo["price"])
+        show_data={}
+        attentionvariety = []
+        if step=="1":
+            accept_purchaseinfo=self.db.query("select distinct purchaseinfoid from quote where state=1")
+            accept_company_num=0
+            accept_purchaseinfoids=[]
+            if accept_purchaseinfo:
+                accept_purchaseinfoids=[str(item["purchaseinfoid"]) for item in accept_purchaseinfo]
+                accept_company_num=self.db.execute_rowcount("select distinct p.userid from purchase p left join  purchase_info pi on p.id=pi.purchaseid where pi.id in (%s)"%(",".join(accept_purchaseinfoids)))
+            accept_quote_user_num=self.db.execute_rowcount("select distinct userid  from quote where state=1")
+            accept_num = len(accept_purchaseinfoids)
+            sum_quantity=0
+            sum_price=0
+            for item in accept_purchaseinfoids:
+                purchaseinfo=self.db.get("select quantity,unit from purchase_info where id=%s",item)
+                if purchaseinfo:
+                    quoteinfo=self.db.get("select price from quote where purchaseinfoid=%s and state=1 order by price desc limit 0,1",item)
+                    if purchaseinfo["unit"]==u"公斤":
+                        sum_quantity+=int(purchaseinfo["quantity"])/1000
+                        sum_price+=int(purchaseinfo["quantity"])*float(quoteinfo["price"])
 
-                elif purchaseinfo["unit"]==u"吨":
-                    sum_quantity += int(purchaseinfo["quantity"])
-                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])*1000
-        show_data={"accept_company_num":accept_company_num,"accept_quote_user_num":accept_quote_user_num,
+                    elif purchaseinfo["unit"]==u"吨":
+                        sum_quantity += int(purchaseinfo["quantity"])
+                        sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])*1000
+            show_data={"accept_company_num":accept_company_num,"accept_quote_user_num":accept_quote_user_num,
                    "accept_num":accept_num,"sum_quantity":sum_quantity,"sum_price":int(sum_price/10000)}
+        elif step=="3":
+            attention=[]
+            if next_url!="/":
+                url_split=next_url.split("/")
+                if len(url_split)>=4:
+                    purchaseinfoid=url_split[3]
+                    varity=self.db.get("select varietyid from purchase_info where id=%s", purchaseinfoid)
+                    if varity:
+                        attention.append(varity["varietyid"])
 
+            user=self.db.get("select phone from users where id=%s",self.session.get("userid"))
+            if user:
+                phone=user["phone"]
+                supplier=self.db.query("select variety from supplier where mobile=%s",phone)
+                if len(supplier)!=0:
+                     supplier_varitey=supplier[0]["variety"].split(",")
+                     attention[1:1] = supplier_varitey
 
+            if len(attention)!=0:
+                attention=[str(item) for item in attention]
+                attention=list(set(attention))#去重
+                attentionvariety = self.db.query(
+                        "select id,name from variety where id in(%s)" % ",".join(attention))
 
-
-
-
-        self.render("register_%s.html"%step, next_url=next_url, userinfo=userinfo,data=show_data)
+        self.render("register_%s.html"%step, next_url=next_url, userinfo=userinfo,data=show_data,attention=attentionvariety)
 
     @purchase_push_trace
     def post(self):
@@ -157,10 +178,10 @@ class GetSmsCodeHandler(BaseHandler):
             return
         smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
         print smscode
+        message={}
+        message["result"]="112"
         #message = getSmsCode(phone, smscode)
         #message = json.loads(message.encode("utf-8"))
-        message={}
-        message["result"]="1111"
         if message["result"]:
             self.session["smscode"] = smscode
             self.session.save()
@@ -171,14 +192,15 @@ class GetSmsCodeHandler(BaseHandler):
 class RegSuccessHandler(BaseHandler):
     def get(self):
         next_url=self.get_argument("next_url", "/")
+        purchaseinfonum=self.db.execute_rowcount("select id from purchase_info where status!=0")
         if next_url.find("/quote/purchaseinfoid/")==0:
-            self.render("register_A.html",type=1,url=next_url,username=self.session.get("user"))
+            self.render("register_A.html",type=1,url=next_url,username=self.session.get("user"),purchaseinfonum=purchaseinfonum)
         else:
             ua = self.request.headers['User-Agent']
             if ua.lower().find("micromessenger") != -1:
                 self.redirect("/checkfans?state=regsuccess")
             else:
-                self.render("register_C.html")
+                self.render("register_C.html",purchaseinfonum=purchaseinfonum)
 
     @purchase_push_trace
     def post(self):
@@ -192,14 +214,12 @@ class CheckFansHandler(BaseHandler):
         name=ret["name"]
         username=ret["username"]
         openid=ret["openid"]
+        purchaseinfonum = self.db.execute_rowcount("select id from purchase_info where status!=0")
         if openid!="":
             openid = ret["openid"].strip("\r\n")
             # 请求获取access_token和openid
-            url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
-            config.appid, config.secret)
-            res = requests.get(url)
-            message = json.loads(res.text.encode("utf-8"))
-            access_token = message.get("access_token", None)
+            wechart = WechartJSAPI(self.db)
+            access_token = wechart.getAccessToken()
             if access_token:
                 # 请求获取用户信息
                 url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
@@ -214,17 +234,17 @@ class CheckFansHandler(BaseHandler):
         if is_fans:
             if state == "regsuccess":
                 # 发微信模板消息通知用户注册成功
-                regSuccessWx(openid, name, username)
-                self.render("register_A.html", type=2, url="/", username=self.session.get("user"))
+                #regSuccessWx(openid, name, username)
+                self.render("register_A.html", type=2, url="/", username=self.session.get("user"),purchaseinfonum=purchaseinfonum)
             elif state =="quotesuccess":
-                self.render("quote_success_A.html")
+                self.render("quote_success_A.html",purchaseinfonum=purchaseinfonum)
             else:
                 self.redirect("/")
         else:
             if state == "regsuccess":
-                self.render("register_B.html")
+                self.render("register_B.html",purchaseinfonum=purchaseinfonum)
             elif state =="quotesuccess":
-                self.render("quote_success_B.html")
+                self.render("quote_success_B.html",purchaseinfonum=purchaseinfonum)
             else:
                 self.redirect("/")
 

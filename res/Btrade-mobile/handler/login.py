@@ -41,7 +41,14 @@ class LoginHandler(BaseHandler):
             self.session["user"] = author.username
             self.session["notification"] = len(notification)
             self.session.save()
-            self.redirect(self.get_argument("next_url", "/"))
+            if author.openid!="":
+                self.redirect(self.get_argument("next_url", "/"))
+            else:
+                #ua = self.request.headers['User-Agent']
+                #if ua.lower().find("micromessenger") != -1:#微信中就去绑定
+                #    self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=bindwx#wechat_redirect", config.appid)
+                #else:
+                self.redirect(self.get_argument("next_url", "/"))
         else:
             self.render("login.html", error="用户名或密码错误", next_url=self.get_argument("next_url", "/"))
 
@@ -59,23 +66,30 @@ class BindWxHandler(BaseHandler):
     @purchase_push_trace
     def get(self):
         code = self.get_argument("code", None)
-        if code and (not self.current_user):
+        state= self.get_argument("state", None)
+        if code:
             # 请求获取access_token和openid
             url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
             config.appid, config.secret, code)
             res = requests.get(url)
             message = json.loads(res.text.encode("utf-8"))
             access_token = message.get("access_token", None)
-            if access_token:
+            if access_token :
                 openid = message.get("openid")
                 if openid :
-                    userinfo=self.db.query("select id,username from users where openid =%s",openid)
-                    if len(userinfo)==1:#只能绑定一个
-                        notification = self.db.query("select id from notification where receiver = %s", userinfo[0].id)
-                        self.session["userid"] = userinfo[0].id
-                        self.session["user"] = userinfo[0].username
-                        self.session["notification"] = len(notification)
-                        self.session.save()
+                    if not self.current_user:
+                        userinfo=self.db.query("select id,username from users where openid =%s",openid)
+                        if len(userinfo)==1:#只能绑定一个
+                            notification = self.db.query("select id from notification where receiver = %s", userinfo[0].id)
+                            self.session["userid"] = userinfo[0].id
+                            self.session["user"] = userinfo[0].username
+                            self.session["notification"] = len(notification)
+                            self.session.save()
+                    elif state=="bindwx":
+                         #绑定微信openid
+                         self.db.execute("update users set openid=%s where id=%s", openid,
+                                         self.session.get("userid"))
+
         self.redirect(self.get_argument("next_url", "/"))
     def post(self):
         pass

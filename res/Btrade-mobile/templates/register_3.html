@@ -41,7 +41,11 @@
             
             <div class="breeds">
                 <ul id="jBreeds">
-                    <!-- <li data-key="1120"><span>黄芪<i></i></span></li> -->
+                    {% for index, item in enumerate(attention) %}
+                    {% if index<6 %}
+                    <li data-key="{{ item.id }}"><span>{{ item.name }}<i></i></span></li>
+                    {% end %}
+                    {%  end %}
                 </ul>
             </div>
 
@@ -52,7 +56,8 @@
             <div class="list"></div> 
 
             <div class="tips">
-                还可以添加<b id="jTotal">6</b>个
+                还可以添加<b id="jTotal">{%  if (6-len(attention)) >=0 %} {{ 6-len(attention) }} {% else %} {{0 }}{% end %}
+                      </b>个
             </div>
 
             <div class="button">
@@ -68,6 +73,14 @@
         var $total = $('#jTotal');
         var maxNum = 6;
         var attentionArr = [];
+
+        $breeds.find('li').each(function() {
+            var key = $(this).data('key');
+            if(attentionArr.indexOf(key)==-1){
+                attentionArr.push(key);
+            }
+         });
+
 
         // 删除数组元素
         function arrRemoveVal(arr, val) {
