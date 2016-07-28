@@ -157,6 +157,14 @@ def analysis_record():#每天九点定时检测
        if order > max_push_time:
            continue
        purchaseinfoid=transform["purchaseinfoid"]
+       purchaseinfo=sqldb.get("select status from purchase_info where id=%s",purchaseinfoid)
+       if purchaseinfo["status"]==0:
+           print "purchaseinfo status==0"
+           continue
+       accept = sqldb.query("select id from quote where purchaseinfoid=%s and state=1" % purchaseinfoid)
+       if len(accept)>0:
+           print "purchaseinfo accept=%s"%len(accept)
+           continue
        quote_count =0
        if transform["quote"]!="":
             quote_count=len(transform["quote"].split(","))
