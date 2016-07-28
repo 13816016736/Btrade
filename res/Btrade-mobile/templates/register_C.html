@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>注册提示</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "basenofoot.html" %}
+{% block container %}
 <body>
     <section class="yc-content">
         <div class="yc-message">
@@ -27,15 +16,15 @@
 
                 <h2 class="title">具体操作</h2>
                 <div class="tips">
-                    <img src="images/guide/1.jpg" alt="">
-                    <img src="images/guide/2.jpg" alt="">
-                    <img src="images/guide/3.jpg" alt="">
-                    <img src="images/guide/4.jpg" alt="">
-                    <img src="images/guide/5.jpg" alt="">
-                    <img src="images/guide/6.jpg" alt="">
+                    <img src="{{ static_url('images/guide/1.jpg') }}" alt="">
+                    <img src="{{ static_url('images/guide/2.jpg') }}" alt="">
+                    <img src="{{ static_url('images/guide/3.jpg') }}" alt="">
+                    <img src="{{ static_url('images/guide/4.jpg') }}" alt="">
+                    <img src="{{ static_url('images/guide/5.jpg') }}" alt="">
+                    <img src="{{ static_url('images/guide/6.jpg') }}" alt="">
                 </div>
             </div>
         </div>
     </section><!-- /yc-content -->
 </body>
-</html>
+{% end %}

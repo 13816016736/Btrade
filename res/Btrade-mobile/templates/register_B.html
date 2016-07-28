@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>注册提示</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "basenofoot.html" %}
+{% block container %}
 <body>
     <section class="yc-content">
         <div class="yc-message">
@@ -19,7 +8,7 @@
             </div>
             <div class="main">
                 <div class="wechat">
-                    <img class="qrcode" src="images/qucode_340_340.jpg" alt="">
+                    <img class="qrcode" src="{{ static_url('images/qucode_340_340.jpg') }}" alt="">
                     <h2 class="title">长按二维码并识别，关注【药材购】微信公众号，开启全新销路！</h2>
                 </div>
                 <div class="tips">
@@ -31,4 +20,4 @@
         </div>
     </section><!-- /yc-content -->
 </body>
-</html>
+{% end %}

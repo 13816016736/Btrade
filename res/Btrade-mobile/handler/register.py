@@ -126,3 +126,40 @@ class RegSuccessHandler(BaseHandler):
     @purchase_push_trace
     def post(self):
         self.render("register_result.html" ,next_url=self.get_argument("next_url", "/"))
+
+
+class CheckFansHandler(BaseHandler):
+    @purchase_push_trace
+    def get(self):
+        is_fans=False
+        code = self.get_argument("code", None)
+        state = self.get_argument("state",None)
+        if code:
+            # 请求获取access_token和openid
+            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
+            config.appid, config.secret, code)
+            res = requests.get(url)
+            message = json.loads(res.text.encode("utf-8"))
+            access_token = message.get("access_token", None)
+            if access_token:
+                openid = message.get("openid")
+                # 请求获取用户信息
+                url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
+                res = requests.get(url)
+                userinfo = json.loads(res.text.encode("utf-8"))
+                subscribe=userinfo.get("subscribe",0)
+                if subscribe==1:
+                    is_fans=True
+                else:
+                    is_fans = False
+        if is_fans:
+            if state == "regsuccess":
+                self.render("register_A.html", type=2, url="/", username=self.session.get("user"))
+            elif state =="quotesuccess":
+                self.render("quote_success_A.html")
+        else:
+            if state == "regsuccess":
+                self.render("register_B.html")
+            elif state =="quotesuccess":
+                self.render("quote_success_B.html")
+        self.redirect("/")
