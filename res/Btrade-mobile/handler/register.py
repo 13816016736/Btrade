@@ -6,6 +6,7 @@ from utils import *
 #import random
 from webbasehandler import purchase_push_trace
 
+
 class RegisterHandler(BaseHandler):
     @purchase_push_trace
     def get(self, next_url="/"):
@@ -147,6 +148,7 @@ class CheckFansHandler(BaseHandler):
                 url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
                 userinfo = json.loads(res.text.encode("utf-8"))
+                logging.info(userinfo)
                 subscribe=userinfo.get("subscribe",0)
                 if subscribe==1:
                     is_fans=True
