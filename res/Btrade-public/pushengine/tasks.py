@@ -191,7 +191,6 @@ def analysis_notify():#每天九点报价回复情况，生成提醒
     ret=sqldb.query("select id,purchaseid from purchase_info where status!=0")
     for item in ret:
         purchaseinfoid=item["id"]
-        print purchaseinfoid
         purchaseid=item["purchaseid"]
         purchase=sqldb.get("select term, createtime from purchase where id=%s",purchaseid)
         if purchase:
@@ -205,18 +204,17 @@ def analysis_notify():#每天九点报价回复情况，生成提醒
         if quote_num!=0:
             ret=sqldb.query("select id from quote where purchaseinfoid =%s and state!=0" , purchaseinfoid)
             reply_num=len(ret)
-            if reply_num!=0:
-                ret=sqldb.query("select id,createtime from quote where purchaseinfoid =%s order by createtime" , purchaseinfoid)
-                latest_time=ret[0]["createtime"]
-                if (int(time.time())-int(latest_time))>notify_days*24*60*60:
-                    print reply_num/(quote_num*1.0)
-                    if reply_num/(quote_num*1.0)<reply_rate:
-                        task = {"purchaseinfoid": str(purchaseinfoid), "tasktype": 2,"channel":1}
-                        print task
-                        task_generate.apply_async(args=[task])
-                        task = {"purchaseinfoid": str(purchaseinfoid), "tasktype": 2,"channel":2}
-                        print task
-                        task_generate.apply_async(args=[task])
+            ret=sqldb.query("select id,createtime from quote where purchaseinfoid =%s order by createtime" , purchaseinfoid)
+            latest_time=ret[0]["createtime"]
+            if (int(time.time())-int(latest_time))>notify_days*24*60*60:
+                print reply_num/(quote_num*1.0)
+                if reply_num/(quote_num*1.0)<reply_rate:
+                    task = {"purchaseinfoid": str(purchaseinfoid), "tasktype": 2,"channel":1}
+                    print task
+                    task_generate.apply_async(args=[task])
+                    task = {"purchaseinfoid": str(purchaseinfoid), "tasktype": 2,"channel":2}
+                    print task
+                    task_generate.apply_async(args=[task])
 
 
 
