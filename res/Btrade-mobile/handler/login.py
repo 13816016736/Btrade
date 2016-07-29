@@ -47,7 +47,7 @@ class LoginHandler(BaseHandler):
             else:
                 ua = self.request.headers['User-Agent']
                 if ua.lower().find("micromessenger") != -1:#微信中就去绑定
-                    self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=bindwx#wechat_redirect", config.appid)
+                    self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=bindwx#wechat_redirect")
                 else:
                     self.redirect(self.get_argument("next_url", "/"))
         else:
