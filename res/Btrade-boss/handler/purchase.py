@@ -170,6 +170,8 @@ class RemovePurchaseHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         self.db.execute("UPDATE purchase SET status = 0 WHERE id = %s", self.get_argument("pid"))
+        self.db.execute("UPDATE purchase_info SET status = 0 WHERE  purchaseid = %s",
+                        self.get_argument("pid"))  # 关闭所有该批次的采购单
         self.api_response({'status':'success','message':'请求成功'})
 
 class PushPurchaseHandler(BaseHandler):
