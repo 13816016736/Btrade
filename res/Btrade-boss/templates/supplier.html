@@ -51,7 +51,7 @@
                             <i class="fa fa-user"></i>
                             {{ supplier.name }}
                             <span> {{ supplier.mobile }}</span>
-                            <a href="tel:{{ supplier.mobile }}">拨号</a>
+                            <a href="tel:{{ supplier.mobile }}" target="_blank">拨号</a>
                         </div>
                         <div class="bd">
                             <i class="fa fa-file-text-o"></i>
@@ -70,9 +70,7 @@
                 </ul>
             </div>
 
-            <div class="pagin">
-               {% module PageNav(nav=nav, show=True) %}
-            </div>
+            {% module PageNav(nav=nav, show=True) %}
         </section>
     </div>
   <script>

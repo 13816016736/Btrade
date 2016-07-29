@@ -44,128 +44,115 @@
         </form>
     </section>
     <section class="content">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr class="warning">
-                            <th style="text-align:center;">采购批号</th>
-                            <th style="text-align:center;">品种</th>
-                            <th style="text-align:center;">报价</th>
-                            <th style="text-align:center;">操作</th>
-                            <th></th>
-                        </tr>
-                    </thead>
+        <div class="mychart mychart-m">
+            <table class="tc">
+                <thead>
+                    <tr>
+                        <th>品种</th>
+                        <th>报价</th>
+                        <th width="100">操作</th>
+                    </tr>
+                </thead>
+                <tfoot></tfoot>
+                {% for purchase in purchases%}
                     <tbody>
-                        {% for purchase in purchases%}
-                        <tr class="success">
-                            <td style="text-align:center;">{{ purchase.id }}</td>
-                            <td style="text-align:center;">{{ purchase.name }}</td>
-                            <td style="text-align:center;">
-                                {% if purchase.status == 0%}
-                                <span style="color:#939393;">关闭</span>
-                                {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
-                                <b style="color:#286090;">
-                                    等待报价
-                                </b>
-                                <span style="color:#939393;">
-                                    {% if purchase.term != 0%}
-                                    剩余{{purchase.timedelta}}天（{{purchase.expire}} 截止）
-                                    {% else%}
-                                    常年采购
-                                    {% end %}
-                                </span>
-                                {% else %}
-                                <b style="color:#563d7c;">报价结束，甄选供应商</b>
-                                {% end %}
-                            </td>
-                            <td style="text-align:center;">
-                                {% if purchase.status == 0 %}
-                                <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
-                                {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
-                                <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;" onclick="removepurchase({{purchase.id}})"></span>&nbsp;&nbsp;
-                                {% else %}
-                                <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
-                                {% end %}
-                            </td>
-                            <td style="text-align:center;">
-                                <span style="color:#939393;">发布时间：</span>
-                                {{ purchase.datetime }}
-                            </td>
+                        <tr>
+                            <td class="space" colspan="3"></td>
                         </tr>
-                        <tr class="info">
-                            <td></td>
-                            <td colspan="2">
-                                交货地：
-                                {% if purchase.position %}
-                                {{purchase.position}}
-                                {% end %}
-                                <br>
-                                发票要求：
-                                {% if purchase.invoice == 1 %}
-                                无需发票
-                                {% elif purchase.invoice == 2 %}
-                                普通发票
-                                {% elif purchase.invoice == 3 %}
-                                增值税发票
-                                {% end %}<br>
-                                交易及付款：
-                                {% if purchase.pay == 1 %}
-                                预付全款
-                                {% elif purchase.pay == 2 %}
-                                双方直接交易，验收合格后{{purchase.payday}}天内付款
-                                {% elif purchase.pay == 3 %}
-                                {{purchase.payinfo}}
-                                {% end %}
-                                <br>
-                                验收及包装：{{purchase.accept}}
-                            </td>
-                            <td colspan="2">
-                                寄样：
-                                {% if purchase.send == 1 %}
-                                报价必须寄样&nbsp;&nbsp;
-                                {% end %}
-                                {{purchase.receive}}<br>
-                                补充说明：{{purchase.other}}<br>
-                                供应商要求：
-                                {% if purchase.supplier == 1 %}
-                                必须有营业执照（公司/合作社/经营户），不接受个人
-                                {% elif purchase.supplier == 2 %}
-                                具备GSP资质
-                                {% elif purchase.supplier == 3 %}
-                                具备GMP资质
-                                {% end %}
+                        <tr>
+                            <td colspan="3" class="th">
+                                <div class="hd">
+                                    <span><em class="gray">采购批号：</em>{{ purchase.id }}</span>
+                                    <span class="company">{{ purchase.name }}</span>
+                                    <span><em class="gray">发布时间：</em>{{ purchase.datetime }}</span>
+                                    {% if purchase.status == 0%}
+                                    <span class="status-closed">关闭</span>
+                                    {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
+                                    <span class="status-wait">等待报价
+                                        {% if purchase.term != 0%}
+                                        <em class="gray">剩余{{purchase.timedelta}}天（{{purchase.expire}} 截止）</em>
+                                        {% else%}
+                                        <em class="status-sustain">常年采购</em>
+                                        {% end %}
+                                    </span>
+                                    {% else %}
+                                    <span class="status-finish">报价结束，甄选供应商</span>
+                                    {% end %}
+
+                                    {% if purchase.status == 0 %}
+                                    <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
+                                    {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
+                                    <i class="glyphicon glyphicon-remove-sign jclose" onclick="removepurchase({{purchase.id}})" title="关闭采购单"></i>
+                                    {% else %}
+                                    <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
+                                    {% end %}
+                                    <i class="fa fa-angle-down expand" title="展开详情"></i>
+                                </div>
+                                <div class="info">
+                                    <p><span>交货地：</span>
+                                        {% if purchase.position %}{{purchase.position}}{% end %}</p>
+                                    <p><span>发票要求：</span>
+                                        {% if purchase.invoice == 1 %}
+                                        无需发票
+                                        {% elif purchase.invoice == 2 %}
+                                        普通发票
+                                        {% elif purchase.invoice == 3 %}
+                                        增值税发票
+                                        {% end %}</p>
+                                    <p><span>交易及付款：</span>
+                                        {% if purchase.pay == 1 %}
+                                        预付全款
+                                        {% elif purchase.pay == 2 %}
+                                        双方直接交易，验收合格后{{purchase.payday}}天内付款
+                                        {% elif purchase.pay == 3 %}
+                                        {{purchase.payinfo}}
+                                        {% end %}</p>
+                                    <p><span>验收及包装：</span>
+                                        {{purchase.accept}}</p>
+                                    <p><span>寄样：</span>
+                                        {% if purchase.send == 1 %}
+                                        报价必须寄样
+                                        {% end %}
+                                        {{purchase.receive}}</p>
+                                    <p><span>补充说明：</span>
+                                        {{purchase.other}}</p>
+                                    <p><span>供应商要求：</span>
+                                        {% if purchase.supplier == 1 %}
+                                        必须有营业执照（公司/合作社/经营户），不接受个人
+                                        {% elif purchase.supplier == 2 %}
+                                        具备GSP资质
+                                        {% elif purchase.supplier == 3 %}
+                                        具备GMP资质
+                                        {% end %}</p>
+                                </div>
+
                             </td>
                         </tr>
                         {% for index,purchaseinfo in enumerate(purchase.purchaseinfo)%}
                         <tr>
-                            {% if index == 0 %}
-                            <td rowspan="{{len(purchase.purchaseinfo)}}"></td>
-                            {% end %}
-                            <td style="text-align:center;"><a href="/purchase/purchaseinfo/{{purchaseinfo.id}}">{{purchaseinfo.name}}</a>  {{purchaseinfo.specification}}</td>
-                            <td style="text-align:center;">
-                                {{purchaseinfo.quotecount}}个报价{% if purchaseinfo.unread > 0 %}（<b style="color:red;">{{purchaseinfo.unread}}</b>个未回复）{% end %}
+                            <td class="tl">
+                                <span><a href="/purchase/purchaseinfo/{{purchaseinfo.id}}">{{purchaseinfo.name}}</a></span>
+                                <span>{{purchaseinfo.specification}}</span>
+                            </td>
+                            <td class="tl">
+                                {{purchaseinfo.quotecount}}个报价{% if purchaseinfo.unread > 0 %}（<b>{{purchaseinfo.unread}}</b>个未回复）{% end %}
                                 {% if purchaseinfo.intentions > 0 %}
-                                <span style="color:#44b549">已甄选<b style="color:#f0ad4e;">{{purchaseinfo.intentions}}</b>家意向供应商</span>
+                                <span class="status-accept">已甄选<b>{{purchaseinfo.intentions}}</b>家意向供应商</span>
                                 {% end %}
                             </td>
-                            <td style="text-align:center;">
+                            <td>
                                 {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                                 <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
                                 <span class="glyphicon glyphicon-list-alt" rel="{{purchaseinfo.id}}" purchaser="{{purchase.name}}" sharerel="【药材购】{{purchase.name}}采购{{purchaseinfo.name}}（{{purchaseinfo.specification}}）{{purchaseinfo.quantity}}{{purchaseinfo.unit}}。邀请您立即报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}} 退订回T" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
                                 {% end %}
                             </td>
-                            <td></td>
                         </tr>
                         {% end %}
-                        {% end %}
                     </tbody>
-                </table>
-            </div>
+                {% end %}
+            </table>
         </div>
-    </div>
-    {% module PageNav(nav=nav, show=True) %}
+        {% module PageNav(nav=nav, show=True) %}
     </section>
 </div>
 <!-- Modal -->
@@ -285,6 +272,12 @@ $(document).ready(function(){
             alert("时间范围或品种名需填写完整");
         }
     });
+
+    // 展开
+    $('.mychart-m').on('click', '.th', function() {
+        $(this).find('.info').slideToggle();
+        $(this).find('.expand').toggleClass('fa-angle-down').toggleClass('fa-angle-up');
+    })
 })
 
 function removepurchase(pid){
