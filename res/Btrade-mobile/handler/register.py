@@ -269,7 +269,7 @@ class VarietySearchHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         varietyName=self.get_argument("key",None)
-        print varietyName
+        #print varietyName
         if varietyName:
             varieties=self.db.query("select id,name from variety where name like '%%%%%s%%%%' or find_in_set('%s',alias)" %(varietyName,varietyName))
             if len(varieties)!=0:
