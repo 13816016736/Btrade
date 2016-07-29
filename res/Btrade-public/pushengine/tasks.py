@@ -188,9 +188,18 @@ def analysis_record():#每天九点定时检测
 def analysis_notify():#每天九点报价回复情况，生成提醒
     print "start analysi_notify"
     sqldb = database.instance().get_session()
-    ret=sqldb.query("select id from purchase_info where status!=0")
+    ret=sqldb.query("select id,purchaseid from purchase_info where status!=0")
     for item in ret:
         purchaseinfoid=item["id"]
+        print purchaseinfoid
+        purchaseid=item["purchaseid"]
+        purchase=sqldb.get("select term, createtime from purchase where id=%s",purchaseid)
+        if purchase:
+            now=time.time()
+            exprie=int(purchase["createtime"])+(int(purchase["term"])*24*60*60)
+            if now>exprie:
+                print "purchaseinfoid=%s,has exprie"%purchaseinfoid
+                continue
         ret=sqldb.query("select id from quote where purchaseinfoid =%s" ,purchaseinfoid)
         quote_num=len(ret)
         if quote_num!=0:
