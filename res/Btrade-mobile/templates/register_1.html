@@ -1,6 +1,6 @@
 {% extends "basenofoot.html" %}
 {% block container %}
-<body class="yc-body-nofoot">
+{% raw xsrf_form_html() %}
     <header class="yc-header">
         <div class="yc-header-back">
             <a href="javascript:history.back();">
@@ -187,6 +187,7 @@
                     },
                     success: function(data) {
                         if (data.status === 'success') {
+                            second = 60;
                             $send.text(second + txt).prop('disabled', true);
                             obj.lock();
                             lpPopover(data.message);
@@ -214,14 +215,11 @@
         }
 
         $send.on("click", function() {
-            bool = checkMobile();
-            if (bool){
-                if (second === 0) {
-                second = 60;
+            var checked = checkMobile();
+            if (checked && second === 0){
                 sendMessageCode.send();
-                }
             }
-            return bool;
+            return checked;
         })
 
     }(jQuery));

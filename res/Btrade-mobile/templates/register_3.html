@@ -8,9 +8,11 @@
             </a>
         </div>
         <div class="yc-header-title">注册</div>
+         <!--
         <div class="yc-header-right">
             <a href="/login">已有账号，直接登录</a>
         </div>
+        -->
     </header><!-- /yc-header -->
 
     <section class="yc-content">
@@ -71,6 +73,7 @@
     !(function($){
         var $breeds = $('#jBreeds');
         var $total = $('#jTotal');
+        var $ipt = $('.search .keywords');
         var maxNum = 6;
         var attentionArr = [];
 
@@ -99,6 +102,7 @@
             var key = $(this).data('key');
             if ($.inArray(key, attentionArr) !== -1) {
                 lpPopover('已关注“' + $(this).html() + '”品种', 5e3);
+                $ipt.focus();
 
             } else if (attentionArr.length >= maxNum) {
                 lpPopover('已超限，不能添加更多了', 5e3);
@@ -109,7 +113,7 @@
                 $('.search .keywords').val('');
                 $('.list').empty();
                 $total.html(maxNum - attentionArr.length);
-
+                $ipt.focus();
             }
         });
 
@@ -148,7 +152,7 @@
             $('.list').html(html.join(''));
         }
         var lazyAjax = debounce(getKeywords, 400);
-        $('.search .keywords').on('input', lazyAjax);
+        $ipt.on('input', lazyAjax);
 
         // 提交
         $('#jSubmit').on('click', function(){

@@ -196,6 +196,7 @@ class GetSmsCodeHandler(BaseHandler):
             self.api_response({'status':'fail','message':'短信验证码发送失败，请稍后重试'})
 
 class RegSuccessHandler(BaseHandler):
+    @purchase_push_trace
     def get(self):
         next_url=self.get_argument("next_url", "/")
         purchaseinfonum=self.db.execute_rowcount("select id from purchase_info where status!=0")
@@ -212,6 +213,7 @@ class RegSuccessHandler(BaseHandler):
     def post(self):
         self.render("register_result.html" ,next_url=self.get_argument("next_url", "/"))
 class CheckFansHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         is_fans=False
@@ -230,9 +232,17 @@ class CheckFansHandler(BaseHandler):
                 # 请求获取用户信息
                 url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
                 res = requests.get(url)
-                userinfo = json.loads(res.text.encode("utf-8"))
-                logging.info(userinfo)
-                subscribe=userinfo.get("subscribe",0)
+                data = json.loads(res.text.encode("utf-8"))
+                logging.info(data)
+                errorCode=data.get("errcode",None)
+                if errorCode:
+                    access_token = wechart.getRefeshAccessToken()
+                    url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (
+                    access_token, openid)
+                    res = requests.get(url)
+                    data = json.loads(res.text.encode("utf-8"))
+                    logging.info(data)
+                subscribe=data.get("subscribe",0)
                 if subscribe==1:
                     is_fans=True
                 else:
@@ -255,6 +265,7 @@ class CheckFansHandler(BaseHandler):
                 self.redirect("/")
 
 class VarietySearchHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         varietyName=self.get_argument("key",None)
