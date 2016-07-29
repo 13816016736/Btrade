@@ -99,8 +99,10 @@ class RegisterHandler(BaseHandler):
                 self.api_response({'status':'fail','message':'短信验证码不正确','data':phone})
                 return
             openid=self.get_argument("openid","")
+            city=self.get_argument("city","")
             self.session["phone"] = phone
             self.session["openid"] = openid
+            self.session["city"] = city
             self.session.save()
             print phone,openid
             self.api_response({'status': 'success', 'message': '验证成功'})

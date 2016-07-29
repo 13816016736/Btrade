@@ -1,6 +1,6 @@
 #coding:utf8
 #from pushengine.tasks import analysis_notify,analysis_record,sendkafka
-from datetime import timedelta,datetime
+#from datetime import timedelta,datetime
 import time
 #r = analysis_record.apply_async()
 
@@ -22,7 +22,5 @@ import time
 #pid="371"
 #purchaseid="146112075263"
 #reply_wx_notify(openid,num, name, price, unit,pid,purchaseid)
-attention=[]
-attention[1:1]=[2,3,4]
-print attention
+#print '\xe4\xba\xb3\xe5\xb7\x9e'
 
