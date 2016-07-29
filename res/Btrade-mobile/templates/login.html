@@ -53,7 +53,7 @@
         return (/micromessenger/.test(ua)) ? true : false ;
     }
 
-    var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/register&response_type=code&scope=snsapi_userinfo&state=ycg#wechat_redirect";
+    var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/register/next_url/{{next_url}}&response_type=code&scope=snsapi_userinfo&state=ycg#wechat_redirect";
     if(isWeixinBrowser()){
         $(".reg").attr("href", url);
         $(".yc-header-right a").attr("href", url);

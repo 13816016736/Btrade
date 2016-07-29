@@ -40,6 +40,16 @@ class WechartJSAPI:
             self.db.execute("delete from config where `key` = %s", "access_token")
             self.db.execute("insert into config (`key`, `value`, expires_time, createtime)value(%s, %s, %s, %s)", "access_token", conf["access_token"], int(conf["expires_in"])+int(time.time()), int(time.time()))
             return conf["access_token"]
+    def getRefeshAccessToken(self):
+        url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+        config.appid, config.secret)
+        res = requests.get(url)
+        conf = json.loads(res.text.encode("utf-8"))
+        self.db.execute("delete from config where `key` = %s", "access_token")
+        self.db.execute("insert into config (`key`, `value`, expires_time, createtime)value(%s, %s, %s, %s)",
+                        "access_token", conf["access_token"], int(conf["expires_in"]) + int(time.time()),
+                        int(time.time()))
+        return conf["access_token"]
 
     def getTicket(self):
         config = self.db.get("select * from config where `key`=%s", "jsapi_ticket")

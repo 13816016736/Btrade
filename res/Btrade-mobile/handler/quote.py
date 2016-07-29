@@ -190,7 +190,15 @@ class QuoteSuccessHandler(BaseHandler):
             count = self.db.execute_rowcount("select id from quote where purchaseinfoid = %s", purchaseinfoid)
             if count == 1:
                 first = True
-        self.render("quote_success.html", first=first)
+
+        ua = self.request.headers['User-Agent']
+        purchaseinfonum = self.db.execute_rowcount("select id from purchase_info where status!=0")
+        if ua.lower().find("micromessenger") != -1:
+            self.redirect(
+                    "/checkfans?state=quotesuccess")
+        else:
+            self.render("quote_success_C.html", purchaseinfonum=purchaseinfonum)
+
 
 
 class WeixinHandler(BaseHandler):

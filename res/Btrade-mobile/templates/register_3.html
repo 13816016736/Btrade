@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>注册</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "basenofoot.html" %}
+{% block container %}
 <body class="yc-body-nofoot">
     <header class="yc-header">
         <div class="yc-header-back">
@@ -19,9 +8,11 @@
             </a>
         </div>
         <div class="yc-header-title">注册</div>
+         <!--
         <div class="yc-header-right">
-            <a href="login.html">已有账号，直接登录</a>
+            <a href="/login">已有账号，直接登录</a>
         </div>
+        -->
     </header><!-- /yc-header -->
 
     <section class="yc-content">
@@ -52,7 +43,11 @@
             
             <div class="breeds">
                 <ul id="jBreeds">
-                    <!-- <li data-key="1120"><span>黄芪<i></i></span></li> -->
+                    {% for index, item in enumerate(attention) %}
+                    {% if index<6 %}
+                    <li data-key="{{ item.id }}"><span>{{ item.name }}<i></i></span></li>
+                    {% end %}
+                    {%  end %}
                 </ul>
             </div>
 
@@ -63,7 +58,8 @@
             <div class="list"></div> 
 
             <div class="tips">
-                还可以添加<b id="jTotal">6</b>个
+                还可以添加<b id="jTotal">{%  if (6-len(attention)) >=0 %} {{ 6-len(attention) }} {% else %} {{0 }}{% end %}
+                      </b>个
             </div>
 
             <div class="button">
@@ -73,16 +69,21 @@
 
 
     </section><!-- /yc-content -->
-
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
     <script>
     !(function($){
         var $breeds = $('#jBreeds');
         var $total = $('#jTotal');
+        var $ipt = $('.search .keywords');
         var maxNum = 6;
         var attentionArr = [];
+
+        $breeds.find('li').each(function() {
+            var key = $(this).data('key');
+            if(attentionArr.indexOf(key)==-1){
+                attentionArr.push(key);
+            }
+         });
+
 
         // 删除数组元素
         function arrRemoveVal(arr, val) {
@@ -101,6 +102,7 @@
             var key = $(this).data('key');
             if ($.inArray(key, attentionArr) !== -1) {
                 lpPopover('已关注“' + $(this).html() + '”品种', 5e3);
+                $ipt.focus();
 
             } else if (attentionArr.length >= maxNum) {
                 lpPopover('已超限，不能添加更多了', 5e3);
@@ -109,7 +111,9 @@
                 attentionArr.push(key);
                 $breeds.append('<li data-key="' + key + '"><span>' + $(this).html() + '<i></i></span></li>');
                 $('.search .keywords').val('');
+                $('.list').empty();
                 $total.html(maxNum - attentionArr.length);
+                $ipt.focus();
             }
         });
 
@@ -125,7 +129,7 @@
         function getKeywords() {
             var keywords = $('.search .keywords').val();
             $.ajax({
-                url: 'json/keywords.json',
+                url: '/variety',
                 dataType: 'json',
                 data: {key: keywords},
                 success: function(data) {
@@ -143,24 +147,59 @@
         function toHtml(json, keywords) {
             var html = [];
             $.each(json, function(i, v){
-                html.push('<div class="item" data-key="' + v.number + '">' + v.name + '</div>');
+                html.push('<div class="item" data-key="' + v.id + '">' + v.name + '</div>');
             });
             $('.list').html(html.join(''));
         }
         var lazyAjax = debounce(getKeywords, 400);
-        $('.search .keywords').on('input', lazyAjax);
+        $ipt.on('input', lazyAjax);
 
         // 提交
         $('#jSubmit').on('click', function(){
             if (attentionArr.length === 0) {
                 lpPopover('请添加主营品种', 5e3);
-
+                return;
             }
+             else{
+               var data = {
+                        "attention": attentionArr.join(","),
+                        "step":3,
+                    };
+
+                $.ajax({
+                    url: '/register',
+                    dataType: 'json',
+                    data: data,
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                    },
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            location.href=encodeURI("/regsuccess?next_url={{next_url}}")
+                        } else {
+                            lpPopover(data.message);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        lpPopover('网络连接超时，请您稍后重试!');
+                    }
+                })
+            }
+            return bool;
+
+
+
         })
 
+
+        function isWeixinBrowser(){
+            var ua = navigator.userAgent.toLowerCase();
+            return (/micromessenger/.test(ua)) ? true : false ;
+            }
 
 
     }(jQuery));
     </script>
 </body>
-</html>
+{% end %}

@@ -1,4 +1,4 @@
-{% extends "basenofoot.html" %}
+{% extends "basenohead.html" %}
 {% block container %}
 <body>
     <section class="yc-content">
@@ -13,7 +13,7 @@
                     <p>可在【我的工作台】看到和管理报价</p>
                 </div>
                 <div class="link">
-                    <p>还有31批次的采购，正等待报价</p>
+                    <p>还有{{purchaseinfonum}}批次的采购，正等待报价</p>
                     <a class="primany" href="/">立即查看</a>
                 </div>
             </div>
