@@ -139,7 +139,7 @@
                     "phone":$mobile.val(),
                     "smscode":$code.val(),
                     "step":1,
-                    "openid":"{% if userinfo %}{{userinfo['openid']}}{% end %}"
+                    "openid":"{% if userinfo %}{{userinfo['openid']}}{% end %}",
                     "city":"{% if userinfo %}{{userinfo['city']}}{% end %}"
                 };
                 $.ajax({

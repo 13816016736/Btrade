@@ -10,7 +10,8 @@ class LoginHandler(BaseHandler):
     def get(self):
         if self.current_user:
             self.redirect('/')
-        self.render("login.html", next_url=self.get_argument("next", "/"))
+        else:
+            self.render("login.html", next_url=self.get_argument("next", "/"))
 
     @purchase_push_trace
     def post(self):
@@ -44,11 +45,11 @@ class LoginHandler(BaseHandler):
             if author.openid!="":
                 self.redirect(self.get_argument("next_url", "/"))
             else:
-                #ua = self.request.headers['User-Agent']
-                #if ua.lower().find("micromessenger") != -1:#微信中就去绑定
-                #    self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=bindwx#wechat_redirect", config.appid)
-                #else:
-                self.redirect(self.get_argument("next_url", "/"))
+                ua = self.request.headers['User-Agent']
+                if ua.lower().find("micromessenger") != -1:#微信中就去绑定
+                    self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=bindwx#wechat_redirect", config.appid)
+                else:
+                    self.redirect(self.get_argument("next_url", "/"))
         else:
             self.render("login.html", error="用户名或密码错误", next_url=self.get_argument("next_url", "/"))
 

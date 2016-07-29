@@ -122,14 +122,18 @@ class RegisterHandler(BaseHandler):
                 return
             phone = self.session.get("phone")
             openid= self.session.get("openid")
+            city=self.session.get("city")
+            areaid=0
+            if city:
+                areaid=self.db.get("select id from where areaname=%s or shortname=%s ",city,city)
             if phone or openid:
                 self.session["phone"] = ""
                 self.session["openid"] = ""
                 self.session.save()
                 lastrowid = self.db.execute_lastrowid(
-                        "insert into users (username, password, phone, type, name, nickname, status, openid,createtime)"
-                        "value(%s, %s, %s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
-                        , type, name, nickname, 1, openid, int(time.time()))
+                        "insert into users (username, password, phone, type, name, nickname,areaid, status, openid,createtime)"
+                        "value(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
+                        , type, name, nickname,areaid, 1, openid, int(time.time()))
                 # 查看是否为供应商列表里面的供应商，如果是转移积分
                 supplier = self.db.query("select id,pushscore from supplier where mobile=%s", phone)
                 if supplier:
@@ -142,7 +146,7 @@ class RegisterHandler(BaseHandler):
                 self.session["notification"] = len(notification)
                 self.session.save()
                 # 发短信通知用户注册成功
-                #regSuccess(phone, name, username)
+                regSuccess(phone, name, username)
                 self.api_response({'status': 'success', 'message': '注册成功'})
             else:
                 self.api_response({'status': 'fail', 'message': 'session过期'})
@@ -179,11 +183,11 @@ class GetSmsCodeHandler(BaseHandler):
             self.api_response({'status':'fail','message':'此手机号已被使用'})
             return
         smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
-        print smscode
-        message={}
-        message["result"]="112"
-        #message = getSmsCode(phone, smscode)
-        #message = json.loads(message.encode("utf-8"))
+        #print smscode
+        #message={}
+        #message["result"]="112"
+        message = getSmsCode(phone, smscode)
+        message = json.loads(message.encode("utf-8"))
         if message["result"]:
             self.session["smscode"] = smscode
             self.session.save()
@@ -236,7 +240,7 @@ class CheckFansHandler(BaseHandler):
         if is_fans:
             if state == "regsuccess":
                 # 发微信模板消息通知用户注册成功
-                #regSuccessWx(openid, name, username)
+                regSuccessWx(openid, name, username)
                 self.render("register_A.html", type=2, url="/", username=self.session.get("user"),purchaseinfonum=purchaseinfonum)
             elif state =="quotesuccess":
                 self.render("quote_success_A.html",purchaseinfonum=purchaseinfonum)
