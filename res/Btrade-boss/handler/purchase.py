@@ -112,7 +112,7 @@ class PurchaseInfoHandler(BaseHandler):
 
         purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,"
         "p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,pi.id pid,"
-        "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views from purchase p,purchase_info pi "
+        "pi.name,pi.price,pi.quantity,pi.unit,pi.origin,pi.quality,pi.specification,pi.views,pi.status from purchase p,purchase_info pi "
         "where p.id = pi.purchaseid and pi.id = %s",id)
 
 

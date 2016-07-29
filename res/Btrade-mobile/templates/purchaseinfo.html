@@ -164,7 +164,7 @@
     </div>
     {% end %}
 </section><!-- /yc-content -->
-{% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0 %}
+{% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0 and purchase.status!=0) or purchase.term == 0 %}
 <footer class="yc-footer">
     <div class="yc-quote">
         <a href="/quote/purchaseinfoid/{{purchase.pid}}"><i class="iconfont icon-plane"></i>立即报价</a>
