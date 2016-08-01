@@ -38,11 +38,12 @@ def purchase_push_trace(method):#商品推送链接进入的路径路由
                 colleciton = mongodb.push_record
                 record=colleciton.find_one({"uuid":uuid})
                 if record:
-                    quoteid = -1
-                    if self.request.uri=="/quotesuccess" and self.request.method.upper() == "POST":#报价之后取的quoteid:
-                        quoteid=self.session.get("quoteid")
+                    quoteid=self.session.get("quoteid")
+                    if quoteid:#报价之后取的quoteid:
                         self.session["quoteid"] = -1
                         self.session.save()
+                    else:
+                        quoteid=-1
                     producer_server.sendJson("data", {'uuid': uuid, "url": self.request.uri, "monitor_type": record["type"],
                                                       "method": self.request.method,"quoteid":quoteid, "userid": userid,"messagetype":1,"createtime":int(time.time())})
                 producer_server.close()
