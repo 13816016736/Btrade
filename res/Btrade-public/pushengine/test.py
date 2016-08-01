@@ -8,7 +8,7 @@ import time
 #yesterday=datetime.now()-timedelta(days=1)
 #print time.time()
 #timeStamp=time.mktime(yesterday.timetuple())
-timeArray = time.localtime(1470019611)
+timeArray = time.localtime(1469784474)
 otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
 print otherStyleTime
 
