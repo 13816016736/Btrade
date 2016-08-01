@@ -315,7 +315,7 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
     spec = spec.encode('utf-8') if isinstance(spec, unicode) else spec
     quantity = quantity.encode('utf-8') if isinstance(quantity, unicode) else quantity
     price = price.encode('utf-8') if isinstance(price, unicode) else price
-    unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
+    quoteunit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
     templateId = 'RGAztJ6ocuwvJosRCsCCJd8imGif6TT8B7vXYPa_KGs'
     link = 'http://m.yaocai.pro'
@@ -325,7 +325,7 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
            "color":"#173177"
         },
         "keyword1": {
-           "value":"%s 采购 %s（%s）%s%s" % (name,variety,spec,quantity,unit),
+           "value":"%s 采购 %s（%s）%s%s" % (name,variety,spec,quantity,quoteunit),
            "color":"#173177"
         },
         "keyword2": {
