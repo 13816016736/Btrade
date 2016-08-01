@@ -5,6 +5,7 @@ from handler.login import *
 from handler.purchase import *
 from handler.monitor import *
 from handler.supplier import *
+from handler.pushrecord import *
 from globalconfig import *
 
 
@@ -44,6 +45,7 @@ handlers = [
     (r"/pushpurchase", PushPurchaseHandler),
     (r"/stat/statistics", MonitorStatisticsHandler),
     (r"/stat/business", MonitorBusinessHandler),
+    (r"/stat/pushrecord", PushRecordHandler),
     (r"/supplier/supplierdetail", SupplierDetailHandler),
     (r"/supplier/supplierlist", SupplierHandler),
     (r"/supplier/supplieradd", SupplierInsertHandler),

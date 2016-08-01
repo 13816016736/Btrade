@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block container %}
+{% import config %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>推送统计</h1>
+        </section>
+        <section class="filter">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label>日期范围：</label>
+                    <div class="input-group date form_datetime">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control" id="starttime" value="{{starttime}}">
+                    </div>
+                    至
+                    <div class="input-group date form_datetime">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control" id="endtime" value="{{endtime}}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <a {% if int(type)==1 %} class="label label-warning"  {% else %} class="label label-default"  {% end %}  href="/stat/pushrecord?type=1">采购推送</a>
+                </div>
+                <div class="form-group">
+                    <a {% if int(type)==2 %} class="label label-warning"  {% else %} class="label label-default"  {% end %}   href="/stat/pushrecord?type=2">消息提醒</a>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-query" id="pquery">查询</button>
+                </div>
+            </form>
+        </section>
+        <section class="content">
+            <div class="mychart">
+                <table class="tr">
+                    <thead>
+                        <tr>
+                            {% if int(type)==1 %}
+                            <th>采购单批次</th>
+                            <th>第N次</th>
+                            <th>推送条数</th>
+                            <th>点击次数</th>
+                            <th>报价</th>
+                            <th>品种</th>
+                            <th>渠道</th>
+                            <th>创建时间</th>
+                            {% elif int(type)==2 %}
+                            <th>采购单批次</th>
+                            <th>第N次</th>
+                            <th>推送条数</th>
+                            <th>品种</th>
+                            <th>渠道</th>
+                            <th>创建时间</th>
+                            {% end %}
+
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody>
+                        <tr>
+                            {% if int(type)==1 %}
+                            <td class="cat">430</td>
+                            <td class="cat">2</td>
+                            <td class="cat">100</td>
+                            <td class="cat">45</td>
+                            <td class="cat">3</td>
+                            <td class="cat">黄连</td>
+                            <td class="cat">微信</td>
+                            <td class="cat">2016-08-01 16:11</td>
+                            {% elif int(type)==2 %}
+                            <td class="cat">430</td>
+                            <td class="cat">2</td>
+                            <td class="cat">100</td>
+                            <td class="cat">黄连</td>
+                            <td class="cat">微信</td>
+                            <td class="cat">2016-08-01 16:11</td>
+                            {% end %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $(".form_datetime").datetimepicker({
+                language: "zh-CN",
+                autoclose: true,
+                todayBtn: true
+            });
+
+
+            $("#pquery").click(function() {
+                var starttime = $("#starttime").val();
+                var endtime = $("#endtime").val();
+
+                if (starttime != "" && endtime != "") {
+                    window.location.href='/stat/pushrecord?type=-1&starttime='+starttime+'&endtime='+endtime;
+                } else {
+                    alert("时间范围需填写完整");
+                }
+            });
+        })
+    </script>
+{% end %}
+
+

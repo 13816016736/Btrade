@@ -22,6 +22,11 @@
                         <i class="fa fa-circle-o"></i> 业务路径
                     </a>
                     </li>
+                    <li {% if request.uri.split('/')[2] == "pushrecord" %}class="active"{% end %}>
+                    <a href="/stat/pushrecord">
+                        <i class="fa fa-circle-o"></i> 推送统计
+                    </a>
+                    </li>
                 </ul>
             </li>
             <li class="treeview {% if request.uri.split('/')[1] == "users" %}active{% end %}">
