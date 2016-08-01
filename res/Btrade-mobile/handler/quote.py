@@ -9,6 +9,7 @@ import random
 import time
 from collections import defaultdict
 from webbasehandler import purchase_push_trace
+import logging
 
 class QuoteHandler(BaseHandler):
 
@@ -80,6 +81,7 @@ class QuoteHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
+        logging.info("start post quote")
         purchaseinfoid = self.get_argument("purchaseinfoid")
         #验证对X采购单报价
         if purchaseinfoid == "":
@@ -129,6 +131,7 @@ class QuoteHandler(BaseHandler):
                                             quality,price,self.get_argument("explain"),
                                             int(today))
         #session加上quoteid:便于统计报价单状态
+        logging.info("start set quoteid")
         self.session["quoteid"] = quoteid
         self.session.save()
 
