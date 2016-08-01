@@ -5,6 +5,7 @@ import random
 import string
 import hashlib,requests,json
 import config
+import logging
 
 class WechartJSAPI:
     def __init__(self, database):
@@ -58,6 +59,14 @@ class WechartJSAPI:
         else:
             url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % (self.getAccessToken())
             res = requests.get(url)
+            logging.info(res)
+            data = json.loads(res.text.encode("utf-8"))
+            errorCode = data.get("errcode", None)
+            if errorCode:
+                access_token = wechart.getRefeshAccessToken()
+                url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % (access_token)
+                res = requests.get(url)
+                logging.info(res)
             config = json.loads(res.text.encode("utf-8"))
             self.db.execute("delete from config where `key` = %s", "jsapi_ticket")
             self.db.execute("insert into config (`key`, `value`, expires_time, createtime)value(%s, %s, %s, %s)", "jsapi_ticket", config["ticket"], int(config["expires_in"])+int(time.time()), int(time.time()))
