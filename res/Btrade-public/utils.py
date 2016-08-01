@@ -333,7 +333,7 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
            "color":"#173177"
         },
         "keyword3": {
-           "value":"%s元/%s" % (price, unit),
+           "value":"%s元/%s" % (price, unit.encode('utf-8')),
            "color":"#173177"
         },
         "keyword4":{
