@@ -23,7 +23,7 @@ class KafkaConsumerServer(object):
 
 
 if __name__ == "__main__":
-    kafkaserver = KafkaConsumerServer(send_task_topic,kafka_server)
+    kafkaserver = KafkaConsumerServer(analysis_send_topic,kafka_server)
     for message in kafkaserver.getConsumer():
         print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
                                           message.offset, message.key,
