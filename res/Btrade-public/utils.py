@@ -229,7 +229,7 @@ def quoteSms(phone, variety, name, price, unit):
 import hashlib
 
 def checkSignature(signature, timestamp, nonce):
-    token = config.token
+    token = token
     tmpArr = [token, timestamp, nonce].sort()
     tmpStr = hashlib.sha1("".join(tmpArr)).hexdigest()
     return (tmpStr == signature)
@@ -333,7 +333,7 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
            "color":"#173177"
         },
         "keyword3": {
-           "value":"%s元/%s" % (price, config.unit),
+           "value":"%s元/%s" % (price, unit),
            "color":"#173177"
         },
         "keyword4":{
@@ -370,7 +370,7 @@ def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime)
            "color":"#173177"
         },
         "keyword3": {
-           "value":"对您%s {%s元/%s}的报价感兴趣。请尽快联系：%s，%s" % (variety,price,config.unit,phone,nickname),
+           "value":"对您%s {%s元/%s}的报价感兴趣。请尽快联系：%s，%s" % (variety,price,unit,phone,nickname),
            "color":"#173177"
         },
 
@@ -404,7 +404,7 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime):
            "color":"#173177"
         },
         "keyword3": {
-           "value":"对您%s {%s元/%s}的报价表示不合适，理由：%s" % (variety,price,config.unit,message),
+           "value":"对您%s {%s元/%s}的报价表示不合适，理由：%s" % (variety,price,unit,message),
            "color":"#173177"
         },
 
