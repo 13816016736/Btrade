@@ -82,7 +82,7 @@ class RegisterHandler(BaseHandler):
     @purchase_push_trace
     def post(self):
         step = self.get_argument("step", '1')
-        print step
+        #print step
         if step=='1':
             phone = self.get_argument("phone")
             phonepattern = re.compile(r'^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$')
@@ -104,7 +104,7 @@ class RegisterHandler(BaseHandler):
             self.session["openid"] = openid
             self.session["city"] = city
             self.session.save()
-            print phone,openid
+            #print phone,openid
             self.api_response({'status': 'success', 'message': '验证成功'})
         elif step== '2':
             password = self.get_argument("password")
