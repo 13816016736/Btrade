@@ -34,7 +34,7 @@ class PushRecordHandler(BaseHandler):
         if pid!="":
             condition["purchaseinfoid"]=pid
         if int(push_type)==1:
-            items = mongodb.transform_rate.find(condition).skip(skip_num).limit(limit_num)
+            items = mongodb.transform_rate.find(condition).sort([("createtime",-1)]).skip(skip_num).limit(limit_num)
             num =mongodb.transform_rate.find(condition).count()
             for item in items:
                 purchaseinfoid=item["purchaseinfoid"]
@@ -62,7 +62,7 @@ class PushRecordHandler(BaseHandler):
                         }
                 records.append(record)
         elif int(push_type)==2:
-            items = mongodb.notify_record.find(condition).skip(skip_num).limit(limit_num)
+            items = mongodb.notify_record.find(condition).sort([("createtime",-1)]).skip(skip_num).limit(limit_num)
             num=mongodb.notify_record.find(condition).count()
             for item in items:
                 purchaseinfoid = item["purchaseinfoid"]
