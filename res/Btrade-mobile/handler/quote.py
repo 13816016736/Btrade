@@ -105,7 +105,7 @@ class QuoteHandler(BaseHandler):
         quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
                                  , self.session.get("userid"), week_begin,week_end)
         if config.conf['QUOTE_NUM'] - quotecount < 0:
-            self.api_response({'status':'fail','message':'本周已用完5次报价机会,无法再进行报价'})
+            self.api_response({'status':'fail','message':'本周已用完20次报价机会,无法再进行报价'})
             return
         #一个用户只能对同一个采购单报价一次
         quote = self.db.get("select id from quote where userid = %s and purchaseinfoid = %s and state = 0", self.session.get("userid"), purchaseinfoid)
@@ -113,7 +113,7 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
         #不能对自己的采购单进行报价
-        purchase = self.db.get("select t.*,u.name uname,u.phone,u.openid from (select p.userid,p.term,p.createtime,pi.name,pi.specification,pi.quantity,pi.unit from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
+        purchase = self.db.get("select t.*,u.name uname,u.phone,u.openid from (select p.userid,p.term,p.createtime,pi.name,pi.varietyid,pi.specification,pi.quantity,pi.unit from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
                                "t left join users u on u.id = t.userid", purchaseinfoid)
         if purchase["userid"] == self.session.get("userid"):
             self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
@@ -150,11 +150,25 @@ class QuoteHandler(BaseHandler):
 
         #给采购商发送通知
         #获得采购商userid
-        quoter = self.db.get("select name,phone,openid from users where id = %s", self.session.get("userid"))
+        quoter = self.db.get("select name,phone,openid,varietyids from users where id = %s", self.session.get("userid"))
         title = quoter["name"].encode('utf-8') + "对【" + purchase["name"].encode('utf-8') + "】提交了报价，立即处理"
 
         self.db.execute("insert into notification(sender,receiver,type,title,content,status,createtime)value(%s, %s, %s, %s, %s, %s, %s)",
                         self.session.get("userid"),purchase["userid"],2,title,self.get_argument("purchaseinfoid"),0,int(time.time()))
+
+        #为报价者增加关注品种
+        attention=[]
+        if quoter["varietyids"]!="":
+            attention=quoter["varietyids"].split(",")
+        if purchase["varietyid"] not in attention:
+            attention.append(str(purchase["varietyid"]))
+            try:
+               self.db.execute("update users set varietyids = %s where id = %s", ",".join(attention),
+                                 self.session.get("userid"))
+            except Exception,ex:
+                logging.error("inser variety error %s",str(ex))
+
+
 
         #发短信通知采购商有用户报价
         quoteSms(purchase["phone"], purchase["name"], quoter["name"], price, config.unit)

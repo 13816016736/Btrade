@@ -1,6 +1,7 @@
 #coding:utf8
 #from pushengine.tasks import analysis_notify,analysis_record,sendkafka
 #from datetime import timedelta,datetime
+from utils import regSuccessWx
 import time
 #r = analysis_record.apply_async()
 
@@ -23,4 +24,4 @@ print otherStyleTime
 #purchaseid="146112075263"
 #reply_wx_notify(openid,num, name, price, unit,pid,purchaseid)
 #print '\xe4\xba\xb3\xe5\xb7\x9e'
-
+regSuccessWx("oTEeNweXKZh8FXoP3Fwu_y3AGPkk", "肖先生", "ycg")

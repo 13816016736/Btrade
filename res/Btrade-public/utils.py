@@ -248,7 +248,7 @@ def regSuccessWx(openid, name, username):
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     username = username.encode('utf-8') if isinstance(username, unicode) else username
     templateId = 'R49JXzySURAo-dgzpGtH1EDYXzgxgWVPYg3rQcuNzes'
-    link = 'http://m.yaocai.pro'
+    link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect'
     data = {
         "first": {
            "value":"%s，欢迎成为药材购会员！" % name,
@@ -263,11 +263,12 @@ def regSuccessWx(openid, name, username):
            "color":"#173177"
         },
         "remark":{
-           "value":"点击“详情”，设置您的关注品种，为您推送药厂、饮片厂实时采购单，随时随地报价。",
+           "value":"点击“详情”，查看药厂、饮片厂采购单，立即报价。",
            "color":"#173177"
         }
     }
     thread.start_new_thread(sendwx, (templateId, openid, link, data))
+
 
 #供应商报价,通知给采购方
 def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime):

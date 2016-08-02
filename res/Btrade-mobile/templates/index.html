@@ -4,7 +4,7 @@
 <section class="yc-content">
     {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
     <div class="yc-tag-list">
-        <h2 class="hd"><i class="iconfont icon-heart"></i>我关注的品种</h2>
+        <h2 class="hd"><i class="iconfont icon-heart"></i>我的主营品种</h2>
         <ul class="bd">
             {% for variety in varieties %}
             <li><span>{{ variety.name }}</span></li>
@@ -12,7 +12,7 @@
             <li><a href="/user/attention"><i class="iconfont icon-plus"></i></a></li>
         </ul>
     </div>
-
+    <!--
     <div class="yc-tag-list">
         <h2 class="hd"><i class="iconfont icon-plane"></i>我报过价的品种</h2>
         <ul class="bd">
@@ -21,6 +21,7 @@
             {% end %}
         </ul>
     </div>
+    -->
     {% else %}
     <div class="yc-tag-list">
         <h2 class="hd"><i class="iconfont icon-user"></i>尚未登陆，登录后，可以跟自己心仪的采购单进行报价。<a href="/login">立即登录</a></h2>
