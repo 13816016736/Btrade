@@ -63,7 +63,7 @@ class WechartJSAPI:
             data = json.loads(res.text.encode("utf-8"))
             errorCode = data.get("errcode", None)
             if errorCode:
-                access_token = wechart.getRefeshAccessToken()
+                access_token = self.getRefeshAccessToken()
                 url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % (access_token)
                 res = requests.get(url)
                 logging.info(res)
