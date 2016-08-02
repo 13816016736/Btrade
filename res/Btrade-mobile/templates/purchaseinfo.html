@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block keywords %}{{ purchase.name }}+报价，{{ purchase.name }}+详情，{{ purchase.name }}+采购，{{ purchase.name }}+需求{% end %}
+{% block description %}提供详细的{{ purchase.name }}采购信息，让您对{{ purchase.name }}有详细的了解{% end %}
+{% block title %}{{ purchase.name }}-药材购{% end %}
 {% block container %}
 {% import time %}
 {% raw xsrf_form_html() %}

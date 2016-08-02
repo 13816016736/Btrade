@@ -78,7 +78,7 @@ class CenterHandler(BaseHandler):
         faces = {}
         for result in results:
             faces[str(result["id"])] = int(result["state"])
-        print faces
+        #print faces
         #最近一周报价次数 去掉统计最近一周了，全部统计所有
         # t = time.time()
         # week_begin = get_week_begin(t,0)
@@ -180,7 +180,7 @@ class NewsHandler(BaseHandler):
         faces = {}
         for result in results:
             faces[str(result["id"])] = int(result["state"])
-        print faces
+        #print faces
         self.render("news.html", type=int(type), unread=unread, sell=sell, purchase=purchase, grow=grow, system=system, faces=faces)
 
     @tornado.web.authenticated
