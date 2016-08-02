@@ -22,7 +22,7 @@
                         <i class="fa fa-circle-o"></i> 业务路径
                     </a>
                     </li>
-                    <li {% if request.uri.split('/')[2] == "pushrecord" %}class="active"{% end %}>
+                    <li {% if request.uri.split('/')[2].find("pushrecord")!=-1 %}class="active"{% end %}>
                     <a href="/stat/pushrecord">
                         <i class="fa fa-circle-o"></i> 推送统计
                     </a>

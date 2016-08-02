@@ -42,6 +42,7 @@
                     <thead>
                         <tr>
                             {% if int(type)==1 %}
+                            <th>任务id</th>
                             <th>采购单批次</th>
                             <th>第N次</th>
                             <th>推送条数</th>
@@ -51,8 +52,8 @@
                             <th>渠道</th>
                             <th>创建时间</th>
                             {% elif int(type)==2 %}
+                            <th>任务id</th>
                             <th>采购单批次</th>
-                            <th>第N次</th>
                             <th>推送条数</th>
                             <th>品种</th>
                             <th>渠道</th>
@@ -63,28 +64,36 @@
                     </thead>
                     <tfoot></tfoot>
                     <tbody>
-                        <tr>
                             {% if int(type)==1 %}
-                            <td class="cat">430</td>
-                            <td class="cat">2</td>
-                            <td class="cat">100</td>
-                            <td class="cat">45</td>
-                            <td class="cat">3</td>
-                            <td class="cat">黄连</td>
-                            <td class="cat">微信</td>
-                            <td class="cat">2016-08-01 16:11</td>
-                            {% elif int(type)==2 %}
-                            <td class="cat">430</td>
-                            <td class="cat">2</td>
-                            <td class="cat">100</td>
-                            <td class="cat">黄连</td>
-                            <td class="cat">微信</td>
-                            <td class="cat">2016-08-01 16:11</td>
+                            {% for item in records %}
+                            <tr>
+                                <td class="cat">{{ item["id"] }}</td>
+                                <td class="cat">{{ item["purchaseinfoid"] }}</td>
+                                <td class="cat">{{ item["order"] }}</td>
+                                <td class="cat">{{ item["pushcount"] }}</td>
+                                <td class="cat">{{ item["clickcount"] }}</td>
+                                <td class="cat">{{ item["quotetime"] }}</td>
+                                <td class="cat">{{ item["varietyname"] }}</td>
+                                <td class="cat">{{ item["type"] }}</td>
+                                <td class="cat">{{ item["time"] }}</td>
+                            </tr>
                             {% end %}
-                        </tr>
+                            {% elif int(type)==2 %}
+                              {% for item in records %}
+                            <tr>
+                                <td class="cat">{{ item["id"] }}</td>
+                                <td class="cat">{{ item["purchaseinfoid"] }}</td>
+                                <td class="cat">1</td>
+                                <td class="cat">{{ item["varietyname"] }}</td>
+                                <td class="cat">{{ item["type"] }}</td>
+                                <td class="cat">{{ item["time"] }}</td>
+                                {% end %}
+                             </tr>
+                            {% end %}
                     </tbody>
                 </table>
             </div>
+              {% module PageNav(nav=nav, show=True) %}
         </section>
     </div>
     <script>
@@ -101,7 +110,7 @@
                 var endtime = $("#endtime").val();
 
                 if (starttime != "" && endtime != "") {
-                    window.location.href='/stat/pushrecord?type=-1&starttime='+starttime+'&endtime='+endtime;
+                    window.location.href='/stat/pushrecord?type={{type}}&starttime='+starttime+'&endtime='+endtime;
                 } else {
                     alert("时间范围需填写完整");
                 }
