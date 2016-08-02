@@ -11,7 +11,9 @@ class PushRecordHandler(BaseHandler):
     def get(self):
         starttime= self.get_argument("starttime", "")
         endtime=self.get_argument("endtime", "")
-        push_type=self.get_argument("type", 1)
+        channel=self.get_argument("channel", -1)
+        pid = self.get_argument("pid", "")
+        push_type = self.get_argument("type", 1)
         mongodb = PymongoDateBase.instance().get_db()
         records=[]
         start_time = 0
@@ -24,13 +26,16 @@ class PushRecordHandler(BaseHandler):
         if starttime != "" and endtime != "":
             start_time = int(time.mktime(datetime.strptime(str(starttime), "%Y-%m-%d %H:%M").timetuple()))
             end_time = int(time.mktime(datetime.strptime(str(endtime), "%Y-%m-%d %H:%M").timetuple()))
+        condition={}
+        if start_time != 0 and end_time != 0:
+            condition["createtime"]={"$gt":int(start_time),"$lt":int(end_time)}
+        if int(channel)!=-1:
+            condition["type"]=int(channel)
+        if pid!="":
+            condition["purchaseinfoid"]=pid
         if int(push_type)==1:
-            if start_time !=0 and end_time!=0:
-                items=mongodb.transform_rate.find({"createtime":{"$gt":int(start_time),"$lt":int(end_time)}}).skip(skip_num).limit(limit_num)
-                num =mongodb.transform_rate.find({"createtime":{"$gt":int(start_time),"$lt":int(end_time)}}).count()
-            else:
-                items = mongodb.transform_rate.find().skip(skip_num).limit(limit_num)
-                num =mongodb.transform_rate.find().count()
+            items = mongodb.transform_rate.find(condition).skip(skip_num).limit(limit_num)
+            num =mongodb.transform_rate.find(condition).count()
             for item in items:
                 purchaseinfoid=item["purchaseinfoid"]
                 ret=self.db.get("select varietyid,name from purchase_info where id=%s",purchaseinfoid)
@@ -57,13 +62,8 @@ class PushRecordHandler(BaseHandler):
                         }
                 records.append(record)
         elif int(push_type)==2:
-
-            if start_time != 0 and end_time != 0:
-                items = mongodb.notify_record.find({"createtime": {"$gt": int(start_time), "$lt": int(end_time)}}).skip(skip_num).limit(limit_num)
-                num=mongodb.notify_record.find({"createtime": {"$gt": int(start_time), "$lt": int(end_time)}}).count()
-            else:
-                items = mongodb.notify_record.find().skip(skip_num).limit(limit_num)
-                num=mongodb.notify_record.find().count()
+            items = mongodb.notify_record.find(condition).skip(skip_num).limit(limit_num)
+            num=mongodb.notify_record.find(condition).count()
             for item in items:
                 purchaseinfoid = item["purchaseinfoid"]
                 ret=self.db.get("select varietyid,name from purchase_info where id=%s",purchaseinfoid)
@@ -86,11 +86,13 @@ class PushRecordHandler(BaseHandler):
             query_str["starttime"]=starttime
         if endtime!="":
             query_str["endtime"] = endtime
+        if int(channel)!=-1:
+            query_str["channel"] = channel
         nav = {
             'model': 'stat/pushrecord',
             'cur': page + 1,
             'num': num,
             'query': "%s" % urlencode(query_str),
         }
-        self.render("push_record.html", starttime=starttime,
+        self.render("push_record.html", starttime=starttime,channel=channel,pid=pid,
                     endtime=endtime,type=push_type,records=records,nav=nav)

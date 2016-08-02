@@ -22,6 +22,18 @@
                         </div>
                         <input type="text" class="form-control" id="endtime" value="{{endtime}}">
                     </div>
+                    <div class="input-group">
+                        <label>渠道类型：</label>
+                         <select id="channeltype">
+                             <option value ="-1" {% if int(channel)==-1 %} selected {%end %}>所有渠道</option>
+                             <option value ="1" {% if int(channel)==1 %} selected {%end %}>短信渠道</option>
+                             <option value ="2" {% if int(channel)==2 %} selected {%end %}>微信渠道</option>
+                         </select>
+                    </div>
+                    <div class="input-group">
+                         <label>采购单批次：</label>
+                         <input type="text" id="pid" value="{{pid}}">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -108,12 +120,12 @@
             $("#pquery").click(function() {
                 var starttime = $("#starttime").val();
                 var endtime = $("#endtime").val();
+                var channel=$("#channeltype").val();
+                var pid=$("#pid").val();
 
-                if (starttime != "" && endtime != "") {
-                    window.location.href='/stat/pushrecord?type={{type}}&starttime='+starttime+'&endtime='+endtime;
-                } else {
-                    alert("时间范围需填写完整");
-                }
+
+                window.location.href='/stat/pushrecord?type={{type}}&starttime='+starttime+'&endtime='+endtime+'&channel='+channel+'&pid='+pid;
+
             });
         })
     </script>
