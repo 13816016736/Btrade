@@ -151,11 +151,14 @@ class RecordDetailHandler(BaseHandler):
                    quote=0
                    accept=0
                    reject=0
+                   phone=""
+                   login=0
                    timeArray = time.localtime(pushrecord["createtime"])
                    item["createtime"] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
                    if pushrecord["click"]!=0:
                        click=1
                    if monitortype==1:
+                        phone=sendid
                         user=self.db.get("select id from users where phone=%s",sendid)
                         if user:
                             registerurl=mongodb.user_view.find({"uuid":uuid,"url":{"$regex":"^/regsuccess"}}).count()
@@ -164,7 +167,13 @@ class RecordDetailHandler(BaseHandler):
                             else:
                                 register = 2
                    else:
-                        register = 2
+                       users = self.db.query("select id,phone from users where openid=%s", sendid)
+                       if users:
+                           phone=users[0]["phone"]
+                       register = 2
+                   loginurl=mongodb.user_view.find({"uuid":uuid,"userid":{"$ne":-1}}).count()
+                   if loginurl!=0:
+                       login=1
                    quoteurl=mongodb.user_view.find_one({"uuid":uuid,"url":{"$regex":"^/quotesuccess"}})
                    if quoteurl:
                         quote=1
@@ -182,6 +191,8 @@ class RecordDetailHandler(BaseHandler):
                    item["quote"]=quote
                    item["accept"]=accept
                    item["reject"]=reject
+                   item["phone"]=phone
+                   item["login"]=login
                    detail.append(item)
            query_str = {}
            query_str["id"] = pushid
