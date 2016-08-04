@@ -182,8 +182,8 @@ class QuoteUploadHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
     def get(self, purchaseinfoid, type):
-        print purchaseinfoid
-        print type
+        #print purchaseinfoid
+        #print type
         self.render("uploads_pic.html", purchaseinfoid=purchaseinfoid, type=type)
 
     @tornado.web.authenticated
