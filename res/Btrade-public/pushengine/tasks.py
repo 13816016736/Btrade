@@ -74,8 +74,8 @@ def task_generate(task):#生成发送任务
             task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": 2, "order": order,
                         "status": 0,"createtime":int(time.time())}
             userwxs = sqldb.query(
-                    "select openid from users where find_in_set(%s,varietyids) and openid!=''" + wxcondition + " order by pushscore limit 0,%s",
-                    purchaseinfo["varietyid"], max_wx_num)
+                    "select openid from users where find_in_set(%s,varietyids) and openid!=''" + wxcondition + " order by pushscore",
+                    purchaseinfo["varietyid"])
             for i in userwxs:
                     sendids.add(str(i["openid"]))
             sendids = list(set(sendids))

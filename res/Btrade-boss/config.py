@@ -46,6 +46,7 @@ handlers = [
     (r"/stat/statistics", MonitorStatisticsHandler),
     (r"/stat/business", MonitorBusinessHandler),
     (r"/stat/pushrecord", PushRecordHandler),
+    (r"/stat/pushrecord/detail", RecordDetailHandler),
     (r"/supplier/supplierdetail", SupplierDetailHandler),
     (r"/supplier/supplierlist", SupplierHandler),
     (r"/supplier/supplieradd", SupplierInsertHandler),
