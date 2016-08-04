@@ -79,7 +79,7 @@
                             {% if int(type)==1 %}
                             {% for item in records %}
                             <tr>
-                                <td class="cat">{{ item["id"] }}</td>
+                                <td class="cat"> <a href="/stat/pushrecord/detail?id={{item['id']}}">{{ item["id"] }}</a></td>
                                 <td class="cat">{{ item["purchaseinfoid"] }}</td>
                                 <td class="cat">{{ item["varietyname"] }}</td>
                                 <td class="cat">{{ item["order"] }}</td>
