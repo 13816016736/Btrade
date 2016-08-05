@@ -6,6 +6,7 @@ from handler.purchase import *
 from handler.monitor import *
 from handler.supplier import *
 from handler.pushrecord import *
+from handler.transaction import *
 from globalconfig import *
 
 
@@ -39,6 +40,13 @@ handlers = [
     #(r"/purchase/purchaselist/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", PurchaseHandler),
     #(r"/purchase/purchaselist/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", PurchaseHandler),
     (r"/purchase/purchaselist", PurchaseHandler),
+    (r"/purchase/transactionlist", TransactionHandler),
+    (r"/purchase/transaction", TransactionDetailHandler),
+    (r"/purchase/transactionedit", TransactionEditHandler),
+    (r"/purchase/transactionsuccess", TransactionSuccessHandler),
+    (r"/uploadimage", UploadImageHandler),
+    (r"/cropimage", CropImageHandler),
+    (r"/purchase/transactiondelete", TransactionDeleteHandler),
     (r"/purchase/purchaseinfo/([0-9]+)", PurchaseInfoHandler),
     (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/removepurchase", RemovePurchaseHandler),

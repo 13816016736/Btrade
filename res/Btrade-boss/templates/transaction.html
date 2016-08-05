@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block container %}
+{% from  config import * %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>交易记录</h1>
+        </section>
+        
+        <section class="content">
+            <div class="mychart mychart-bg">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>品种</th>
+                            <th>数量</th>
+                            <th>单价</th>
+                            <th>金额（万）</th>
+                            <th>采购方</th>
+                            <th>供货方</th>
+                            <th>日期</th>
+                            <th class="tc">操作</th>
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody>
+                       {% for item in transactions %}
+                        <tr>
+                            <td>{{item.id}}</td>
+                            <td><a href="/purchase/transaction?id={{item.id}}">{{item.varietyname}}{{item.specification}}</a></td>
+                            <td>{{item.quantity}}公斤</td>
+                            <td>{{item.price}}{{item.unity}}</td>
+                            <td>{{item.total}}</td>
+                            <td>{{item.purchasename}}（{{item.purchasenick}}）</td>
+                            <td>{{item.quotename}}（{{item.quotenick}}）</td>
+                            <td>{{item.createtime}}</td>
+                            <td class="tc">
+                                <a href="/purchase/transactionedit?tid={{item.id}}&pid={{item.purchaseinfoid}}&qid={{item.quoteid}}">编辑</a>
+                                <a href="/purchase/transactiondelete?id={{item.id}}" class="red jdel">删除</a>
+                            </td>
+                        </tr>
+                    {% end %}
+                    </tbody>
+                </table>
+            </div>
+            {% module PageNav(nav=nav, show=True) %}
+        </section>
+    </div>
+{% end %}
