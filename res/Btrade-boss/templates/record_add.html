@@ -299,7 +299,6 @@
     <script src="../static/js/jquery.raty.min.js"></script>
     <script src="../static/js/croppic.min.js"></script>
     <script src="../static/js/lightbox.js"></script>
-    <script src="../static/js/notify.js"></script>
     <script src="../static/plugins/laydate/laydate.js"></script>
     <script src="../static/plugins/layer/layer.js"></script>
     <script>
@@ -326,12 +325,7 @@
             },
             onReset:function(){ console.log('onReset') },
             onError:function(msg){
-                $.notify({
-                    type: 'error', 
-                    title: msg.title,   // 不允许的文件类型
-                    text: msg.message,     //'支持 jpg、jepg、png、gif等格式图片文件', 
-                    delay: 3e3
-                });
+                layer.msg(msg.title, {offset: 0});
             }
         }
 
@@ -364,7 +358,7 @@
             layer.confirm('确认删除交易照片？', {
                 btn: ['确认','取消'] //按钮
             }, function(index){
-                $self.parent().next().val('').prev().empty(); 
+                $self.parent().empty().next().val(''); 
                 layer.close(index);
             });
             return false;

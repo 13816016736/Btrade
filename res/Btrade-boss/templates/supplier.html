@@ -7,27 +7,18 @@
         </section>
 
         <section class="filter">
-            <form class="form-inline">
-                <div class="form-group">
-                    <div class="input-group">
-                        <input class="form-control" id="search" value="{{search_str}}" placeholder="联系人/公司名/手机" type="text">
-                    </div>
-                    <div class="input-group">
-                        <input class="form-control" id="variety" value="{{variety_name}}" placeholder="主营品种" type="text">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <button type="button" id="querybtn" class="btn btn-warning btn-query">查询</button>
-                    <button type="button" id="addbtn" class="btn btn-warning btn-query">新增</button>
+            <form>
+                <div class="item">
+                    <input class="yc-ipt" id="search" value="{{search_str}}" placeholder="联系人/公司名/手机" type="text">
+                    <input class="yc-ipt" id="variety" value="{{variety_name}}" placeholder="主营品种" type="text">
+                    <button type="button" id="querybtn" class="ubtn ubtn-green">查询</button>
+                    <button type="button" id="addbtn" class="ubtn ubtn-blue">新增</button>
                 </div>
             </form>
         </section>
 
         <section class="content">
-        	
 			<!-- 内容开始 start=========================================================== -->
-
-
             <div class="supplier-list">
                 <ul class="cf yc-ul">
                      {% if len(suppliers)!=0 %}
@@ -100,6 +91,4 @@
 
         })
     </script>
-<link rel="stylesheet" href="{{ static_url('dist/css/supplier.css') }}">
-
 {% end %}

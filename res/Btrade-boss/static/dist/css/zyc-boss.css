@@ -1021,8 +1021,8 @@ table.text-center,table.text-center td,table.text-center th{text-align:center}
 .user-info .bd .list td{padding:10px 0;}
 .user-info .bd .list i{width:16px;margin-right:4px;color:#999;text-align:center;vertical-align:middle;}
 .user-info .bd .list .fa-mobile{font-size:20px;}
-.user-info .bd .list .tc{text-align:center;}
 .user-info .bd .list .desc{width:380px;margin-top:6px;}
+.user-info .bd .list .reject{display:block;margin-top:6px;}
 .user-info .bd .ubtn{width:140px;line-height:30px;}
 .user-info .bd .ubtn-green{margin-bottom:10px;}
 .user-info .bd .ubtn-blue{margin-top:10px;}
@@ -1123,7 +1123,7 @@ table.text-center,table.text-center td,table.text-center th{text-align:center}
 .result .txt strong{display:block;margin-bottom:10px;font-size:26px;font-weight:100;color:#333;}
 .result .txt span{color:#ababab;}
 .result .links{padding:20px 0 0 0;}
-.result .links .btn{min-width:110px;}
+.result .links .ubtn{display:block;min-width:110px;line-height:40px;font-size:14px;}
 
 .yc-form{padding:20px 60px;color:#333;font-size:14px;background:#fff;}
 .yc-form .ubtn{width:auto;line-height:34px;padding:0 15px;font-size:14px;vertical-align:top;}

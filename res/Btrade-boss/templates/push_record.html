@@ -6,51 +6,33 @@
             <h1>推送统计</h1>
         </section>
         <section class="filter">
-            <form class="form-inline">
-                <div class="form-group">
+            <form>
+                <div class="item">
+                    <label>推送类型：</label>
+                    <a class="ubtn {% if int(type)==1 %}ubtn-pink{%else%}ubtn-gray{%end%}" href="/stat/pushrecord?type=1">采购推送</a>
+                    <a class="ubtn {% if int(type)==2 %}ubtn-pink{%else%}ubtn-gray{%end%}" href="/stat/pushrecord?type=2">消息提醒</a>
+                </div>
+                <div class="item">
                     <label>日期范围：</label>
-                    <div class="input-group date form_datetime">
-                        <div class="input-group-addon">
-                            <i class="fa fa-calendar"></i>
-                        </div>
-                        <input type="text" class="form-control" id="starttime" value="{{starttime}}">
-                    </div>
-                    至
-                    <div class="input-group date form_datetime">
-                        <div class="input-group-addon">
-                            <i class="fa fa-calendar"></i>
-                        </div>
-                        <input type="text" class="form-control" id="endtime" value="{{endtime}}">
-                    </div>
-                    <div class="input-group">
-                        <label>渠道类型：</label>
-                         <select id="channeltype">
-                             <option value ="-1" {% if int(channel)==-1 %} selected {%end %}>所有渠道</option>
-                             <option value ="1" {% if int(channel)==1 %} selected {%end %}>短信渠道</option>
-                             <option value ="2" {% if int(channel)==2 %} selected {%end %}>微信渠道</option>
-                         </select>
-                    </div>
-                    <div class="input-group">
-                         <label>采购单批次：</label>
-                         <input type="text" id="pid" value="{{pid}}">
-                    </div>
+                    <input type="text" class="yc-ipt date" id="starttime" value="{{starttime}}">
+                    <span>至</span>
+                    <input type="text" class="yc-ipt date" id="endtime" value="{{endtime}}">
                 </div>
-
-                <div class="form-group">
-                    <a {% if int(type)==1 %} class="label label-warning"  {% else %} class="label label-default"  {% end %}  href="/stat/pushrecord?type=1">采购推送</a>
-                </div>
-                <div class="form-group">
-                    <a {% if int(type)==2 %} class="label label-warning"  {% else %} class="label label-default"  {% end %}   href="/stat/pushrecord?type=2">消息提醒</a>
-                </div>
-
-                <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-query" id="pquery">查询</button>
+                <div class="item">
+                    <label>渠道类型：</label>
+                    <select id="channeltype">
+                        <option value ="-1" {% if int(channel)==-1 %} selected {%end %}>所有渠道</option>
+                        <option value ="1" {% if int(channel)==1 %} selected {%end %}>短信渠道</option>
+                        <option value ="2" {% if int(channel)==2 %} selected {%end %}>微信渠道</option>
+                    </select>
+                    <input type="text" class="yc-ipt yc-ipt-wide" id="pid" value="{{pid}}" placeholder="采购单批次">
+                    <button type="button" class="ubtn ubtn-green" id="pquery">查询</button>
                 </div>
             </form>
         </section>
         <section class="content">
-            <div class="mychart">
-                <table class="tr">
+            <div class="mychart mychart-bg">
+                <table>
                     <thead>
                         <tr>
                             {% if int(type)==1 %}
@@ -71,61 +53,78 @@
                             <th>渠道</th>
                             <th>创建时间</th>
                             {% end %}
-
                         </tr>
                     </thead>
                     <tfoot></tfoot>
                     <tbody>
-                            {% if int(type)==1 %}
+                        {% if int(type)==1 %}
                             {% for item in records %}
                             <tr>
-                                <td class="cat"> <a href="/stat/pushrecord/detail?id={{item['id']}}">{{ item["id"] }}</a></td>
-                                <td class="cat">{{ item["purchaseinfoid"] }}</td>
-                                <td class="cat">{{ item["varietyname"] }}</td>
-                                <td class="cat">{{ item["order"] }}</td>
-                                <td class="cat">{{ item["pushcount"] }}</td>
-                                <td class="cat">{{ item["clickcount"] }}</td>
-                                <td class="cat">{{ item["quotetime"] }}</td>
-                                <td class="cat">{{ item["type"] }}</td>
-                                <td class="cat">{{ item["time"] }}</td>
+                                <td><a href="/stat/pushrecord/detail?id={{item['id']}}">{{ item["id"] }}</a></td>
+                                <td>{{ item["purchaseinfoid"] }}</td>
+                                <td>{{ item["varietyname"] }}</td>
+                                <td>{{ item["order"] }}</td>
+                                <td>{{ item["pushcount"] }}</td>
+                                <td>{{ item["clickcount"] }}</td>
+                                <td>{{ item["quotetime"] }}</td>
+                                <td>{{ item["type"] }}</td>
+                                <td>{{ item["time"] }}</td>
                             </tr>
                             {% end %}
                             {% elif int(type)==2 %}
-                              {% for item in records %}
+                            {% for item in records %}
                             <tr>
-                                <td class="cat">{{ item["id"] }}</td>
-                                <td class="cat">{{ item["purchaseinfoid"] }}</td>
-                                <td class="cat">{{ item["varietyname"] }}</td>
-                                <td class="cat">1</td>
-                                <td class="cat">{{ item["type"] }}</td>
-                                <td class="cat">{{ item["time"] }}</td>
+                                <td>{{ item["id"] }}</td>
+                                <td>{{ item["purchaseinfoid"] }}</td>
+                                <td>{{ item["varietyname"] }}</td>
+                                <td>1</td>
+                                <td>{{ item["type"] }}</td>
+                                <td>{{ item["time"] }}</td>
                                 {% end %}
-                             </tr>
-                            {% end %}
+                            </tr>
+                        {% end %}
                     </tbody>
                 </table>
             </div>
-              {% module PageNav(nav=nav, show=True) %}
+            {% module PageNav(nav=nav, show=True) %}
         </section>
     </div>
+    <script src="{{ static_url('plugins/laydate/laydate.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            $(".form_datetime").datetimepicker({
-                language: "zh-CN",
-                autoclose: true,
-                todayBtn: true
-            });
-
+        $(function() {
+            //日历
+            var start = {
+                elem: '#starttime',
+                format: 'YYYY-MM-DD hh:mm:ss',
+                min: '2000-01-01 00:00:00',
+                max: laydate.now(), //最大日期
+                istime: true,
+                istoday: false,
+                choose: function(datas){
+                    end.min = datas; //开始日选好后，重置结束日的最小日期
+                    end.start = datas; //将结束日的初始值设定为开始日
+                }
+            };
+            var end = {
+                elem: '#endtime',
+                format: 'YYYY-MM-DD hh:mm:ss',
+                min: '2000-01-01 00:00:00',
+                max: laydate.now(),
+                istime: true,
+                istoday: false,
+                choose: function(datas){
+                    start.max = datas; //结束日选好后，重置开始日的最大日期
+                }
+            };
+            laydate(start);
+            laydate(end);
 
             $("#pquery").click(function() {
                 var starttime = $("#starttime").val();
                 var endtime = $("#endtime").val();
                 var channel=$("#channeltype").val();
                 var pid=$("#pid").val();
-
-
-                window.location.href='/stat/pushrecord?type={{type}}&starttime='+starttime+'&endtime='+endtime+'&channel='+channel+'&pid='+pid;
-
+                location.href='/stat/pushrecord?type={{type}}&starttime='+starttime+'&endtime='+endtime+'&channel='+channel+'&pid='+pid;
             });
         })
     </script>

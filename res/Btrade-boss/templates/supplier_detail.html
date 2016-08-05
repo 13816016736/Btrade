@@ -13,125 +13,110 @@
                 <a href="/supplier/supplierlist">&lt; 返回供货商查询</a>
             </div>
             <div class="yc-form">
-                <div class="bd">
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>手机</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.mobile  }}</span>
-                            <a href="tel:15500001111">拨号</a>
-                        </div>
+                <div class="group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>手机</span>
                     </div>
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>公司/姓名</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.company  }}</span>
-                        </div>
+                    <div class="cont">
+                        <span>{{ supplier.mobile  }}</span>
+                        <a href="tel:15500001111">拨号</a>
                     </div>
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>联系人</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.name  }}</span>
-                        </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>公司/姓名</span>
                     </div>
-                    <div class="group">
-                        <div class="txt">
-                            <i>*</i>
-                            <span>主营品种</span>
-                        </div>
-                        <div class="cont yc-tag-list">
-                            <ul class="cf yc-ul">
-                                {% for item  in supplier.supply_variety_name   %}
-                                <li data-key="1120"><span>{{item}}</span></li>
-                                {% end  %}
-                            </ul>
-                        </div>
+                    <div class="cont">
+                        <span>{{ supplier.company  }}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>联系人</span>
+                    </div>
+                    <div class="cont">
+                        <span>{{ supplier.name  }}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>主营品种</span>
+                    </div>
+                    <div class="cont yc-tag-list">
+                        <ul class="cf yc-ul">
+                            {% for item  in supplier.supply_variety_name   %}
+                            <li data-key="1120"><span>{{item}}</span></li>
+                            {% end  %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>经营地</span>
+                    </div>
+                    <div class="cont">
+                        <span>{{ ','.join(supplier.businessplace_name) }}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>地址</span>
+                    </div>
+                    <div class="cont">
+                        <span>{{ supplier.address}}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>经营规模</span>
+                    </div>
+                    <div class="cont">
+                        <span>{{ supplier.scale}}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>其他联系方式</span>
+                    </div>
+                    <div class="cont">
+                        <span>{{ supplier.phone}}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>备注</span>
+                    </div>
+                    <div class="cont">
+                        <span>{{ supplier.remark}}</span>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>推荐人</span>
+                    </div>
+                    <div class="cont">
+                     <span>{{ supplier.sponsor_name}}</span>
                     </div>
                 </div>
 
-                <div class="bd">
-                    <div class="group">
-                        <div class="txt">
-                            <span>经营地</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ ','.join(supplier.businessplace_name) }}</span>
-                        </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>录入人</span>
                     </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>地址</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.address}}</span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>经营规模</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.scale}}</span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>其他联系方式</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.phone}}</span>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="txt">
-                            <span>备注</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.remark}}</span>
-                        </div>
+                    <div class="cont">
+                        <span>{{ supplier.record_name}}</span>
                     </div>
                 </div>
-
-                <div class="bd">
-
-                    <div class="group">
-                        <div class="txt">
-                            <span>推荐人</span>
-                        </div>
-                        <div class="cont">
-                         <span>{{ supplier.sponsor_name}}</span>
-                        </div>
-                    </div>
-
-                    <div class="group">
-                        <div class="txt">
-                            <span>录入人</span>
-                        </div>
-                        <div class="cont">
-                            <span>{{ supplier.record_name}}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bd">
-                    <div class="ft">
-                        <a  class="btn btn-warning submit" href="/supplier/supplieredit?id={{ supplier.id }}">编辑</a>
-                        <span class="msg hide"><i class="icons icons-ok"></i>操作成功</span>
-                    </div>
+                <div class="ft">
+                    <a class="ubtn ubtn-orange submit" href="/supplier/supplieredit?id={{ supplier.id }}">编辑</a>
+                    <span class="msg hide"><i class="icons icons-ok"></i>操作成功</span>
                 </div>
             </div>
 			<!-- 内容结束 end=========================================================== -->
-
-
         </section>
     </div>
-<link rel="stylesheet" href="{{ static_url('dist/css/supplier.css') }}">
 {% end %}

@@ -1,427 +1,434 @@
 {% extends "base.html" %}
 {% block container %}
 {% import config %}
-<style>
-    .control-label{
-        color:#939393;
-    }
-    .bg-yellow, .callout.callout-warning, .alert-warning, .label-warning, .modal-warning .modal-body {
-        background-color: #F5F1EA !important;
-    }
-    .form-inline {
-        color:#000;
-    }
-    .purchaser {
-        color:#000;
-    }
-</style>
 <div class="content-wrapper">
+    <section class="content-header">
+        <h1>订单详情</h1>
+    </section>
     <section class="content">
-    <h5><a href="#"onclick="javascript:history.back(-1);">返回我的采购</a></h5>
-    <br>
+        <div class="site-map">
+            <a href="/purchase/purchaselist">&lt; 返回我的采购</a>
+        </div>
 
-    <div class="alert alert-warning" role="alert">
-        <div class="row">
-            <div class="col-sm-5">
-                <p style="font-size:20px;color:#f0ad4e;">采购商</p>
+        <div class="user-info">
+            <div class="hd">
+                <h3>采购商</h3>
+            </div>
+            <div class="bd">
+                <table>
+                    <tr>
+                        <th>采购商：</th>
+                        <td>{{user.name}} <span class="verify">（身份真实）</span></td>
+                        <th>类型：</th>
+                        <td>
+                            {% if user.type == 1 %}
+                            饮片厂/饮片生产、加工
+                            {% elif user.type == 2 %}
+                            药厂/制药企业
+                            {% elif user.type == 3 %}
+                            药材贸易经营公司
+                            {% elif user.type == 4 %}
+                            种植合作社/种植基地
+                            {% elif user.type == 5 %}
+                            其他类型公司
+                            {% elif user.type == 6 %}
+                            个体经营
+                            {% elif user.type == 7 %}
+                            企业采购经理/业务员
+                            {% elif user.type == 8 %}
+                            采购药材为主
+                            {% elif user.type == 9 %}
+                            销售药材为主
+                            {% elif user.type == 10 %}
+                            既采购也销售药材
+                            {% end %}
+                        </td>
+                        <th>真实姓名/公司全称：</th>
+                        <td>{{user.nickname}}</td>
+                        <th>手机：</th>
+                        <td>{{user.phone}}</td>
+                    </tr>
+                </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-9 purchaser">
-            <b>{{user.name}}</b>&nbsp;&nbsp;&nbsp;&nbsp;
-            <b style="color:#939393;">身份真实</b>&nbsp;&nbsp;&nbsp;&nbsp;
-            <span style="color:#f0ad4e;">
-                {% if user.type == 1 %}
-                饮片厂/饮片生产、加工
-                {% elif user.type == 2 %}
-                药厂/制药企业
-                {% elif user.type == 3 %}
-                药材贸易经营公司
-                {% elif user.type == 4 %}
-                种植合作社/种植基地
-                {% elif user.type == 5 %}
-                其他类型公司
-                {% elif user.type == 6 %}
-                个体经营
-                {% elif user.type == 7 %}
-                企业采购经理/业务员
-                {% elif user.type == 8 %}
-                采购药材为主
-                {% elif user.type == 9 %}
-                销售药材为主
-                {% elif user.type == 10 %}
-                既采购也销售药材
-                {% end %}
-            </span>&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="glyphicon glyphicon-user" aria-hidden="true" style="color:#939393"></span>&nbsp;{{user.nickname}}&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#939393"></span>&nbsp;{{user.phone}}
-            </div>
-        </div>
-    </div>
 
-    <div class="alert alert-warning" style="color:#000">
-        <div class="row">
-          <div class="col-sm-5">
-            <p style="font-size:20px;color:#f0ad4e;">采购品种及质量要求</p>
-          </div>
-          <div class="col-sm-7">
-            <p>
-                <span style="color:#939393;">采购编码：{{ purchase.id }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <span style="color:#939393;">发布时间：{{ purchase.datetime }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <span style="color:#939393;">
+        <div class="user-info">
+            <div class="hd">
+                <h3>采购品种及质量要求</h3>
+                <div class="extra">
+                    <span><em class="gray">采购批号：</em>{{ purchase.id }}</span>
+                    <span><em class="gray">发布时间：</em>{{ purchase.datetime }}</span>
                     {% if purchase.status == 0%}
-                    <span style="color:#939393;">关闭</span>
+                    <span class="status-closed">关闭</span>
                     {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
-                    <b style="color:#286090;">等待报价</b>
-                    <span style="color:#939393;">
+                    <span class="status-wait">等待报价
                         {% if purchase.term != 0%}
-                        （剩余<b style="color:#f0ad4e;">{{purchase.timedelta}}</b>天）
+                        <em class="gray">剩余{{purchase.timedelta}}天</em>
                         {% else%}
-                        常年采购
+                        <em class="status-sustain">常年采购</em>
                         {% end %}
                     </span>
                     {% else %}
-                    <b style="color:#563d7c;">报价结束，甄选供应商</b>
+                    <span class="status-finish">报价结束，甄选供应商</span>
                     {% end %}
-                </span>
-            </p>
-          </div>
-        </div>
-        <hr style="border-color:#ccc;"/>
-        <div class="row">
-          <div class="col-sm-5">
-            <div class="form-group">
-                <div class="form-inline">
-                    <label style="font-size:18px">{{ purchase.name }}</label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;{{ purchase.specification }}&nbsp;&nbsp;&nbsp;&nbsp;{{ purchase.origin }}&nbsp;&nbsp;&nbsp;&nbsp;{{ purchase.quantity }}{{purchase.unit}}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">质量要求：</label>
-                <div class="form-inline">
-                    {{ purchase.quality }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">意向价格：</label>
-                <div class="form-inline">
-                    {{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">交货地：</label>
-                <div class="form-inline">
-                    {{ purchase.position }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">合格样例：</label>
-                <div class="form-inline">
-                {% for attachment in purchase.attachments %}
-                <a href="{{attachment.attachment.replace('_thumb','')}}"><img width="60" height="68" src="{{ attachment.attachment }}" /></a>
-                {% end %}
-                </div>
-            </div>
-          </div>
-          <div class="col-sm-7">
-            <div class="form-group">
-                <label class="control-label">交易及付款：</label>
-                <div class="form-inline">
-                    {% if purchase.pay == 1%}
-                    药采购"安心交易"(预付全款)
-                    {% elif purchase.pay == 2%}
-                    双方直接交易，验证合格后{{purchase.payday}}天内付款
-                    {% else %}
-                    {{purchase.payinfo}}
+                    <i class="fa fa-share-square-o" id="jshare"></i>
+                    {% if purchase.status == 1%}
+                    <i class="fa fa-times-circle" data-pid="{{purchase.id}}" id="jclose"></i>
                     {% end %}
                 </div>
             </div>
-            <div class="form-group">
-                <label class="control-label">验收及包装：</label>
-                <div class="form-inline">
-                {{ purchase.accept }}
+            <div class="bd">
+                <div class="title">
+                    <span class="name">{{ purchase.name }}</span>
+                    <span>{{ purchase.specification }}</span>
+                    <span>{{ purchase.origin }}</span>
+                    <span>{{ purchase.quantity }}{{ purchase.unit }}</span>
+                </div>
+                <table>
+                    <tr>
+                        <th>质量要求：</th>
+                        <td>{{ purchase.quality }}</td>
+                        <th>意向价格：</th>
+                        <td>{{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}</td>
+                        <th>交货地：</th>
+                        <td>{{ purchase.position }}</td>
+                    </tr>
+                    <tr>
+                        <th>合格样例：</th>
+                        <td> 
+                            <div class="thumb">
+                                {% for attachment in purchase.attachments %}
+                                <img src="{{ attachment.attachment }}" data-src="{{attachment.attachment.replace('_thumb','')}}" />
+                                {% end %}
+                            </div>
+                        </td>
+                        <th>交易及付款：</th>
+                        <td>
+                            {% if purchase.pay == 1%}
+                            药采购"安心交易"(预付全款)
+                            {% elif purchase.pay == 2%}
+                            双方直接交易，验证合格后{{purchase.payday}}天内付款
+                            {% else %}
+                            {{purchase.payinfo}}
+                            {% end %}
+                        </td>
+                        <th>验收及包装：</th>
+                        <td>{{ purchase.accept }}</td>
+                    </tr>
+                    <tr>
+                        <th>寄样：</th>
+                        <td>
+                            {% if purchase.send == 1 %}
+                            要求报价后必须寄样<br>
+                            {% end %}
+                            {{ purchase.receive }}
+                        </td>
+                        <th>补充说明：</th>
+                        <td>{{ purchase.other }}</td>
+                        <th>供应商要求：</th>
+                        <td>
+                            {% if '1' in purchase.supplier.split("&") %}
+                            必须有营业执照（公司、合作社、经营户），不接收个人
+                            <br>
+                            {% end %}
+                            {% if '2' in purchase.supplier.split("&") %}
+                            具备GSP资质
+                            <br>
+                            {% end %}
+                            {% if '3' in purchase.supplier.split("&") %}
+                            具备GMP资质
+                            {% end %}
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="tips">
+                    <span>该批次的采购还有其他 {{ others }} 个品种</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="control-label">寄样：</label>
-                <div class="form-inline">
-                {% if purchase.send == 1 %}
-                要求报价后必须寄样
-                {% end %}
-                {{ purchase.receive }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">补充说明：</label>
-                <div class="form-inline">
-                {{ purchase.other }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">供应商要求：</label>
-                <div class="form-inline">
-                {% if '1' in purchase.supplier.split("&") %}
-                必须有营业执照（公司、合作社、经营户），不接收个人
-                <br>
-                {% end %}
-                {% if '2' in purchase.supplier.split("&") %}
-                具备GSP资质
-                <br>
-                {% end %}
-                {% if '3' in purchase.supplier.split("&") %}
-                具备GMP资质
-                {% end %}
-                </div>
-            </div>
-          </div>
         </div>
-        <hr style="border-color:#ccc;"/>
-        <p>
-            <span style="color:#286090;">该批次采购的还有其他{{ others }}个品种</span>
-            <span style="float:right">
-                <span class="glyphicon glyphicon-share" style="color:#f0ad4e;" data-toggle="modal" data-target="#share"></span>&nbsp;&nbsp;
-                {% if purchase.status == 1%}
-                <span class="glyphicon glyphicon-remove-sign" style="color:#f0ad4e;" data-toggle="modal" data-target="#myModal"></span>&nbsp;&nbsp;
-                {% end %}
-            </span>
-        </p>
-    </div>
 
-    <div class="alert alert-warning" role="alert">
-        <b style="font-size:20px;color:#f0ad4e;">收到<span style="color:#286090;">{{len(quotes)}}</span>个报价</b>&nbsp;&nbsp;&nbsp;&nbsp;
-        <b style="color:#939393;">采购单被查看了<span style="color:#f0ad4e;">{{ purchase.views }}</span>次</b>
-    </div>
-
-    <!-- /.row -->
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th style="text-align:center;">报价时间</th>
-                <th style="text-align:center;">供应商</th>
-                <th style="text-align:center;">报价</th>
-                <th style="text-align:center;">货源情况</th>
-                <th style="text-align:center;">选中</th>
-                <th style="text-align:center;">操作/状态</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for quote in quotes %}
-            <tr>
-                <td style="text-align:center;">{{quote.datetime}}</td>
-                <td style="text-align:center;">
-                    <b>{{quote.name}}<span class="label label-warning"></span></b>
-                    <p><span class="glyphicon glyphicon-user"></span>{{quote.nickname}}</p>
-                    <p><span class="glyphicon glyphicon-phone"></span>{{quote.phone}}</p>
-                </td>
-                <td style="text-align:center;">
-                    <p><b style="color:#f0ad4e;">{{quote.price}}</b>元/{% if quote.unit == u'吨' %}公斤{% else %}{{quote.unit}}{% end %}</p>
-                </td>
-                <td style="text-align:center;">
-                    <p>
-                        {% for attachment in quote.attachments %}
-                        <a href="{{attachment.attachment.replace('_thumb','')}}"><img width="60" height="68" src="{{attachment.attachment}}" /></a>
+        <div class="user-info">
+            <div class="hd">
+                <h3>收到<b>{{len(quotes)}}</b>个报价<span>(采购单被查看了<b>{{ purchase.views }}</b>次)</span></h3>
+            </div>
+            <div class="bd">
+                <table class="list" id="mytable">
+                    <thead>
+                        <tr>
+                            <th width="60" class="tc">选中</th>
+                            <th>供应商</th>
+                            <th width="400">货源情况</th>
+                            <th>报价</th>
+                            <th>报价时间</th>
+                            <th width="160" class="tc">操作/状态</th>
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody>
+                        {% for quote in quotes %}
+                        <tr>
+                            <td class="tc">
+                                {% if quote.state == 0 %}
+                                <input type="checkbox" name="type" value="{{quote.id}}">
+                                {% end %}
+                            </td>
+                            <td>
+                                <p>{{quote.name}}</p>
+                                <p><i class="fa fa-user"></i>{{quote.nickname}}</p>
+                                <p><i class="fa fa-mobile"></i>{{quote.phone}}</p>
+                            </td>
+                            <td>
+                                <div class="thumb">
+                                    {% for attachment in quote.attachments %}
+                                    <img src="{{attachment.attachment}}" data-src="{{attachment.attachment.replace('_thumb','')}}"/>
+                                    {% end %}
+                                </div>
+                                <div class="desc">
+                                    {{quote.quality}}
+                                </div>
+                            </td>
+                            <td>
+                                <b class="red">{{quote.price}}</b>元/{% if quote.unit == u'吨' %}公斤{% else %}{{quote.unit}}{% end %}
+                            </td>
+                            <td>{{quote.datetime}}</td>
+                            <td class="tc">
+                                {% if quote.state == 1 %}
+                                <span class="status-accept">已甄选为意向供应商</span>
+                                <a href="#!" class="ubtn ubtn-blue">添加交易记录</a>
+                                {% elif quote.state == 2 %}
+                                <span class="status-refuse">已拒绝</span>
+                                {% if quote.message %}<span class="reject">{{quote.message}}</span>{% end %}
+                                {% elif quote.state == 0 %}
+                                <span class="ubtn ubtn-green" data-quoteid="{{quote.id}}">不错，请供应商联系我</span>
+                                <span class="ubtn ubtn-pink" data-quoteid="{{quote.id}}">不合适，再看看</span>
+                                <a href="#!" class="ubtn ubtn-blue">添加交易记录</a>
+                                <!--<span class="ubtn ubtn-blue">聊一聊</span>-->
+                                {% end %}
+                            </td>
+                        </tr>
                         {% end %}
-                    </p>
-                    <p>{{quote.quality}}</p>
-                </td>
-                <td>
-                    {% if quote.state == 0 %}
-                    <input type="checkbox" name="type" qid="{{quote.id}}">
-                    {% end %}
-                </td>
-                <td>
-                    {% if quote.state == 1 %}
-                    <b style="color:green">已甄选为意向供应商</b>
-                    {% elif quote.state == 2 %}
-                    <b style="color:red">已拒绝{% if quote.message %}，{{quote.message}}{% end %}</b>
-                    {% elif quote.state == 0 %}
-                    <p><span class="label label-success" style="cursor:pointer" onclick="if(confirm('确认要操作此的报价单?')){updatequotestate({{quote.id}},1)}">不错，请供应商联系我</span></p>
-                    <p><span class="label label-danger" style="cursor:pointer" quoteid="{{quote.id}}">不合适，再看看</span></p>
-                    <!--<p><span class="label label-warning">聊一聊</span></p>-->
-                    {% end %}
-                </td>
-            </tr>
-            {% end %}
-        </tbody>
-    </table>
-    <div style="float:right">
-        <p>批量操作：<span class="label label-success" style="cursor:pointer" id="accepts">不错</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-danger" style="cursor:pointer" id="rejects">不合适</span></p>
-    </div>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ft">
+                <span>批量操作：</span>
+                <span class="ubtn ubtn-green" id="accepts">不错</span>
+                <span class="ubtn ubtn-pink" id="rejects">不合适</span>
+            </div>
+        </div>
+
     </section>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">订单关闭</h4>
-      </div>
-      <div class="modal-body">
-        <p>确定要关闭当前采购订单？</p>
-      </div>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-default" onclick="removepurchase({{purchase.id}})">确认</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-      </div>
-    </div>
-  </div>
+
+<div class="reject-box" id="jrejectBox">
+    <span>哪方面您认为不合适？写下原因，供应商更懂您</span>
+    <label><input type="checkbox" name="msg" value="价格偏高" /> 价格偏高</label>
+    <label><input type="checkbox" name="msg" value="质量不符" /> 质量不符</label>
+    <label><input type="checkbox" name="msg" value="供应商资质不符" /> 供应商资质不符</label>
+    <textarea name="message" id="message" class="mul"></textarea>
+    <button class="ubtn ubtn-green replyquote">回复报价</button>
 </div>
-<div class="modal fade" id="share" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="shareModalLabel">邀请报价</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="bs-example">
-                    <h5><img width="30" src="{{ static_url('images/wechat.jpg') }}" />  微信邀请朋友报价</h5>
-                    <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
-                    <center><img src="http://qr.liantu.com/api.php?text={{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}" width="180"/></center>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
-                <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
-                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder="">{{user.nickname}}采购{{purchase.name}}{{purchase.quantity}}{{purchase.unit}}，{{purchase.specification}}，产地{{purchase.origin}}，{{purchase.quality}}。请速报价：{{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}</textarea>
-                <br>
-                <button style="width:250px" type="button" class="btn btn-default">复制</button>
-            </div>
-        </div>
-      </div>
+
+<div class="share-box" id="jshareBox">
+    <div class="col">
+        <h3><i class="fa fa-weixin"></i>微信邀请朋友报价</h3>
+        <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
+        <p class="qrcode" data-url="{{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}"></p>
     </div>
-  </div>
-</div>
-<div class="modal fade" id="rejectquote" tabindex="-1" role="dialog" aria-labelledby="rejectquoteLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="rejectquoteLabel">报价不合适</h4>
-      </div>
-      <div class="modal-body">
-        <p>哪方面您认为不合适？写下原因，供应商更懂您</p>
-        <p><input type="checkbox" name="msg" value="价格偏高" /> 价格偏高</p>
-        <p><input type="checkbox" name="msg" value="质量不符" /> 质量不符</p>
-        <p><input type="checkbox" name="msg" value="供应商资质不符" /> 供应商资质不符</p>
-        <p><textarea name="message" id="message" style="width: 550px; height: 100px;"></textarea></p>
-      </div>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-default" id="replyquote" quoteid="">回复报价</button>
-      </div>
+    <div class="col">
+        <h3><i class="fa fa-qq"></i>QQ邀请朋友报价</h3>
+        <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
+        <p><textarea class="mul" id="clipboard_textarea">{{user.nickname}}采购{{purchase.name}}{{purchase.quantity}}{{purchase.unit}}，{{purchase.specification}}，产地{{purchase.origin}}，{{purchase.quality}}。请速报价：{{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}</textarea></p>
+        <p><button class="btn btn-default copy" id="jCopyButton" data-clipboard-target="clipboard_textarea" type="button">复制</button></p>
     </div>
-  </div>
 </div>
-<br>
-<script type="text/javascript">
+
+<script src="{{ static_url('plugins/ZeroClipboard/ZeroClipboard.min.js') }}"></script>
+<script src="{{ static_url('plugins/layer/layer.js') }}"></script>
+<script src="{{ static_url('js/jquery.qrcode.min.js') }}"></script>
+<script src="{{ static_url('js/lightbox.js')}}"></script>
+<script>
 $(document).ready(function(){
-    $("tbody .label-danger").click(function() {
-        var quoteid = $(this).attr('quoteid');
-        $("#replyquote").attr("quoteid", quoteid);
-        $("#rejectquote").modal();
-    });
-    $("#replyquote").click(function() {
-        var qid = $(this).attr('quoteid');
-        //console.log(qid);
-        var message = [];
-        $("input[type='checkbox'][name='msg']:checked").each(function(){
-            message.push($(this).val());
+    var 
+        $mytable = $('#mytable'),
+        $rejectBox = $('#jrejectBox'),
+        quoteid = 0,
+        canvasSupport = !!document.createElement('canvas').getContext,
+        isSubmit = false;
+
+    // 不合适
+    $mytable.on('click', '.ubtn-pink', function() {
+        quoteid = $(this).data('quoteid');
+        layer.open({
+            area: ['480px'],
+            closeBtn: 1,
+            type: 1,
+            moveType: 1,
+            content: $rejectBox,
+            title: '报价不合适',
+            cancel: function() {
+                quoteid = 0;
+            }
         });
-        message.push($("#message").val());
+    });
+    // 回复报价
+    $rejectBox.find('.replyquote').on('click', function() {
+        var message = [];
+        if (isSubmit) {
+            return false;
+        }
+        isSubmit = true;
+        $rejectBox.find('input:checked').each(function() {
+            message.push($(this).val());
+        })
+        message.push($rejectBox.find('.mul').val());
         $.ajax({
             url: "/updatequotestate",
-            data: "qid="+qid+"&state=2&message="+message.join(),
-            dataType: 'json',
             type: 'POST',
+            data: {'qid': quoteid, 'state': 2, 'message': message.join()},
+            dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
             },
             success: function(data) {
                 if(data.status == "success"){
-                    window.location.reload();
+                    location.reload();
                 }else{
-                    alert("提交失败，请刷新页面重试");
+                    layer.msg('提交失败，请刷新页面重试', {offset: 0});
                 }
+                isSubmit = false;
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                //console.log(errorThrown);
+                layer.msg(errorThrown, {offset: 0});
+                isSubmit = false;
             }
-         });
+        });
+    })
+
+    // 批量操作
+    var updateQuoteState = function(qid, state) {
+        if (isSubmit) {
+            return false;
+        }
+        isSubmit = true;
+        $.ajax({
+            url: '/updatequotestate',
+            type: 'POST',
+            data: {'qid': qid, 'state': state},
+            dataType: 'json',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if(data.status == "success"){
+                    location.reload();
+                }else{
+                    layer.msg('提交失败，请刷新页面重试', {offset: 0});
+                }
+                isSubmit = false;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg(errorThrown, {offset: 0});
+                isSubmit = false;
+            }
+        });
+    }
+    $('#accepts, #rejects').on('click', function() {
+        var qid = [];
+        $mytable.find('input:checked').each(function() {
+            qid.push(this.value);
+        })
+        if (qid.length === 0) {
+            layer.msg('请选择要操作的报价单!', {offset: 0});
+        } else {
+            var arr = this.id === 'accepts' ? ['不错，请供应商联系我', 1] : ['不合适，再看看', 2];
+            layer.confirm('确认要操作选择的报价单？', {icon: 3, title: arr[0]}, function(index) {
+                updateQuoteState(qid.join(), arr[1]);
+            });
+        }
+    })
+
+    // 单个操作
+    $mytable.on('click', '.ubtn-green', function() {
+        var qid = $(this).data('quoteid');
+        layer.confirm('确认要操作此的报价单？', {icon: 3, title:'不错，请供应商联系我'}, function(index){
+            updateQuoteState(qid, 1);
+        });
+    })
+
+    // 分享
+    $shareBox = $('#jshareBox');
+    (function($wrap){
+        var url = '{{config.host}}/purchaseinfobatch/purchaseid/{{purchase.id}}';
+        if (canvasSupport) {
+            $wrap.find('.qrcode').qrcode({
+                width: 180,
+                height: 180,
+                text: url
+            })
+        } else {
+            $wrap.find('.qrcode').html('<img src="http://qr.liantu.com/api.php?w=180&m=0&text=' + url + '" />');
+        }
+    })($shareBox);
+    $('#jshare').on('click', function() {
+        layer.open({ 
+            area: ['600px'],
+            closeBtn: 1,
+            type: 1,
+            moveType: 1,
+            content: $shareBox,
+            title: '邀请报价'
+        });
     });
 
-    $("#accepts").click(function(){
-        var qid = [];
-        $('input[type="checkbox"][name="type"]:checked').each(function(){
-            qid.push($(this).attr("qid"));
-        });
-        if(qid.length==0){
-            alert("请选择要操作的报价单!");
-            return;
-        }
-        if(confirm("确认要操作选择的报价单?")){
-            updatequotestate(qid.join(),1)
-        }
+    // 复制文本
+    var client = new ZeroClipboard(document.getElementById("jCopyButton"));
+    client.on('aftercopy', function(event) {
+        layer.msg('复制成功！', {offset: 0});
     });
 
-    $("#rejects").click(function(){
-        var qid = [];
-        $('input[type="checkbox"][name="type"]:checked').each(function(){
-            qid.push($(this).attr("qid"));
+    // 关闭
+    $('#jclose').on('click', function() {
+        var pid = $(this).data('pid');
+        // 弹层确认删除
+        layer.confirm('确定要关闭当前采购订单？', {icon: 3, title:'提示'}, function(index){
+            if (isSubmit) {
+                return false;
+            }
+            isSubmit = true;
+            $.ajax({
+                url: '/removepurchase',
+                type: 'POST',
+                data: {'pid': pid},
+                dataType: 'json',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if(data.status == "success"){
+                        location.reload();
+                    }else{
+                        layer.msg('提交失败，请刷新页面重试', {offset: 0});
+                    }
+                    isSubmit = false;
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg(errorThrown, {offset: 0});
+                    isSubmit = false;
+                }
+            });
+            layer.close(index); // 关闭弹层
         });
-        if(qid.length==0){
-            alert("请选择要操作的报价单!");
-            return;
+    })
+
+    $mytable.find('.thumb img').each(function() {
+        this.onerror = function() {
+            this.onerror = null;
+            this.src = '{{static_url("images/default-img.png")}}';
         }
-        if(confirm("确认要操作选择的报价单?")){
-            updatequotestate(qid.join(),2)
-        }
-    });
+    })
 })
 
-function updatequotestate(qid, state){
-    $.ajax({
-        url: "/updatequotestate",
-        data: "qid="+qid+"&state="+state,
-        dataType: 'json',
-        type: 'POST',
-        beforeSend: function(jqXHR, settings) {
-            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-        },
-        success: function(data) {
-            if(data.status == "success"){
-                window.location.reload();
-            }else{
-                alert("提交失败，请刷新页面重试");
-            }
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            //console.log(errorThrown);
-        }
-     });
-}
-
-function removepurchase(pid){
-    $.ajax({
-        url: "/removepurchase",
-        data: "pid="+pid,
-        dataType: 'json',
-        type: 'POST',
-        beforeSend: function(jqXHR, settings) {
-            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-        },
-        success: function(data) {
-            if(data.status == "success"){
-                window.location.reload();
-            }else{
-                alert("提交失败，请刷新页面重试");
-            }
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            //console.log(errorThrown);
-        }
-     });
-}
 </script>
 {% end %}

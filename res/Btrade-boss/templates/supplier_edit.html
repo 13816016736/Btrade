@@ -14,159 +14,146 @@
             </div>
             <div class="yc-form" id="supplierinfo" supplierid="{{ supplier.id}}">
                 <form action="" id="jForm">
-                    <div class="bd">
-                        <div class="group">
-                            <div class="txt">
-                                <i>*</i>
-                                <span>手机</span>
-                            </div>
-                            <div class="cont">
-                                <input value="{{supplier.mobile}}" id="jMobile" name="mobile" class="ipt" placeholder="请填写手机号" type="text">
-                                <span class="error"></span>
-                            </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>手机</span>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <i>*</i>
-                                <span>公司/姓名</span>
-                            </div>
-                            <div class="cont">
-                                <input value="{{supplier.company}}" id="jName" name="name" class="ipt ipt-wide" placeholder="单位填写公司名，个人写真实姓名" type="text">
-                                <span class="error"></span>
-                            </div>
+                        <div class="cont">
+                            <input value="{{supplier.mobile}}" id="jMobile" name="mobile" class="ipt" placeholder="请填写手机号" type="text">
+                            <span class="error"></span>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <i>*</i>
-                                <span>联系人</span>
-                            </div>
-                            <div class="cont">
-                                <input value="{{supplier.name}}" id="jLinkman" name="linkman" class="ipt" placeholder="请填写真实姓名" type="text">
-                                <span class="error"></span>
-                            </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>公司/姓名</span>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <i>*</i>
-                                <span>主营品种</span>
+                        <div class="cont">
+                            <input value="{{supplier.company}}" id="jName" name="name" class="ipt ipt-wide" placeholder="单位填写公司名，个人写真实姓名" type="text">
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>联系人</span>
+                        </div>
+                        <div class="cont">
+                            <input value="{{supplier.name}}" id="jLinkman" name="linkman" class="ipt" placeholder="请填写真实姓名" type="text">
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <i>*</i>
+                            <span>主营品种</span>
+                        </div>
+                        <div class="cont yc-tag-list">
+                            <ul class="yc-ul" id="jMyTags">
+                                {% for item in supplier.supply_variety_name %}
+                                 <li data-key="{{item.id}}"><span>{{item.name}}<i title="删除" class="remove"></i></span></li>
+                                {% end %}
+                            </ul>
+                            <input value="" id="jVariety" name="variety" class="ipt" placeholder="请输入关键字查询" type="text">
+                            <span class="error"></span>
+                            <div class="list" id="jVarietyTags">
                             </div>
-                            <div class="cont yc-tag-list">
-                                <ul class="yc-ul" id="jMyTags">
-                                    {% for item in supplier.supply_variety_name %}
-                                     <li data-key="{{item.id}}"><span>{{item.name}}<i title="删除" class="fa fa-times-circle"></i></span></li>
-                                    {% end %}
-                                </ul>
-                                <input value="" id="jVariety" name="variety" class="ipt" placeholder="请输入关键字查询" type="text">
-                                <div class="list" id="jVarietyTags">
-                                </div>
-                                <input type="hidden" id="jVarietys" name="varietys" value="{{supplier.variety}}">
-                                <span class="error"></span>
-                            </div>
+                            <input type="hidden" id="jVarietys" name="varietys" value="{{supplier.variety}}">
                         </div>
                     </div>
 
-                    <div class="bd">
-                        <div class="group">
-                            <div class="txt">
-                                <span>经营地</span>
-                            </div>
-                            <div class="cont">
-                                <ul class="cf yc-ul slt">
-                                    <li>
-                                        <select name="" id="provinces">
-                                            {%  for province in provinces %}
-                                            <option value="{{ province.id }}"  {%  if supplier.businessplace!="" and  province.id== int(supplier.businessplace.split(',')[0]) %} selected {% end %}>{{ province.areaname }}</option>
-                                            {%  end    %}
-                                        </select>
-                                    </li>
-                                    <li>
-                                        <select name="" id="cityies">
-                                            {%  for city in cities %}
-                                            <option value="{{ city.id }}" {%  if supplier.businessplace!="" and  city.id == int(supplier.businessplace.split(',')[1]) %} selected {% end %}>{{ city.areaname }}</option>
-                                            {% end %}
-                                        </select>
-                                    </li>
-                                </ul>
-                            </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>经营地</span>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <span>详细地址</span>
-                            </div>
-                            <div class="cont">
-                                <input value="{{ supplier.address}}" id="jAddress" name="address" class="ipt ipt-wide" placeholder="" type="text">
-                                <span class="error"></span>
-                            </div>
+                        <div class="cont">
+                            <select class="slt" id="provinces">
+                                {%  for province in provinces %}
+                                <option value="{{ province.id }}"  {%  if supplier.businessplace!="" and  province.id== int(supplier.businessplace.split(',')[0]) %} selected {% end %}>{{ province.areaname }}</option>
+                                {%  end    %}
+                            </select>
+                            <select class="slt" id="cityies">
+                                {%  for city in cities %}
+                                <option value="{{ city.id }}" {%  if supplier.businessplace!="" and  city.id == int(supplier.businessplace.split(',')[1]) %} selected {% end %}>{{ city.areaname }}</option>
+                                {% end %}
+                            </select>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <span>经营规模</span>
-                            </div>
-                            <div class="cont">
-                                <label><input class="cbx" value="小" name="scale" type="radio" {% if supplier.scale==u'小'%} checked {% end %}>小</label>
-                                <label><input class="cbx" value="中" name="scale" type="radio" {% if supplier.scale==u'中'%} checked {% end %}>中</label>
-                                <label><input class="cbx" value="大" name="scale" type="radio" {% if supplier.scale==u'大'%} checked {% end %}>大</label>
-                            </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>详细地址</span>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <span>其他联系方式</span>
-                            </div>
-                            <div class="cont">
-                                <input value="{{supplier.phone}}" id="jTel" name="tel" class="ipt" placeholder="" type="text">
-                                <span class="error"></span>
-                            </div>
+                        <div class="cont">
+                            <input value="{{ supplier.address}}" id="jAddress" name="address" class="ipt ipt-wide" placeholder="" type="text">
+                            <span class="error"></span>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <span>备注</span>
-                            </div>
-                            <div class="cont">
-                                <textarea class="ipt ipt-area" name="note" id="jNote" cols="30" rows="10" >{{ supplier.remark}}</textarea>
-                                <span class="error"></span>
-                            </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>经营规模</span>
+                        </div>
+                        <div class="cont">
+                            <label><input class="cbx" value="小" name="scale" type="radio" {% if supplier.scale==u'小'%} checked {% end %}>小</label>
+                            <label><input class="cbx" value="中" name="scale" type="radio" {% if supplier.scale==u'中'%} checked {% end %}>中</label>
+                            <label><input class="cbx" value="大" name="scale" type="radio" {% if supplier.scale==u'大'%} checked {% end %}>大</label>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>其他联系方式</span>
+                        </div>
+                        <div class="cont">
+                            <input value="{{supplier.phone}}" id="jTel" name="tel" class="ipt" placeholder="" type="text">
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>备注</span>
+                        </div>
+                        <div class="cont">
+                            <textarea class="ipt ipt-area" name="note" id="jNote" cols="30" rows="10" >{{ supplier.remark}}</textarea>
+                            <span class="error"></span>
                         </div>
                     </div>
 
-                    <div class="bd">
-                        <div class="group">
-                            <div class="txt">
-                                <span>推荐人</span>
-                            </div>
-                            <div class="cont">
-                                <div class="item" id="sponsor_list">
-                                  {% if sponsor %}
+                    <div class="group">
+                        <div class="txt">
+                            <span>推荐人</span>
+                        </div>
+                        <div class="cont">
+                            <div id="sponsor_list">
+                                {% if sponsor %}
                                     {% for item in sponsor %}
-                                    <div class="item"><span sponsorid="{{item.id}}">{{item.name}}</span><a  sponsorid="{{item.id}}" class="del" href="#">删除</a></div>
+                                    <div class="item">
+                                        <span sponsorid="{{item.id}}">{{item.name}}</span>
+                                        <a sponsorid="{{item.id}}" class="del" href="javascript:;">删除</a>
+                                    </div>
                                     {% end %}
-                                    {% end %}
-                                </div>
-
-
+                                {% end %}
+                            </div>
                             <input value="" id="jReferrer" name="referrer" class="ipt" placeholder="推荐人姓名或手机号" type="text">
-                            <button class="btn btn-primary btn-sm" type="button">检测</button>
-                            <button class="btn btn-primary btn-sm" type="button">清空</button>
+                            <button class="ubtn ubtn-green" type="button">检测</button>
+                            <button class="ubtn ubtn-blue" type="button">清空</button>
                             <span class="error">(引导用户注册后，才能录入他的朋友)</span>
                             <span class="error"></span>
-                            <div class="referrer-list" id="jReferrerList">
-                            </div>
+                            <div id="jReferrerList" class="referrer-list"></div>
                         </div>
-                        <div class="group">
-                            <div class="txt">
-                                <span>录入人</span>
-                            </div>
-                            <div class="cont">
-                            <input value="{{supplier.record_name}}" id="jrecord" uid="{% if supplier.record %}{{ supplier.record }} {% end %}"name="referrer" class="ipt" placeholder="" type="text" readonly>
-                            <button class="btn btn-primary btn-sm" id="modify" uid="{{handler.session.get('adminid')}}" type="button" name="{{handler.session.get('admin') }}">修改为我</button>
+                    </div>
+                    <div class="group">
+                        <div class="txt">
+                            <span>录入人</span>
+                        </div> 
+                        <div class="cont">
+                            <input value="{{supplier.record_name}}" id="jrecord" uid="{% if supplier.record %}{{ supplier.record }} {% end %}" name="referrer" class="ipt" placeholder="" type="text" readonly>
+                            <button class="ubtn ubtn-green" id="modify" uid="{{handler.session.get('adminid')}}" type="button" name="{{handler.session.get('admin') }}">修改为我</button>
                             <span class="error"></span>
-                            </div>
                         </div>
                     </div>
 
-                    <div class="bd">
-                        <div class="ft">
-                            <button class="btn btn-warning submit" id="jSave1" type="button">提交</button>
-                        </div>
+                    <div class="ft">
+                        <button class="ubtn ubtn-orange submit" id="jSave1" type="button">提交</button>
                     </div>
                 </form>
             </div>
@@ -175,6 +162,5 @@
 
         </section>
     </div>
-<link rel="stylesheet" href="{{ static_url('dist/css/supplier.css') }}">
 <script src="{{ static_url('js/supplier_edit.js') }}"></script>
 {% end %}

@@ -6,51 +6,34 @@
         <h1>订单管理</h1>
     </section>
     <section class="filter">
-        <form class="form-inline">
-            <div class="form-group">
-                <a href="/purchase/purchaselist?type=-1&starttime={{starttime}}&endtime={{endtime}}"><span class="label {% if int(type) < 0%}label-warning{%else%}label-default{%end%}">全部（{{stat.get(0,0) + stat.get(1,0) + stat.get(3,0)}}）</span></a>
+        <form>
+            <div class="item">
+                <label>订单状态：</label>
+                <a class="ubtn {% if int(type)<0 %}ubtn-pink{%else%}ubtn-gray{%end%}" href="/purchase/purchaselist?type=-1&starttime={{starttime}}&endtime={{endtime}}">全部（{{stat.get(0,0) + stat.get(1,0) + stat.get(3,0)}}）</a>
+                <a class="ubtn {% if int(type) == 1%}ubtn-pink{%else%}ubtn-gray{%end%}" href="/purchase/purchaselist?type=1&starttime={{starttime}}&endtime={{endtime}}">进行中（{{stat.get(1,0)}}）</a>
+                <a class="ubtn {% if int(type) == 0%}ubtn-pink{%else%}ubtn-gray{%end%}" href="/purchase/purchaselist?type=0&starttime={{starttime}}&endtime={{endtime}}">关闭（{{stat.get(0,0)}}）</a>
             </div>
-            <div class="form-group">
-                <a href="/purchase/purchaselist?type=1&starttime={{starttime}}&endtime={{endtime}}"><span class="label {% if int(type) == 1%}label-warning{%else%}label-default{%end%}">进行中（{{stat.get(1,0)}}）</span></a>
+            <div class="item">
+                <label>发布时间：</label>
+                <input type="text" class="yc-ipt date" id="starttime" value="{{starttime}}">
+                <span>至</span>
+                <input type="text" class="yc-ipt date" id="endtime" value="{{endtime}}">
             </div>
-            <div class="form-group">
-                <a href="/purchase/purchaselist?type=0&starttime={{starttime}}&endtime={{endtime}}"><span class="label {% if int(type) == 0%}label-warning{%else%}label-default{%end%}">关闭（{{stat.get(0,0)}}）</span></a>
-            </div>
-            <div class="form-group">
-                <label >发布时间：</label>
-                <div class="input-group date form_datetime">
-                    <div class="input-group-addon">
-                        <i class="fa fa-calendar"></i>
-                    </div>
-                    <input type="text" class="form-control" id="starttime" value="{{starttime}}">
-                </div>
-                至
-                <div class="input-group date form_datetime">
-                    <div class="input-group-addon">
-                        <i class="fa fa-calendar"></i>
-                    </div>
-                    <input type="text" class="form-control" id="endtime" value="{{endtime}}">
-                </div>
-            </div>
-            <div class="form-group">
-                <input class="form-control" id="query" size="80" name="query" placeholder="品种名" type="text" value="{% if query %}{{query}}{% end %}">
-            </div>
-            <div class="form-group">
-                <button type="button" class="btn btn-primary btn-query" id="pquery">查询</button>
-            </div>
-            <div class="form-group">
-                <button type="reset" class="btn btn-default">清空</button>
+            <div class="item">
+                <input type="text" class="yc-ipt yc-ipt-wide" id="query" name="query" placeholder="品种名" value="{% if query %}{{query}}{% end %}">
+                <button type="button" class="ubtn ubtn-green" id="pquery">查询</button>
+                <button type="reset" class="ubtn ubtn-blue">清空</button>
             </div>
         </form>
     </section>
     <section class="content">
         <div class="mychart mychart-m">
-            <table class="tc">
+            <table>
                 <thead>
                     <tr>
                         <th>品种</th>
                         <th>报价</th>
-                        <th width="100">操作</th>
+                        <th class="tc" width="100">操作</th>
                     </tr>
                 </thead>
                 <tfoot></tfoot>
@@ -80,11 +63,9 @@
                                     {% end %}
 
                                     {% if purchase.status == 0 %}
-                                    <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
                                     {% elif (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
-                                    <i class="glyphicon glyphicon-remove-sign jclose" onclick="removepurchase({{purchase.id}})" title="关闭采购单"></i>
+                                    <i class="fa fa-times-circle jclose" data-pid="{{purchase.id}}" title="关闭采购单"></i>
                                     {% else %}
-                                    <!--<span class="glyphicon glyphicon-list-alt" style="color:#f0ad4e;"></span>-->
                                     {% end %}
                                     <i class="fa fa-angle-down expand" title="展开详情"></i>
                                 </div>
@@ -111,7 +92,7 @@
                                         {{purchase.accept}}</p>
                                     <p><span>寄样：</span>
                                         {% if purchase.send == 1 %}
-                                        报价必须寄样
+                                        报价必须寄样<br>
                                         {% end %}
                                         {{purchase.receive}}</p>
                                     <p><span>补充说明：</span>
@@ -130,20 +111,21 @@
                         </tr>
                         {% for index,purchaseinfo in enumerate(purchase.purchaseinfo)%}
                         <tr>
-                            <td class="tl">
+                            <td>
                                 <span><a href="/purchase/purchaseinfo/{{purchaseinfo.id}}">{{purchaseinfo.name}}</a></span>
                                 <span>{{purchaseinfo.specification}}</span>
                             </td>
-                            <td class="tl">
+                            <td>
                                 {{purchaseinfo.quotecount}}个报价{% if purchaseinfo.unread > 0 %}（<b>{{purchaseinfo.unread}}</b>个未回复）{% end %}
                                 {% if purchaseinfo.intentions > 0 %}
                                 <span class="status-accept">已甄选<b>{{purchaseinfo.intentions}}</b>家意向供应商</span>
                                 {% end %}
                             </td>
-                            <td>
+                            <td class="tc">
                                 {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
-                                <span class="glyphicon glyphicon-share" rel="{{purchaseinfo.id}}" sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
-                                <span class="glyphicon glyphicon-list-alt" rel="{{purchaseinfo.id}}" purchaser="{{purchase.name}}" sharerel="【药材购】{{purchase.name}}采购{{purchaseinfo.name}}（{{purchaseinfo.specification}}）{{purchaseinfo.quantity}}{{purchaseinfo.unit}}。邀请您立即报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}} 退订回T" style="color:#f0ad4e;"></span>&nbsp;&nbsp;
+                                <span class="fa fa-share-square-o jshare" data-pid="{{purchaseinfo.id}}" data-sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}"></span>
+                                &nbsp;
+                                <span class="fa fa-envelope-o jsend" data-pid="{{purchaseinfo.id}}" data-purchaser="{{purchase.name}}" data-sharerel="【药材购】{{purchase.name}}采购{{purchaseinfo.name}}（{{purchaseinfo.specification}}）{{purchaseinfo.quantity}}{{purchaseinfo.unit}}。邀请您立即报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}} 退订回T"></span>
                                 {% end %}
                             </td>
                         </tr>
@@ -155,153 +137,200 @@
         {% module PageNav(nav=nav, show=True) %}
     </section>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">邀请报价</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="bs-example">
-                    <h5><img width="30" src="{{ static_url('images/wechat.jpg') }}" />  微信邀请朋友报价</h5>
-                    <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
-                    <center><img id="qrcode" src="" width="180"/></center>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <h5><img width="30" src="{{ static_url('images/qq.jpg') }}" />  QQ邀请朋友报价</h5>
-                <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
-                <textarea id="sharemsg" class="form-control" style="width: 250px; height: 100px;" placeholder=""></textarea>
-                <br>
-                <button style="width:250px" type="button" class="btn btn-default">复制</button>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="sendx" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="mysendModalLabel">邀请报价</h4>
-      </div>
-      <div class="modal-body">
-        <center>
-        <h5><img width="30" src="{{ static_url('images/phone.jpg') }}" />  短信群发通知供应商报价</h5>
-        <textarea id="content" class="form-control" style="width: 500px; height: 100px;" placeholder="" readonly="readonly"></textarea>
-        <br>
-        <input type="hidden" id="purchaseinfoid" name="purchaseinfoid">
-        <input type="hidden" id="purchaser" name="purchaser">
-        <button style="width:250px" type="button" class="btn btn-default" id="sendsms">发送</button>
-        </center>
-      </div>
-    </div>
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){
-    $(".form_datetime").datetimepicker({
-                language: "zh-CN",
-                autoclose: true,
-                todayBtn: true
-            });
 
-    $(".glyphicon-share").click(function() {
-        var id = $(this).attr('rel');
-        var qrcode = "http://qr.liantu.com/api.php?text={{config.host}}/purchase/purchaseinfo/"+id;
-        var share = $(this).attr('sharerel');
-        $("#sharemsg").attr("placeholder", share);
-        $("#sharemsg").html(share);
-        $("#qrcode").attr("src",qrcode)
-        $("#share").modal();
+
+<div class="share-box" id="jshareBox">
+    <div class="col">
+        <h3><i class="fa fa-weixin"></i>微信邀请朋友报价</h3>
+        <p>微信扫描如下二维码，可发给微信好友或分享朋友圈，邀请前来报价</p>
+        <p class="qrcode"></p>
+    </div>
+    <div class="col">
+        <h3><i class="fa fa-qq"></i>QQ邀请朋友报价</h3>
+        <p>复制如下消息，发送给QQ好友或QQ群，邀请其前来报价</p>
+        <p><textarea class="mul" id="clipboard_textarea"></textarea></p>
+        <p><button class="btn btn-default copy" id="jCopyButton" data-clipboard-target="clipboard_textarea" type="button">复制</button></p>
+    </div>
+</div>
+<div class="sms-box" id="jsmsBox">
+    <h3>短信群发通知供应商报价</h3>
+    <p class="sms"></p>
+    <p><button class="btn btn-default send" type="button">发送短信</button></p>
+</div>
+
+<script src="{{ static_url('plugins/ZeroClipboard/ZeroClipboard.min.js') }}"></script>
+<script src="{{ static_url('plugins/layer/layer.js') }}"></script>
+<script src="{{ static_url('plugins/laydate/laydate.js') }}"></script>
+<script src="{{ static_url('js/jquery.qrcode.min.js') }}"></script>
+<script>
+$(function(){
+    var 
+        $mychart = $('.mychart'),
+        $shareBox = $('#jshareBox'),
+        $qrcode = $shareBox.find('.qrcode'),
+        $smsBox = $('#jsmsBox'),
+        isSubmit = false,
+        canvasSupport = !!document.createElement('canvas').getContext;
+
+    //日历
+    var start = {
+        elem: '#starttime',
+        format: 'YYYY-MM-DD hh:mm:ss',
+        min: '2000-01-01 00:00:00',
+        max: laydate.now(), //最大日期
+        istime: true,
+        istoday: false,
+        choose: function(datas){
+            end.min = datas; //开始日选好后，重置结束日的最小日期
+            end.start = datas; //将结束日的初始值设定为开始日
+        }
+    };
+    var end = {
+        elem: '#endtime',
+        format: 'YYYY-MM-DD hh:mm:ss',
+        min: '2000-01-01 00:00:00',
+        max: laydate.now(),
+        istime: true,
+        istoday: false,
+        choose: function(datas){
+            start.max = datas; //结束日选好后，重置开始日的最大日期
+        }
+    };
+    laydate(start);
+    laydate(end);
+
+    // 查询
+    $('#pquery').click(function(){
+        var starttime = $('#starttime').val();
+        var endtime = $('#endtime').val();
+        var query = $('#query').val();
+        if ((starttime && endtime) || query) {
+            location.href = encodeURI('/purchase/purchaselist?type={{type}}&starttime=' + starttime + '&endtime=' + endtime + '&query='+query);
+        }else{
+            layer.msg('时间范围或品种名需填写完整', {offset: 0});
+        }
     });
 
-    $(".glyphicon-list-alt").click(function() {
-        $("#sendsms").html("发送");
-        $("#sendsms").removeAttr("disabled");
-        var id = $(this).attr('rel');
-        var purchaser = $(this).attr('purchaser');
-        var share = $(this).attr('sharerel');
-        $("#purchaseinfoid").val(id);
-        $("#purchaser").val(purchaser);
-        $("#content").html(share);
-        $("#sendx").modal();
+    // 分享
+    $mychart.on('click', '.jshare', function() {
+        var url = '{{config.host}}/purchase/purchaseinfo/' + $(this).data('pid');
+        if (canvasSupport) {
+            $qrcode.empty('').qrcode({
+                width: 180,
+                height: 180,
+                text: url
+            })
+        } else {
+            $qrcode.empty('').html('<img src="http://qr.liantu.com/api.php?w=180&m=0&text=' + url + '" />');
+        }
+        $shareBox.find('.mul').html($(this).data('sharerel'));
+        layer.open({ 
+            area: ['600px'],
+            closeBtn: 1,
+            type: 1,
+            moveType: 1,
+            content: $shareBox,
+            title: '邀请报价'
+        });
     });
 
-    $("#sendsms").click(function() {
-        $(this).html("正在发送");
-        $(this).attr('disabled',"true");
+    // 短信推送
+    var dataArr = {};
+    $mychart.on('click', '.jsend', function() {
+        dataArr = {
+            'purchaseinfoid': $(this).data('pid'),
+            'purchaser': $(this).data('purchaser')
+        }
+        $smsBox.find('.sms').html($(this).data('sharerel'));
+        layer.open({
+            area: ['480px'],
+            closeBtn: 1,
+            type: 1,
+            moveType: 1,
+            content: $smsBox,
+            title: '邀请报价',
+            cancel: function() {
+                dataArr = {};
+            }
+        });
+    });
+    // 发送短信
+    $smsBox.find('.send').on('click', function() {
+        var $self = $(this);
+        if (isSubmit) {
+            return false;
+        }
+        isSubmit = true;
+        $self.html('正在发送...');
         $.ajax({
-            url: "/pushpurchase",
-            data: "purchaseinfoid="+$("#purchaseinfoid").val()+"&purchaser="+$("#purchaser").val(),
-            dataType: 'json',
+            url: '/pushpurchase',
             type: 'POST',
+            data: dataArr,
+            dataType: 'json',
             beforeSend: function(jqXHR, settings) {
-                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
             },
             success: function(data) {
-                if(data.status == "success"){
-                    //console.log(123);
-                    $("#sendsms").html(data.message);
-                    //$("#sendsms").removeAttr("disabled");
-                }else{
-                    $("#sendsms").html(data.message);
-                }
+                $self.html('发送短信');
+                layer.msg(data.message, {offset: 0});
+                isSubmit = false;
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                //console.log(errorThrown);
-                 alert(errorThrown);
+                $self.html('发送短信');
+                layer.msg(errorThrown, {offset: 0});
+                isSubmit = false;
             }
-         });
-    });
-
-    $("#pquery").click(function(){
-        var starttime = $("#starttime").val();
-        var endtime = $("#endtime").val();
-        var query = $("#query").val();
-        if ((starttime != "" && endtime != "") || query !="") {
-            window.location.href=encodeURI('/purchase/purchaselist?type={{type}}&starttime='+starttime+'&endtime='+endtime+'&query='+query);
-        }else{
-            alert("时间范围或品种名需填写完整");
-        }
+        });
     });
 
     // 展开
-    $('.mychart-m').on('click', '.th', function() {
+    $mychart.on('click', '.th', function() {
         $(this).find('.info').slideToggle();
-        $(this).find('.expand').toggleClass('fa-angle-down').toggleClass('fa-angle-up');
+        $(this).find('.expand').toggleClass('fa-angle-down fa-angle-up');
     })
+
+    // 关闭采购单
+    $mychart.on('click', '.jclose', function() {
+        var pid = $(this).data('pid');
+        // 弹层确认删除
+        layer.confirm('确定要关闭当前采购订单？', {icon: 3, title:'提示'}, function(index){
+            if (isSubmit) {
+                return false;
+            }
+            isSubmit = true;
+            $.ajax({
+                url: '/removepurchase',
+                type: 'POST',
+                data: {'pid': pid},
+                dataType: 'json',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                },
+                success: function(data) {
+                    if(data.status == 'success'){
+                        location.reload();
+                    }else{
+                        layer.msg('提交失败，请刷新页面重试', {offset: 0});
+                    }
+                    isSubmit = false;
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg(errorThrown, {offset: 0});
+                    isSubmit = false;
+                }
+            });
+            layer.close(index); // 关闭弹层
+        });
+
+        return false; // 阻止展开
+    })
+
+    // 复制文本
+    var client = new ZeroClipboard(document.getElementById("jCopyButton"));
+    client.on('aftercopy', function(event) {
+        layer.msg('复制成功！', {offset: 0});
+    });
 })
 
-function removepurchase(pid){
-    if(!confirm('确定要关闭当前采购订单？'))return false;
-    $.ajax({
-        url: "/removepurchase",
-        data: "pid="+pid,
-        dataType: 'json',
-        type: 'POST',
-        beforeSend: function(jqXHR, settings) {
-            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-        },
-        success: function(data) {
-            if(data.status == "success"){
-                window.location.reload();
-            }else{
-                alert("提交失败，请刷新页面重试");
-            }
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            //console.log(errorThrown);
-            alert(errorThrown);
-        }
-     });
-}
 </script>
 {% end %}

@@ -6,27 +6,20 @@
             <h1>业务路径</h1>
         </section>
         <section class="filter">
-            <form class="form-inline">
-                {% for i in  range(1,13)%}
-                {% if i== int(month) %}
-                <div class="form-group">
-                    <a href="/stat/statistics?month={{i}}" class="label label-warning">{{ i }}月</a>
+            <form>
+                <div class="item">
+                    {% for i in  range(1,13)%}
+                    <a href="/stat/statistics?month={{i}}" class="ubtn {% if i== int(month) %}ubtn-pink{% else %}ubtn-gray{% end %}">{{ i }}月</a>
+                    {% end %}
                 </div>
-
-                {% else %}
-                <div class="form-group">
-                    <a href="/stat/statistics?month={{ i}}" class="label label-default">{{ i}}月</a>
-                </div>
-                {% end %}
-                {% end %}
             </form>
         </section>
         <section class="content">
             <div class="mychart">
-                <table class="tr">
+                <table>
                     <thead>
                         <tr>
-                            <th>分类</th>
+                            <th class="tc">分类</th>
                             <th>指标</th>
                             <th>总体平均</th>
                             {% for date in regions %}
@@ -37,7 +30,7 @@
                     <tfoot></tfoot>
                     <tbody>
                         <tr>
-                            <td class="cat" rowspan="4">会员</td>
+                            <td class="tc" rowspan="4">会员</td>
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="本周期内新注册会员数">新注册会员数</div>
                              </td>
@@ -76,7 +69,7 @@
 
                     <tbody>
                         <tr>
-                            <td class="cat" rowspan="5">采购</td>
+                            <td class="tc" rowspan="5">采购</td>
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，新发布了多少采购批次">新发布采购批次数</div>
                              </td>
@@ -130,7 +123,7 @@
 
                     <tbody>
                         <tr>
-                            <td class="cat" rowspan="4">报价</td>
+                            <td class="tc" rowspan="4">报价</td>
                             <td class="name">
                                 <div data-toggle="tooltip" data-placement="top" title="周期内，提交报价的个人">报价个数</div>
                              </td>
