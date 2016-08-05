@@ -254,7 +254,7 @@ class TransactionEditHandler(BaseHandler):
             url=self.get_argument("pic%s"%i, None)
             if url!="":
                 rpath = config.img_path
-                img_path = rpath[0:rpath.find("static/")] + url[url.find("static"):]#服务器绝对路径
+                img_path = rpath[0:rpath.find("static")] + url[url.find("static/"):]#服务器绝对路径
                 piclist.append(img_path)
         if tid!="":
             transaction=self.db.get("select * from transaction where id=%s",tid)
@@ -340,7 +340,7 @@ class CropImageHandler(BaseHandler):
         imgUrl =self.get_argument("imgUrl")
 
         rpath=config.img_path
-        img_path=rpath[0:rpath.find("static")]+imgUrl[imgUrl.find("static"):]
+        img_path=rpath[0:rpath.find("static")]+imgUrl[imgUrl.find("static/"):]
         #data_stream = cStringIO.StringIO()
         #data_stream.write(imgData)
         source_image = Image.open(img_path)
