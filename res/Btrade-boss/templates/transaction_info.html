@@ -1,106 +1,6 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>交易记录详情</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico?v=2bfa7da6952343414cbf3475b4d02b97" media="screen" />
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css?v=9eef70bd56979ad7c0b8e009e11e009b">
-    <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css?v=f667e6132f8470a39d2395b81ab4ef09">
-    <link rel="stylesheet" href="../static/dist/css/zyc-boss.css?v=93de0f68762d197206ab33dfda43349a">
-    <link rel="stylesheet" href="../static/dist/css/skins/_all-skins.min.css?v=409d387ee91fbe82eeecf94e1b5d5db6">
-    <script src="../static/js/jquery.min.js?v=b327509226baa10f2d2e89c42c2c49fb"></script>
-    <script src="../static/bootstrap/js/bootstrap.min.js?v=e7d9a06cf9053c51cd4ad3386da0659a"></script>
-    <script src="../static/dist/js/app.min.js?v=70f46360fb2efaf0abfe2910575d1037"></script>
-</head>
-
-<body class="skin-blue sidebar-mini">
-    <header class="main-header">
-        <a class="logo" href="#">
-            <span class="logo-mini">B</span>
-            <span class="logo-lg">BOSS管理系统</span>
-        </a>
-        <nav class="navbar navbar-static-top">
-            <a class="sidebar-toggle" role="button" data-toggle="offcanvas" href="#">
-                <span class="sr-only">Toggle navigation</span>
-            </a>
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown user user-menu">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                            <i class="fa fa-user"></i> yanfei <i class="fa fa-chevron-down"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#">编辑个人资料</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="/logout">
-                            <i class="fa fa-power-off"></i> 退出
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <aside class="main-sidebar">
-        <section class="sidebar">
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="#">
-                        <i class="fa fa-tachometer"></i> <span>操作中心</span>
-                    </a>
-                </li>
-                <li class="treeview active">
-                    <a href="#">
-                        <i class="fa fa-th"></i> <span>会员管理</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu menu-open">
-                        <li>
-                            <a href="/users/userlist">
-                                <i class="fa fa-circle-o"></i> 前台会员管理
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/users/statistics/month/0">
-                                <i class="fa fa-circle-o"></i> 关键指标检测
-                            </a>
-                        </li>
-                        <li class="active">
-                            <a href="/users/business/type/0/starttime//endtime/">
-                                <i class="fa fa-circle-o"></i> 业务路径
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="treeview ">
-                    <a href="#">
-                        <i class="fa fa-cart-plus"></i> <span>采购管理</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu ">
-                        <li><a href="/purchase/purchaselist/type/-1/starttime//endtime/"><i class="fa fa-circle-o"></i> 订单查询</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-cart-plus"></i> <span>供货商管理</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li>
-                            <a href="http://192.168.1.190/yaocai/Btrade/res/Btrade-boss/templates/supplier.html">供货商管理</a>
-                            <a href="http://192.168.1.190/yaocai/Btrade/res/Btrade-boss/templates/supplier_add.html">新建供货商</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-    </aside>
+{% extends "base.html" %}
+{% block container %}
+{% from  config import * %}
     <div class="content-wrapper">
         <section class="content-header">
             <h1>交易记录</h1>
@@ -277,15 +177,9 @@
             </div>
         </section>
     </div>
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-        &copy; <a href="#">速采科技（武汉）有限公司</a> 版权所有.
-    </footer>
-    <script src="../static/js/croppic.min.js"></script>
-    <script src="../static/js/lightbox.js"></script>
-    <script src="../static/plugins/layer/layer.js"></script>
+    <script src="static_url(js/croppic.min.js)"></script>
+    <script src="static_url(js/lightbox.js)"></script>
+    <script src="static_url(plugins/layer/layer.js)"></script>
     <script>
     $(function(){  
         // 查看其他交收要求
@@ -306,5 +200,4 @@
         })
     })
     </script>
-</body>
-</html>
+{% end %}

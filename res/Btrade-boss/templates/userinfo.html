@@ -209,6 +209,7 @@ $(document).ready(function(){
          e.preventDefault();
          var $form = $(e.target);
          var bv = $form.data('bootstrapValidator');
+         x=$(this).serializeArray();
          $.ajax({
             url: $(this).attr('action'),
             data: $(this).serialize(),

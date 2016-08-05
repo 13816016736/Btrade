@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-{% import config %}
+{% from config import * %}
 <style>
     .control-label{
         color:#939393;
@@ -31,27 +31,7 @@
             <b>{{user.name}}</b>&nbsp;&nbsp;&nbsp;&nbsp;
             <b style="color:#939393;">身份真实</b>&nbsp;&nbsp;&nbsp;&nbsp;
             <span style="color:#f0ad4e;">
-                {% if user.type == 1 %}
-                饮片厂/饮片生产、加工
-                {% elif user.type == 2 %}
-                药厂/制药企业
-                {% elif user.type == 3 %}
-                药材贸易经营公司
-                {% elif user.type == 4 %}
-                种植合作社/种植基地
-                {% elif user.type == 5 %}
-                其他类型公司
-                {% elif user.type == 6 %}
-                个体经营
-                {% elif user.type == 7 %}
-                企业采购经理/业务员
-                {% elif user.type == 8 %}
-                采购药材为主
-                {% elif user.type == 9 %}
-                销售药材为主
-                {% elif user.type == 10 %}
-                既采购也销售药材
-                {% end %}
+                {{usertype[user.type]}}
             </span>&nbsp;&nbsp;&nbsp;&nbsp;
             <span class="glyphicon glyphicon-user" aria-hidden="true" style="color:#939393"></span>&nbsp;{{user.nickname}}&nbsp;&nbsp;&nbsp;&nbsp;
             <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#939393"></span>&nbsp;{{user.phone}}
@@ -232,13 +212,16 @@
                 <td>
                     {% if quote.state == 1 %}
                     <b style="color:green">已甄选为意向供应商</b>
+                    <a href="/purchase/transactionedit?qid={{quote.id}}&pid={{ purchase.pid }}">添加交易记录</a>
                     {% elif quote.state == 2 %}
                     <b style="color:red">已拒绝{% if quote.message %}，{{quote.message}}{% end %}</b>
                     {% elif quote.state == 0 %}
                     <p><span class="label label-success" style="cursor:pointer" onclick="if(confirm('确认要操作此的报价单?')){updatequotestate({{quote.id}},1)}">不错，请供应商联系我</span></p>
                     <p><span class="label label-danger" style="cursor:pointer" quoteid="{{quote.id}}">不合适，再看看</span></p>
+                    <a href="/purchase/transactionedit?qid={{quote.id}}&pid={{ purchase.pid }}">添加交易记录</a>
                     <!--<p><span class="label label-warning">聊一聊</span></p>-->
                     {% end %}
+
                 </td>
             </tr>
             {% end %}
