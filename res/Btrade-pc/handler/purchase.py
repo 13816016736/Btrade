@@ -119,12 +119,13 @@ class PurchaseHandler(BaseHandler):
                 # 为采购商积分：
                 self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
                 try:
-                    purchaseinfo=self.db.query("select id from purchase_info where purchaseid=%s",purchaseid)
+                    purchaseinfo=self.db.query("select id,status from purchase_info where purchaseid=%s",purchaseid)
                     for item in purchaseinfo:
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
-                        task_generate.apply_async(args=[task])
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
-                        task_generate.apply_async(args=[task])
+                        if item["status"]!=0:
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
+                            task_generate.apply_async(args=[task])
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
+                            task_generate.apply_async(args=[task])
                 except Exception,ex:
                      self.log.info("purchaseinfo task_generate error %s",str(ex))
 
@@ -469,7 +470,7 @@ class RemovePurchaseHandler(BaseHandler):
         ptype=self.get_argument("ptype",None)
         if ptype:
             if int(ptype)==0:#关闭整个采购单
-                if self.db.query("SELECT count(*) FROM purchase WHERE userid = %s and id = %s", self.session.get("userid"), self.get_argument("pid")):
+                if self.db.query("SELECT * FROM purchase WHERE userid = %s and id = %s", self.session.get("userid"), self.get_argument("pid")):
                     self.db.execute("UPDATE purchase SET status = 0 WHERE userid = %s and id = %s", self.session.get("userid"), self.get_argument("pid"))
                     self.db.execute("UPDATE purchase_info SET status = 0 WHERE  purchaseid = %s",self.get_argument("pid"))#关闭所有该批次的采购单
                     self.api_response({'status':'success','message':'请求成功'})
@@ -478,7 +479,7 @@ class RemovePurchaseHandler(BaseHandler):
             else:#关闭单项采购单
                  purchase=self.db.query("SELECT distinct purchaseid FROM purchase_info WHERE id = %s", self.get_argument("pid"))
                  if purchase:
-                     if self.db.query("SELECT count(*) FROM purchase WHERE userid = %s and id = %s",
+                     if self.db.query("SELECT * FROM purchase WHERE userid = %s and id = %s",
                                       self.session.get("userid"), purchase[0].purchaseid):
                          self.db.execute("UPDATE purchase_info SET status = 0 WHERE  id = %s",
                                          self.get_argument("pid"))
@@ -632,12 +633,13 @@ class MyPurchaseUpdateHandler(BaseHandler):
                 # 为采购商积分：
                 self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
                 try:
-                    purchaseinfo=self.db.query("select id from purchase_info where purchaseid=%s",id)
+                    purchaseinfo=self.db.query("select id,status from purchase_info where purchaseid=%s",id)
                     for item in purchaseinfo:
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
-                        task_generate.apply_async(args=[task])
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
-                        task_generate.apply_async(args=[task])
+                        if item["status"]!=0:
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
+                            task_generate.apply_async(args=[task])
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
+                            task_generate.apply_async(args=[task])
                 except Exception,ex:
                      self.log.info("purchaseinfo task_generate error %s",str(ex))
                 self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':id})
