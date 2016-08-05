@@ -28,8 +28,12 @@ def task_generate(task):#生成发送任务
         order = record[0]["order"] + 1
     print "start order %s"%order
     purchaseinfo = sqldb.get(
-        "select pi.id purchaseinfoid,pi.varietyid,p.userid uid from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s",
+        "select pi.id purchaseinfoid,pi.varietyid,pi.status,p.userid uid from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s",
         purchaseinfoid)
+    if purchaseinfo==None:
+        return
+    elif purchaseinfo["status"]==0:
+        return
     if tasktype==1:
         sendids = set()
         filtersend = []
