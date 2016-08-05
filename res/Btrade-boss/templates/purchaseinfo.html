@@ -195,14 +195,22 @@
                             <td class="tc">
                                 {% if quote.state == 1 %}
                                 <span class="status-accept">已甄选为意向供应商</span>
-                                <a href="#!" class="ubtn ubtn-blue">添加交易记录</a>
+                                 {% if quote["transaction"] %}
+                                <a href="/purchase/transaction?id={{quote['transaction']}}" class="ubtn ubtn-blue">交易记录</a>
+                                {% else %}
+                                <a href="/purchase/transactionedit?qid={{quote.id}}&pid={{ purchase.pid }}"  class="ubtn ubtn-blue">添加交易记录</a>
+                                {% end %}
                                 {% elif quote.state == 2 %}
                                 <span class="status-refuse">已拒绝</span>
                                 {% if quote.message %}<span class="reject">{{quote.message}}</span>{% end %}
                                 {% elif quote.state == 0 %}
                                 <span class="ubtn ubtn-green" data-quoteid="{{quote.id}}">不错，请供应商联系我</span>
                                 <span class="ubtn ubtn-pink" data-quoteid="{{quote.id}}">不合适，再看看</span>
-                                <a href="#!" class="ubtn ubtn-blue">添加交易记录</a>
+                                {% if quote["transaction"] %}
+                                <a href="/purchase/transaction?id={{quote['transaction']}}" class="ubtn ubtn-blue">交易记录</a>
+                                {% else %}
+                                <a href="/purchase/transactionedit?qid={{quote.id}}&pid={{ purchase.pid }}"  class="ubtn ubtn-blue">添加交易记录</a>
+                                {% end %}
                                 <!--<span class="ubtn ubtn-blue">聊一聊</span>-->
                                 {% end %}
                             </td>
