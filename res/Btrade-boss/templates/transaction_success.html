@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block container %}
+{% from  config import * %}
+    <div class="content-wrapper">
+        <section class="content">
+			<!-- 内容开始 start=========================================================== -->
+            <div class="result">
+                <div class="fa fa-check-circle"></div>
+                <div class="txt">
+                    {% if rtype=="add" %}
+                     <strong>添加成功！</strong>
+                    {% elif rtype=="edit" %}
+                    <strong>修改成功！</strong>
+                    {% elif rtype=="delete" %}
+                    <strong>删除成功！</strong>
+                    {% end %}
+                </div>
+                <div class="links">
+                    <a class="btn btn-primary" href="/purchase/transactionlist">返回</a>
+                </div>
+            </div>
+
+			<!-- 内容结束 end=========================================================== -->
+        </section>
+    </div>
+<link rel="stylesheet" href="{{ static_url('dist/css/supplier.css') }}">
+{% end %}

@@ -145,6 +145,9 @@ class PurchaseInfoHandler(BaseHandler):
                     quoteids.append(str(quote.id))
                     quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
                     quote["unit"] = purchaseinfo["unit"]
+                #判断是否有交易记录
+                transaction=self.db.query("select id,purchaseinfoid,quoteid from transaction where quoteid in(%s) and status=1"%",".join(quoteids))
+                transactionrmap=dict((i.quoteid, [i.id, i.purchaseinfoid]) for i in transaction)
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}
                 for quoteattachment in quoteattachments:
@@ -155,6 +158,10 @@ class PurchaseInfoHandler(BaseHandler):
                     else:
                         myquoteattachments[quoteattachment.quoteid] = [quoteattachment]
                 for mq in quotes:
+                    if transactionrmap.has_key(mq.id):
+                        mq["transaction"]=transactionrmap[mq.id][0]
+                    else:
+                        mq["transaction"] = None
                     if myquoteattachments.has_key(mq.id):
                         mq["attachments"] = myquoteattachments[mq.id]
                     else:

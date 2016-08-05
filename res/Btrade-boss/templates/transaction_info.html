@@ -15,36 +15,36 @@
                 <div class="cnt cntl">
                     <h3>采购商及采购要求</h3>
                     <div class="col">
-                        <span class="em">亳州市沪谯药业有限公司</span>
+                        <span class="em">{{ purchaseinfo.uname }}</span>
                         <span class="verify"><i class="fa fa-check-square"></i>身份真实</span>
-                        <span class="cat">饮片厂</span>
+                        <span class="cat">{{usertype[purchaseinfo.utype]}}</span>
                     </div>
                     <div class="col">
-                        <i class="fa fa-user"></i>魏红磊
+                        <i class="fa fa-user"></i>{{ purchaseinfo.unick }}
                         <br>
-                        <i class="fa fa-mobile"></i>18056805633
+                        <i class="fa fa-mobile"></i>{{ purchaseinfo.uphone }}
                     </div>
                     <div class="goods">
-                        <span class="em">蒲公英</span>
-                        <span>山</span>
-                        <span>甘肃</span>
-                        <span>5000公斤</span>
+                        <span class="em">{{ purchaseinfo.name }}</span>
+                        <span>{{ purchaseinfo.specification }}</span>
+                        <span>{{ purchaseinfo.origin }}</span>
+                        <span>{{ purchaseinfo.quantity }}{{purchaseinfo.unit}}</span>
                     </div>
                     <div class="group">
                         <div class="txt">质量要求：</div>
-                        <div class="cont">杂质少,干度好,无霉,2015版药典标准,无杂草，颜色好。包检测。</div>
+                        <div class="cont">{{ purchaseinfo.quality }}</div>
                     </div>
                     <div class="group">
                         <div class="txt">意向价格：</div>
-                        <div class="cont"><b class="red">34</b>元/公斤 封顶</div>
+                        <div class="cont"><b class="red">{{ purchaseinfo.price }}</b>元/{% if purchaseinfo.unit == u'吨' %}公斤{% else %}{{purchaseinfo.unit}}{% end %} 封顶</div>
                     </div>
                     <div class="group">
                         <div class="txt">合格品样例：</div>
                         <div class="cont">
                             <div class="thumb">
-                                <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/9dc1ad7d6166794a271ea0ffa4c2cf85.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/9dc1ad7d6166794a271ea0ffa4c2cf85_thumb.png">
-                                <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/cc2df20ee240238469022c6a020a43d5.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/cc2df20ee240238469022c6a020a43d5_thumb.png">
-                                <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/d0cf39f8eaa7db3c5de0a050fd77bf39.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/d0cf39f8eaa7db3c5de0a050fd77bf39_thumb.png">
+                                {% for attachment in purchaseinfo.attachments %}
+                                <img data-src="{{attachment.attachment}}" src="{{attachment.attachment.replace('_thumb','')}}">
+                                {% end %}
                             </div>
     
                         </div>
@@ -52,31 +52,51 @@
                     <div class="other">
                         <div class="group">
                             <div class="txt">交货地：</div>
-                            <div class="cont">湖北 武汉</div>
-                        </div>
-                        <div class="group">
-                            <div class="txt">发票要求：</div>
-                            <div class="cont">普通发票</div>
+                            <div class="cont">{{ purchaseinfo.position }}</div>
                         </div>
                         <div class="group">
                             <div class="txt">交易及付款：</div>
-                            <div class="cont">双方直接交易，验收合格后<b class="red">45</b>天付款</div>
+                            <div class="cont">
+                                {% if purchaseinfo.pay == 1%}
+                                药采购"安心交易"(预付全款)
+                                {% elif purchaseinfo.pay == 2%}
+                                双方直接交易，验证合格后<b class="red">{{purchaseinfo.payday}}天</b>内付款
+                                {% else %}
+                                {{purchaseinfo.payinfo}}
+                                {% end %}</div>
                         </div>
                         <div class="group">
                             <div class="txt">验证及包装：</div>
-                            <div class="cont">1、我公司对中药材的水分做严格的限度要求，经检测超出要求的，公司根据实际情况折扣处理。2、中药饮片需提供合格的检验报告书3、中药饮片必须双层包装严密，包装袋（箱）应干净、结实、无破损、封口严密，每袋配挂标准吊签，方便识别、储存、运输和使用。</div>
+                            <div class="cont">{{ purchaseinfo.accept }}</div>
                         </div>
                         <div class="group">
                             <div class="txt">寄样：</div>
-                            <div class="cont">要求报价后必须寄样<br>接收地址：湖北武汉<br>接收人：严飞 联系电话：13512365215 <br>寄样要求：每个品种取样200g，分袋装</div>
+                            <div class="cont">
+                                {% if purchaseinfo.send == 1 %}
+                                要求报价后必须寄样
+                                {% end %}
+                                {{ purchaseinfo.receive }}
+                            </div>
                         </div>
                         <div class="group">
                             <div class="txt">补充说明：</div>
-                            <div class="cont">无</div>
+                            <div class="cont">{{ purchaseinfo.other }}</div>
                         </div>
                         <div class="group">
                             <div class="txt">供应商要求：</div>
-                            <div class="cont">必须有营业执照</div>
+                            <div class="cont">
+                                {% if '1' in purchaseinfo.supplier.split("&") %}
+                                必须有营业执照（公司、合作社、经营户），不接收个人
+                                <br>
+                                {% end %}
+                                {% if '2' in purchaseinfo.supplier.split("&") %}
+                                具备GSP资质
+                                <br>
+                                {% end %}
+                                {% if '3' in purchaseinfo.supplier.split("&") %}
+                                具备GMP资质
+                                {% end %}
+                            </div>
                         </div>
                     </div>
                     <div class="expand">
@@ -86,24 +106,24 @@
                 <div class="cnt cntr">
                     <h3>供货商及报价</h3>
                     <div class="col">
-                        <span class="em">安徽芍香药业销售有限公司</span>
+                        <span class="em">{{ quotesinfo.name }}</span>
                         <span class="verify"><i class="fa fa-check-square"></i>身份真实</span>
-                        <span class="cat">药材经营公司</span>
+                        <span class="cat">{{usertype[quotesinfo.type]}}</span>
                     </div>
                     <div class="col">
-                        <i class="fa fa-user"></i>魏红磊
+                        <i class="fa fa-user"></i>{{ quotesinfo.nickname }}
                         <br>
-                        <i class="fa fa-mobile"></i>18056805633
+                        <i class="fa fa-mobile"></i>{{ quotesinfo.phone }}
                     </div>
                     <div class="price">
-                        <b class="red">75</b>元/公斤 <span class="gray">裸价</span>
-                        <p>若现款，可考虑低3块。由于量大，需要分两次发货。</p>
+                        <b class="red">{{quotesinfo.price}}</b>元/{% if quotesinfo.unit == u'吨' %}公斤{% else %}{{quotesinfo.unit}}{% end %}<span class="gray">裸价</span>
+                        <p>{{quotesinfo.explain}}</p>
                     </div>
                     <div class="group">
                         <div class="thumb">
-                            <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/9dc1ad7d6166794a271ea0ffa4c2cf85.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/9dc1ad7d6166794a271ea0ffa4c2cf85_thumb.png">
-                            <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/cc2df20ee240238469022c6a020a43d5.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/cc2df20ee240238469022c6a020a43d5_thumb.png">
-                            <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/d0cf39f8eaa7db3c5de0a050fd77bf39.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/d0cf39f8eaa7db3c5de0a050fd77bf39_thumb.png">
+                            {% for attachment in quotesinfo.attachments %}
+                            <img data-src="{{attachment.attachment}}" src="{{attachment.attachment.replace('_thumb','')}}">
+                            {% end %}
                         </div>
                         <div class="desc">
                             杂质少,干度好,无霉,2015版药典标准,无杂草，颜色好。包检测。
@@ -117,63 +137,72 @@
                 <div class="cnt cntl">
                     <div class="group">
                         <div class="txt">*成交数量</div>
-                        <div class="cont">10000公斤</div>
+                        <div class="cont">{{transaction['quantity']}}公斤</div>
                     </div>
                     <div class="group">
                         <div class="txt">*成交价格</div>
-                        <div class="cont">75元/公斤</div>
+                        <div class="cont">{{transaction['price']}}元/公斤</div>
                     </div>
                     <div class="group">
                         <div class="txt">总金额</div>
-                        <div class="cont">75万元</div>
+                        <div class="cont">{{transaction['total']}}万元</div>
                     </div>
                     <div class="group">
                         <div class="txt">送货日期</div>
-                        <div class="cont">2016-8-2</div>
+                        <div class="cont">{{transaction['delivertime']}}</div>
                     </div>
                     <div class="group">
                         <div class="txt">验收日期</div>
-                        <div class="cont">2016-8-2</div>
+                        <div class="cont">{{transaction['checktime']}}</div>
                     </div>
                     <div class="group">
                         <div class="txt">付款约定</div>
-                        <div class="cont">验收合格后45天内付款</div>
+                        <div class="cont">
+                            {% if transaction["pay"]==1 %}
+                            药材购“安心交易”（预付全款）
+                            {% elif transaction["pay"]==2 %}
+                            双方直接交易，验证合格后{{transaction["payday"]}}天内付款
+                            {% elif transaction["pay"]==3 %}
+                            {{transaction["payinfo"]}}
+                            {% end %}
+
+                        </div>
                     </div>
                 </div>
                 <div class="cnt cntr">
                     <div class="thumb">
-                        <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/9dc1ad7d6166794a271ea0ffa4c2cf85.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/9dc1ad7d6166794a271ea0ffa4c2cf85_thumb.png">
-                        <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/cc2df20ee240238469022c6a020a43d5.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/cc2df20ee240238469022c6a020a43d5_thumb.png">
-                        <img data-src="http://static.yaocai.pro/static/uploadfiles/20160702/d0cf39f8eaa7db3c5de0a050fd77bf39.png" src="http://static.yaocai.pro/static/uploadfiles/20160702/d0cf39f8eaa7db3c5de0a050fd77bf39_thumb.png">
+                            {% for attachment in transaction['attachments'] %}
+                            <img data-src="{{attachment.attachment}}" src="{{attachment.attachment.replace('_thumb','')}}">
+                            {% end %}
                     </div>
                     <div class="col">
                         <p>采购方 评价 供货方</p>
-                        <p class="star" data-score="5">
+                        <p class="star" data-score="{{transaction['score_to_supplier']}}">
                             <img src="../static/images/star-on.png">
                             <img src="../static/images/star-on.png">
                             <img src="../static/images/star-on.png">
                             <img src="../static/images/star-on.png">
                             <img src="../static/images/star-on.png">
                         </p>
-                        <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul" readonly>大货跟照片一致，严格按照要求交货，价格很有优势</textarea>
+                        <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul" readonly>{{transaction["purchasecomment"]}}</textarea>
                     </div>
                     <div class="col">
                         <p>供货方 评价 采购方</p>
-                        <p class="star" data-score="1">
+                        <p class="star" data-score="{{transaction['score_to_purchase']}}">
                             <img src="../static/images/star-on.png">
                             <img src="../static/images/star-off.png">
                             <img src="../static/images/star-off.png">
                             <img src="../static/images/star-off.png">
                             <img src="../static/images/star-off.png">
                         </p>
-                        <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul" readonly>态度很热情</textarea>
+                        <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul" readonly>{{transaction["suppliercomment"]}}</textarea>
                     </div>
                 </div>
             </div>
 
             <div  class="record-ft">
-                <a href="record_add.html?edit=1" class="ubtn ubtn-green">编辑</a>
-                <a href="record_add.html?remove=1" class="ubtn ubtn-pink" id="jdelete">删除</a>
+                <a href="/purchase/transactionedit?tid={{tid}}&pid={{pid}}&qid={{qid}}" class="ubtn ubtn-green">编辑</a>
+                <a href="/purchase/transactiondelete?id={{tid}}" class="ubtn ubtn-pink" id="jdelete">删除</a>
             </div>
         </section>
     </div>

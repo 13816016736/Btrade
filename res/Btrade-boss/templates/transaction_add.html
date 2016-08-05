@@ -137,6 +137,9 @@
             <div class="record">
                 <h2>交易记录</h2>
                 <form action="" id="myform">
+                    <input type="hidden" name="tid" value="{% if tid %}{{tid}} {% end %}">
+                    <input type="hidden" name="pid" value="{% if pid %}{{pid}} {% end %}">
+                    <input type="hidden" name="qid" value="{% if qid %}{{qid}} {% end %}">
                     <div class="cnt cntl">
                         <div class="group">
                             <div class="txt"><i>*</i>成交数量</div>
@@ -165,45 +168,61 @@
                         <div class="group">
                             <div class="txt">送货日期</div>
                             <div class="cont">
-                                <input type="text" class="yc-ipt date" id="date1" onclick="laydate()">
+                                <input type="text" name="delivertime" class="yc-ipt date" id="date1" value="{{transaction['delivertime']}}" onclick="laydate()">
                             </div>
                         </div>
                         <div class="group">
                             <div class="txt">验收日期</div>
                             <div class="cont">
-                                <input type="text" class="yc-ipt date" id="date2" onclick="laydate()">
+                                <input type="text" name="checktime"  class="yc-ipt date" id="date2" value="{{transaction['checktime']}}" onclick="laydate()">
                             </div>
                         </div>
                         <div class="group">
                             <div class="txt">付款约定</div>
                             <div class="cont" id="jPaytype">
-                                <label><input type="radio" name="paytype" value="1">药材购“安心交易”（预付全款）<i class="iconfont icon-question"></i></label>
-                                <label><input type="radio" name="paytype" value="2">双方直接交易，验证合格后<input class="yc-ipt day" type="text">天内付款</label>
-                                <label><input type="radio" name="paytype" value="3">其他 <input class="yc-ipt" type="text"></label>
+                                <label><input type="radio" name="paytype" value="1"{% if transaction["pay"]==1 %} checked {% end %} >药材购“安心交易”（预付全款）<i class="iconfont icon-question"></i></label>
+                                <label><input type="radio" name="paytype" value="2" {% if transaction["pay"]==2 %} checked {% end %} >双方直接交易，验证合格后<input class="yc-ipt day" name="payday" type="text" value="{{transaction["payday"]}}">天内付款</label>
+                                <label><input type="radio" name="paytype" value="3"{% if transaction["pay"]==3 %} checked {% end %}>其他 <input class="yc-ipt" name="payinfo" type="text" value="{{transaction["payinfo"]}}"></label>
                             </div>
                         </div>
                     </div>
                     <div class="cnt cntr">
                         {% raw xsrf_form_html() %}
                         <div class="goods-img">
-                            <span></span>
-                            <input type="hidden" name="pic1">
-                            <span></span>
-                            <input type="hidden" name="pic2">
-                            <span></span>
-                            <input type="hidden" name="pic3">
-                            <span></span>
-                            <input type="hidden" name="pic4">
+                            <span>
+                                {% if len(transaction['attachments'])>=1 %}
+                                <img src="{{transaction['attachments'][0].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic1" value="{% if len(transaction['attachments'])>=1 %}{{transaction['attachments'][0].attachment.replace('_thumb','')}}{% end %}">
+                            <span>
+                                {% if len(transaction['attachments'])>=2 %}
+                                <img src="{{transaction['attachments'][1].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic2" value="{% if len(transaction['attachments'])>=2 %}{{transaction['attachments'][1].attachment.replace('_thumb','')}}{% end %}">
+                            <span>
+                                {% if len(transaction['attachments'])>=3 %}
+                                <img src="{{transaction['attachments'][2].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic3" value="{% if len(transaction['attachments'])>=3 %}{{transaction['attachments'][2].attachment.replace('_thumb','')}}{% end %}">
+                            <span>
+                                {% if len(transaction['attachments'])>=4 %}
+                                <img src="{{transaction['attachments'][3].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic4" value="{% if len(transaction['attachments'])>=4 %}{{transaction['attachments'][3].attachment.replace('_thumb','')}}{% end %}">
                         </div>
                         <div class="col">
                             <p>采购方 评价 供货方</p>
-                            <p class="star"></p>
-                            <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul"></textarea>
+                            <p class="star1" id="star1"></p>
+                            <textarea name="purchasecomment" id="purchasecomment" cols="30" rows="10" class="yc-ipt yc-ipt-mul" >{{transaction["purchasecomment"]}}</textarea>
                         </div>
                         <div class="col">
                             <p>供货方 评价 采购方</p>
-                            <p class="star"></p>
-                            <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul"></textarea>
+                            <p class="star2" id="star2"></p>
+                            <textarea name="suppliercomment" id="suppliercomment" cols="30" rows="10" class="yc-ipt yc-ipt-mul" >{{transaction["suppliercomment"]}}</textarea>
                         </div>
                     </div>
                     <div class="ft tc">
@@ -222,13 +241,24 @@
     <script>
     $(function(){
         $.fn.raty.defaults.path = '{{static_url("images/")}}'; // 设置评分图标路径
-        $('.star').raty();
+
+        $('.star1').raty({
+            scoreName: 'star1',
+            score:'{{transaction["score_to_supplier"]}}',
+        });
+        $('.star2').raty({
+            scoreName: 'star2',
+            score:'{{transaction["score_to_purchase"]}}'
+        });
+
 
         var $imgWrap, cropModal;
 
         var croppicOptions = {
             uploadUrl:'/uploadimage',
+            cropUrl:'/cropimage',
             uploadData:{'_xsrf':$("input[name='_xsrf']").val()},
+            cropData:{'_xsrf':$("input[name='_xsrf']").val()},
             imgEyecandyOpacity: 0.5,
             loaderHtml:'<span class="loader">正在上传图片，请稍后...</span>',
             onBeforeImgUpload: function(){},
@@ -339,11 +369,10 @@
                 $sum.nextAll('.red').html('总金额');
                 pass = false;
             }
-
             if (pass) {
                 $.ajax({
-                    url: '',
-                    // type: 'POST',
+                    url: '/purchase/transactionedit',
+                    type: 'POST',
                     // dataType: 'json',
                     data: $('#myform').serialize(),
                     beforeSend: function(jqXHR, settings) {
@@ -351,7 +380,7 @@
                     },
                     success: function(data) {
                         if(data.status == 'success'){
-                            location.href = '';
+                              location.href="/purchase/transactionsuccess?rtype="+data.rtype;
                         }else{
                             layer.msg(data.message, {offset: 0});
                         }

@@ -24,93 +24,26 @@
                     </thead>
                     <tfoot></tfoot>
                     <tbody>
+                       {% for item in transactions %}
                         <tr>
-                            <td>1</td>
-                            <td><a href="/purchase/transaction">三七</a></td>
-                            <td>1000公斤</td>
-                            <td>220元/公斤</td>
-                            <td>2.2</td>
-                            <td>亳州市沪谯药业有限公司（马义可）</td>
-                            <td>千里药材行（严飞）</td>
-                            <td>2016-8-2</td>
+                            <td>{{item.id}}</td>
+                            <td><a href="/purchase/transaction?id={{item.id}}">{{item.varietyname}}{{item.specification}}</a></td>
+                            <td>{{item.quantity}}公斤</td>
+                            <td>{{item.price}}{{item.unity}}</td>
+                            <td>{{item.total}}</td>
+                            <td>{{item.purchasename}}（{{item.purchasenick}}）</td>
+                            <td>{{item.quotename}}（{{item.quotenick}}）</td>
+                            <td>{{item.createtime}}</td>
                             <td class="tc">
-                                <a href="/purchase/transactionedit">编辑</a>
-                                <a href="/purchase/transactiondelete" class="red jdel">删除</a>
+                                <a href="/purchase/transactionedit?tid={{item.id}}&pid={{item.purchaseinfoid}}&qid={{item.quoteid}}">编辑</a>
+                                <a href="/purchase/transactiondelete?id={{item.id}}" class="red jdel">删除</a>
                             </td>
                         </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>三七</td>
-                            <td>1000公斤</td>
-                            <td>220元/公斤</td>
-                            <td>2.2</td>
-                            <td>亳州市沪谯药业有限公司（马义可）</td>
-                            <td>千里药材行（严飞）</td>
-                            <td>2016-8-2</td>
-                            <td class="tc">
-                                <a href="#!">编辑</a>
-                                <a href="#!" class="red jdel">删除</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>三七</td>
-                            <td>1000公斤</td>
-                            <td>220元/公斤</td>
-                            <td>2.2</td>
-                            <td>亳州市沪谯药业有限公司（马义可）</td>
-                            <td>千里药材行（严飞）</td>
-                            <td>2016-8-2</td>
-                            <td class="tc">
-                                <a href="#!">编辑</a>
-                                <a href="#!" class="red jdel">删除</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>三七</td>
-                            <td>1000公斤</td>
-                            <td>220元/公斤</td>
-                            <td>2.2</td>
-                            <td>亳州市沪谯药业有限公司（马义可）</td>
-                            <td>千里药材行（严飞）</td>
-                            <td>2016-8-2</td>
-                            <td class="tc">
-                                <a href="#!">编辑</a>
-                                <a href="#!" class="red jdel">删除</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>三七</td>
-                            <td>1000公斤</td>
-                            <td>220元/公斤</td>
-                            <td>2.2</td>
-                            <td>亳州市沪谯药业有限公司（马义可）</td>
-                            <td>千里药材行（严飞）</td>
-                            <td>2016-8-2</td>
-                            <td class="tc">
-                                <a href="#!">编辑</a>
-                                <a href="#!" class="red jdel">删除</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>三七</td>
-                            <td>1000公斤</td>
-                            <td>220元/公斤</td>
-                            <td>2.2</td>
-                            <td>亳州市沪谯药业有限公司（马义可）</td>
-                            <td>千里药材行（严飞）</td>
-                            <td>2016-8-2</td>
-                            <td class="tc">
-                                <a href="#!">编辑</a>
-                                <a href="#!" class="red jdel">删除</a>
-                            </td>
-                        </tr>
+                    {% end %}
                     </tbody>
                 </table>
             </div>
+            {% module PageNav(nav=nav, show=True) %}
         </section>
     </div>
 {% end %}
