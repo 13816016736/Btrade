@@ -9,7 +9,7 @@ from utils import *
 from PIL import Image
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-
+import logging
 
 class TransactionHandler(BaseHandler):
     @tornado.web.authenticated
@@ -338,9 +338,11 @@ class CropImageHandler(BaseHandler):
     def post(self):
         # 获取文件
         imgUrl =self.get_argument("imgUrl")
-
+        logging.info(imgUrl)
         rpath=config.img_path
         img_path=rpath[0:rpath.find("static")]+imgUrl[imgUrl.find("static/"):]
+        logging.info(img_path)
+
         #data_stream = cStringIO.StringIO()
         #data_stream.write(imgData)
         source_image = Image.open(img_path)
