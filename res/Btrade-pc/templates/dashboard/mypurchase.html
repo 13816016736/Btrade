@@ -255,7 +255,7 @@ $jModalDelete.on('click', '.btn', function() {
                 //isDel = true;
                 //$jModalDelete.modal('hide');
             }else{
-                alert("提交失败，请刷新页面重试");
+                alert(data.message);
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
