@@ -119,12 +119,13 @@ class PurchaseHandler(BaseHandler):
                 # 为采购商积分：
                 self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
                 try:
-                    purchaseinfo=self.db.query("select id from purchase_info where purchaseid=%s",purchaseid)
+                    purchaseinfo=self.db.query("select id,status from purchase_info where purchaseid=%s",purchaseid)
                     for item in purchaseinfo:
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
-                        task_generate.apply_async(args=[task])
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
-                        task_generate.apply_async(args=[task])
+                        if item["status"]!=0:
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
+                            task_generate.apply_async(args=[task])
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
+                            task_generate.apply_async(args=[task])
                 except Exception,ex:
                      self.log.info("purchaseinfo task_generate error %s",str(ex))
 
@@ -632,12 +633,13 @@ class MyPurchaseUpdateHandler(BaseHandler):
                 # 为采购商积分：
                 self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
                 try:
-                    purchaseinfo=self.db.query("select id from purchase_info where purchaseid=%s",id)
+                    purchaseinfo=self.db.query("select id,status from purchase_info where purchaseid=%s",id)
                     for item in purchaseinfo:
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
-                        task_generate.apply_async(args=[task])
-                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
-                        task_generate.apply_async(args=[task])
+                        if item["status"]!=0:
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
+                            task_generate.apply_async(args=[task])
+                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
+                            task_generate.apply_async(args=[task])
                 except Exception,ex:
                      self.log.info("purchaseinfo task_generate error %s",str(ex))
                 self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':id})

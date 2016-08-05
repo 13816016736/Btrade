@@ -123,7 +123,9 @@
         </div>
 
         <div class="similarity">
+            {% if purchase.status != 0%}
             <a class="icons icons-edit" href="/mypurchase/update/{{purchase.id}}" title="编辑"></a>
+            {% end %}
             <a class="icons icons-share" href="#" title="分享"></a>
             <a class="pull-left" href="#">该批次采购的还有其他{{ others }}个品种</a>
         </div>
