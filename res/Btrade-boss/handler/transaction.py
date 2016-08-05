@@ -254,7 +254,7 @@ class TransactionEditHandler(BaseHandler):
             url=self.get_argument("pic%s"%i, None)
             if url!="":
                 rpath = config.img_path
-                img_path = rpath[0:rpath.find("static")] + url[url.find("static"):]#服务器绝对路径
+                img_path = rpath[0:rpath.find("static/")] + url[url.find("static"):]#服务器绝对路径
                 piclist.append(img_path)
         if tid!="":
             transaction=self.db.get("select * from transaction where id=%s",tid)
@@ -314,7 +314,7 @@ class UploadImageHandler(BaseHandler):
         upload_path = os.path.join(root_path, now)
         if os.path.exists(upload_path) is False:
             os.mkdir(upload_path)
-        name = str(int(time.time())) + str(self.session.get("userid"))
+        name = str(int(time.time())) + str(self.session.get("userid"))+"boss"
         ext = ".png"
         filename = md5(str(name)) + ext
         filepath = os.path.join(upload_path, filename)
@@ -390,7 +390,7 @@ class CropImageHandler(BaseHandler):
         upload_path = os.path.join(root_path, now)
         if os.path.exists(upload_path) is False:
             os.mkdir(upload_path)
-        name = str(int(time.time())) + str(self.session.get("userid"))
+        name = str(int(time.time())) + str(self.session.get("userid"))+"boss"
         ext = ".png"
         filename = md5(str(name)) + ext
         filepath = os.path.join(upload_path, filename)
