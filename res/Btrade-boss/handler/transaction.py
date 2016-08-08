@@ -328,7 +328,7 @@ class UploadImageHandler(BaseHandler):
                 width, height = img.size
                 self.api_response({'status': 'success', 'message': '上传成功', 'url': img_url,"width":width,"height":height})
             except IOError:
-                print ' in  IOError'
+                #print ' in  IOError'
                 self.api_response({'status':'error','message':'上传失败'})
 
 
