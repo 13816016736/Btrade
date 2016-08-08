@@ -45,7 +45,7 @@ def sendPush(rdd):
                         sendstatus = 0  # 0,未发送，1:发送成功,2:失败
                         colleciton = mongodb.transform_rate
                         createtime = int(time.time())
-                        push_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"order":count,"quote":"","type":channel,"createtime":createtime})
+                        push_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"varietyname":purchaseinfo["variety"],"order":count,"quote":"","type":channel,"createtime":createtime})
                         for send in sendlist:
                             uuid = md5(str(time.time())+ str(send))[8:-8]
                             sendid = send
@@ -57,7 +57,7 @@ def sendPush(rdd):
                         colleciton = mongodb.push_record
                         colleciton.insert_many(push_user_infos)
                         if channel==1:
-                            #print sendlist, purchaseinfo, uuidmap
+                            print sendlist, purchaseinfo, uuidmap
                             #pushPurchase(sendlist, purchaseinfo, uuidmap)
                             thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
                         else:
@@ -75,21 +75,35 @@ def sendPush(rdd):
                             purchaseinfo = sqldb.get("select pi.name,pi.purchaseid,pi.unit,q.price from quote q left join  purchase_info pi on q.purchaseinfoid=pi.id where q.id=%s",qid)
                             if channel==1:
                                 if sendid!="":
+                                    uuid = md5(str(time.time()) + str(sendid))[8:-8]
+                                    createtime = int(time.time())
+                                    push_user = {"pushid": "", "uuid": uuid, "createtime": createtime, "click": 0,
+                                                 "sendid": sendid, "sendstatus": 0, "type": channel}
+                                    colleciton = mongodb.push_record
+                                    record_id=colleciton.insert(push_user)
+
                                     colleciton = mongodb.notify_record
-                                    notify_user = {"createtime": int(time.time()), "sendid": sendid, "type": channel,"purchaseinfoid":purchaseinfoid}
+                                    notify_user = {"createtime": int(time.time()), "sendid": sendid, "type": channel,"purchaseinfoid":purchaseinfoid,"recordid":record_id}
                                     colleciton.insert(notify_user)
                                     #print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8"),str(purchaseinfo["purchaseid"])
                                     #reply_quote_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid))
-                                    thread.start_new_thread(reply_quote_notify,(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid)))
+                                    thread.start_new_thread(reply_quote_notify,(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),uuid))
 
                             elif channel==2:
                                 if sendid!="":
+                                    uuid = md5(str(time.time()) + str(sendid))[8:-8]
+                                    createtime = int(time.time())
+                                    push_user = {"pushid": "", "uuid": uuid, "createtime": createtime, "click": 0,
+                                                 "sendid": sendid, "sendstatus": 0, "type": channel}
+                                    colleciton = mongodb.push_record
+                                    record_id = colleciton.insert(push_user)
+
                                     colleciton = mongodb.notify_record
-                                    notify_user = {"createtime": int(time.time()), "sendid": sendid, "type": channel,"purchaseinfoid":purchaseinfoid}
+                                    notify_user = {"createtime": int(time.time()), "sendid": sendid, "type": channel,"purchaseinfoid":purchaseinfoid,"recordid":record_id}
                                     colleciton.insert(notify_user)
                                     #print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8"),str(purchaseinfo["purchaseid"])
                                     #reply_wx_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]))
-                                    thread.start_new_thread(reply_wx_notify, (sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"])))
+                                    thread.start_new_thread(reply_wx_notify, (sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]),uuid))
                                     pass
 
 

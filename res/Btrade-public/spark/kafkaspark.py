@@ -66,7 +66,7 @@ def filterMethod(item):
 
 def filterClick(item):
     uuid=item["uuid"]
-    if item["messagetype"] == 1 and item["url"].find("/purchase/purchaseinfo/") == 0 and item["url"].find("?uuid="+uuid)!=-1 :
+    if item["messagetype"] == 1 and (item["url"].find("/purchase/purchaseinfo/") == 0 or item["url"].find("/replydetail") == 0 ) and item["url"].find("uuid="+uuid)!=-1 :
         return True
     else:
         return False
