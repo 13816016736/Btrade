@@ -206,7 +206,7 @@ $(document).ready(function(){
             }
 		},
 	})
-	.on('success.form.bv', function(e) {
+	.on('submit', function(e) {
          e.preventDefault();
          var $form = $(e.target);
          var bv = $form.data('bootstrapValidator');

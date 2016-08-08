@@ -29,7 +29,7 @@
 </div>
 <script>
 $(document).ready(function(){
-    $('#userinfo').on('success.form', function(e) {
+    $('#userinfo').on('submit', function(e) {
          e.preventDefault();
          var $form = $(e.target);
          x=$(this).serializeArray();
@@ -42,7 +42,6 @@ $(document).ready(function(){
                  jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
              },
             success: function(data) {
-                alert(data.status);
                 if(data.status == "success"){
                    location.href='/users/adminlist';
                 }else{
