@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block container %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>会员管理</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-md-10">
+                <form id="userinfo" method="post" action="/admin/userinfo" novalidate="novalidate">
+                    <input type="hidden" name="id" value="{% if id %}{{id}} {% end %}">
+                    {% raw xsrf_form_html() %}
+                    <div class="form-group has-feedback">
+                        <label for="username">会员名（必填）</label>
+                        <input type="text" class="form-control" name="username" id="username" data-bv-field="username" value="{% if user %}{{user.username}}{% end %}">
+                    </div>
+                    {% if id==None %}
+                    <div class="form-group">
+                        <label for="pwd">密码</label>
+                        <input type="text" class="form-control" name="pwd" id="pwd" data-bv-field="phone" value="">
+                    </div>
+                    {% end %}
+                    <button type="submit" class="btn btn-primary btn-query" id="validateBtn" >提交</button>
+                    <button type="reset" class="btn btn-default" id="resetBtn" onclick="javascript:history.back(-1);">返回</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+$(document).ready(function(){
+    $('#userinfo').on('success.form', function(e) {
+         e.preventDefault();
+         var $form = $(e.target);
+         x=$(this).serializeArray();
+         $.ajax({
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            type: 'POST',
+            beforeSend: function(jqXHR, settings) {
+                 jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+             },
+            success: function(data) {
+                alert(data.status);
+                if(data.status == "success"){
+                   location.href='/users/adminlist';
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+
+         });
+
+    });
+
+})
+</script>
+{% end %}

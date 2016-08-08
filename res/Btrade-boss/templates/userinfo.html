@@ -19,6 +19,7 @@
         <div class="row">
             <div class="col-md-10">
                 <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
+                    {% raw xsrf_form_html() %}
                     <div class="form-group has-feedback">
                         <label>会员ID</label>
                         <input type="text" class="form-control" name="userid" data-bv-field="userid" value="{{user.id}}" readonly>

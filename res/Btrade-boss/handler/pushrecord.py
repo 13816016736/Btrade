@@ -26,8 +26,8 @@ class PushRecordHandler(BaseHandler):
         skip_num=page * config.conf['POST_NUM']
         num=0
         if starttime != "" and endtime != "":
-            start_time = int(time.mktime(datetime.strptime(str(starttime), "%Y-%m-%d %H:%M").timetuple()))
-            end_time = int(time.mktime(datetime.strptime(str(endtime), "%Y-%m-%d %H:%M").timetuple()))
+            start_time = int(time.mktime(datetime.strptime(str(starttime), "%Y-%m-%d %H:%M:%S").timetuple()))
+            end_time = int(time.mktime(datetime.strptime(str(endtime), "%Y-%m-%d %H:%M:%S").timetuple()))
         condition={}
         if start_time != 0 and end_time != 0:
             condition["createtime"]={"$gt":int(start_time),"$lt":int(end_time)}
@@ -56,7 +56,7 @@ class PushRecordHandler(BaseHandler):
                     item["clickcount"] = mongodb.push_record.find({"pushid": item["_id"], "click": {'$gt': 0}}).count()
                 else:
                     item["clickcount"] =0
-                timeArray = time.localtime(item["createtime"])
+                timeArray = time.localtime(float(item["createtime"]))
                 item["time"] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
                 record={"purchaseinfoid":purchaseinfoid,"order":item["order"],"varietyname":item["varietyname"],
                         "quotetime": item["quotetime"],"type":item["type"],"pushcount":item["pushcount"],"clickcount":item["clickcount"],
@@ -76,7 +76,7 @@ class PushRecordHandler(BaseHandler):
                 push_count = mongodb.push_record.find({"pushid": item["_id"]}).count()
                 item["pushcount"] = push_count
                 item["type"] = monitor_type[str(item["type"])]
-                timeArray = time.localtime(item["createtime"])
+                timeArray = time.localtime(float(item["createtime"]))
                 item["time"] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
                 record = {"purchaseinfoid": purchaseinfoid, "varietyname": item["varietyname"],
                           "type": item["type"], "pushcount": item["pushcount"],"time": item["time"], "id": item["_id"]
@@ -130,7 +130,7 @@ class RecordDetailHandler(BaseHandler):
                    item["clickcount"] = mongodb.push_record.find({"pushid": item["_id"], "click": {'$gt': 0}}).count()
                else:
                    item["clickcount"] = 0
-               timeArray = time.localtime(item["createtime"])
+               timeArray = time.localtime(float(item["createtime"]))
                item["time"] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
                record = {"purchaseinfoid": purchaseinfoid, "order": item["order"], "varietyname": item["varietyname"],
                          "quotetime": item["quotetime"], "type": item["type"], "pushcount": item["pushcount"],
@@ -153,7 +153,7 @@ class RecordDetailHandler(BaseHandler):
                    reject=0
                    phone=""
                    login=0
-                   timeArray = time.localtime(pushrecord["createtime"])
+                   timeArray = time.localtime(float(pushrecord["createtime"]))
                    item["createtime"] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
                    if pushrecord["click"]!=0:
                        click=1

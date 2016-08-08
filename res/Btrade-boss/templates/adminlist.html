@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block container %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>后台会员管理</h1>
+    </section>
+    <section class="filter">
+        <form>
+            <div class="item">
+                <input class="yc-ipt" id="query" name="query" placeholder="会员名" type="text" value="{% if query %}{{query}}{% end %}">
+                <button type="button" id="queryb" class="ubtn ubtn-green">查询</button>
+                <button type="reset" class="ubtn ubtn-blue">清空</button>
+            </div>
+        </form>
+    </section>
+    <section class="content">
+        <div class="action-add">
+            <button type="submit" id="add" class="btn btn-default" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i> 添加会员</button>
+        </div>
+        <div class="mychart mychart-bg">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>会员名</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                        <th width="100" class="tc">操作</th>
+                    </tr>
+                </thead>
+                <tfoot></tfoot>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{user.id}}</td>
+                        <td>{{user.username}}</td>
+                        <td>
+                            {% if user.status == 0 %}
+                            禁用
+                            {% else %}
+                            正常
+                            {% end %}
+                        </td>
+                        <td>{{ user.createtime}}</td>
+                        <td class="tc">
+                            <!--<a class="btn btn-link" href="/users/userinfo/{{user.id}}" role="button">查看</a>-->
+                            <a href="/admin/userinfo?id={{user.id}}" role="button">编辑</a>
+                            {% if user.status == 0 %}
+                            <a class="red jrecover" href="/admin/update?id={{user.id}}&status=1">解禁</a>
+                            {% else %}
+                            <a class="red jremove" href="/admin/update?id={{user.id}}&status=0">禁用</a>
+                            {% end %}
+                        </td>
+                    </tr>
+                    {% end %}
+                </tbody>
+            </table>
+        </div>
+
+        {% module PageNav(nav=nav, show=True) %}
+    </section>
+</div>
+<script src="{{ static_url('plugins/layer/layer.js') }}"></script>
+<script>
+$(function(){
+    // 解禁
+    $('body').on('click', '.jrecover', function() {
+        var url = $(this).attr('href');
+        layer.confirm('确认要解禁当前用户吗？', {icon: 3, title:'解禁'}, function(index) {
+            location.href = url;
+        })
+        return false;
+    })
+    // 禁用
+    $('body').on('click', '.jremove', function() {
+        var url = $(this).attr('href');
+        layer.confirm('确认要禁用当前用户吗？', {icon: 3, title:'禁用'}, function(index) {
+            location.href = url;
+        })
+        return false;
+    })
+    $("#queryb").click(function(){
+        var query = $("#query").val();
+        location.href =encodeURI("/users/adminlist?query="+query);
+    });
+
+     $("#add").click(function(){
+        location.href =encodeURI("/admin/userinfo");
+    });
+})
+</script>
+{% end %}

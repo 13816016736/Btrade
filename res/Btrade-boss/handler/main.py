@@ -100,3 +100,64 @@ class UpdateQuoteStateHandler(BaseHandler):
             self.api_response({'status':'success','message':'操作成功'})
         else:
             self.api_response({'status':'fail','message':'请选择要标注的报价'})
+
+
+
+class AdminListHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        query = self.get_argument("query", None)
+        page=self.get_argument("page",0)
+        condition = ""
+        if query:
+            condition = " where username ='%s'" % query
+        page = (int(page) - 1) if page > 0 else 0
+        nav = {
+            'model': 'users/adminlist',
+            'cur': page + 1,
+            'num': self.db.execute_rowcount("SELECT * FROM admin" + condition),
+            'style':0,
+            'query': "query=%s" % query if query else "",
+        }
+        users = self.db.query("SELECT * FROM admin" + condition + " LIMIT %s,%s", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        for item in users:
+            timeArray = time.localtime(float(item["createtime"]))
+            item["createtime"] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+        self.render("adminlist.html", users=users, nav=nav, query=query)
+    def post(self):
+        pass
+
+class UpdateAdminStatusHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        id=self.get_argument("id",-1)
+        status=self.get_argument("status",1)
+        self.db.execute("update admin set status=%s where id = %s", status,id)
+        self.redirect('/users/adminlist')
+class AdminUserHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        id=self.get_argument("id",None)
+        user=None
+        if id:
+            user=self.db.get("select * from admin where id=%s",id)
+        self.render("adminuser.html",id=id,user=user)
+        pass
+
+    @tornado.web.authenticated
+    def post(self):
+        username=self.get_argument("username",None)
+        pwd=self.get_argument("pwd",None)
+        id=self.get_argument("id",None)
+        if username==None or username=="":
+            self.api_response({'status': 'fail', 'message': '添加失败', 'data': '缺少参数'})
+        else:
+            if id:
+                self.db.execute("update admin set username=%s where id=%s",username,id)
+                self.api_response({'status': 'success', 'message': '修改成功', 'data': {'username': username}})
+            else:
+                if pwd=="":
+                    pwd="123456"
+                self.db.execute("insert into admin (username,password,createtime) value(%s,%s,%s)",username,md5(str(pwd + config.salt)),int(time.time()))
+                self.api_response({'status': 'success', 'message': '添加成功', 'data': {'username': username}})
+
