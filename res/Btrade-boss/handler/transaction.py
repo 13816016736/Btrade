@@ -338,10 +338,10 @@ class CropImageHandler(BaseHandler):
     def post(self):
         # 获取文件
         imgUrl =self.get_argument("imgUrl")
-        logging.info(imgUrl)
+        #logging.info(imgUrl)
         rpath=config.img_path
         img_path=rpath[0:rpath.find("static")]+imgUrl[imgUrl.find("static/"):]
-        logging.info(img_path)
+        #logging.info(img_path)
 
         #data_stream = cStringIO.StringIO()
         #data_stream.write(imgData)

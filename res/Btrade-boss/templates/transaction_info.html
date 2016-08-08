@@ -178,22 +178,24 @@
                     <div class="col">
                         <p>采购方 评价 供货方</p>
                         <p class="star" data-score="{{transaction['score_to_supplier']}}">
-                            <img src="../static/images/star-on.png">
-                            <img src="../static/images/star-on.png">
-                            <img src="../static/images/star-on.png">
-                            <img src="../static/images/star-on.png">
-                            <img src="../static/images/star-on.png">
+                            {% for i in range(0,transaction['score_to_supplier']) %}
+                            <img src="{{static_url('images/star-on.png')}}">
+                            {% end %}
+                            {% for i in range(0,5-int(transaction['score_to_supplier']))%}
+                            <img src="{{static_url('images/star-off.png')}}">
+                            {% end %}
                         </p>
                         <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul" readonly>{{transaction["purchasecomment"]}}</textarea>
                     </div>
                     <div class="col">
                         <p>供货方 评价 采购方</p>
                         <p class="star" data-score="{{transaction['score_to_purchase']}}">
-                            <img src="../static/images/star-on.png">
-                            <img src="../static/images/star-off.png">
-                            <img src="../static/images/star-off.png">
-                            <img src="../static/images/star-off.png">
-                            <img src="../static/images/star-off.png">
+                            {% for i in range(0,transaction['score_to_purchase']) %}
+                            <img src="{{static_url('images/star-on.png')}}">
+                            {% end %}
+                            {% for i in range(0,5-int(transaction['score_to_purchase']))%}
+                            <img src="{{static_url('images/star-off.png')}}">
+                            {% end %}
                         </p>
                         <textarea name="" id="" cols="30" rows="10" class="yc-ipt yc-ipt-mul" readonly>{{transaction["suppliercomment"]}}</textarea>
                     </div>
@@ -206,9 +208,9 @@
             </div>
         </section>
     </div>
-    <script src="static_url(js/croppic.min.js)"></script>
-    <script src="static_url(js/lightbox.js)"></script>
-    <script src="static_url(plugins/layer/layer.js)"></script>
+    <script src="{{static_url('js/croppic.min.js')}}"></script>
+    <script src="{{static_url('js/lightbox.js')}}"></script>
+    <script src="{{static_url('plugins/layer/layer.js')}}"></script>
     <script>
     $(function(){  
         // 查看其他交收要求
