@@ -228,7 +228,7 @@ class TransactionEditHandler(BaseHandler):
         sum = self.get_argument("sum", None)
         delivertime=self.get_argument("delivertime", None)
         checktime=self.get_argument("checktime", None)
-        paytype=self.get_argument("paytype", None)
+        paytype=self.get_argument("paytype", 0)
         payday=self.get_argument("payday", "")
         if payday!="":
             payday=int(payday)
