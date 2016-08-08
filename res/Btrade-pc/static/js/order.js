@@ -257,7 +257,7 @@ $table.on('click', '.del-pic', function() {
 });
 
 // 确认删除行？
-$table.on('click', '.del', function() {
+$table.on('click', '.del-tr', function() {
 	$(this).closest('tr').addClass('tr-remove');
 	$('#jModalDelete').modal();
 });
@@ -599,14 +599,21 @@ function checkForm() {
 		purchases: {}
 	};
 	//验证用户注册数据
-	if(!checkIpt() && $username.length != 0)
+	if($username.length === 1 && !checkIpt()) {
 		return result;
-	result.pass = true;
+	}
+
 	var $tr = $('#jInventory tbody tr');
 	var $address = $('#address');
 	var $addressError = $('#jAddressError');
 	var hasFocus = false;
 
+	if ($tr.length === 0) {
+		alert('请填写采购药材清单');
+		return result;
+	}
+
+	result.pass = true;
 	result.username = $username.val();
     result.phone = $mobile.val();
     result.smscode = $code.val();
