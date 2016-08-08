@@ -344,7 +344,7 @@ class UploadFileHandler(BaseHandler):
                 self.session.save()
                 thumbfile = config.img_domain+filepath[filepath.find("static"):].replace(base, base+"_thumb")
                 self.finish(json.dumps({'status':'success','message':'上传成功','path':thumbfile}))
-                print self.session["uploadfiles"]
+                #print self.session["uploadfiles"]
                 return
         self.finish({'status':'fail','message':'上传失败'})
 
@@ -484,7 +484,7 @@ class RemovePurchaseHandler(BaseHandler):
                          self.db.execute("UPDATE purchase_info SET status = 0 WHERE  id = %s",
                                          self.get_argument("pid"))
                          notclose=self.db.query("select * from purchase_info where purchaseid = %s and status=1",purchase[0].purchaseid)
-                         print notclose
+                         #print notclose
                          if len(notclose)==0:
                              self.db.execute("UPDATE purchase SET status = 0 WHERE userid = %s and id = %s",
                                              self.session.get("userid"), purchase[0].purchaseid)

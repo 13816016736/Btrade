@@ -1,0 +1,398 @@
+{% extends "base.html" %}
+{% block container %}
+{% from  config import * %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>交易记录</h1>
+        </section>
+        
+        <section class="content">
+            <div class="site-map">
+                <a href="/purchase/purchaselist">&lt; 返回我的采购单详情</a>
+            </div>
+
+            <div class="record">
+                <div class="cnt cntl">
+                    <h3>采购商及采购要求</h3>
+                    <div class="col">
+                        <span class="em">{{ purchaseinfo.uname }}</span>
+                        <span class="verify"><i class="fa fa-check-square"></i>身份真实</span>
+                        <span class="cat">{{usertype[purchaseinfo.utype]}}</span>
+                    </div>
+                    <div class="col">
+                        <i class="fa fa-user"></i>{{ purchaseinfo.unick }}
+                        <br>
+                        <i class="fa fa-mobile"></i>{{ purchaseinfo.uphone }}
+                    </div>
+                    <div class="goods">
+                        <span class="em">{{ purchaseinfo.name }}</span>
+                        <span>{{ purchaseinfo.specification }}</span>
+                        <span>{{ purchaseinfo.origin }}</span>
+                        <span>{{ purchaseinfo.quantity }}{{purchaseinfo.unit}}</span>
+                    </div>
+                    <div class="group">
+                        <div class="txt">质量要求</div>
+                        <div class="cont">{{ purchaseinfo.quality }}</div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">意向价格：</div>
+                        <div class="cont"><b class="red">{{ purchaseinfo.price }}</b>元/{% if purchaseinfo.unit == u'吨' %}公斤{% else %}{{purchaseinfo.unit}}{% end %} 封顶</div>
+                    </div>
+                    <div class="group">
+                        <div class="txt">合格品样例：</div>
+                        <div class="cont">
+                            <div class="thumb">
+                                {% for attachment in purchaseinfo.attachments %}
+                                <img data-src="{{attachment.attachment}}" src="{{attachment.attachment.replace('_thumb','')}}">
+                                {% end %}
+                            </div>
+    
+                        </div>
+                    </div>
+                    <div class="other">
+                        <div class="group">
+                            <div class="txt">交货地：</div>
+                            <div class="cont">{{ purchaseinfo.position }}</div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">交易及付款：</div>
+                            <div class="cont">
+                                {% if purchaseinfo.pay == 1%}
+                                药采购"安心交易"(预付全款)
+                                {% elif purchaseinfo.pay == 2%}
+                                双方直接交易，验证合格后<b class="red">{{purchaseinfo.payday}}天</b>内付款
+                                {% else %}
+                                {{purchaseinfo.payinfo}}
+                                {% end %}
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">验证及包装：</div>
+                            <div class="cont">{{ purchaseinfo.accept }}</div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">寄样：</div>
+                            <div class="cont">
+                                {% if purchaseinfo.send == 1 %}
+                                要求报价后必须寄样
+                                {% end %}
+                                {{ purchaseinfo.receive }}
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">补充说明：</div>
+                            <div class="cont">{{ purchaseinfo.other }}</div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">供应商要求：</div>
+                            <div class="cont">
+                                {% if '1' in purchaseinfo.supplier.split("&") %}
+                                必须有营业执照（公司、合作社、经营户），不接收个人
+                                <br>
+                                {% end %}
+                                {% if '2' in purchaseinfo.supplier.split("&") %}
+                                具备GSP资质
+                                <br>
+                                {% end %}
+                                {% if '3' in purchaseinfo.supplier.split("&") %}
+                                具备GMP资质
+                                {% end %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expand">
+                        <span>查看其他交收要求 <i class="fa fa-angle-down"></i></span>
+                    </div>
+                </div>
+                <div class="cnt cntr">
+                    <h3>供货商及报价</h3>
+                    <div class="col">
+                        <span class="em">{{ quotesinfo.name }}</span>
+                        <span class="verify"><i class="fa fa-check-square"></i>身份真实</span>
+                        <span class="cat">{{usertype[quotesinfo.type]}}</span>
+                    </div>
+                    <div class="col">
+                        <i class="fa fa-user"></i>{{ quotesinfo.nickname }}
+                        <br>
+                        <i class="fa fa-mobile"></i>{{ quotesinfo.phone }}
+                    </div>
+                    <div class="price">
+                        <b class="red">{{quotesinfo.price}}</b>元/{% if quotesinfo.unit == u'吨' %}公斤{% else %}{{quotesinfo.unit}}{% end %} <span class="gray">裸价</span>
+                        <p>{{quotesinfo.explain}}</p>
+                    </div>
+                    <div class="group">
+                        <div class="thumb">
+                            {% for attachment in quotesinfo.attachments %}
+                            <img data-src="{{attachment.attachment}}" src="{{attachment.attachment.replace('_thumb','')}}">
+                            {% end %}
+
+                        </div>
+                        <div class="desc">
+                            {{quotesinfo.quality}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="record">
+                <h2>交易记录</h2>
+                <form action="" id="myform">
+                    <input type="hidden" name="tid" value="{% if tid %}{{tid}} {% end %}">
+                    <input type="hidden" name="pid" value="{% if pid %}{{pid}} {% end %}">
+                    <input type="hidden" name="qid" value="{% if qid %}{{qid}} {% end %}">
+                    <div class="cnt cntl">
+                        <div class="group">
+                            <div class="txt"><i>*</i>成交数量</div>
+                            <div class="cont">
+                                <input type="text" class="yc-ipt jdecimals" name="amount" value="{{transaction['quantity']}}">
+                                <span>公斤</span>
+                                <span class="red"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt"><i class="red">*</i>成交价格</div>
+                            <div class="cont">
+                                <input type="text" class="yc-ipt jdecimals" name="price" value="{{transaction['price']}}">
+                                <span>元/公斤</span>
+                                <span class="red"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt"><i class="red">*</i>总金额</div>
+                            <div class="cont">
+                                <input type="text" class="yc-ipt jdecimals" name="sum" value="{{transaction['total']}}">
+                                <span>万元</span>
+                                <span class="red"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">送货日期</div>
+                            <div class="cont">
+                                <input type="text" name="delivertime" class="yc-ipt date" id="date1" value="{{transaction['delivertime']}}" onclick="laydate()">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">验收日期</div>
+                            <div class="cont">
+                                <input type="text" name="checktime"  class="yc-ipt date" id="date2" value="{{transaction['checktime']}}" onclick="laydate()">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="txt">付款约定</div>
+                            <div class="cont" id="jPaytype">
+                                <label><input type="radio" name="paytype" value="1"{% if transaction["pay"]==1 %} checked {% end %} >药材购“安心交易”（预付全款）<i class="iconfont icon-question"></i></label>
+                                <label><input type="radio" name="paytype" value="2" {% if transaction["pay"]==2 %} checked {% end %} >双方直接交易，验证合格后<input class="yc-ipt day" name="payday" type="text" value="{{transaction["payday"]}}">天内付款</label>
+                                <label><input type="radio" name="paytype" value="3"{% if transaction["pay"]==3 %} checked {% end %}>其他 <input class="yc-ipt" name="payinfo" type="text" value="{{transaction["payinfo"]}}"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cnt cntr">
+                        {% raw xsrf_form_html() %}
+                        <div class="goods-img">
+                            <span>
+                                {% if len(transaction['attachments'])>=1 %}
+                                <img src="{{transaction['attachments'][0].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic1" value="{% if len(transaction['attachments'])>=1 %}{{transaction['attachments'][0].attachment.replace('_thumb','')}}{% end %}">
+                            <span>
+                                {% if len(transaction['attachments'])>=2 %}
+                                <img src="{{transaction['attachments'][1].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic2" value="{% if len(transaction['attachments'])>=2 %}{{transaction['attachments'][1].attachment.replace('_thumb','')}}{% end %}">
+                            <span>
+                                {% if len(transaction['attachments'])>=3 %}
+                                <img src="{{transaction['attachments'][2].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic3" value="{% if len(transaction['attachments'])>=3 %}{{transaction['attachments'][2].attachment.replace('_thumb','')}}{% end %}">
+                            <span>
+                                {% if len(transaction['attachments'])>=4 %}
+                                <img src="{{transaction['attachments'][3].attachment}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" name="pic4" value="{% if len(transaction['attachments'])>=4 %}{{transaction['attachments'][3].attachment.replace('_thumb','')}}{% end %}">
+                        </div>
+                        <div class="col">
+                            <p>采购方 评价 供货方</p>
+                            <p class="star1" id="star1"></p>
+                            <textarea name="purchasecomment" id="purchasecomment" cols="30" rows="10" class="yc-ipt yc-ipt-mul" >{{transaction["purchasecomment"]}}</textarea>
+                        </div>
+                        <div class="col">
+                            <p>供货方 评价 采购方</p>
+                            <p class="star2" id="star2"></p>
+                            <textarea name="suppliercomment" id="suppliercomment" cols="30" rows="10" class="yc-ipt yc-ipt-mul" >{{transaction["suppliercomment"]}}</textarea>
+                        </div>
+                    </div>
+                    <div class="ft tc">
+                        <button type="submit" class="ubtn ubtn-orange">提交</button>
+                    </div>
+                </form>
+            </div>            
+        </section>
+    </div>
+    <script src="{{ static_url('js/jquery.raty.min.js')}}"></script>
+    <script src="{{ static_url('js/croppic.min.js')}}"></script>
+    <script src="{{ static_url('js/lightbox.js')}}"></script>
+    <script src="{{ static_url('js/notify.js')}}"></script>
+    <script src="{{ static_url('plugins/laydate/laydate.js')}}"></script>
+    <script src="{{ static_url('plugins/layer/layer.js')}}"></script>
+    <script>
+    $(function(){
+        $.fn.raty.defaults.path = '{{static_url("images/")}}'; // 设置评分图标路径
+
+        $('.star1').raty({
+            scoreName: 'star1',
+            score:'{{transaction["score_to_supplier"]}}',
+        });
+        $('.star2').raty({
+            scoreName: 'star2',
+            score:'{{transaction["score_to_purchase"]}}'
+        });
+
+
+        var $imgWrap, cropModal;
+
+        var croppicOptions = {
+            uploadUrl:'/uploadimage',
+            cropUrl:'/cropimage',
+            uploadData:{'_xsrf':$("input[name='_xsrf']").val()},
+            cropData:{'_xsrf':$("input[name='_xsrf']").val()},
+            imgEyecandyOpacity: 0.5,
+            loaderHtml:'<span class="loader">正在上传图片，请稍后...</span>',
+            onBeforeImgUpload: function(){},
+            onAfterImgUpload: function(){},
+            onImgDrag: function(){},
+            onImgZoom: function(){},
+            onBeforeImgCrop: function(){},
+            onAfterImgCrop:function(response){ 
+                $imgWrap.html('<img src="' + response.url + '" /><i class="del" title="删除"></i>').next().val(response.url);
+                // 关闭弹层
+                layer.closeAll();
+            },
+            onReset:function(){ console.log('onReset') },
+            onError:function(msg){
+                $.notify({
+                    type: 'error', 
+                    title: msg.title,   // 不允许的文件类型
+                    text: msg.message,     //'支持 jpg、jepg、png、gif等格式图片文件', 
+                    delay: 3e3
+                });
+            }
+        }
+
+        var $goodsImg = $('.goods-img');
+        // 上传图片
+        $goodsImg.on('click', 'span', function() {
+            layer.open({
+                area: ['600px'],
+                closeBtn: 1,
+                type: 1,
+                moveType: 1,
+                content: '<div class="img-upload-main"><div class="clip" id="imgCrop"></div></div>',
+                title: '上传图片',
+                cancel: function() {
+                    cropModal.destroy();
+                }
+            });
+            $imgWrap = $(this);
+            cropModal = new Croppic('imgCrop', croppicOptions);
+        })
+
+        // 点击图片不打开弹层
+        $goodsImg.on('click', 'img', function() {
+            return false;
+        })
+
+        // 删除图片
+        $goodsImg.on('click', '.del', function() {
+            var $self = $(this);
+            layer.confirm('确认删除交易照片？', {
+                btn: ['确认','取消'] //按钮
+            }, function(index){
+                $self.parent().next().val('').prev().empty(); 
+                layer.close(index);
+            });
+            return false;
+        })
+
+        // 查看其他交收要求
+        $('.expand').find('span').on('click', function() {
+            $(this).find('i').toggleClass('fa-angle-down fa-angle-up')
+            .end().parent().prev().slideToggle();
+        }); 
+
+        // 只能输入数字或空
+        $('.jdecimals').on('keyup change', function(e) {
+            var val = this.value;
+            if (!/^\d+\.?\d*$/.test(val)) {
+                val = Math.abs(parseFloat(val));
+                this.value = isNaN(val) ? '' : val
+            }
+        }).on('focus', function() {
+            $(this).nextAll('.red').html('');
+        })
+
+        // 验证
+        var checkNull = function(val) {
+            return val;
+        }
+        var 
+            $myform = $('#myform'),
+            $amount = $myform.find('input[name="amount"]'),
+            $price = $myform.find('input[name="price"]'),
+            $sum = $myform.find('input[name="sum"]');
+
+        $myform.on('submit', function() {   
+            var 
+                amount = $amount.val(),
+                price = $price.val(),
+                sum = $sum.val(),
+                pass = true;
+
+            if (amount) {
+                $amount.nextAll('.red').html('');
+            } else {
+                $amount.nextAll('.red').html('请输入成交数量');
+                pass = false;
+            }
+            if (price) {
+                $price.nextAll('.red').html('');
+            } else {
+                $price.nextAll('.red').html('请输入成交价格');
+                pass = false;
+            }
+            if (sum) {
+                $sum.nextAll('.red').html('');
+            } else {
+                $sum.nextAll('.red').html('总金额');
+                pass = false;
+            }
+            if (pass) {
+                $.ajax({
+                    url: '/purchase/transactionedit',
+                    type: 'POST',
+                    // dataType: 'json',
+                    data: $('#myform').serialize(),
+                    beforeSend: function(jqXHR, settings) {
+                        // jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                              location.href="/purchase/transactionsuccess?rtype="+data.rtype;
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                })
+            }
+
+            return false; // 阻止表单的默认提交
+        });
+    })
+    </script>
+{% end %}

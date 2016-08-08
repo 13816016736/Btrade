@@ -50,6 +50,8 @@
                 <ul class="treeview-menu {% if request.uri.split('/')[1] == "purchase" %}menu-open{% end %}">
                     <li {% if request.uri.split('/')[2] == "purchaselist" %}class="active"{% end %}><a href="/purchase/purchaselist"><i class="fa fa-circle-o"></i> 订单查询</a>
                     </li>
+                    <li {% if request.uri.split('/')[2].find("transaction")!=-1%}class="active"{% end %}><a href="/purchase/transactionlist"><i class="fa fa-circle-o"></i>交易记录</a>
+                    </li>
                 </ul>
             </li>
         <li class="treeview {% if request.uri.split('/')[1] == "supplier" %}active{% end %}">
