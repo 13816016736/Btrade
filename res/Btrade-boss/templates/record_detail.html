@@ -28,8 +28,8 @@
                     <tbody>
                         <tr>
                                 <td class="cat">{{ record["id"] }}</a></td>
-                                <td class="cat">{{ record["purchaseinfoid"] }}</td>
-                                <td class="cat">{{ record["varietyname"] }}</td>
+                                <td class="cat"><a href="/purchase/purchaseinfo/{{record['purchaseinfoid']}}">{{ record["purchaseinfoid"] }}</a></td>
+                                <td class="cat"><a href="/purchase/purchaseinfo/{{record['purchaseinfoid']}}">{{ record["varietyname"] }}</a></td>
                                 <td class="cat">{{ record["order"] }}</td>
                                 <td class="cat">{{ record["pushcount"] }}</td>
                                 <td class="cat">{{ record["clickcount"] }}</td>

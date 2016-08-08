@@ -61,8 +61,8 @@
                             {% for item in records %}
                             <tr>
                                 <td><a href="/stat/pushrecord/detail?id={{item['id']}}">{{ item["id"] }}</a></td>
-                                <td>{{ item["purchaseinfoid"] }}</td>
-                                <td>{{ item["varietyname"] }}</td>
+                                <td><a href="/purchase/purchaseinfo/{{item['purchaseinfoid']}}">{{ item["purchaseinfoid"] }}</a></td>
+                                <td><a href="/purchase/purchaseinfo/{{item['purchaseinfoid']}}">{{ item["varietyname"] }}</a></td>
                                 <td>{{ item["order"] }}</td>
                                 <td>{{ item["pushcount"] }}</td>
                                 <td>{{ item["clickcount"] }}</td>

@@ -378,8 +378,6 @@ class CropImageHandler(BaseHandler):
         dy = rotated_height - imgH
 
         cropped_rotated_image = Image.new("RGBA", (int(imgW), int(imgH)), 0)
-        #a = rotated_image.crop((dx / 2, dy / 2, dx / 2 + imgW, dy / 2 + imgH))
-        #a.save("crop.jpeg")
         cropped_rotated_image.paste(rotated_image.crop((dx / 2, dy / 2, dx / 2 + imgW, dy / 2 + imgH)),
                                     (0, 0, imgW, imgH))
 
