@@ -7,6 +7,7 @@
   <form class="form-signin" method="post" action="/login">
     <h2 class="form-signin-heading">药采购BOSS工作平台</h2>
     {% raw xsrf_form_html() %}
+     <div class="msg" id="msg">{% if 'error' in globals() %}{{error}}{% end %}</div>
     <label for="inputEmail" class="sr-only">用户名</label>
     <input name="username" type="text" id="inputEmail" class="form-control" placeholder="用户名" required autofocus>
     <label for="inputPassword" class="sr-only">密码</label>
