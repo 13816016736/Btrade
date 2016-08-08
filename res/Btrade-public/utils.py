@@ -573,24 +573,24 @@ def verify(appkey, token, timestamp, signature):
         digestmod=hashlib.sha256).hexdigest()
 
 
-def reply_quote_notify(phone, num, name, price, unit,pid):
+def reply_quote_notify(phone, num, name, price, unit,pid,uuid):
     num = num.encode('utf-8') if isinstance(num, unicode) else num
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     templateId = 1896
     phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
-    vars = '{"%num%":"'+num+'","%name%":"'+name+'","%price%":"'+price+'","%unit%":"'+unit+'","%purchaseinfoid%":"'+pid+'"}'
+    vars = '{"%num%":"'+num+'","%name%":"'+name+'","%price%":"'+price+'","%unit%":"'+unit+'","%purchaseinfoid%":"'+pid+'&uuid='+ uuid +'"}'
     print vars
     send(templateId, phone, vars)
-def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid):
+def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid,uuid):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     tip="您还有%s个报价未回复，最低报价：%s %s元/%s"%(num,name,price,unit)
     templateId = 'VHZtCPgyjeD00IG0RdfxeHo4fP6PwXj3pfaCmB91RJg'
-    link = 'http://m.yaocai.pro/replydetail?pid=%s' % pid
+    link = 'http://m.yaocai.pro/replydetail?pid=%s'% pid+"&uuid="+uuid
     data = {
         "first": {
            "value":"报价未回复通知",
