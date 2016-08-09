@@ -51,6 +51,7 @@
                             <th>品种</th>
                             <th>推送条数</th>
                             <th>渠道</th>
+                            <!-- <th>点击</th>-->
                             <th>创建时间</th>
                             {% end %}
                         </tr>
@@ -77,7 +78,7 @@
                                 <td>{{ item["id"] }}</td>
                                 <td>{{ item["purchaseinfoid"] }}</td>
                                 <td>{{ item["varietyname"] }}</td>
-                                <td>1</td>
+                                <td>{{item["pushcount"]}}</td>
                                 <td>{{ item["type"] }}</td>
                                 <td>{{ item["time"] }}</td>
                                 {% end %}

@@ -44,7 +44,10 @@ class PushRecordHandler(BaseHandler):
                 if ret:
                     item["varietyname"]=ret["name"]
                 else:
-                    item["varietyname"] =u"不存在"
+                    if item["varietyname"]=="":
+                        item["varietyname"]="不存在"
+                    else:
+                        item["varietyname"] =item["varietyname"].encode("utf8")+"(不存在)"
                 if item["quote"]=="":
                     item["quotetime"]=0
                 else:
@@ -73,11 +76,17 @@ class PushRecordHandler(BaseHandler):
                     item["varietyname"]=ret["name"]
                 else:
                     item["varietyname"] =u"不存在"
-                push_count = mongodb.push_record.find({"pushid": item["_id"]}).count()
-                item["pushcount"] = push_count
+                #push_count = mongodb.push_record.find({"pushid": item["_id"]}).count()
+                item["pushcount"] = 1
                 item["type"] = monitor_type[str(item["type"])]
                 timeArray = time.localtime(float(item["createtime"]))
                 item["time"] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+                item["click"]=0
+                #if item["recordid"]!="":
+                #    recordid=item["recordid"]
+                #    pushrecord=mongodb.push_record.find_one({"_id": recordid})
+                #    if pushrecord and pushrecord["click"]!=0:
+                #        item["click"]=1
                 record = {"purchaseinfoid": purchaseinfoid, "varietyname": item["varietyname"],
                           "type": item["type"], "pushcount": item["pushcount"],"time": item["time"], "id": item["_id"]
                           }
