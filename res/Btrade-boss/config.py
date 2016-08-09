@@ -30,6 +30,7 @@ settings = {
 handlers = [
     (r"/", MainHandler),
     (r"/users/userlist", UserListHandler),
+    (r"/admin/reset",AdminResetHandler),
     #(r"/users/userlist/page/([0-9]+)", UserListHandler),
     (r"/users/adminlist", AdminListHandler),
     (r"/admin/userinfo",AdminUserHandler),

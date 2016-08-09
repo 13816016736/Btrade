@@ -11,26 +11,37 @@
         <div class="yc-form">
             <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
                 <input type="hidden" name="id" value="{% if id %}{{id}} {% end %}">
+                 {%  if id==None %}
                 <div class="group form-group">
                     <div class="txt">
                         <span>会员名</span>
                     </div>
                     <div class="cont">
-                        <input type="text" class="ipt" name="username" id="username" value="{% if user %}{{user.username}}{% end %}">
+                        <input type="text" class="ipt" name="username" id="username" value="">
                     </div>
                 </div>
+                {% end %}
 
-                {%  if id==None %}
+                {%  if user %}
+                <div class="group form-group">
+                    <div class="txt">
+                        <i></i>
+                        <span>旧密码</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="oldpwd" id="oldpwd" value="">
+                    </div>
+                </div>
+                {% end %}
                 <div class="group form-group">
                     <div class="txt">
                         <i></i>
                         <span>密码</span>
                     </div>
                     <div class="cont">
-                        <input type="text" class="ipt" name="pwd" id="pwd" value="">
+                        <input type="text" class="ipt" name="newpwd" id="newpwd" value="">
                     </div>
                 </div>
-                {% end %}
 
                 <div class="ft">
                     <button type="submit" id="validateBtn" class="ubtn ubtn-orange button">提交</button>
@@ -46,7 +57,7 @@
 $(function(){
     $('#userinfo').validator({
         fields: {
-            username: '会员名: required',
+            newpwd: '密码: required',
         },
         valid: function(form) {
             if ( $(form).isValid() ) {

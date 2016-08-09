@@ -134,6 +134,12 @@ class UpdateAdminStatusHandler(BaseHandler):
         status=self.get_argument("status",1)
         self.db.execute("update admin set status=%s where id = %s", status,id)
         self.redirect('/users/adminlist')
+class AdminResetHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        id=self.get_argument("id",-1)
+        self.db.execute("update admin set password=%s where id = %s", md5(str("123456" + config.salt)),id)
+        self.redirect('/users/adminlist')
 class AdminUserHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
@@ -147,25 +153,27 @@ class AdminUserHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         username=self.get_argument("username",None)
-        pwd=self.get_argument("pwd",None)
+        newpwd=self.get_argument("newpwd",None)
+        oldpwd=self.get_argument("oldpwd",None)
         id=self.get_argument("id",None)
-        if username=="":
-            self.api_response({'status': 'fail', 'message': '添加失败', 'data': '缺少参数'})
+        if newpwd=="":
+            self.api_response({'status': 'fail', 'message': '添加失败', 'data': '密码不能为空'})
         else:
-            user = self.db.get("select * from admin where username=%s", username)
             if id:
-                if user and str(user["id"])!=id:
-                    self.api_response({'status': 'fail', 'message': '用户名不能重名', 'data': {'username': username}})
+                user = self.db.get("select * from admin where id=%s", id)
+                if user.password==md5(str(oldpwd + config.salt)):
+                    self.db.execute("update admin set password=%s where id=%s", md5(str(newpwd + config.salt)), id)
+                    self.api_response({'status': 'success', 'message': '修改成功'})
                 else:
-                    self.db.execute("update admin set username=%s where id=%s", username, id)
-                    self.api_response({'status': 'success', 'message': '修改成功', 'data': {'username': username}})
-
+                    self.api_response({'status': 'fail', 'message': '旧密码不正确'})
             else:
-                if pwd=="":
-                    pwd="123456"
-                if user:
-                    self.api_response({'status': 'fail', 'message': '用户名不能重名', 'data': {'username': username}})
+                if username=="":
+                    self.api_response({'status': 'fail', 'message': '用户名不能为空'})
                 else:
-                    self.db.execute("insert into admin (username,password,createtime) value(%s,%s,%s)",username,md5(str(pwd + config.salt)),int(time.time()))
-                    self.api_response({'status': 'success', 'message': '添加成功', 'data': {'username': username}})
+                    user = self.db.get("select * from admin where username=%s", username)
+                    if user:
+                        self.api_response({'status': 'fail', 'message': '用户名不能重名'})
+                    else:
+                        self.db.execute("insert into admin (username,password,createtime) value(%s,%s,%s)",username,md5(str(newpwd + config.salt)),int(time.time()))
+                        self.api_response({'status': 'success', 'message': '添加成功'})
 

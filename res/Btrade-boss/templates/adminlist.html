@@ -42,8 +42,10 @@
                             {% end %}
                         </td>
                         <td>{{ user.createtime}}</td>
-                        <td class="tc">
+                        <td class="tc" style="width:100px">
                             <!--<a class="btn btn-link" href="/users/userinfo/{{user.id}}" role="button">查看</a>-->
+                            <a href="/admin/reset?id={{user.id}}" role="button">重置</a>
+
                             <a href="/admin/userinfo?id={{user.id}}" role="button">编辑</a>
                             {% if user.status == 0 %}
                             <a class="red jrecover" href="/admin/update?id={{user.id}}&status=1">解禁</a>
