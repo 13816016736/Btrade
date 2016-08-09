@@ -5,57 +5,73 @@
         <h1>会员管理</h1>
     </section>
     <section class="content">
-        <div class="row">
-            <div class="col-md-10">
-                <form id="userinfo" method="post" action="/admin/userinfo" novalidate="novalidate">
-                    <input type="hidden" name="id" value="{% if id %}{{id}} {% end %}">
-                    {% raw xsrf_form_html() %}
-                    <div class="form-group has-feedback">
-                        <label for="username">会员名（必填）</label>
-                        <input type="text" class="form-control" name="username" id="username" data-bv-field="username" value="{% if user %}{{user.username}}{% end %}">
+        <div class="site-map">
+            <a href="javascript:history.back(-1);">&lt; 返回会员列表</a>
+        </div>
+        <div class="yc-form">
+            <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
+                <input type="hidden" name="id" value="{% if id %}{{id}} {% end %}">
+                <div class="group form-group">
+                    <div class="txt">
+                        <span>会员名</span>
                     </div>
-                    {% if id==None %}
-                    <div class="form-group">
-                        <label for="pwd">密码</label>
-                        <input type="text" class="form-control" name="pwd" id="pwd" data-bv-field="phone" value="">
+                    <div class="cont">
+                        <input type="text" class="ipt" name="username" id="username" value="{% if user %}{{user.username}}{% end %}">
                     </div>
-                    {% end %}
-                    <button type="submit" class="btn btn-primary btn-query" id="validateBtn" >提交</button>
-                    <button type="reset" class="btn btn-default" id="resetBtn" onclick="javascript:history.back(-1);">返回</button>
-                </form>
-            </div>
+                </div>
+
+                {%  if id==None %}
+                <div class="group form-group">
+                    <div class="txt">
+                        <i></i>
+                        <span>密码</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="pwd" id="pwd" value="">
+                    </div>
+                </div>
+                {% end %}
+
+                <div class="ft">
+                    <button type="submit" id="validateBtn" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="resetBtn" class="ubtn ubtn-blue button" onclick="javascript:history.back(-1);">返回</button>
+                </div>
+            </form>
         </div>
     </section>
 </div>
+<script src="{{ static_url('plugins/validator/jquery.validator.min.js?local=zh-CN') }}"></script>
+<script src="{{ static_url('plugins/layer/layer.js') }}"></script>
 <script>
-$(document).ready(function(){
-    $('#userinfo').on('submit', function(e) {
-         e.preventDefault();
-         var $form = $(e.target);
-         x=$(this).serializeArray();
-         $.ajax({
-            url: $(this).attr('action'),
-            data: $(this).serialize(),
-            dataType: 'json',
-            type: 'POST',
-            beforeSend: function(jqXHR, settings) {
-                 jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-             },
-            success: function(data) {
-                if(data.status == "success"){
-                   location.href='/users/adminlist';
-                }else{
-                    alert(data.message);
-                }
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                console.log(errorThrown);
+$(function(){
+    $('#userinfo').validator({
+        fields: {
+            username: '会员名: required',
+        },
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/admin/userinfo',
+                    data: $('#userinfo').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            location.href='/users/adminlist';
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
             }
-
-         });
-
+        }
     });
-
 })
 </script>
 {% end %}

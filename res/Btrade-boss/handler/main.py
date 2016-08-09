@@ -149,15 +149,23 @@ class AdminUserHandler(BaseHandler):
         username=self.get_argument("username",None)
         pwd=self.get_argument("pwd",None)
         id=self.get_argument("id",None)
-        if username==None or username=="":
+        if username=="":
             self.api_response({'status': 'fail', 'message': '添加失败', 'data': '缺少参数'})
         else:
+            user = self.db.get("select * from admin where username=%s", username)
             if id:
-                self.db.execute("update admin set username=%s where id=%s",username,id)
-                self.api_response({'status': 'success', 'message': '修改成功', 'data': {'username': username}})
+                if user and str(user["id"])!=id:
+                    self.api_response({'status': 'fail', 'message': '用户名不能重名', 'data': {'username': username}})
+                else:
+                    self.db.execute("update admin set username=%s where id=%s", username, id)
+                    self.api_response({'status': 'success', 'message': '修改成功', 'data': {'username': username}})
+
             else:
                 if pwd=="":
                     pwd="123456"
-                self.db.execute("insert into admin (username,password,createtime) value(%s,%s,%s)",username,md5(str(pwd + config.salt)),int(time.time()))
-                self.api_response({'status': 'success', 'message': '添加成功', 'data': {'username': username}})
+                if user:
+                    self.api_response({'status': 'fail', 'message': '用户名不能重名', 'data': {'username': username}})
+                else:
+                    self.db.execute("insert into admin (username,password,createtime) value(%s,%s,%s)",username,md5(str(pwd + config.salt)),int(time.time()))
+                    self.api_response({'status': 'success', 'message': '添加成功', 'data': {'username': username}})
 
