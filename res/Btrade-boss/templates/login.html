@@ -1,9 +1,56 @@
 <!DOCTYPE html>
 <html>
 {% include public/head.html %}
-<link href="{{ static_url('bootstrap/css/signin.css') }}" rel="stylesheet" media="screen">
+<style>
+.login-box{position:absolute;top:50%;left:50%;width:440px;height:440px;margin:-220px 0 0 -220px;padding:44px;background:#f5f5f5;border:1px solid #e7e7e7;}
+  .login-box .title{font-size:26px;text-align:center;}
+    .login-box .title strong{margin-right:4px;color:#fca31d;font-weight:700;}
+    .login-box .msg{height:70px;padding:40px 0 6px;color:#c3272b;}
+    .login-box .group{position:relative;line-height:48px;}
+      .login-box .txt{position:absolute;top:0;left:0;width:50px;height:50px;text-align:center;}
+        .login-box .txt i{font-size:25px;color:#999;vertical-align:middle;}
+        .login-box .on .txt i{color:#666;}
+      .login-box .cnt{height:76px;*overflow:hidden;*zoom:1;}
+        .login-box .input{width:350px;height:50px;line-height:18px;padding:15px 10px 15px 50px;border:1px solid #ccc;*float:left;}
+      .login-box .error .txt{color:#c3272b;border-color:#c3272b;}
+      .login-box .error .input{border-color:#c3272b;}
+    .login-box .button{padding-top:14px;text-align:center;}
+      .login-box .ubtn{width:100%;height:50px;padding:0;font-size:16px;}
+</style>
 <body>
-<div class="container">
+
+<div class="login-box">
+    <div class="title"><strong>药采购</strong>BOSS工作平台</div>
+    <div class="form">
+        <form action="" id="myform">
+            <div class="msg" id="msg"><i class="fa fa-minus-circle"></i> 请输入用户名和密码</div>
+
+            <div class="group">
+                <div class="txt">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="cnt">
+                    <input type="text" class="input" value="" autocomplete="off" name="username" id="username" placeholder="用户名">
+                </div>
+            </div>
+
+            <div class="group">
+                <div class="txt">
+                    <i class="fa fa-lock"></i>
+                </div>
+                <div class="cnt">
+                    <input type="password" class="input" value="" autocomplete="off" name="pwd" id="pwd" placeholder="密码">
+                </div>
+            </div>
+
+            <div class="button">
+                <button type="button" class="ubtn ubtn-orange" id="submit">登 录</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container" style="display:none;">
   <form class="form-signin" method="post" action="/login">
     <h2 class="form-signin-heading">药采购BOSS工作平台</h2>
     {% raw xsrf_form_html() %}
@@ -21,5 +68,76 @@
     <button class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
   </form>
 </div>
+
+<script>
+    var loginPage = {
+        v: {
+            $username: $('#username'),
+            $pwd: $('#pwd'),
+            $submit: $('#submit'),
+            $msg: $('#msg')
+        },
+        fn: {
+            init: function() {
+                this.bindEvent();
+            },
+            // 错误提示
+            showMsg: function(msg) {
+                if (msg) {
+                    loginPage.v.$msg.html('<i class="fa fa-minus-circle"></i> ' + msg);
+                } else {
+                    loginPage.v.$msg.html('');
+                }                
+            },
+            checkUsername: function() {
+                var msg = loginPage.v.$username.val() ? '' : '请输入用户名';
+                this.showMsg(msg);
+                return msg;
+            },
+            checkPassword: function() {
+                var msg = loginPage.v.$pwd.val() ? '' : '请输入密码';
+                this.showMsg(msg);
+                return msg;
+            },
+            checkForm: function() {
+                var c2 = this.checkPassword();
+                var c1 = this.checkUsername();
+
+                if (c2 || c1) {
+                    this.showMsg(c1 && c2 ? '请输入用户名和密码' : c1 + c2);
+                    return false;
+                }
+                this.showMsg('');
+                return true;
+            },
+            bindEvent: function() {
+                var self = this;
+                loginPage.v.$username.on('blur', function() {
+                    self.checkUsername();
+                    $(this).closest('.group').removeClass('on');
+                }).on('focus', function() {
+                    $(this).closest('.group').addClass('on');
+                });
+
+                loginPage.v.$pwd.on('blur', function() {
+                    self.checkPassword();
+                    $(this).closest('.group').removeClass('on');
+                }).on('focus', function() {
+                    $(this).closest('.group').addClass('on');
+                });
+
+                loginPage.v.$submit.on('click', function() {
+                    return self.checkForm();      
+                });
+
+            }
+        }
+    }
+
+    $(function() {
+        loginPage.fn.init();
+    })
+
+    </script>
 </body>
 </html>
