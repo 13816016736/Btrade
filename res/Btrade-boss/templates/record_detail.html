@@ -95,7 +95,7 @@
                                     {% else %}
                                     <td class="cat"><font color="red">×</font></td>
                                     {% end %}
-                                    <td class="cat">{{item["phone"]}}</td>
+                                    <td class="cat"><a {% if item["supplierid"]!=-1 %} href="/supplier/supplierdetail?id={{item['supplierid']}}" {% else %} href="#"{% end %}>{{item["phone"]}}</a</td>
                                     <td class="cat">{{item["createtime"]}}</td>
                                 </tr>
                                 {% end %}

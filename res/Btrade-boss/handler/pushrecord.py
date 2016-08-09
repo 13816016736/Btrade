@@ -192,6 +192,11 @@ class RecordDetailHandler(BaseHandler):
                    item["accept"]=accept
                    item["reject"]=reject
                    item["phone"]=phone
+                   supplier=self.db.query("select id from supplier where mobile=%s",phone)
+                   if supplier:
+                       item["supplierid"]=supplier[0]["id"]
+                   else:
+                       item["supplierid"]=-1
                    item["login"]=login
                    detail.append(item)
            query_str = {}
