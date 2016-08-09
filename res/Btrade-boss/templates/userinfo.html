@@ -3,234 +3,127 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>会员管理</h1>
-        <!--<ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> 操作中心</a>
-            </li>
-            <li><a href="#">公共系统</a>
-            </li>
-            <li><a href="#">前台会员管理</a>
-            </li>
-            <li><a href="#">会员管理</a>
-            </li>
-            <li class="active">会员</li>
-        </ol>-->
     </section>
     <section class="content">
-        <div class="row">
-            <div class="col-md-10">
-                <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
-                    <div class="form-group has-feedback">
-                        <label>会员ID</label>
-                        <input type="text" class="form-control" name="userid" data-bv-field="userid" value="{{user.id}}" readonly>
+        <div class="site-map">
+            <a href="javascript:history.back(-1);">&lt; 返回会员列表</a>
+        </div>
+        <div class="yc-form">
+            <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
+                <div class="group form-group">
+                    <div class="txt">
+                        <span>会员ID</span>
                     </div>
-                    <div class="form-group has-feedback">
-                        <label for="username">会员名（必填）</label>
-                        <input type="text" class="form-control" name="username" id="username" data-bv-field="username" value="{{user.username}}" readonly>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="userid" value="{{user.id}}" readonly>
                     </div>
-                    <div class="form-group has-feedback">
-                        <label for="nickname">个人称呼（必填）</label>
-                        <input type="text" class="form-control" name="nickname" id="nickname" data-bv-field="nickname" value="{{user.nickname}}">
+                </div>
+
+                <div class="group form-group">
+                    <div class="txt">
+                        <span>会员名</span>
                     </div>
-                    <div class="form-group">
-                        <label>个人/企业（必填）</label>
-                        <div class="form-group">
-                            <label class="control-label col-md-2">经营类型（企业）</label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==1 %} checked {% end %}value="1">饮片厂
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==2 %} checked {% end %}value="2">药厂
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==3 %} checked {% end %}value="3">药材经营公司
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==4 %} checked {% end %}value="4">个体经营户
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==5 %} checked {% end %}value="5">合作社
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==6 %} checked {% end %}value="6">种植基地
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==7 %} checked {% end %}value="7">其他
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-2">经营类型（个人）</label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==8 %} checked {% end %}value="8">个人经营
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==9 %} checked {% end %}value="9">采购经理
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="type"{% if user.type==10 %} checked {% end %}value="10">销售经理
-                            </label>
-                        </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="username" id="username" value="{{user.username}}" readonly>
                     </div>
-                    <div class="form-group">
-                        <label for="name">公司/姓名（必填）</label>
-                        <input type="text" class="form-control" name="name" id="name" data-bv-field="name" value="{{user.name}}">
+                </div>
+
+                <div class="group form-group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>个人称呼</span>
                     </div>
-                    <div class="form-group">
-                        <label for="phone">手机（必填）</label>
-                        <input type="text" class="form-control" name="phone" id="phone" data-bv-field="phone" value="{{user.phone}}">
+                    <div class="cont">
+                        <input type="text" class="ipt" name="nickname" id="nickname" value="{{user.nickname}}">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-query" id="validateBtn">提交</button>
-                    <button type="reset" class="btn btn-default" id="resetBtn" onclick="javascript:history.back(-1);">返回</button>
-                </form>
-            </div>
+                </div>
+
+                <div class="group form-group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>个人/企业</span>
+                    </div>
+                    <div class="cont">
+                        <label>经营类型（企业）</label>
+                        <label><input type="radio" name="type"{% if user.type==1 %} checked {% end %}value="1" class="cbx">饮片厂</label>
+                        <label><input type="radio" name="type"{% if user.type==2 %} checked {% end %}value="2" class="cbx">药厂</label>
+                        <label><input type="radio" name="type"{% if user.type==3 %} checked {% end %}value="3" class="cbx">药材经营公司</label>
+                        <label><input type="radio" name="type"{% if user.type==4 %} checked {% end %}value="4" class="cbx">个体经营户</label>
+                        <label><input type="radio" name="type"{% if user.type==5 %} checked {% end %}value="5" class="cbx">合作社</label>
+                        <label><input type="radio" name="type"{% if user.type==6 %} checked {% end %}value="6" class="cbx">种植基地</label>
+                        <label><input type="radio" name="type"{% if user.type==7 %} checked {% end %}value="7" class="cbx">其他</label>
+                    </div>
+                    <div class="cont">
+                        <label>经营类型（个人）</label>
+                        <label><input type="radio" name="type"{% if user.type==8 %} checked {% end %}value="8" class="cbx">个人经营</label>
+                        <label><input type="radio" name="type"{% if user.type==9 %} checked {% end %}value="9" class="cbx">采购经理</label>
+                        <label><input type="radio" name="type"{% if user.type==10 %} checked {% end %}value="10" class="cbx">销售经理</label>
+                    </div>
+                </div>
+
+                <div class="group form-group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>公司/姓名</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="name" id="name" value="{{user.name}}">
+                    </div>
+                </div>
+
+                <div class="group form-group">
+                    <div class="txt">
+                        <i>*</i>
+                        <span>手机</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="phone" id="phone" value="{{user.phone}}">
+                    </div>
+                </div>
+
+                <div class="ft">
+                    <button type="submit" id="validateBtn" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="resetBtn" class="ubtn ubtn-blue button" onclick="javascript:history.back(-1);">返回</button>
+                </div>
+            </form>
         </div>
     </section>
-    <!--<section class="content">
-        <table class="table table-bordered table-hover">
-            <tbody>
-                <tr>
-                    <th>流水号：</th>
-                    <td>201506171001133500</td>
-                    <th>订单号：</td>
-                    <td>201506171001133500</td>
-                </tr>
-                <tr>
-                    <th>分润金额：</th>
-                    <td>0.9</td>
-                    <th>平台应得金额：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>买方应得金额：</th>
-                    <td></td>
-                    <th>卖方应得金额：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>支付渠道：</th>
-                    <td>招行</td>
-                    <th>状态：</td>
-                    <td>划账成功</td>
-                </tr>
-                <tr>
-                    <th>买方收款（银行）名称：</th>
-                    <td>0.9</td>
-                    <th>买方收款账户：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>卖方收款（银行）名称：</th>
-                    <td>0.9</td>
-                    <th>卖方收款账户：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>买方付款回单：</th>
-                    <td></td>
-                    <th>卖方付款回单：</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>分润完成时间：</th>
-                    <td colspan="3">2015-06-08 15:15:13</td>
-                </tr>
-                <tr>
-                    <th>备注：</th>
-                    <td colspan="3"><textarea class="form-control" name="note" id="note" rows="3" data-bv-field="note"></textarea></td>
-                </tr>
-                <tr>
-                    <th></th>
-                    <td colspan="3"><button type="reset" class="btn btn-default" id="resetBtn" onclick="javascript:history.back(-1);">返回</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </section>-->
 </div>
+<script src="{{ static_url('plugins/validator/jquery.validator.min.js?local=zh-CN') }}"></script>
+<script src="{{ static_url('plugins/layer/layer.js') }}"></script>
 <script>
-$(document).ready(function(){
-    $('#userinfo').bootstrapValidator({
-        message: 'This value is not valid',
+$(function(){
+    $('#userinfo').validator({
         fields: {
-            name: {
-                validators: {
-                    notEmpty: {
-                        message: '公司/姓名不能为空'
-                    }
-                }
-            },
-            nickname: {
-                validators: {
-                    notEmpty: {
-                        message: '个人称呼不能为空'
-                    }
-                }
-            },
-            type: {
-                validators: {
-                    notEmpty: {
-                        message: '个人/企业不能为空'
-                    }
-                }
-            },
-            phone: {
-                validators: {
-                    notEmpty: {
-                        message: '手机号不能为空'
+            nickname: '个人称呼: required',
+            type: '个人/企业: required',
+            name: '公司/姓名: required',
+            phone: '手机号: required;mobile',
+        },
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/users/userinfo',
+                    data: $('#userinfo').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
                     },
-                    regexp : {
-                        regexp : /^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0-9])\d{8}$/,
-                        message : '手机号码为11位数字'
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            location.href='/users/userlist';
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
                     }
-                },
-            },
-            verifycode: {
-                validators: {
-                    notEmpty: {
-                        message: '验证码不能为空'
-                    }
-                }
-            },
-            provinces: {
-                validators: {
-                    notEmpty: {
-                        message: '省份不能为空'
-                    }
-                },
-            },
-            city: {
-                validators: {
-                    notEmpty: {
-                        message: '城市不能为空'
-                    }
-                }
-            }
-		},
-	})
-	.on('success.form.bv', function(e) {
-         e.preventDefault();
-         var $form = $(e.target);
-         var bv = $form.data('bootstrapValidator');
-         x=$(this).serializeArray();
-         $.ajax({
-            url: $(this).attr('action'),
-            data: $(this).serialize(),
-            dataType: 'json',
-            type: 'POST',
-            beforeSend: function(jqXHR, settings) {
-                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-            },
-            success: function(data) {
-                if(data.status == "success"){
-                    window.location.href='/users/userlist';
-                }else{
-                    alert(data.message);
-                }
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                console.log(errorThrown);
-            }
-         });
+                });
+            } 
+        }
     });
-
 })
 </script>
 {% end %}
