@@ -191,7 +191,7 @@
                         <div class="goods-img">
                             <span>
                                 {% if len(transaction['attachments'])>=1 %}
-                                <img src="{{transaction['attachments'][0].attachment}}"><i class="del" title="删除"></i>
+                                <img  src="{{transaction['attachments'][0].attachment}}"><i class="del" title="删除"></i>
                                 {% end %}
                             </span>
                             <input type="hidden" name="pic1" value="{% if len(transaction['attachments'])>=1 %}{{transaction['attachments'][0].attachment.replace('_thumb','')}}{% end %}">
@@ -311,8 +311,26 @@
             layer.confirm('确认删除交易照片？', {
                 btn: ['确认','取消'] //按钮
             }, function(index){
-                $self.parent().next().val('').prev().empty(); 
-                layer.close(index);
+                $.ajax({
+                    url: '/delfile',
+                    dataType: 'json',
+                    data: {"imgUrl":$self.parent().next().val()},
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                    },
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            $self.parent().next().val('').prev().empty();
+                            layer.close(index);
+                        } else {
+                            lpPopover(data.message);
+                        }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                lpPopover('网络连接超时，请您稍后重试!');
+            }
+            });
             });
             return false;
         })

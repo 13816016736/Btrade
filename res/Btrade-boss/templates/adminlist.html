@@ -44,7 +44,7 @@
                         <td>{{ user.createtime}}</td>
                         <td class="tc" style="width:100px">
                             <!--<a class="btn btn-link" href="/users/userinfo/{{user.id}}" role="button">查看</a>-->
-                            <a href="/admin/reset?id={{user.id}}" role="button">重置</a>
+                            <a class="reset" href="/admin/reset?id={{user.id}}" role="button">重置</a>
 
                             <a href="/admin/userinfo?id={{user.id}}" role="button">编辑</a>
                             {% if user.status == 0 %}
@@ -81,6 +81,16 @@ $(function(){
         })
         return false;
     })
+    $('body').on('click', '.reset', function() {
+        var url = $(this).attr('href');
+        layer.confirm('确认要重置当前用户密码吗？', {icon: 3, title:'重置'}, function(index) {
+            location.href = url;
+        })
+        return false;
+    })
+
+
+
     $("#queryb").click(function(){
         var query = $("#query").val();
         location.href =encodeURI("/users/adminlist?query="+query);

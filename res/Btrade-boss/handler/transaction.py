@@ -396,5 +396,25 @@ class CropImageHandler(BaseHandler):
         filepath = os.path.join(upload_path, filename)
         final_image.save(filepath)
         make_thumb(filepath, upload_path, 300, 300)#生成缩略图
+        try:
+            os.remove(img_path)
+        except:
+            pass
         img_url = config.img_domain + filepath[filepath.find("static"):]
         self.api_response({'status': 'success', 'message': '上传成功', 'url': img_url})
+
+class DelFileHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        imgUrl = self.get_argument("imgUrl")
+        rpath = config.img_path
+        img_path = rpath[0:rpath.find("static")] + imgUrl[imgUrl.find("static/"):]
+        try:
+            base, ext = os.path.splitext(os.path.basename(img_path))
+            thumbpath= img_path[img_path.find("static"):].replace(base,base + "_thumb")
+            thumbpath=rpath[0:rpath.find("static")] + thumbpath[thumbpath.find("static"):]
+            os.remove(img_path)
+            os.remove(thumbpath)
+        except:
+            pass
+        self.api_response({'status': 'success', 'message': '删除成功'})

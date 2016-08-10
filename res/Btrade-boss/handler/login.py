@@ -8,6 +8,7 @@ class LoginHandler(BaseHandler):
     def get(self):
         if self.current_user:
             self.redirect('/users/userlist')
+            return
         self.render("login.html", next_url=self.get_argument("next", "/"))
 
     def post(self):

@@ -50,6 +50,7 @@ handlers = [
     (r"/purchase/transactionsuccess", TransactionSuccessHandler),
     (r"/uploadimage", UploadImageHandler),
     (r"/cropimage", CropImageHandler),
+    (r"/delfile", DelFileHandler),
     (r"/purchase/transactiondelete", TransactionDeleteHandler),
     (r"/purchase/purchaseinfo/([0-9]+)", PurchaseInfoHandler),
     (r"/updatequotestate", UpdateQuoteStateHandler),

@@ -22,8 +22,9 @@
 <div class="login-box">
     <div class="title"><strong>药采购</strong>BOSS工作平台</div>
     <div class="form">
-        <form action="" id="myform">
-            <div class="msg" id="msg"><i class="fa fa-minus-circle"></i> 请输入用户名和密码</div>
+        <form action="/login" method="post" id="myform">
+             {% raw xsrf_form_html() %}
+            <div class="msg" id="msg"> {% if 'error' in globals() %}<i class="fa fa-minus-circle"></i>{{error}}{% end %}</div>
 
             <div class="group">
                 <div class="txt">
@@ -39,41 +40,22 @@
                     <i class="fa fa-lock"></i>
                 </div>
                 <div class="cnt">
-                    <input type="password" class="input" value="" autocomplete="off" name="pwd" id="pwd" placeholder="密码">
+                    <input type="password" class="input" value="" autocomplete="off" name="password" id="password" placeholder="密码">
                 </div>
             </div>
 
             <div class="button">
-                <button type="button" class="ubtn ubtn-orange" id="submit">登 录</button>
+                <button type="submit" class="ubtn ubtn-orange" id="submit">登 录</button>
             </div>
         </form>
     </div>
-</div>
-
-<div class="container" style="display:none;">
-  <form class="form-signin" method="post" action="/login">
-    <h2 class="form-signin-heading">药采购BOSS工作平台</h2>
-    {% raw xsrf_form_html() %}
-     <div class="msg" id="msg">{% if 'error' in globals() %}{{error}}{% end %}</div>
-    <label for="inputEmail" class="sr-only">用户名</label>
-    <input name="username" type="text" id="inputEmail" class="form-control" placeholder="用户名" required autofocus>
-    <label for="inputPassword" class="sr-only">密码</label>
-    <input name="password" type="password" id="inputPassword" class="form-control" placeholder="密码" required>
-    <input name="next_url" type="hidden" value="{{ next_url }}"/>
-    <!--<div class="checkbox">
-      <label>
-        <input type="checkbox" value="remember-me"> 记住我
-      </label>
-    </div>-->
-    <button class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
-  </form>
 </div>
 
 <script>
     var loginPage = {
         v: {
             $username: $('#username'),
-            $pwd: $('#pwd'),
+            $pwd: $('#password'),
             $submit: $('#submit'),
             $msg: $('#msg')
         },
@@ -127,7 +109,7 @@
                 });
 
                 loginPage.v.$submit.on('click', function() {
-                    return self.checkForm();      
+                    return self.checkForm();
                 });
 
             }
