@@ -124,8 +124,13 @@ class RegisterHandler(BaseHandler):
             openid= self.session.get("openid")
             city=self.session.get("city")
             areaid=0
-            #if city:
-            #    areaid=self.db.get("select id from where areaname=%s or shortname=%s ",city,city)
+            if city:
+                logging.info(city)
+                try:
+                    areaid=self.db.get("select id from where areaname=%s or shortname=%s ",city.encode("utf8"),city.encode("utf8"))
+                except Exception,ex:
+                    logging.info("get city ex=%s",str(ex))
+
             if phone or openid:
                 self.session["phone"] = ""
                 self.session["openid"] = ""
