@@ -42,7 +42,7 @@ class TransactionHandler(BaseHandler):
         nav = {
             'model': 'purchase/transactionlist',
             'cur': page + 1,
-            'num': self.db.execute_rowcount("select id from transaction"),
+            'num': self.db.execute_rowcount("select id from transaction where status=1"),
         }
 
         self.render("transaction.html",transactions=transactions,nav=nav)
