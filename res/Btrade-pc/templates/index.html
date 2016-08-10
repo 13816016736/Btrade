@@ -129,6 +129,7 @@
                         </div>
                     </div>
                     <div class="td2">
+                        {% if purchase.purchaseinfo %}
                         {% for i,purchaseinfo in enumerate(purchase.purchaseinfo) %}
                         {% if i > 3 %}
                         {% break %}
@@ -140,6 +141,7 @@
                             <div class="td2-4">{{purchaseinfo.quantity}}{{purchaseinfo.unit}}</div>
                             <div class="td2-5">{{purchaseinfo.quality}}</div>
                         </div>
+                        {% end %}
                         {% end %}
                         <div class="tfoot">共采购{{purchase.variety}}个品种</div>
                     </div>
