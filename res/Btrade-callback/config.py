@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 import os.path
 from handler.smshook import *
+from handler.upload import *
 from globalconfig import *
-
+import tornado.web
 
 
 settings = {
     "app": app,
     "xsrf_cookies": False,
+    "template_path": os.path.join(os.path.dirname(__file__), "templates"),
+    "static_path": os.path.join(os.path.dirname(__file__), "static"),
     "cookie_secret": "e446976943b4e8442f099fed1f3fea28462d5832f483a0ed9a3d5d3859f==78d",
     "session_secret": "3cdcb1f00803b6e78ab50b466a40b9977db396840c28307f428b25e2277f1bcc",
     "session_timeout": 60*60,
@@ -20,6 +23,9 @@ settings = {
 
 handlers = [
     (r"/pushpurchase/smshook", SmsHookHandler),
+    (r"/", IndexHandler),
+    (r"/upload", UploadHandler),
+    (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 
 
