@@ -46,6 +46,12 @@
                     </a>
                     </li>
 
+                    <li {% if request.uri.split('/')[2].find("quality")!=-1 %}class="active"{% end %}>
+                    <a href="#">
+                        <i class="fa fa-circle-o"></i> 优质供应商管理
+                    </a>
+                    </li>
+
 
                 </ul>
             </li>
