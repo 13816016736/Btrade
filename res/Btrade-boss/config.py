@@ -7,6 +7,7 @@ from handler.monitor import *
 from handler.supplier import *
 from handler.pushrecord import *
 from handler.transaction import *
+from handler.identity import *
 from globalconfig import *
 
 
@@ -32,6 +33,7 @@ handlers = [
     (r"/users/userlist", UserListHandler),
     (r"/admin/reset",AdminResetHandler),
     #(r"/users/userlist/page/([0-9]+)", UserListHandler),
+    (r"/user/identify",IdentifyUserHandler),
     (r"/users/adminlist", AdminListHandler),
     (r"/admin/userinfo",AdminUserHandler),
     (r"/admin/update", UpdateAdminStatusHandler),

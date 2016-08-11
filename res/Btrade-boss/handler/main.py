@@ -34,20 +34,47 @@ class UserInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, userid):
         user = self.db.get("SELECT * FROM users where id = %s", userid)
-        self.render("userinfo.html", user=user)
+        if user:
+            variety_list = user.varietyids.split(",")
+            vl = []
+            for v in variety_list:
+                if (v != ""):
+                    vl.append(str(v))
+            if len(vl)!=0:
+                supply_variety_name = self.db.query("select name,id from variety where id in (%s) " % ','.join(vl))
+                user["variety_name"] = supply_variety_name
+            else:
+                user["variety_name"]=""
+        quanlity=self.db.get("select * from quality_supplier where userid=%s",userid)
+        if quanlity==None:#数值初始化
+            quanlity={}
+            quanlity["id"]=""
+            quanlity["type"]=1
+            quanlity["name"]=""
+            quanlity["identifiers"] = ""
+            quanlity["company"] = ""
+            quanlity["address"] = ""
+        self.render("userinfo.html", user=user,quanlity=quanlity)
 
     @tornado.web.authenticated
     def post(self):
-        if self.get_argument("userid") is None or self.get_argument("nickname") is None or self.get_argument("type") is None or self.get_argument("name") is None or self.get_argument("phone") is None:
+        nickname=self.get_argument("nickname",None),
+        type=self.get_argument("type",None),
+        name=self.get_argument("name",None),
+        phone=self.get_argument("phone",None),
+        userid=self.get_argument("userid",None)
+        scale=self.get_argument("scale","")
+        intro=self.get_argument("intro","")
+        variety=self.get_argument("varietys","")
+        if userid is None or nickname is None or type is None or name is None or phone is None:
             self.api_response({'status':'fail','message':'请完整填写表单'})
         else:
-            user = self.db.query("select * from users where phone = %s and id != %s", self.get_argument("phone"), self.get_argument("userid"))
+            user = self.db.query("select * from users where phone = %s and id != %s", phone, userid)
             if user:
                 self.api_response({'status':'fail','message':'此手机号已被他人注册过'})
             else:
-                self.db.execute("update users set nickname=%s,type=%s,name=%s,phone=%s where id = %s",
-                                self.get_argument("nickname"), self.get_argument("type"), self.get_argument("name"),
-                                self.get_argument("phone"), self.get_argument("userid"))
+                self.db.execute("update users set nickname=%s,type=%s,name=%s,phone=%s,scale=%s,introduce=%s,varietyids=%s where id = %s",
+                                nickname, type, name,phone,scale,intro,variety,userid)
                 self.api_response({'status':'success','message':'提交成功'})
 
 class UserRecoverHandler(BaseHandler):
@@ -176,4 +203,7 @@ class AdminUserHandler(BaseHandler):
                     else:
                         self.db.execute("insert into admin (username,password,createtime) value(%s,%s,%s)",username,md5(str(newpwd + config.salt)),int(time.time()))
                         self.api_response({'status': 'success', 'message': '添加成功'})
+
+
+
 
