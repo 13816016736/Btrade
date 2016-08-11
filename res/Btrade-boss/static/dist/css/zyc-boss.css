@@ -1211,5 +1211,5 @@ table.text-center,table.text-center td,table.text-center th{text-align:center}
 .table-chart .w1{width:180px;}
 .table-chart .w2{width:180px;}
 .table-chart .w3{width:180px;}
-.table-chart .w4{width:700px;}
+.table-chart .w4{float:none;width:auto;margin-left:540px;}
 .table-chart .cols .yc-ipt{width:90%;}
