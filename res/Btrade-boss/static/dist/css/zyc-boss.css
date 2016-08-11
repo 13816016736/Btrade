@@ -1206,10 +1206,10 @@ table.text-center,table.text-center td,table.text-center th{text-align:center}
 #croppicModal{position:fixed;width:100%;height:100%;top:0;left:0;display:block;background:rgba(0,0,0,0.8);z-index:10000;}
 
 .table-chart{}
-.table-chart .group{padding:0;border-bottom:1px solid #e7e7e7;}
+.table-chart .group{border-bottom:1px solid #e7e7e7;}
 .table-chart .cols{float:left;width:25%;}
-.table-chart .w1{width:150px;}
-.table-chart .w2{width:150px;}
-.table-chart .w3{width:150px;}
+.table-chart .w1{width:180px;}
+.table-chart .w2{width:180px;}
+.table-chart .w3{width:180px;}
 .table-chart .w4{width:700px;}
-.table-chart .cols .yc-ipt{width:98%;padding:0;border:none;}
+.table-chart .cols .yc-ipt{width:90%;}
