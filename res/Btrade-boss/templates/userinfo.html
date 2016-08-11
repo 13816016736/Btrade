@@ -9,8 +9,9 @@
             <a href="javascript:history.back(-1);">&lt; 返回会员列表</a>
         </div>
         <div class="yc-form">
+            <div class="group-title"><i class="fa fa-angle-down expand"></i><span>基本资料</span></div>
             <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
-                <div class="group form-group">
+                <div class="group">
                     <div class="txt">
                         <span>会员ID</span>
                     </div>
@@ -19,7 +20,7 @@
                     </div>
                 </div>
 
-                <div class="group form-group">
+                <div class="group">
                     <div class="txt">
                         <span>会员名</span>
                     </div>
@@ -28,7 +29,7 @@
                     </div>
                 </div>
 
-                <div class="group form-group">
+                <div class="group">
                     <div class="txt">
                         <i>*</i>
                         <span>个人称呼</span>
@@ -38,7 +39,7 @@
                     </div>
                 </div>
 
-                <div class="group form-group">
+                <div class="group">
                     <div class="txt">
                         <i>*</i>
                         <span>个人/企业</span>
@@ -61,7 +62,7 @@
                     </div>
                 </div>
 
-                <div class="group form-group">
+                <div class="group">
                     <div class="txt">
                         <i>*</i>
                         <span>公司/姓名</span>
@@ -71,7 +72,7 @@
                     </div>
                 </div>
 
-                <div class="group form-group">
+                <div class="group">
                     <div class="txt">
                         <i>*</i>
                         <span>手机</span>
@@ -81,18 +82,229 @@
                     </div>
                 </div>
 
+                <div class="group">
+                    <div class="txt">
+                        <span>主营品种</span>
+                    </div>
+                    <div class="cont yc-tag-list">
+                        <ul class="yc-ul" id="jMyTags"></ul>
+                        <input value="" id="jVariety" name="variety" class="ipt" placeholder="请输入关键字查询" type="text">
+                        <span class="error"></span>
+                        <div class="list" id="jVarietyTags"></div>
+                        <input type="hidden" id="jVarietys" name="varietys">
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="txt">
+                        <span>经营规模</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="scale" id="scale" value="">
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="txt">
+                        <span>供应商介绍</span>
+                    </div>
+                    <div class="cont">
+                        <textarea rows="10" cols="30" id="jIntro" name="intro" class="ipt ipt-area"></textarea>
+                        <span class="error"></span>
+                    </div>
+                </div>
+
+
                 <div class="ft">
                     <button type="submit" id="validateBtn" class="ubtn ubtn-orange button">提交</button>
-                    <button type="button" id="resetBtn" class="ubtn ubtn-blue button" onclick="javascript:history.back(-1);">返回</button>
                 </div>
             </form>
         </div>
+
+        
+        <div class="yc-form mt15">
+            <div class="group-title"><i class="fa fa-angle-down expand"></i><span>认证信息</span></div>
+            <form id="" method="post" action="">
+                <div class="group">
+                    <div class="txt">
+                        <span>用户身份</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="usertype" value="">
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="txt">
+                        <span>真实姓名</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="realname">
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="txt">
+                        <span>身份证号</span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="idnumber">
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="txt">
+                        <span>上传图片</span>
+                    </div>
+                    <div class="cont yc-form-img">
+                        <div class="goods-img">
+                            <span>本人头像</span>
+                            <input type="hidden" value="" name="pic1">
+                            <span>身份证正面</span>
+                            <input type="hidden" value="" name="pic2">
+                            <span>种植基地照片</span>
+                            <input type="hidden" value="" name="pic3">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ft">
+                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="yc-form mt15">
+            <div class="group-title"><i class="fa fa-angle-down expand"></i><span>现货资源</span><b>（请上传供货商现场图片，图片大小600*380）</b></div>
+            <form id="" method="post" action="">
+                <div class="group">
+                    <div class="txt">
+                        <span>上传照片</span>
+                    </div>
+                    <div class="cont">
+                        <ul class="yc-ul yc-form-img">
+                            <li class="goods-img">
+                                <span></span>
+                                <input type="hidden" value="" name="pic1">
+                                <b>照片说明</b>
+                                <input type="text" class="ipt" name="">
+                            </li>
+                            <li class="goods-img">
+                                <span></span>
+                                <input type="hidden" value="" name="pic1">
+                                <b>照片说明</b>
+                                <input type="text" class="ipt" name="">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="ft">
+                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="yc-form mt15">
+            <div class="group-title"><i class="fa fa-angle-down expand"></i><span>其他图片</span><b>（请上传企业资质&amp;生产环境图片，图片大小400*300）</b></div>
+            <form id="" method="post" action="">
+                <div class="group">
+                    <div class="txt">
+                        <span>上传照片</span>
+                    </div>
+                    <div class="cont">
+                        <ul class="yc-ul yc-form-img">
+                            <li class="goods-img">
+                                <span></span>
+                                <input type="hidden" value="" name="pic1">
+                                <b>照片说明</b>
+                                <input type="text" class="ipt" name="">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="ft">
+                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="yc-form mt15">
+            <div class="group-title"><i class="fa fa-angle-down expand"></i><span>跟进记录</span></div>
+            <div class="table-chart">
+            <form id="" method="post" action="">
+                <div class="group">
+                    <div class="cols w1">记录时间</div>
+                    <div class="cols w2">记录人</div>
+                    <div class="cols w3">接触类型</div>
+                    <div class="cols w4">摘要</div>
+                </div>
+                <div class="group">
+                    <div class="cols w1"><input type="text" autocomplete="off" name="" value="" class="yc-ipt" onclick="laydate()"></div>
+                    <div class="cols w2"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
+                    <div class="cols w3"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
+                    <div class="cols w4"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
+                </div>
+                <div class="ft">
+                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="" class="ubtn ubtn-green button jaddRecord">添加新记录</button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+        <div class="yc-form mt15">
+            <div class="group-title"><i class="fa fa-angle-down expand"></i><span>会员升级</span></div>
+            <form id="" method="post" action="">
+                <div class="group">
+                    <div class="txt">
+                        <span>升级类型</span>
+                    </div>
+                    <div class="cont">
+                        <select name="" id="" class="slt">
+                            <option value="">药采通</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="txt">
+                        <span>开通时长</span>
+                    </div>
+                    <div class="cont">
+                        <select name="" id="" class="slt">
+                            <option value="">2年</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="ft">
+                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                </div>
+            </form>
+        </div>
+
     </section>
 </div>
 <script src="{{ static_url('plugins/validator/jquery.validator.min.js?local=zh-CN') }}"></script>
 <script src="{{ static_url('plugins/layer/layer.js') }}"></script>
+<script src="{{ static_url('js/croppic.min.js')}}"></script>
+<script src="{{ static_url('js/notify.js')}}"></script>
+<script src="{{ static_url('plugins/laydate/laydate.js')}}"></script>
+
 <script>
 $(function(){
+    $('input[readonly]').on('focus', function(){
+        this.blur();
+    })
+
+    // 折叠
+    $('.expand').parent().on('click', function() {
+        $(this).find('.expand').toggleClass('fa-angle-down fa-angle-up')
+        $(this).next().slideToggle();
+    })
     $('#userinfo').validator({
         fields: {
             nickname: '个人称呼: required',
@@ -124,6 +336,113 @@ $(function(){
             } 
         }
     });
+
+    var $imgWrap, cropModal;
+
+    var croppicOptions = {
+        uploadUrl:'/uploadimage',
+        cropUrl:'/cropimage',
+        uploadData:{'_xsrf':$("input[name='_xsrf']").val()},
+        cropData:{'_xsrf':$("input[name='_xsrf']").val()},
+        imgEyecandyOpacity: 0.5,
+        loaderHtml:'<span class="loader">正在上传图片，请稍后...</span>',
+        onBeforeImgUpload: function(){},
+        onAfterImgUpload: function(){},
+        onImgDrag: function(){},
+        onImgZoom: function(){},
+        onBeforeImgCrop: function(){},
+        onAfterImgCrop:function(response){ 
+            $imgWrap.append('<img src="' + response.url + '" /><i class="del" title="删除"></i>').next().val(response.url);
+            // 关闭弹层
+            layer.closeAll();
+        },
+        onReset:function(){ console.log('onReset') },
+        onError:function(msg){
+            $.notify({
+                type: 'error', 
+                title: msg.title,   // 不允许的文件类型
+                text: msg.message,     //'支持 jpg、jepg、png、gif等格式图片文件', 
+                delay: 3e3
+            });
+        }
+    }
+
+    var $goodsImg = $('.yc-form-img');
+    // 上传图片
+    $goodsImg.on('click', 'span', function() {
+        layer.open({
+            area: ['600px'],
+            closeBtn: 1,
+            type: 1,
+            moveType: 1,
+            content: '<div class="img-upload-main"><div class="clip" id="imgCrop"></div></div>',
+            title: '上传图片',
+            cancel: function() {
+                cropModal.destroy();
+            }
+        });
+        $imgWrap = $(this);
+        cropModal = new Croppic('imgCrop', croppicOptions);
+    })
+
+    // 点击图片不打开弹层
+    $goodsImg.on('click', 'img', function() {
+        return false;
+    })
+
+    // 删除图片
+    $goodsImg.on('click', '.del', function() {
+        var $self = $(this);
+        layer.confirm('确认删除交易照片？', {
+            btn: ['确认','取消'] //按钮
+        }, function(index){
+            $.ajax({
+                url: '/delfile',
+                dataType: 'json',
+                data: {"imgUrl":$self.parent().next().val()},
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        $self.parent().next().val('').prev().find('img, i').remove();
+                        layer.close(index);
+                    } else {
+                        lpPopover(data.message);
+                    }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            lpPopover('网络连接超时，请您稍后重试!');
+        }
+        });
+        });
+        return false;
+    })
+
+    // 添加新图片
+    $('.jaddPic').on('click', function() {
+        var $imgs = $(this).parent().prev().find('.yc-form-img'),
+            count = $imgs.find('.goods-img').length,
+            modal = '<li class="goods-img">'
+                +       '<span></span>'
+                +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
+                +       '<b>照片说明</b>'
+                +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
+                +   '</li>';
+        $imgs.append(modal);
+    })
+
+    // 添加新记录
+    $('.jaddRecord').on('click', function() {
+        var modal = '<div class="group">'
+                +       '<div class="cols w1"><input type="text" onclick="laydate()" class="yc-ipt" value="" name="" autocomplete="off"></div>'
+                +       '<div class="cols w2"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
+                +       '<div class="cols w3"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
+                +       '<div class="cols w4"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
+                +   '</div>';
+        $(this).parent().before(modal);
+    })
 })
 </script>
 {% end %}
