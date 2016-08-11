@@ -7,6 +7,7 @@ i,em{font-style:normal;}
 a:focus{outline:none;}
 
 header,footer,.sec,.container{min-width:1170px;}
+.wrap{width:1200px;margin:0 auto;}
 
 /* iconfont */
 @font-face {font-family: "iconfont";
@@ -24,12 +25,14 @@ header,footer,.sec,.container{min-width:1170px;}
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-diqiu:before { content: "\e622"; }
 .icon-mobile:before { content: "\e603"; }
 .icon-avatar:before { content: "\e619"; }
 .icon-fold:before { content: "\e60a"; }
 .icon-pass:before { content: "\e60d"; }
 .icon-arrow:before { content: "\e602"; }
 .icon-phone:before { content: "\e60f"; }
+.icon-angledoubleright:before { content: "\e623"; }
 .icon-circle-yes:before { content: "\e600"; }
 .icon-question:before { content: "\e605"; }
 .icon-lock:before { content: "\e612"; }
@@ -43,6 +46,7 @@ header,footer,.sec,.container{min-width:1170px;}
 .icon-check:before { content: "\e614"; }
 .icon-plus:before { content: "\e609"; }
 .icon-wechat:before { content: "\e610"; }
+.icon-renzheng:before { content: "\e61f"; }
 .icon-envelope:before { content: "\e611"; }
 .icon-qq:before { content: "\e613"; }
 .icon-tanhao:before { content: "\e60e"; }
@@ -50,8 +54,13 @@ header,footer,.sec,.container{min-width:1170px;}
 .icon-user:before { content: "\e604"; }
 .icon-remove:before { content: "\e61c"; }
 .icon-close:before { content: "\e607"; }
+.icon-sanjiao:before { content: "\e61b"; }
 .icon-unfold:before { content: "\e60b"; }
+.icon-1wangshangzixun:before { content: "\e621"; }
 .icon-list:before { content: "\e618"; }
+.icon-dianzan:before { content: "\e61d"; }
+.icon-renzheng1:before { content: "\e620"; }
+.icon-liucheng:before { content: "\e61e"; }
 
 /* iconfont color */
 .icon-radio-yes{color:#4cc035;vertical-align:middle;}
