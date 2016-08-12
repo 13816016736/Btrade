@@ -4,7 +4,8 @@ import tornado.web
 from base import BaseHandler
 import config, time
 from utils import *
-
+import os
+from collections import defaultdict
 class MainHandler(BaseHandler):
     def get(self):
         self.redirect('/users/userlist')
@@ -54,6 +55,42 @@ class UserInfoHandler(BaseHandler):
             quanlity["identifiers"] = ""
             quanlity["company"] = ""
             quanlity["address"] = ""
+            quanlity["attachments"]=defaultdict(list)
+            quanlity["varietyimg"]=[]
+            quanlity["otherimg"]=[]
+        else:
+            qualityattachments = self.db.query(
+                "select * from quality_attachment where quality_id=%s and type=1", quanlity["id"])
+            for qualityattachment in qualityattachments:
+                base, ext = os.path.splitext(os.path.basename(qualityattachment.attachment))
+                qualityattachment.attachment = config.img_domain + qualityattachment.attachment[
+                                                                   qualityattachment.attachment.find(
+                                                                     "static"):].replace(base, base + "_thumb")
+            attachmentmap=dict((i.describeinfo, i.attachment) for i in qualityattachments)
+            quanlity["attachments"] = attachmentmap
+
+            varietyimg = self.db.query(
+                "select * from quality_attachment where quality_id=%s and type=2", quanlity["id"])
+            for qualityattachment in varietyimg:
+                base, ext = os.path.splitext(os.path.basename(qualityattachment.attachment))
+                qualityattachment.attachment = config.img_domain + qualityattachment.attachment[
+                                                                   qualityattachment.attachment.find(
+                                                                     "static"):].replace(base, base + "_thumb")
+            quanlity["varietyimg"] = varietyimg
+
+            otherimg = self.db.query(
+                "select * from quality_attachment where quality_id=%s and type=3", quanlity["id"])
+
+            for qualityattachment in otherimg:
+                base, ext = os.path.splitext(os.path.basename(qualityattachment.attachment))
+                qualityattachment.attachment = config.img_domain + qualityattachment.attachment[
+                                                                   qualityattachment.attachment.find(
+                                                                     "static"):].replace(base, base + "_thumb")
+            quanlity["otherimg"] = otherimg
+
+
+
+
         self.render("userinfo.html", user=user,quanlity=quanlity)
 
     @tornado.web.authenticated

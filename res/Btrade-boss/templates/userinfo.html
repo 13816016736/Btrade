@@ -10,6 +10,7 @@
             <a href="javascript:history.back(-1);">&lt; 返回会员列表</a>
         </div>
         <div class="yc-form">
+            {% raw xsrf_form_html() %}
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>基本资料</span></div>
             <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
                 <div class="group">
@@ -131,7 +132,7 @@
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>认证信息</span></div>
             <form id="identifyinfo" method="post" action="/user/identify">
                 <input type="hidden" name="id" value="{{user.id}}">
-                <input type="hidden" name="qid" value="{{ quanlity['id'] }}">
+                <input type="hidden" name="qid" value="{{quanlity['id'] }}">
                 <div class="group">
                     <div class="txt">
                         <span>用户身份</span>
@@ -210,27 +211,25 @@
                     <div class="cont yc-form-img">
                         <div class="goods-img">
                             {% if quanlity["type"]==1 %}
-                            <span>本人头像</span>
-                            <input type="hidden" value="" name="pic1">
-                            <span>身份证正面</span>
-                            <input type="hidden" value="" name="pic2">
-                            <span>种植基地照片</span>
-                            <input type="hidden" value="" name="pic3">
+                            {% for key in imgmap1.keys() %}
+                            <span>
+                                {{imgmap1[key]}}
+                                {% if quanlity['attachments'].has_key(imgmap1[key]) %}
+                                <img src="{{quanlity['attachments'][imgmap1[key]].replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" value="{% if quanlity['attachments'].has_key(imgmap1[key]) %}{{quanlity['attachments'][imgmap1[key]].replace('_thumb','')}}{% end %}" name="pic{{key}}">
+                            {%  end %}
                             {% else %}
-                            <span>企业全景</span>
-                            <input type="hidden" value="" name="pic1">
-                            <span>联系人身份证正面</span>
-                            <input type="hidden" value="" name="pic2">
-                            <span>法人身份证正面</span>
-                            <input type="hidden" value="" name="pic3">
-                            <span>营业执照</span>
-                            <input type="hidden" value="" name="pic4">
-                            <span>GSP证书</span>
-                            <input type="hidden" value="" name="pic5">
-                            <span>中草药收购证</span>
-                            <input type="hidden" value="" name="pic6">
-                             <span>授权书2.0</span>
-                            <input type="hidden" value="" name="pic7">
+                            {% for key in imgmap2.keys() %}
+                            <span>
+                                {{imgmap2[key]}}
+                                {% if quanlity['attachments'].has_key(imgmap2[key]) %}
+                                <img src="{{quanlity['attachments'][imgmap2[key]].replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" value="{% if quanlity['attachments'].has_key(imgmap2[key]) %}{{quanlity['attachments'][imgmap2[key]].replace('_thumb','')}}{% end %}" name="pic{{key}}">
+                            {% end %}
                             {% end %}
                         </div>
                     </div>
@@ -244,7 +243,9 @@
 
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>现货资源</span><b>（请上传供货商现场图片，图片大小600*380）</b></div>
-            <form id="" method="post" action="">
+            <form id="varietyimg" method="post" action="/quality/upload">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <input type="hidden" name="imgtype" value="2">
                 <div class="group">
                     <div class="txt">
                         <span>上传照片</span>
@@ -252,31 +253,42 @@
                     <div class="cont">
                         <ul class="yc-ul yc-form-img">
                             <li class="goods-img">
+                                {% if len(quanlity["varietyimg"])!=0 %}
+                                {% for index,item in enumerate(quanlity["varietyimg"]) %}
+                                <span>
+                                <img src="{{item.attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                </span>
+                                <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index}}">
+                                <b>照片说明</b>
+                                <input type="text" class="ipt" name="descpic{{index}}" value="{{item['describeinfo']}}">
+                                <b>品种名称</b>
+                                <input type="text" class="ipt" name="varietypic{{index}}" value="{{item['varietyname']}}">
+                                {% end %}
+                                {% else %}
                                 <span></span>
                                 <input type="hidden" value="" name="pic1">
                                 <b>照片说明</b>
-                                <input type="text" class="ipt" name="">
-                            </li>
-                            <li class="goods-img">
-                                <span></span>
-                                <input type="hidden" value="" name="pic1">
-                                <b>照片说明</b>
-                                <input type="text" class="ipt" name="">
+                                <input type="text" class="ipt" name="descpic1">
+                                <b>品种名称</b>
+                                <input type="text" class="ipt" name="varietypic1">
+                                {% end %}
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
-                    <button type="button" id="" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                    <button type="submit" id="submit-btn" class="ubtn ubtn-orange button">提交</button>
+                    <button type="submit" id="add-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
                 </div>
             </form>
         </div>
 
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>其他图片</span><b>（请上传企业资质&amp;生产环境图片，图片大小400*300）</b></div>
-            <form id="" method="post" action="">
+            <form id="otherimg" method="post" action="/quality/upload">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <input type="hidden" name="imgtype" value="3">
                 <div class="group">
                     <div class="txt">
                         <span>上传照片</span>
@@ -287,15 +299,15 @@
                                 <span></span>
                                 <input type="hidden" value="" name="pic1">
                                 <b>照片说明</b>
-                                <input type="text" class="ipt" name="">
+                                <input type="text" class="ipt" name="descpic1">
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
-                    <button type="button" id="" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                    <button type="submit" id="submit-other-btn" class="ubtn ubtn-orange button">提交</button>
+                    <button type="submit" id="add-other-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
                 </div>
             </form>
         </div>
@@ -629,14 +641,27 @@ $(function(){
 
     // 添加新图片
     $('.jaddPic').on('click', function() {
-        var $imgs = $(this).parent().prev().find('.yc-form-img'),
-            count = $imgs.find('.goods-img').length,
-            modal = '<li class="goods-img">'
-                +       '<span></span>'
-                +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
-                +       '<b>照片说明</b>'
-                +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
-                +   '</li>';
+        id=$(this).attr("id");
+        var $imgs = $(this).parent().prev().find('.yc-form-img');
+        count = $imgs.find('.goods-img').length;
+        if(id!="add-btn"){
+                modal = '<li class="goods-img">'
+                    +       '<span></span>'
+                    +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
+                    +       '<b>照片说明</b>'
+                    +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
+                    +   '</li>';
+                    }
+        else{
+                modal = '<li class="goods-img">'
+                    +       '<span></span>'
+                    +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
+                    +       '<b>照片说明</b>'
+                    +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
+                    +       '<b>品种名称</b>'
+                    +       '<input type="text" name="varietypic' + (count + 1) +'" class="ipt">'
+                    +   '</li>';
+        }
         $imgs.append(modal);
     })
 
@@ -711,7 +736,7 @@ $(function(){
             if ( $(form).isValid() ) {
                 $.ajax({
                     url: '/user/identify',
-                    data: $('#userinfo').serialize(),
+                    data: $('#identifyinfo').serialize(),
                     dataType: 'json',
                     type: 'POST',
                     beforeSend: function(jqXHR, settings) {
@@ -732,7 +757,57 @@ $(function(){
         }
     });
 
+    $('#varietyimg').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/quality/upload',
+                    data: $('#varietyimg').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
 
+    $('#otherimg').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/quality/upload',
+                    data: $('#otherimg').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
 
 
 })

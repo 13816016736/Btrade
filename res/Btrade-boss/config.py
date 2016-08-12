@@ -34,6 +34,7 @@ handlers = [
     (r"/admin/reset",AdminResetHandler),
     #(r"/users/userlist/page/([0-9]+)", UserListHandler),
     (r"/user/identify",IdentifyUserHandler),
+    (r"/quality/upload",QualityUploadHandler),
     (r"/users/adminlist", AdminListHandler),
     (r"/admin/userinfo",AdminUserHandler),
     (r"/admin/update", UpdateAdminStatusHandler),
@@ -91,5 +92,18 @@ log = True
 #日志记录位置
 log_file = 'Btrade-boss/log/tornado.log'
 
+imgmap1={
+    1:u"本人头像",
+    2: u"身份证正面",
+    3:u"种植基地照片"
+}
+imgmap2={
+    1: u"企业全景",
+    2: u"联系人身份证正面",
+    3: u"法人身份证正面",
+    4: u"营业执照",
+    5: u"GSP证书",
+    6: u"中草药收购证",
+    7: u"授权书2.0"
 
-
+}

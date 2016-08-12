@@ -263,6 +263,19 @@ class TransactionEditHandler(BaseHandler):
                 self.db.execute("update transaction set quantity=%s,price=%s,total=%s,delivertime=%s,checktime=%s,suppliercomment=%s"
                 ",purchasecomment=%s,score_to_supplier=%s,score_to_purchase=%s,pay=%s,payday=%s,payinfo=%s where id=%s"
                                 ,amount,price,sum,delivertime,checktime,suppliercomment,purchasecomment,score_to_supplier,score_to_purchase,paytype,payday,payinfo,tid)
+                attachments=self.db.query("select * from transaction_attachment where transaction_id=%s",tid)
+                for item in attachments:#删除不要的图片文件
+                    if item["attachment"] in piclist:
+                        continue
+                    try:
+                        rpath = config.img_path
+                        base, ext = os.path.splitext(os.path.basename(item["attachment"]))
+                        thumbpath = item["attachment"][item["attachment"].find("static"):].replace(base, base + "_thumb")
+                        thumbpath = rpath[0:rpath.find("static")] + thumbpath[thumbpath.find("static"):]
+                        os.remove(item["attachment"])
+                        os.remove(thumbpath)
+                    except:
+                         pass
                 self.db.execute("delete from transaction_attachment where transaction_id=%s",tid)
                 for attachment in piclist:
                     self.db.execute("insert into transaction_attachment (attachment,transaction_id) value(%s,%s)",attachment,tid)
@@ -409,6 +422,14 @@ class DelFileHandler(BaseHandler):
         imgUrl = self.get_argument("imgUrl")
         rpath = config.img_path
         img_path = rpath[0:rpath.find("static")] + imgUrl[imgUrl.find("static/"):]
+        attachment=self.db.query("select * from transaction_attachment where attachment=%s",img_path)
+        if attachment:
+            self.api_response({'status': 'success', 'message': '删除成功'})
+            return
+        attachment = self.db.query("select * from quality_attachment where attachment=%s", img_path)
+        if attachment:
+            self.api_response({'status': 'success', 'message': '删除成功'})
+            return
         try:
             base, ext = os.path.splitext(os.path.basename(img_path))
             thumbpath= img_path[img_path.find("static"):].replace(base,base + "_thumb")
