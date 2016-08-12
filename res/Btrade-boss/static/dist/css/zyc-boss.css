@@ -1152,9 +1152,10 @@ table.text-center,table.text-center td,table.text-center th{text-align:center}
 .referrer-list label{display:block;line-height:18px;}
 .form-wait{position:fixed;top:0;left:0;z-index:9;width:100%;height:100%;min-height:32px;background:url(../../images/blank.gif);}
 .form-wait i{position:absolute;width:100px;height:100px;left:50%;top:50%;margin:-50px 0 0 -50px;background:rgba(0,0,0,.1) url(../../images/loading.gif) no-repeat 50%;border-radius:10px;}
-.yc-form-img li{width:40%;}
+.yc-form-img li{width:40%;vertical-align:top;}
 .yc-form-img li span{float:left;}
-.yc-form-img li b{display:block;margin-bottom:10px;font-weight:400;}
+.yc-form-img li .desc{margin-left:115px;}
+.yc-form-img li .desc .ipt{margin-top:10px !important;}
 .yc-form-img .goods-img{margin-bottom:20px;}
 
 @media (max-width:670px){
