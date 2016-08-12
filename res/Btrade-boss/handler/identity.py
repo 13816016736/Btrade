@@ -6,6 +6,7 @@ import config
 import time
 import datetime
 from utils import *
+from datetime import timedelta,datetime
 
 class IdentifyUserHandler(BaseHandler):
     def get(self):
@@ -147,4 +148,60 @@ class QualityUploadHandler(BaseHandler):
                 picitem["describe"], picitem["path"],picitem["varietyname"])
         self.api_response(
             {'status': 'success', 'message': '提交成功'})
+
+
+class UpdateRecordHandler(BaseHandler):
+    def get(self):
         pass
+
+    @tornado.web.authenticated
+    def post(self):
+        id = self.get_argument("id", None)
+        user=self.db.get("select * from users where id=%s",id)
+        if user==None:
+            self.api_response(
+                {'status': 'fail', 'message': '没有该用户'})
+            return
+        recordlist=[]
+        for i in range(1,100):#暂时存100条
+            recordtime=self.get_argument("recordtime%s"%i,"")
+            if recordtime=="":
+                continue
+            recorder=self.get_argument("recorder%s"%i,"")
+            contacttype=self.get_argument("contacttype%s"%i,"")
+            abstract=self.get_argument("abstract%s"%i,"")
+            item={"recordtime":recordtime,"recorder":recorder,"contacttype":contacttype,"abstract":abstract}
+            recordlist.append(item)
+        self.db.execute("delete from follow_record where userid=%s", id)
+
+        for record in recordlist:
+            self.db.execute(
+                "insert into follow_record (recorder,contacttype,abstract,recordtime,userid,createtime) value(%s,%s,%s,%s,%s,%s)",record["recorder"], record["contacttype"],
+                record["abstract"], record["recordtime"],id,str(int(time.time())))
+        self.api_response({'status': 'success', 'message': '提交成功'})
+
+class UpgradeUserHandler(BaseHandler):
+    def get(self):
+        pass
+
+    @tornado.web.authenticated
+    def post(self):
+        id = self.get_argument("id", None)
+        user=self.db.get("select * from users where id=%s",id)
+        if user==None:
+            self.api_response(
+                {'status': 'fail', 'message': '没有该用户'})
+            return
+        membertype=self.get_argument("membertype", None)
+        term=self.get_argument("term", None)
+        upgradetime=int(time.time())
+        expiredday=datetime.now()+timedelta(days=int(term)*365)
+        expiredtime=int(time.mktime(expiredday.timetuple()))
+        if membertype and term:
+            member=self.db.get("select * from member where userid=%s",id)
+            if member:
+                self.db.execute("update member set term=%s,upgradetime=%s,type=%s,expiredtime=%s where id=%s",term,upgradetime,membertype,expiredtime,member.id)
+            else:
+                self.db.execute("insert into member (userid,term,upgradetime,type,expiredtime) value(%s,%s,%s,%s,%s)",id, term, upgradetime,
+                                membertype, expiredtime)
+        self.api_response({'status': 'success', 'message': '提交成功'})

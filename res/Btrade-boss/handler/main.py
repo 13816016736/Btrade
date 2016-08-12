@@ -88,10 +88,12 @@ class UserInfoHandler(BaseHandler):
                                                                      "static"):].replace(base, base + "_thumb")
             quanlity["otherimg"] = otherimg
 
+        records=self.db.query("select * from follow_record where userid=%s",userid)
+        member=self.db.get("select * from member where userid=%s",userid)
 
 
 
-        self.render("userinfo.html", user=user,quanlity=quanlity)
+        self.render("userinfo.html", user=user,quanlity=quanlity,records=records,member=member)
 
     @tornado.web.authenticated
     def post(self):

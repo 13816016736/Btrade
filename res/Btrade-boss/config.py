@@ -35,6 +35,8 @@ handlers = [
     #(r"/users/userlist/page/([0-9]+)", UserListHandler),
     (r"/user/identify",IdentifyUserHandler),
     (r"/quality/upload",QualityUploadHandler),
+    (r"/record/update",UpdateRecordHandler),
+    (r"/user/upgrade", UpgradeUserHandler),
     (r"/users/adminlist", AdminListHandler),
     (r"/admin/userinfo",AdminUserHandler),
     (r"/admin/update", UpdateAdminStatusHandler),

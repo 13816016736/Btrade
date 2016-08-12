@@ -252,34 +252,36 @@
                     </div>
                     <div class="cont">
                         <ul class="yc-ul yc-form-img">
-                            <li class="goods-img">
                                 {% if len(quanlity["varietyimg"])!=0 %}
                                 {% for index,item in enumerate(quanlity["varietyimg"]) %}
+                                <li class="goods-img">
                                 <span>
                                 <img src="{{item.attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
                                 </span>
-                                <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index}}">
-                                <b>照片说明</b>
-                                <input type="text" class="ipt" name="descpic{{index}}" value="{{item['describeinfo']}}">
-                                <b>品种名称</b>
-                                <input type="text" class="ipt" name="varietypic{{index}}" value="{{item['varietyname']}}">
+                                <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index+1}}">
+                                <div class="desc">
+                                    <input type="text" class="ipt" name="descpic{{index+1}}" placeholder="照片说明" value="{{item['describeinfo']}}">
+                                    <input type="text" class="ipt" name="varietypic{{index+1}}" placeholder="品种名称" value="{{item['varietyname']}}">
+                                </div>
+                                 </li>
                                 {% end %}
                                 {% else %}
+                               <li class="goods-img">
                                 <span></span>
                                 <input type="hidden" value="" name="pic1">
-                                <b>照片说明</b>
-                                <input type="text" class="ipt" name="descpic1">
-                                <b>品种名称</b>
-                                <input type="text" class="ipt" name="varietypic1">
+                                <div class="desc">
+                                    <input type="text" class="ipt" name="" placeholder="照片说明">
+                                    <input type="text" class="ipt" name="" placeholder="品种名称">
+                                </div>
+                                </li>
                                 {% end %}
-                            </li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="ft">
                     <button type="submit" id="submit-btn" class="ubtn ubtn-orange button">提交</button>
-                    <button type="submit" id="add-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                    <button type="button" id="add-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
                 </div>
             </form>
         </div>
@@ -295,19 +297,32 @@
                     </div>
                     <div class="cont">
                         <ul class="yc-ul yc-form-img">
+                            {% if len(quanlity["otherimg"])!=0 %}
+                            {% for index,item in enumerate(quanlity["otherimg"]) %}
+                            <li class="goods-img">
+                                <span>
+                                    <img src="{{item.attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                </span>
+                                <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index+1}}">
+                                <b>照片说明</b>
+                                <input type="text" class="ipt" value="{{item['describeinfo']}}" name="descpic{{index+1}}">
+                            </li>
+                            {% end %}
+                            {% else %}
                             <li class="goods-img">
                                 <span></span>
                                 <input type="hidden" value="" name="pic1">
                                 <b>照片说明</b>
                                 <input type="text" class="ipt" name="descpic1">
                             </li>
+                            {% end %}
                         </ul>
                     </div>
                 </div>
 
                 <div class="ft">
                     <button type="submit" id="submit-other-btn" class="ubtn ubtn-orange button">提交</button>
-                    <button type="submit" id="add-other-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                    <button type="button" id="add-other-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
                 </div>
             </form>
         </div>
@@ -315,22 +330,34 @@
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>跟进记录</span></div>
             <div class="table-chart">
-            <form id="" method="post" action="">
+            <form id="recordinfo" method="post" action="/record/update">
+                <input type="hidden" name="id" value="{{user.id}}">
                 <div class="group">
                     <div class="cols w1">记录时间</div>
                     <div class="cols w2">记录人</div>
                     <div class="cols w3">接触类型</div>
                     <div class="cols w4">摘要</div>
                 </div>
+                 {% if records %}
+                 {% for index,item in enumerate(records)%}
                 <div class="group">
-                    <div class="cols w1"><input type="text" autocomplete="off" name="" value="" class="yc-ipt" onclick="laydate()"></div>
-                    <div class="cols w2"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
-                    <div class="cols w3"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
-                    <div class="cols w4"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
+                   <div class="cols w1"><input type="text" autocomplete="off" name="recordtime{{index+1}}" value="{{item.recordtime}}" class="yc-ipt" onclick="laydate()"></div>
+                    <div class="cols w2"><input type="text" autocomplete="off" name="recorder{{index+1}}" value="{{item.recorder}}" class="yc-ipt"></div>
+                    <div class="cols w3"><input type="text" autocomplete="off" name="contacttype{{index+1}}" value="{{item.contacttype}}" class="yc-ipt"></div>
+                    <div class="cols w4"><input type="text" autocomplete="off" name="abstract{{index+1}}" value="{{item.abstract}}" class="yc-ipt"></div>
                 </div>
+                {% end %}
+                 {% else %}
+                <div class="group">
+                   <div class="cols w1"><input type="text" autocomplete="off" name="recordtime1" value="" class="yc-ipt" onclick="laydate()"></div>
+                    <div class="cols w2"><input type="text" autocomplete="off" name="recorder1" value="" class="yc-ipt"></div>
+                    <div class="cols w3"><input type="text" autocomplete="off" name="contacttype1" value="" class="yc-ipt"></div>
+                    <div class="cols w4"><input type="text" autocomplete="off" name="abstract1" value="" class="yc-ipt"></div>
+                </div>
+                {% end %}
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
-                    <button type="button" id="" class="ubtn ubtn-green button jaddRecord">添加新记录</button>
+                    <button type="submit" id="record-submit" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="add-record" class="ubtn ubtn-green button jaddRecord">添加新记录</button>
                 </div>
             </form>
             </div>
@@ -338,16 +365,17 @@
 
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>会员升级</span></div>
-            <form id="" method="post" action="">
+            <form id="upgrade" method="post" action="/user/upgrade">
+                 <input type="hidden" name="id" value="{{user.id}}">
                 <div class="group">
                     <div class="txt">
                         <span>升级类型</span>
                     </div>
                     <div class="cont">
-                        <select name="" id="" class="slt">
+                        <select name="membertype" id="membertype" class="slt">
                             {% for key in membertype.keys() %}
                             {% if key>0 %}
-                            <option value="{{ key }}">{{membertype[key]}}</option>
+                            <option value="{{ key }}" {% if member and member.type==key %}selected {% end %}>{{membertype[key]}}</option>
                             {% end %}
                             {% end %}
                         </select>
@@ -358,15 +386,15 @@
                         <span>开通时长</span>
                     </div>
                     <div class="cont">
-                        <select name="" id="" class="slt">
-                            <option value="">1年</option>
-                            <option value="">2年</option>
+                        <select name="term" id="term" class="slt">
+                            <option value="1" {% if member and member.term==1 %}selected {% end %}>1年</option>
+                            <option value="2" {% if member and member.term==2 %}selected {% end %}>2年</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                    <button type="submit" id="upgrade-submit" class="ubtn ubtn-orange button">提交</button>
                 </div>
             </form>
         </div>
@@ -656,10 +684,10 @@ $(function(){
                 modal = '<li class="goods-img">'
                     +       '<span></span>'
                     +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
-                    +       '<b>照片说明</b>'
-                    +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
-                    +       '<b>品种名称</b>'
-                    +       '<input type="text" name="varietypic' + (count + 1) +'" class="ipt">'
+                    +       '<div class="desc">'
+                    +       '<input type="text" class="ipt" name="descpic' + (count + 1) +'" placeholder="照片说明">'
+                    +       '<input type="text" class="ipt" name="varietypic' + (count + 1) +'" placeholder="品种名称">'
+                    +       '</div>'
                     +   '</li>';
         }
         $imgs.append(modal);
@@ -667,11 +695,13 @@ $(function(){
 
     // 添加新记录
     $('.jaddRecord').on('click', function() {
+        var $groups = $(this).parent().parent().find('.group');
+        count = $groups.length-1;
         var modal = '<div class="group">'
-                +       '<div class="cols w1"><input type="text" onclick="laydate()" class="yc-ipt" value="" name="" autocomplete="off"></div>'
-                +       '<div class="cols w2"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
-                +       '<div class="cols w3"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
-                +       '<div class="cols w4"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
+                +       '<div class="cols w1"><input type="text" onclick="laydate()" class="yc-ipt" value="" name="recordtime' + (count + 1) +'" autocomplete="off"></div>'
+                +       '<div class="cols w2"><input type="text" class="yc-ipt" value="" name="recorder' + (count + 1) +'" autocomplete="off"></div>'
+                +       '<div class="cols w3"><input type="text" class="yc-ipt" value="" name="contacttype' + (count + 1) +'" autocomplete="off"></div>'
+                +       '<div class="cols w4"><input type="text" class="yc-ipt" value="" name="abstract' + (count + 1) +'" autocomplete="off"></div>'
                 +   '</div>';
         $(this).parent().before(modal);
     })
@@ -808,6 +838,60 @@ $(function(){
             }
         }
     });
+
+     $('#recordinfo').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/record/update',
+                    data: $('#recordinfo').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
+
+     $('#upgrade').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/user/upgrade',
+                    data: $('#upgrade').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
+
+
 
 
 })
