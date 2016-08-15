@@ -1,64 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>首页-药材购</title>
-    <!-- 浏览器高速模式 -->
-    <meta name="renderer" content="webkit" />
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <link rel="stylesheet" href="../static/css/supplier.css" />
-    <!--[if lt IE 9]>
-      <script src="../static/js/html5shiv.min.js"></script>
-      <script src="../static/js/respond.min.js"></script>
-    <![endif]-->
-</head>
-
-<body>
-
-
-<header>
-    <div class="container">
-        <div class="logo">
-            <a href="#"><img class="img-responsive" src="images/logo.png" /></a>
-        </div>
-
-        <nav class="nav">
-            <ul class="yc-ul">
-                <li><a class="current" href="#">首页</a></li>
-                <li><a href="#">发采购</a></li>
-                <li><a href="#">实力供货商</a></li>
-                <li class="bl"><a href="#">我要供货·去报价</a></li>
-            </ul>
-            <div class="iconfont icon-menu nav-icon"></div>
-        </nav>
-
-        <div class="login hide">
-            <ul class="yc-ul">
-                <li><a class="btn btn-orange" href="login.html">登录</a></li>
-                <li><a class="btn btn-white" href="register.html">立即入驻</a></li>
-            </ul>
-        </div>
-
-        <div class="login">
-            <div class="menu">
-                <a href="#">我的工作台</a>
-                <em>0</em>
-                <i></i>
-                <div class="submenu">
-                    <a href="#">我的采购</a>
-                    <a href="#">账户设置</a>
-                    <a href="#">退出</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
+{% extends "base.html" %}
+{% block container %}
+{% import config %}
+<link rel="stylesheet" href="{{ static_url('css/supplier.css')}}" />
 <section class="sec">
     <div class="sp-info">
         <div class="inner">
@@ -161,13 +104,13 @@
         </div>
     </div>
 </section>
+{% end %}
 
 
 
-
-
-<script src="../static/js/jquery.min.js"></script>
-<script src="../static/js/bootstrap.min.js"></script>
+{% block javascript %}
+<script src="{{ static_url('js/jquery.min.js')}}"></script>
+<script src="{{ static_url('js/bootstrap.min.js')}}"></script>
 <script>
     $(function() {
         function Marquee(id) {
@@ -224,7 +167,5 @@
         $('body').append(data);
     })
 </script>
+{% end %}
 
-</body>
-
-</html>

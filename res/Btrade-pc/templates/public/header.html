@@ -5,7 +5,7 @@
                 {% if any(str_ in request.uri for str_ in ("/mypurchase", "/account")) %}
                 <img src="{{ static_url('images/logo_a.png')}}" />
                 {% else %}
-                <img src="{{ static_url('images/logo.png')}}" />
+                <img class="img-responsive" src="{{ static_url('images/logo.png')}}" />
                 {% end %}
             </a>
         </div>
@@ -14,7 +14,10 @@
             <ul class="yc-ul">
                  <li><a {% if request.uri =="/" %}class="current"{% end %} href="/">首页</a></li>
                 <li><a {% if request.uri =="/purchase" %}class="current"{% end %} href="/purchase">发采购</a></li>
+                <!--
                 <li><a {% if request.uri =="/account" %}class="current"{% end %} href="/mypurchase">我的工作台</a></li>
+                -->
+                <li><a {% if request.uri.find("/supplier")==0 %}class="current"{% end %} href="/supplier">实力供货商</a></li>
                 <li class="bl"><a {% if request.uri =="/quote" %}class="current"{% end %} href="/quote">我要供货·去报价</a></li>
             </ul>
         </nav>
