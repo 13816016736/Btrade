@@ -32,146 +32,48 @@
 
             <div class="total">
                 <a href="#" class="btn btn-orange fr">邀请药销通会员报价</a>
-                <span>共入驻实力供货商 <b>15000</b> 位，其中药销通会员 <b>5000</b> 位。</span>
+                <span>共入驻实力供货商 <b>{{total}}</b> 位，其中药销通会员 <b>{{membernum}}</b> 位。</span>
             </div>
 
             <div class="p-list">
                 <ul class="yc-ul">
+                    {% for item in suppliers %}
                     <li>
                         <div class="intro">
-                            <h3 class="name">周瑞<i class="iconfont icon-vip"></i><i class="iconfont icon-verify"></i></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                            <p class="desc">周瑞是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
-                            <p class="link"><a href="#" class="btn">进入供货商主页</a></p>
+                            <h3 class="name">
+                                {{ item["name"] }}
+                                {% if item["ismember"]==1 %}
+                                <i class="iconfont icon-vip"></i>
+                                {% end %}
+                                {% if item["isquality"]==1 %}
+                                <i class="iconfont icon-verify"></i>
+                                {% end %}
+                            </h3>
+                            <p>累计报价：<b>{{item["quote"]}}</b>次  |  累计供货：<b>{{ len(item["transactions"])}}</b>次</p>
+                            <p>主营品种：{{ ",".join( item["supply_variety_name"])}}</p>
+                            <p class="desc">{% if item["introduce"]=="" %}{{item["name"]}}是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。
+                                                    现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ item["introduce"] }} {% end %}</p>
+                            {% if item["isquality"]==1 %}
+                            <p class="link">
+                                <a href="/supplier/detail?qid={{item['qid']}}" class="btn">进入供货商主页</a>
+                            </p>
+                            {% end %}
                         </div>
                         <div class="transaction">
                             <dl>    
                                 <dt>供货记录</dt>
-                                <dd><span><b>3000</b>公斤</span><em>亳州市沪谯药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>上海万仕诚药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>广州采芝林北商药材有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>扬州谦正堂水蛭科技有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>民生药业集团珍医堂印象中国...</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>安徽芍香药业销售有限公司</em></dd>
-                            </dl>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="intro">
-                            <h3 class="name">王金涛药材行<i class="iconfont icon-vip"></i><i class="iconfont icon-verify"></i></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                            <p class="desc">周瑞是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
-                            <p class="link"><a href="#" class="btn">进入供货商主页</a></p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd><span><b>3000</b>公斤</span><em>亳州市沪谯药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>上海万仕诚药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>广州采芝林北商药材有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>扬州谦正堂水蛭科技有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>民生药业集团珍医堂印象中国...</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>安徽芍香药业销售有限公司</em></dd>
-                            </dl>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="intro">
-                            <h3 class="name">永刚药材<i class="iconfont icon-vip"></i><i class="iconfont icon-verify"></i></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                            <p class="desc">周瑞是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
-                            <p class="link"><a href="#" class="btn">进入供货商主页</a></p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd><span><b>3000</b>公斤</span><em>亳州市沪谯药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>上海万仕诚药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>广州采芝林北商药材有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>扬州谦正堂水蛭科技有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>民生药业集团珍医堂印象中国...</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>安徽芍香药业销售有限公司</em></dd>
-                            </dl>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="intro">
-                            <h3 class="name">包拯</h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                            <p class="desc">周瑞是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
-                            <p class="link"><a href="javascript:;" class="btn forbid">进入供货商主页</a></p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
+                                {% if len(item["transactions"])!=0 %}
+                                {% for transaction in item["transactions"] %}
+                                <dd><span><b>{{ transaction.quantity }}</b>公斤</span><em>{{ transaction["purchasenick"]}}</em></dd>
+                                {% end %}
+                                {% else %}
                                 <dd>还没有任何供货记录。</dd>
+                                {% end %}
                             </dl>
                         </div>
                     </li>
-                    <li>
-                        <div class="intro">
-                            <h3 class="name">周瑞<i class="iconfont icon-vip"></i><i class="iconfont icon-verify"></i></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                            <p class="desc">周瑞是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
-                            <p class="link"><a href="#" class="btn">进入供货商主页</a></p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd><span><b>3000</b>公斤</span><em>亳州市沪谯药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>上海万仕诚药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>广州采芝林北商药材有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>扬州谦正堂水蛭科技有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>民生药业集团珍医堂印象中国...</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>安徽芍香药业销售有限公司</em></dd>
-                            </dl>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="intro">
-                            <h3 class="name">周瑞<i class="iconfont icon-vip"></i><i class="iconfont icon-verify"></i></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                            <p class="desc">周瑞是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
-                            <p class="link"><a href="#" class="btn">进入供货商主页</a></p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd><span><b>3000</b>公斤</span><em>亳州市沪谯药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>上海万仕诚药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>广州采芝林北商药材有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>扬州谦正堂水蛭科技有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>民生药业集团珍医堂印象中国...</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>安徽芍香药业销售有限公司</em></dd>
-                            </dl>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="intro">
-                            <h3 class="name">周瑞<i class="iconfont icon-vip"></i><i class="iconfont icon-verify"></i></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                            <p class="desc">周瑞是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
-                            <p class="link"><a href="#" class="btn">进入供货商主页</a></p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd><span><b>3000</b>公斤</span><em>亳州市沪谯药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>上海万仕诚药业有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>广州采芝林北商药材有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>扬州谦正堂水蛭科技有限公司</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>民生药业集团珍医堂印象中国...</em></dd>
-                                <dd><span><b>3000</b>公斤</span><em>安徽芍香药业销售有限公司</em></dd>
-                            </dl>
-                        </div>
-                    </li>
+                    {% end %}
+
                 </ul>
             </div>
 

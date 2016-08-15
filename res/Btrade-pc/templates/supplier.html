@@ -5,9 +5,9 @@
 <section class="sec">
     <div class="sp-info">
         <div class="inner">
-            <h1>李时珍药材行</h1>
-            <h2>主营品种：酸枣仁，柏子仁，山楂，裁胡，金银花</h2>
-            <p>经营规模：10人 / 地址：安徽省亳州市谯城区28号药材市场</p>
+            <h1>{{user.name}}</h1>
+            <h2>主营品种：{{ ",".join(user.supply_variety_name)}}</h2>
+            <p>经营规模：{{user.scale}} / 地址：{{quanlity.address}}</p>
         </div>
     </div>
 
@@ -17,80 +17,75 @@
                 <h3><i class="iconfont icon-angledoubleright"></i>最近供货记录</h3>
                 <div class="marquee" id="jMarquee">
                     <ul class="yc-ul">
-                        <li><span>2016-08-04</span> 在药材购平台与河南聚仁药业完成 野生黄芩的交易。</li>
-                        <li><span>2016-08-04</span> 在药材购平台与河南聚仁药业完成 野生黄芩的交易。</li>
-                        <li><span>2016-08-04</span> 在药材购平台与河南聚仁药业完成 野生黄芩的交易。</li>
-                        <li><span>2016-08-04</span> 在药材购平台与河南聚仁药业完成 野生黄芩的交易。</li>
-                        <li><span>2016-08-04</span> 在药材购平台与河南聚仁药业完成 野生黄芩的交易。</li>
-                        <li><span>2016-08-04</span> 在药材购平台与河南聚仁药业完成 野生黄芩的交易。</li>
+                        {% if transactions %}
+                        {% for item in transactions %}
+                        <li><span>{{ item["createtime"] }}</span> 在药材购平台与{{ item["purchasename"] }}完成 {{ item["varietyname"] }}的交易。</li>
+                        {% end %}
+                        {% else %}
+                        暂无供货记录
+                        {% end %}
                     </ul>
                 </div>
             </div>
             <div class="pic">
                 <ul class="yc-ul">
-                    <li><img src="uploads/sp01.jpg" width="240" height="240"></li>
-                    <li><img src="uploads/sp02.jpg" width="240" height="240"></li>
-                    <li><img src="uploads/sp03.jpg" width="240" height="240"></li>
-                    <li><img src="uploads/sp04.jpg" width="240" height="240"></li>
+                    {% if transactions %}
+                    {% for item in transactions %}
+                    {% for attachment in item["attachments"] %}
+                    <li><img src="{{attachment.attachment.replace('_thumb','')}}" width="240" height="240"></li>
+                    {% end %}
+                    {% end %}
+                    {% end %}
                 </ul>
             </div>
         </div>
 
         <div class="sp-text">
             <h2>实力展示</h2>
-            <p>王金涛药材行是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。</p>
-            <p>现已入驻药材购平台，希望依托该平台为更多客户提供服务！</p>
+            <p>{% if user.introduce=="" %}{{user.nickname}}是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。
+                现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ user.introduce }} {% end %}</p>
         </div>
 
         <div class="sp-pro">
             <ul class="yc-ul">
+                {% for index,item in enumerate(quanlity["varietyimg"]) %}
+                {% if index%2==0 %}
                 <li class="odd">
                     <div class="pic">
-                        <img src="uploads/pro-01.jpg" width="600" height="380">
+                        <img src="{{item.attachment.replace('_thumb','')}}" width="600" height="380">
                     </div>
                     <div class="txt">
                         <div class="tag">现货资源</div>
                         <div class="inf">
-                            <h3>山楂片</h3>
-                            <p>圆片、厚2-3mm、直径1.8cm以上、14#-18#无空心片、异形片、黑片根圆柱状，灰黑色，直径约8毫米；茎被两列毛。叶对生，膜质，卵状披针形，长7-10厘米，基部宽4-8厘米，顶端长渐尖，基部深耳状心形，叶耳圆形，下垂，两面均被柔毛。</p>
+                            <h3>{{item['varietyname']}}</h3>
+                            <p>{{item['describeinfo']}}</p>
                         </div>
                     </div>
                 </li>
+                {% else %}
                 <li class="even">
                     <div class="pic">
-                        <img src="uploads/pro-02.jpg" width="600" height="380">
+                        <img src="{{item.attachment.replace('_thumb','')}}" width="600" height="380">
                     </div>
                     <div class="txt">
                         <div class="tag">现货资源</div>
                         <div class="inf">
-                            <h3>桔梗</h3>
-                            <p>圆片、厚2-3mm、直径1.8cm以上、14#-18#无空心片、异形片、黑片根圆柱状，灰黑色，直径约8毫米；茎被两列毛。叶对生，膜质，卵状披针形，长7-10厘米，基部宽4-8厘米，顶端长渐尖，基部深耳状心形，叶耳圆形，下垂，两面均被柔毛。</p>
+                            <h3>{{item['varietyname']}}</h3>
+                            <p>{{item['describeinfo']}}</p>
                         </div>
                     </div>
                 </li>
-                <li class="odd">
-                    <div class="pic">
-                        <img src="uploads/pro-03.jpg" width="600" height="380">
-                    </div>
-                    <div class="txt">
-                        <div class="tag">现货资源</div>
-                        <div class="inf">
-                            <h3>太子参</h3>
-                            <p>圆片、厚2-3mm、直径1.8cm以上、14#-18#无空心片、异形片、黑片根圆柱状，灰黑色，直径约8毫米；茎被两列毛。叶对生，膜质，卵状披针形，长7-10厘米，基部宽4-8厘米，顶端长渐尖，基部深耳状心形，叶耳圆形，下垂，两面均被柔毛。</p>
-                        </div>
-                    </div>
-                </li>
+                {% end %}
+                {% end %}
+
             </ul>
         </div>
 
         <div class="sp-gallery">
             <ul class="yc-ul">
-                <li><img src="uploads/pro-04.jpg" width="400" height="300"></li>
-                <li><img src="uploads/pro-05.jpg" width="400" height="300"></li>
-                <li><img src="uploads/pro-06.jpg" width="400" height="300"></li>
-                <li><img src="uploads/pro-07.jpg" width="400" height="300"></li>
-                <li><img src="uploads/pro-08.jpg" width="400" height="300"></li>
-                <li><img src="uploads/pro-09.jpg" width="400" height="300"></li>
+                {% for item in quanlity["otherimg"] %}
+                <li><img src="{{item.attachment.replace('_thumb','')}}" width="400" height="300"></li>
+                {% end %}
             </ul>
         </div>
 
