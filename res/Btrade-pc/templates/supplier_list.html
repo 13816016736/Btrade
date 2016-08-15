@@ -11,8 +11,8 @@
                 <div class="form">
                     <form>
                         <label>主营品种：</label>
-                        <input type="text" class="ipt" placehodler="" >
-                        <button type="submit" class="btn btn-orange">搜索</button>
+                        <input type="text" class="ipt" id="querystr" placehodler="品种名" value="{% if query %}{{query}}{% end %}">
+                        <button type="button" id="query" class="btn btn-orange">搜索</button>
                     </form>
                 </div>
                 <div class="hot">
@@ -64,7 +64,7 @@
                                 <dt>供货记录</dt>
                                 {% if len(item["transactions"])!=0 %}
                                 {% for transaction in item["transactions"] %}
-                                <dd><span><b>{{ transaction.quantity }}</b>公斤</span><em>{{ transaction["purchasenick"]}}</em></dd>
+                                <dd><span><b>{{ transaction.quantity }}</b>公斤</span><em>{{ transaction["purchasename"]}}</em></dd>
                                 {% end %}
                                 {% else %}
                                 <dd>还没有任何供货记录。</dd>
@@ -77,6 +77,7 @@
                 </ul>
             </div>
 
+            <!--
             <div class="pagin">
                 <div class="skip">
                     共17页，到第<input type="text" id="jPageSkip" maxlength="4" value="1" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" onkeydown="javascript:if(event.keyCode==13){page_jump();return false;}" class="ipt">页
@@ -97,6 +98,8 @@
                     <a href="?page=2">&gt;</a>
                 </div>
             </div>
+            -->
+              {% module PageNav(nav=nav, show=True) %}
         </div>
         <div class="side">
             <div class="vip">
@@ -145,5 +148,16 @@
     $.get('footer.html?ran=' + ran, function(data) {
         $('body').append(data);
     })
+    $("#query").click(function() {
+                var query = $("#querystr").val();
+
+                if(query!=""){
+                url='/supplier?query='+query;
+
+                url=encodeURI(url)
+                window.location.href=url;
+                }
+
+            });
 </script>
 {% end %}

@@ -35,7 +35,7 @@ class SupplierHandler(BaseHandler):
              for item in t1:
                  supplier={"userid":item["id"],"name":item["name"],"variety":item["varietyids"],"introduce":item["introduce"]}
                  suppliers.append(supplier)
-             t2 = self.db.query("select * from supplier where type pushstatus!=2 %s"%conditions+"limit %s,%s",
+             t2 = self.db.query("select * from supplier where pushstatus!=2 %s"%conditions+"limit %s,%s",
                                           0, (page+1) * config.conf['POST_NUM']-usersnum)
              for item in t2:
                  if item["name"]!="":
@@ -53,7 +53,7 @@ class SupplierHandler(BaseHandler):
                             "introduce": item["introduce"]}
                     suppliers.append(supplier)
             else:
-                t2 = self.db.query("select * from supplier where type pushstatus!=2 %s"%conditions+"limit %s,%s",
+                t2 = self.db.query("select * from supplier where  pushstatus!=2 %s"%conditions+"limit %s,%s",
                                           page * config.conf['POST_NUM']-usersnum, config.conf['POST_NUM'])
                 for item in t2:
                     if item["name"] != "":
@@ -107,12 +107,12 @@ class SupplierHandler(BaseHandler):
                             "select id, name,nickname from users where id in (%s)" % ",".join(puserids))
                         pusermap = dict((i.id, [i.name, i.nickname]) for i in puserinfos)
 
-                        for item in transactions:
-                            item["varietyname"] = purchaseinfomap[item["purchaseinfoid"]][1]
-                            item["specification"] = purchaseinfomap[item["purchaseinfoid"]][2]
-                            item["purchasename"] = pusermap[purchaseinfomap[item["purchaseinfoid"]][0]][0]
-                            item["purchasenick"] = pusermap[purchaseinfomap[item["purchaseinfoid"]][0]][1]
-                            item["createtime"] = time.strftime("%Y-%m-%d", time.localtime(float(item["createtime"])))
+                        for transac in transactions:
+                            transac["varietyname"] = purchaseinfomap[transac["purchaseinfoid"]][1]
+                            transac["specification"] = purchaseinfomap[transac["purchaseinfoid"]][2]
+                            transac["purchasename"] = pusermap[purchaseinfomap[transac["purchaseinfoid"]][0]][0]
+                            transac["purchasenick"] = pusermap[purchaseinfomap[transac["purchaseinfoid"]][0]][1]
+                            transac["createtime"] = time.strftime("%Y-%m-%d", time.localtime(float(transac["createtime"])))
                 item["quote"]=len(quotids)
                 item["transactions"]=transactions
             else:
@@ -125,14 +125,14 @@ class SupplierHandler(BaseHandler):
         if query:
             query_str["query"] = query.encode('utf8')
         nav = {
-            'model': 'purchase/purchaselist',
+            'model': 'supplier',
             'cur': page + 1,
             'num': usersnum+suppliernum,
             'query': "%s" % urlencode(query_str),
         }
 
 
-        self.render("supplier_list.html",total=total,membernum=membernum,suppliers=suppliers,nav=nav)
+        self.render("supplier_list.html",query=query,total=total,membernum=membernum,suppliers=suppliers,nav=nav)
 
     def post(self):
         pass
