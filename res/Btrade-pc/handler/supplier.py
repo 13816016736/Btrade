@@ -50,7 +50,7 @@ class SupplierHandler(BaseHandler):
                  supplier={"userid":-1,"name":name,"variety":item["variety"],"introduce":""}
                  suppliers.append(supplier)
         else :
-            if (page+1) * config.conf['POST_NUM']<usersnum:
+            if (page+1) * config.conf['POST_NUM']<=usersnum:
                 t1 = self.db.query("select * "+ordercondition+" from users where type not in(1,2,9) %s"%conditionu+" order by ordernum desc limit %s,%s",
                                           page * config.conf['POST_NUM'], config.conf['POST_NUM'])
                 for item in t1:
@@ -134,6 +134,7 @@ class SupplierHandler(BaseHandler):
             'cur': page + 1,
             'num': usersnum+suppliernum,
             'query': "%s" % urlencode(query_str),
+            'total':usersnum+suppliernum,
         }
         hot=self.db.query("select varietyid ,name,count(varietyid) as num from purchase_info group by varietyid order by num desc limit 0,10")
         hot=[h.name for h in hot]
@@ -143,8 +144,13 @@ class SupplierHandler(BaseHandler):
         userinfos = self.db.query(
             "select id, name,nickname from users where id in (%s)" % ",".join(userids))
         usermap = dict((i.id, [i.name, i.nickname]) for i in userinfos)
+
+        quanlityinfos = self.db.query("select id,userid from quality_supplier where userid in (%s)" % ",".join(userids))
+        quanlitymap=dict((i.userid, i.id) for i in quanlityinfos)
+
         for rank in rankuser:
-            rank["name"]=usermap[rank.userid][0]
+            rank.name=usermap[rank.userid][0]
+            rank.qid=quanlitymap.get(rank.userid,-1)
 
         self.render("supplier_list.html",query=query,total=total,membernum=membernum,suppliers=suppliers,nav=nav,hot=hot,rankuser=rankuser)
 
@@ -159,6 +165,7 @@ class SupplierDetailHandler(BaseHandler):
         quanlity = self.db.get("select * from quality_supplier where id=%s", qid)
         if quanlity==None:
             self.error(u"没找到该用户","/supplier")
+            return
         else:
             user=self.db.get("select id,name,nickname,varietyids,scale,introduce from users where id=%s",quanlity["userid"])
             variety_list = user.varietyids.split(",")
@@ -166,10 +173,11 @@ class SupplierDetailHandler(BaseHandler):
             for v in variety_list:
                 if v!="":
                     vl.append(v)
-            ret = self.db.query("select name from variety where id in (%s) " % ','.join(vl))
-            supply_variety_name = []
-            for r in ret:
-                supply_variety_name.append(r.name)
+            supply_variety_name=[]
+            if vl!=[]:
+                ret = self.db.query("select name from variety where id in (%s) " % ','.join(vl))
+                for r in ret:
+                    supply_variety_name.append(r.name)
             user.supply_variety_name = supply_variety_name
             quotids=self.db.query("select id from quote where userid=%s",quanlity["userid"])
             if quotids:

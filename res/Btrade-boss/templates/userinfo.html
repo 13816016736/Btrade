@@ -163,7 +163,7 @@
                 </div>
 
 
-                <div class="group address" {% if quanlity["type"]==1  %} style="display:none" {% end %}>
+                <div class="group address">
                     <div class="txt" id="addresslabel">
                         <span>
                             {% if quanlity["type"]==2 %}
@@ -731,7 +731,7 @@ $(function(){
               + '<input type="hidden" value="" name="pic7">';
         if(select_type=="1"){
           $("#identifyinfo").find(".company").hide()
-          $("#identifyinfo").find(".address").hide()
+          $("#addresslabel span").html("收货地址")
           $("#realnamelabel span").html("真实姓名")
           $("#identifyinfo .goods-img").empty()
           $("#identifyinfo .goods-img").html(html1)

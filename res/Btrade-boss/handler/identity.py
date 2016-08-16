@@ -16,15 +16,19 @@ class IdentifyUserHandler(BaseHandler):
         id = self.get_argument("id", None)
         qid = self.get_argument("qid", None)
         usertype=self.get_argument("usertype",None)
+        address = self.get_argument("address", None)
         if int(usertype)!=1:
             compny=self.get_argument("compny",None)
-            address = self.get_argument("address", None)
             if compny==""or address=="":
                 self.api_response(
                     {'status': 'error', 'message': '公司名称和地址不能为空'})
+                return
         else:
             compny =""
-            address=""
+            if address=="":
+                self.api_response(
+                    {'status': 'error', 'message': '地址不能为空'})
+                return
         name = self.get_argument("realname", None)
         identifiers = self.get_argument("idnumber", None)
         if int(usertype)==1:
@@ -92,6 +96,7 @@ class IdentifyUserHandler(BaseHandler):
                 "insert into quality_supplier (userid, type, name,identifiers,company,address,createtime)"
                     "value(%s, %s, %s, %s, %s, %s, %s)",
                     id,usertype,name,identifiers,compny,address ,int(time.time()))
+
             for picitem in piclist:
                 self.db.execute("insert into quality_attachment (type,quality_id,describeinfo,attachment) value(%s,%s,%s,%s)",1,lastrowid,picitem["describe"],picitem["path"])
             self.api_response(

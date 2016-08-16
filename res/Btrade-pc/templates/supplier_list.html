@@ -19,9 +19,9 @@
                     <span>热门品种：</span>
                     {% for index,item in enumerate(hot) %}
                     {% if index==0 %}
-                    <a href="#" class="c-orange">{{item}}</a>
+                    <a href="/supplier?query={{item}}" class="c-orange">{{item}}</a>
                     {% else %}
-                    <a href="#">{{item}}</a>
+                    <a href="/supplier?query={{item}}">{{item}}</a>
                     {% end %}
                     {% end %}
                 </div>
@@ -116,7 +116,7 @@
                 <h3>供货排行榜 </h3>
                 <ul class="yc-ul">
                     {% for item in rankuser %}
-                    <li><a href="#" title="{{item.name}}">{{item.name}}</a></li>
+                    <li><a {% if item.qid!=-1 %} href="/supplier/detail?qid={{item.qid}}" {% else %} href="#" {% end %} title="{{item.name}}">{{item.name}}</a></li>
                     {% end %}
                 </ul>
             </div>
