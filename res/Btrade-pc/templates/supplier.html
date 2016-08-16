@@ -7,7 +7,7 @@
         <div class="inner">
             <h1>{{user.name}}</h1>
             <h2>主营品种：{{ ",".join(user.supply_variety_name)}}</h2>
-            <p>经营规模：{{user.scale}} {% if quanlity.address %} /  地址：{{quanlity.address}} {% end %}</p>
+            <p>{% if user.scale %}经营规模：{{user.scale}}{% end %} {% if user.scale and quanlity.address %}/ {% end %} {% if quanlity.address %}  地址：{{quanlity.address}} {% end %}</p>
         </div>
     </div>
 

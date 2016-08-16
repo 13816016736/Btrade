@@ -97,6 +97,9 @@ class IdentifyUserHandler(BaseHandler):
                     "value(%s, %s, %s, %s, %s, %s, %s)",
                     id,usertype,name,identifiers,compny,address ,int(time.time()))
 
+            # 成功认证实力供货商积分增加：
+            self.db.execute("update users set pushscore=pushscore+5 where id=%s", id)
+
             for picitem in piclist:
                 self.db.execute("insert into quality_attachment (type,quality_id,describeinfo,attachment) value(%s,%s,%s,%s)",1,lastrowid,picitem["describe"],picitem["path"])
             self.api_response(
@@ -209,4 +212,9 @@ class UpgradeUserHandler(BaseHandler):
             else:
                 self.db.execute("insert into member (userid,term,upgradetime,type,expiredtime) value(%s,%s,%s,%s,%s)",id, term, upgradetime,
                                 membertype, expiredtime)
+
+                # 成为药销通会员增加积分：
+                if int(membertype)==2:
+                    self.db.execute("update users set pushscore=pushscore+5 where id=%s", id)
+
         self.api_response({'status': 'success', 'message': '提交成功'})
