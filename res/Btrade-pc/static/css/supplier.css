@@ -82,5 +82,5 @@
 .sp-list .side .ranklist{margin-top:30px;border:1px solid #e7e7e7;}
 .sp-list .side .ranklist h3{margin:0;line-height:40px;padding:0 30px;font-size:16px;color:#333;font-weight:700;background:#f0eff5;border-bottom:1px solid #e7e7e7;}
 .sp-list .side .ranklist ul{padding:10px 30px;background:url(../images/rank.png) no-repeat 30px 50%;}
-.sp-list .side .ranklist li{display:block;padding-left:27px;line-height:30px;}
+.sp-list .side .ranklist li{display:block;height:30px;padding-left:27px;line-height:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sp-list .side .ranklist li a{line-height:14px;color:#999;font-size:14px;}
