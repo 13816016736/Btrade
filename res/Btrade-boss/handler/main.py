@@ -31,20 +31,23 @@ class UserListHandler(BaseHandler):
         if users:
             userids=[str(u.id) for u in users]
             members=self.db.query("select * from member where userid in (%s)"%",".join(userids))
-            membermap=dict((m.userid, [m.type,m.upgradetime,m.expiredtime]) for m in members)
+            membermap=dict((m.userid, [m.type,m.upgradetime,m.expiredtime,m.status]) for m in members)
             qualities=self.db.query("select userid,id from quality_supplier where userid in (%s)"%",".join(userids))
             qualitymap=dict((q.userid, q.id) for q in qualities)
             for item in users:
                 item.createtime = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.createtime)))
                 item.membertype=membermap.get(item.id,[0,"",""])[0]
                 if item.membertype!=0:
-                    item.upgradetime=membermap.get(item.id,"")[1]
+                    item.upgradetime=membermap.get(item.id)[1]
                     item.upgradetime=time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.upgradetime)))
-                    item.expiredtime=membermap.get(item.id,"")[2]
+                    item.expiredtime=membermap.get(item.id)[2]
                     item.expiredtime=time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.expiredtime)))
+                    item.memberstatus=membermap.get(item.id)[3]
                 else:
                     item.upgradetime ="-"
                     item.expiredtime ="-"
+                    item.memberstatus=0
+
                 item.quanlity=qualitymap.get(item.id,-1)
 
 

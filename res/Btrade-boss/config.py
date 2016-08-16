@@ -37,6 +37,7 @@ handlers = [
     (r"/quality/upload",QualityUploadHandler),
     (r"/record/update",UpdateRecordHandler),
     (r"/user/upgrade", UpgradeUserHandler),
+    (r"/member/updatestatus", UpdateMemberHandler),
     (r"/users/adminlist", AdminListHandler),
     (r"/admin/userinfo",AdminUserHandler),
     (r"/admin/update", UpdateAdminStatusHandler),

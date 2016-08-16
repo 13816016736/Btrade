@@ -218,3 +218,12 @@ class UpgradeUserHandler(BaseHandler):
                     self.db.execute("update users set pushscore=pushscore+5 where id=%s", id)
 
         self.api_response({'status': 'success', 'message': '提交成功'})
+
+
+class UpdateMemberHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        id = self.get_argument("id", "")
+        status=self.get_argument("status", None)
+        self.db.execute("update member set status=%s where userid=%s", status,id)
+        self.redirect('/users/userlist')

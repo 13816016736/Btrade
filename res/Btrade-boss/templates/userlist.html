@@ -30,7 +30,7 @@
                         <th>会员分类</th>
                         <th>升级时间</th>
                         <th>到期时间</th>
-                        <th width="100" class="tc">操作</th>
+                        <th width="150" class="tc">操作</th>
                     </tr>
                 </thead>
                 <tfoot></tfoot>
@@ -54,6 +54,15 @@
                         <td class="tc">
                             <!--<a class="btn btn-link" href="/users/userinfo/{{user.id}}" role="button">查看</a>-->
                             <a href="/users/userinfo/{{user.id}}" role="button">编辑</a>
+                            {% if user.membertype==0 %}
+                            <a href="/users/userinfo/{{user.id}}" role="button">升级</a>
+                            {% else %}
+                            {% if user.memberstatus==1 %}
+                            <a class="freeze" href="/member/updatestatus?id={{user.id}}&status=0" role="button">冻结</a>
+                            {% else %}
+                             <a class="thaw" href="/member/updatestatus?id={{user.id}}&status=1" role="button">解冻</a>
+                            {% end %}
+                            {% end %}
                             {% if user.status == 0 %}
                             <a class="red jrecover" href="/users/recover/{{user.id}}">解禁</a>
                             {% else %}
@@ -84,6 +93,20 @@ $(function(){
     $('body').on('click', '.jremove', function() {
         var url = $(this).attr('href');
         layer.confirm('确认要禁用当前用户吗？', {icon: 3, title:'禁用'}, function(index) {
+            location.href = url;
+        })
+        return false;
+    })
+    $('body').on('click', '.freeze', function() {
+        var url = $(this).attr('href');
+        layer.confirm('确认要冻结当前用户吗？', {icon: 3, title:'冻结'}, function(index) {
+            location.href = url;
+        })
+        return false;
+    })
+     $('body').on('click', '.thaw', function() {
+        var url = $(this).attr('href');
+        layer.confirm('确认要解冻当前用户吗？', {icon: 3, title:'解冻'}, function(index) {
             location.href = url;
         })
         return false;
