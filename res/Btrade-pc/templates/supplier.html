@@ -7,7 +7,7 @@
         <div class="inner">
             <h1>{{user.name}}</h1>
             <h2>主营品种：{{ ",".join(user.supply_variety_name)}}</h2>
-            <p>经营规模：{{user.scale}} / 地址：{{quanlity.address}}</p>
+            <p>经营规模：{{user.scale}} {% if quanlity.address %} /  地址：{{quanlity.address}} {% end %}</p>
         </div>
     </div>
 
@@ -30,9 +30,13 @@
             <div class="pic">
                 <ul class="yc-ul">
                     {% if transactions %}
+                    {% set shownum=0 %}
                     {% for item in transactions %}
                     {% for attachment in item["attachments"] %}
+                    {% if shownum<=4 %}
                     <li><img src="{{attachment.attachment.replace('_thumb','')}}" width="240" height="240"></li>
+                    {% set shownum=shownum+1 %}
+                    {% end %}
                     {% end %}
                     {% end %}
                     {% end %}

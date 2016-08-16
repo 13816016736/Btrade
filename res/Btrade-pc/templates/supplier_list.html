@@ -17,21 +17,18 @@
                 </div>
                 <div class="hot">
                     <span>热门品种：</span>
-                    <a href="#" class="c-orange">石菖蒲</a>
-                    <a href="#">红花</a>
-                    <a href="#">当归</a>
-                    <a href="#">苦参</a>
-                    <a href="#">丹参</a>
-                    <a href="#">板蓝根</a>
-                    <a href="#">荆芥</a>
-                    <a href="#">白术</a>
-                    <a href="#">柴胡</a>
-                    <a href="#">枳壳</a>
+                    {% for index,item in enumerate(hot) %}
+                    {% if index==0 %}
+                    <a href="#" class="c-orange">{{item}}</a>
+                    {% else %}
+                    <a href="#">{{item}}</a>
+                    {% end %}
+                    {% end %}
                 </div>
             </div>
 
             <div class="total">
-                <a href="#" class="btn btn-orange fr">邀请药销通会员报价</a>
+                <a href="/purchase" class="btn btn-orange fr">邀请药销通会员报价</a>
                 <span>共入驻实力供货商 <b>{{total}}</b> 位，其中药销通会员 <b>{{membernum}}</b> 位。</span>
             </div>
 
@@ -118,16 +115,9 @@
             <div class="ranklist">
                 <h3>供货排行榜 </h3>
                 <ul class="yc-ul">
-                    <li><a href="#">肃省舟曲县博峪中藏</a></li>
-                    <li><a href="#">单兴慧药材行</a></li>
-                    <li><a href="#">胡先生</a></li>
-                    <li><a href="#">孔女士</a></li>
-                    <li><a href="#">李兴峰</a></li>
-                    <li><a href="#">陆学宏</a></li>
-                    <li><a href="#">世纪红药行</a></li>
-                    <li><a href="#">王金涛药材行</a></li>
-                    <li><a href="#">袁红娟</a></li>
-                    <li><a href="#">唐春伟</a></li>
+                    {% for item in rankuser %}
+                    <li><a href="#" title="{{item.name}}">{{item.name}}</a></li>
+                    {% end %}
                 </ul>
             </div>
         </div>

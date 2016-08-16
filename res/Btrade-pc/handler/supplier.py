@@ -27,10 +27,15 @@ class SupplierHandler(BaseHandler):
         if varietyid!="":
             conditionu=" and find_in_set(%s,varietyids)"%(varietyid)
             conditions=" and find_in_set(%s,variety)"%(varietyid)
+        ordercondition=",case when id in (SELECT userid from member) then 4 " \
+                       "when id in (SELECT userid from quality_supplier) then 3 " \
+                       "when id in (select q.userid from transaction t left join quote q on t.quoteid=q.id) then 2 " \
+                       "else 0 end ordernum "#优先显示药销通会员和认证的，其次是有交易记录的
+
         usersnum=self.db.execute_rowcount("select id from users where type not in(1,2,9) %s"%conditionu)
         suppliernum=self.db.execute_rowcount("select id from supplier where pushstatus!=2 %s"%conditions)
         if (page+1) * config.conf['POST_NUM']>usersnum and page* config.conf['POST_NUM']<usersnum:
-             t1=self.db.query("select * from users where type not in(1,2,9) %s"%conditionu+" limit %s,%s",
+             t1=self.db.query("select * "+ordercondition+"from users where type not in(1,2,9) %s"%conditionu+" order by ordernum desc limit %s,%s",
                                           page * config.conf['POST_NUM'], config.conf['POST_NUM'])
              for item in t1:
                  supplier={"userid":item["id"],"name":item["name"],"variety":item["varietyids"],"introduce":item["introduce"]}
@@ -46,7 +51,7 @@ class SupplierHandler(BaseHandler):
                  suppliers.append(supplier)
         else :
             if (page+1) * config.conf['POST_NUM']<usersnum:
-                t1 = self.db.query("select * from users where type not in(1,2,9) %s"%conditionu+" limit %s,%s",
+                t1 = self.db.query("select * "+ordercondition+" from users where type not in(1,2,9) %s"%conditionu+" order by ordernum desc limit %s,%s",
                                           page * config.conf['POST_NUM'], config.conf['POST_NUM'])
                 for item in t1:
                     supplier = {"userid": item["id"], "name": item["name"], "variety": item["varietyids"],
@@ -130,9 +135,18 @@ class SupplierHandler(BaseHandler):
             'num': usersnum+suppliernum,
             'query': "%s" % urlencode(query_str),
         }
+        hot=self.db.query("select varietyid ,name,count(varietyid) as num from purchase_info group by varietyid order by num desc limit 0,10")
+        hot=[h.name for h in hot]
 
+        rankuser=self.db.query("select q.userid,count(q.userid) as count from transaction t left join quote q on t.quoteid=q.id group by q.userid order by count desc limit 0,10 ")
+        userids=[str(u.userid) for u in rankuser]
+        userinfos = self.db.query(
+            "select id, name,nickname from users where id in (%s)" % ",".join(userids))
+        usermap = dict((i.id, [i.name, i.nickname]) for i in userinfos)
+        for rank in rankuser:
+            rank["name"]=usermap[rank.userid][0]
 
-        self.render("supplier_list.html",query=query,total=total,membernum=membernum,suppliers=suppliers,nav=nav)
+        self.render("supplier_list.html",query=query,total=total,membernum=membernum,suppliers=suppliers,nav=nav,hot=hot,rankuser=rankuser)
 
     def post(self):
         pass
