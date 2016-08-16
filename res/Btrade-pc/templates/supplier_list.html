@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block container %}
 {% import config %}
+{% from urllib import urlencode %}
 <link rel="stylesheet" href="{{ static_url('css/supplier.css')}}" />
 <section class="sec">
     <div class="sp-banner">实力供货商</div>
@@ -19,9 +20,9 @@
                     <span>热门品种：</span>
                     {% for index,item in enumerate(hot) %}
                     {% if index==0 %}
-                    <a href="/supplier?query={{item}}" class="c-orange">{{item}}</a>
+                    <a href="/supplier?{{urlencode({'query':item.encode('utf8')})}}" class="c-orange">{{item}}</a>
                     {% else %}
-                    <a href="/supplier?query={{item}}">{{item}}</a>
+                    <a href="/supplier?{{urlencode({'query':item.encode('utf8')})}}">{{item}}</a>
                     {% end %}
                     {% end %}
                 </div>
@@ -128,16 +129,16 @@
 
 
 {% block javascript %}
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="{{ static_url('js/jquery.min.js')}}"></script>
+<script src="{{ static_url('js/bootstrap.min.js')}}"></script>
 <script>
 </script>
 
 <script>
-    var ran = (new Date).getTime();
-    $.get('footer.html?ran=' + ran, function(data) {
-        $('body').append(data);
-    })
+    //var ran = (new Date).getTime();
+    //$.get('footer.html?ran=' + ran, function(data) {
+    //    $('body').append(data);
+    //})
     $("#query").click(function() {
                 var query = $("#querystr").val();
 

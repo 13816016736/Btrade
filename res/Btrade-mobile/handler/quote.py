@@ -67,7 +67,11 @@ class QuoteHandler(BaseHandler):
         week_end = get_week_begin(t,1)
         quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
                                  , self.session.get("userid"), week_begin,week_end)
-        quotechances = config.conf['QUOTE_NUM'] - quotecount if config.conf['QUOTE_NUM'] - quotecount > 0 else 0
+        memberinfo=self.db.get("select id from member where type=2 and userid=%s and status=1",self.session.get("userid"))
+        factor=1
+        if memberinfo:
+            factor=10
+        quotechances = config.conf['QUOTE_NUM']*factor - quotecount if config.conf['QUOTE_NUM']*factor - quotecount > 0 else 0
 
         #获取图片
         uploadfiles = self.session.get("uploadfiles_quote", {})
@@ -104,8 +108,12 @@ class QuoteHandler(BaseHandler):
         week_end = get_week_begin(t,1)
         quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
                                  , self.session.get("userid"), week_begin,week_end)
-        if config.conf['QUOTE_NUM'] - quotecount < 0:
-            self.api_response({'status':'fail','message':'本周已用完20次报价机会,无法再进行报价'})
+        memberinfo=self.db.get("select id from member where type=2 and userid=%s and status=1",self.session.get("userid"))
+        factor=1
+        if memberinfo:
+            factor=10
+        if config.conf['QUOTE_NUM']*factor - quotecount < 0:
+            self.api_response({'status':'fail','message':'本周已用完%s次报价机会,无法再进行报价'%(config.conf['QUOTE_NUM']*factor)})
             return
         #一个用户只能对同一个采购单报价一次
         quote = self.db.get("select id from quote where userid = %s and purchaseinfoid = %s and state = 0", self.session.get("userid"), purchaseinfoid)

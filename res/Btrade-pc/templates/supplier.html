@@ -33,7 +33,7 @@
                     {% set shownum=0 %}
                     {% for item in transactions %}
                     {% for attachment in item["attachments"] %}
-                    {% if shownum<=4 %}
+                    {% if shownum<4 %}
                     <li><img src="{{attachment.attachment.replace('_thumb','')}}" width="240" height="240"></li>
                     {% set shownum=shownum+1 %}
                     {% end %}
@@ -161,10 +161,10 @@
 </script>
 
 <script>
-    var ran = (new Date).getTime();
-    $.get('footer.html?ran=' + ran, function(data) {
-        $('body').append(data);
-    })
+    //var ran = (new Date).getTime();
+    //$.get('footer.html?ran=' + ran, function(data) {
+    //    $('body').append(data);
+    //})
 </script>
 {% end %}
 
