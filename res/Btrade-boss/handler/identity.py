@@ -200,6 +200,11 @@ class UpgradeUserHandler(BaseHandler):
             self.api_response(
                 {'status': 'fail', 'message': '没有该用户'})
             return
+        quality = self.db.get("select id from quality_supplier where userid=%s", id)
+        if quality == None:
+            self.api_response(
+                {'status': 'fail', 'message': '请先认证'})
+            return
         membertype=self.get_argument("membertype", None)
         term=self.get_argument("term", None)
         upgradetime=int(time.time())

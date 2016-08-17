@@ -51,7 +51,7 @@
                             <p>主营品种：{{ ",".join( item["supply_variety_name"])}}</p>
                             <p class="desc">{% if item["introduce"]=="" %}{{item["name"]}}常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。
                                                     现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ item["introduce"] }} {% end %}</p>
-                            {% if item["isquality"]==1 %}
+                            {% if item["ismember"]==1 %}
                             <p class="link">
                                 <a href="/supplier/detail?qid={{item['qid']}}" class="btn">进入供货商主页</a>
                             </p>
@@ -119,7 +119,7 @@
                 <h3>供货排行榜 </h3>
                 <ul class="yc-ul">
                     {% for item in rankuser %}
-                    <li><a {% if item.qid!=-1 %} href="/supplier/detail?qid={{item.qid}}" {% else %} href="#" {% end %} title="{{item.name}}">{{item.name}}</a></li>
+                    <li><a {% if item.member!=-1 %} href="/supplier/detail?qid={{item.qid}}" {% else %} href="#" {% end %} title="{{item.name}}">{{item.name}}</a></li>
                     {% end %}
                 </ul>
             </div>
