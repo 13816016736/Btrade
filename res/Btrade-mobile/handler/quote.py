@@ -112,7 +112,7 @@ class QuoteHandler(BaseHandler):
         factor=1
         if memberinfo:
             factor=10
-        if config.conf['QUOTE_NUM']*factor - quotecount < 0:
+        if (config.conf['QUOTE_NUM']*factor - quotecount) < 0:
             self.api_response({'status':'fail','message':'本周已用完%s次报价机会,无法再进行报价'%(config.conf['QUOTE_NUM']*factor)})
             return
         #一个用户只能对同一个采购单报价一次
