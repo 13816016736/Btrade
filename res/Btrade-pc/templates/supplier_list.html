@@ -19,7 +19,7 @@
                 <div class="hot">
                     <span>热门品种：</span>
                     {% for index,item in enumerate(hot) %}
-                    {% if index==0 %}
+                    {% if query==item %}
                     <a href="/supplier?{{urlencode({'query':item.encode('utf8')})}}" class="c-orange">{{item}}</a>
                     {% else %}
                     <a href="/supplier?{{urlencode({'query':item.encode('utf8')})}}">{{item}}</a>
@@ -49,7 +49,7 @@
                             </h3>
                             <p>累计报价：<b>{{item["quote"]}}</b>次  |  累计供货：<b>{{ len(item["transactions"])}}</b>次</p>
                             <p>主营品种：{{ ",".join( item["supply_variety_name"])}}</p>
-                            <p class="desc">{% if item["introduce"]=="" %}{{item["name"]}}是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。
+                            <p class="desc">{% if item["introduce"]=="" %}{{item["name"]}}常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。
                                                     现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ item["introduce"] }} {% end %}</p>
                             {% if item["isquality"]==1 %}
                             <p class="link">
@@ -100,6 +100,7 @@
               {% module PageNav(nav=nav, show=True) %}
         </div>
         <div class="side">
+            <!--
             <div class="vip">
                 <div class="desc">
                     <h3>药销通会员优势</h3>
@@ -112,6 +113,7 @@
                     <a href="#">申请成为药销通会员</a>
                 </div>
             </div>
+            -->
 
             <div class="ranklist">
                 <h3>供货排行榜 </h3>

@@ -115,7 +115,7 @@
                         <span>供应商介绍</span>
                     </div>
                     <div class="cont">
-                        <textarea rows="10" cols="30" id="jIntro" name="intro" class="ipt ipt-area">{% if user.introduce=="" %}{{user.nickname}}是安徽省亳州市的实力供货商，常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ user.introduce }} {% end %}</textarea>
+                        <textarea rows="10" cols="30" id="jIntro" name="intro" class="ipt ipt-area">{% if user.introduce=="" %}{{user.nickname}}常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ user.introduce }} {% end %}</textarea>
                         <span class="error"></span>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
                         <div class="goods-img">
                             {% if quanlity["type"]==1 %}
                             {% for key in imgmap1.keys() %}
-                            <span>
+                            <span name="clip">
                                 {{imgmap1[key]}}
                                 {% if quanlity['attachments'].has_key(imgmap1[key]) %}
                                 <img src="{{quanlity['attachments'][imgmap1[key]].replace('_thumb','')}}"><i class="del" title="删除"></i>
@@ -222,7 +222,7 @@
                             {%  end %}
                             {% else %}
                             {% for key in imgmap2.keys() %}
-                            <span>
+                            <span name="clip">
                                 {{imgmap2[key]}}
                                 {% if quanlity['attachments'].has_key(imgmap2[key]) %}
                                 <img src="{{quanlity['attachments'][imgmap2[key]].replace('_thumb','')}}"><i class="del" title="删除"></i>
@@ -255,7 +255,7 @@
                                 {% if len(quanlity["varietyimg"])!=0 %}
                                 {% for index,item in enumerate(quanlity["varietyimg"]) %}
                                 <li class="goods-img">
-                                <span>
+                                <span name="clip1">
                                 <img src="{{item.attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
                                 </span>
                                 <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index+1}}">
@@ -267,7 +267,7 @@
                                 {% end %}
                                 {% else %}
                                <li class="goods-img">
-                                <span></span>
+                                <span name="clip1"></span>
                                 <input type="hidden" value="" name="pic1">
                                 <div class="desc">
                                     <input type="text" class="ipt" name="descpic1" placeholder="照片说明">
@@ -300,7 +300,7 @@
                             {% if len(quanlity["otherimg"])!=0 %}
                             {% for index,item in enumerate(quanlity["otherimg"]) %}
                             <li class="goods-img">
-                                <span>
+                                <span name="clip2">
                                     <img src="{{item.attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
                                 </span>
                                 <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index+1}}">
@@ -310,7 +310,7 @@
                             {% end %}
                             {% else %}
                             <li class="goods-img">
-                                <span></span>
+                                <span name="clip2"></span>
                                 <input type="hidden" value="" name="pic1">
                                 <b>照片说明</b>
                                 <input type="text" class="ipt" name="descpic1">
@@ -617,12 +617,13 @@ $(function(){
     var $goodsImg = $('.yc-form-img');
     // 上传图片
     $goodsImg.on('click', 'span', function() {
+        name=$(this).attr("name");
         layer.open({
-            area: ['600px'],
+            area: ['700px'],
             closeBtn: 1,
             type: 1,
             moveType: 1,
-            content: '<div class="img-upload-main"><div class="clip" id="imgCrop"></div></div>',
+            content: '<div class="img-upload-main"><div class="'+name+'" id="imgCrop"></div></div>',
             title: '上传图片',
             cancel: function() {
                 cropModal.destroy();
@@ -674,7 +675,7 @@ $(function(){
         count = $imgs.find('.goods-img').length;
         if(id!="add-btn"){
                 modal = '<li class="goods-img">'
-                    +       '<span></span>'
+                    +       '<span name="clip2"></span>'
                     +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
                     +       '<b>照片说明</b>'
                     +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
@@ -682,7 +683,7 @@ $(function(){
                     }
         else{
                 modal = '<li class="goods-img">'
-                    +       '<span></span>'
+                    +       '<span name="clip1"></span>'
                     +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
                     +       '<div class="desc">'
                     +       '<input type="text" class="ipt" name="descpic' + (count + 1) +'" placeholder="照片说明">'
@@ -709,25 +710,25 @@ $(function(){
     // 用户身份变化
     $('#usertype').change(function(){
         select_type=$(this).children('option:selected').val()
-        html1='<span>本人头像</span>'
+        html1='<span name="clip">本人头像</span>'
                +'<input type="hidden" value="" name="pic1">'
-               +'<span>身份证正面</span>'
+               +'<span name="clip">身份证正面</span>'
                +'<input type="hidden" value="" name="pic2">'
-               +'<span>种植基地照片</span>'
+               +'<span name="clip">种植基地照片</span>'
                +'<input type="hidden" value="" name="pic3">';
-        html2='<span>企业全景</span>'
+        html2='<span name="clip">企业全景</span>'
               +'<input type="hidden" value="" name="pic1">'
-              +'<span>联系人身份证正面</span>'
+              +'<span name="clip">联系人身份证正面</span>'
               +'<input type="hidden" value="" name="pic2">'
-              +'<span>法人身份证正面</span>'
+              +'<span name="clip">法人身份证正面</span>'
               + '<input type="hidden" value="" name="pic3">'
-              + '<span>营业执照</span>'
+              + '<span name="clip">营业执照</span>'
               + '<input type="hidden" value="" name="pic4">'
-              + '<span>GSP证书</span>'
+              + '<span name="clip">GSP证书</span>'
               + '<input type="hidden" value="" name="pic5">'
-              + '<span>中草药收购证</span>'
+              + '<span name="clip">中草药收购证</span>'
               + '<input type="hidden" value="" name="pic6">'
-              + '<span>授权书2.0</span>'
+              + '<span name="clip">授权书2.0</span>'
               + '<input type="hidden" value="" name="pic7">';
         if(select_type=="1"){
           $("#identifyinfo").find(".company").hide()

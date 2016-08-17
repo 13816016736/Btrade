@@ -34,6 +34,7 @@ class SupplierHandler(BaseHandler):
 
         usersnum=self.db.execute_rowcount("select id from users where type not in(1,2,9) %s"%conditionu)
         suppliernum=self.db.execute_rowcount("select id from supplier where pushstatus!=2 %s"%conditions)
+        #分页中一部分显示user一部分显示supplier
         if (page+1) * config.conf['POST_NUM']>usersnum and page* config.conf['POST_NUM']<usersnum:
              t1=self.db.query("select * "+ordercondition+"from users where type not in(1,2,9) %s"%conditionu+" order by ordernum desc limit %s,%s",
                                           page * config.conf['POST_NUM'], config.conf['POST_NUM'])
@@ -49,6 +50,7 @@ class SupplierHandler(BaseHandler):
                      name=item["company"]
                  supplier={"userid":-1,"name":name,"variety":item["variety"],"introduce":""}
                  suppliers.append(supplier)
+        #分页只显示user或只显示supplier
         else :
             if (page+1) * config.conf['POST_NUM']<=usersnum:
                 t1 = self.db.query("select * "+ordercondition+" from users where type not in(1,2,9) %s"%conditionu+" order by ordernum desc limit %s,%s",
@@ -136,9 +138,11 @@ class SupplierHandler(BaseHandler):
             'query': "%s" % urlencode(query_str),
             'total':usersnum+suppliernum,
         }
+        #热门品种
         hot=self.db.query("select varietyid ,name,count(varietyid) as num from purchase_info group by varietyid order by num desc limit 0,10")
         hot=[h.name for h in hot]
 
+        #供货排行榜
         rankuser=self.db.query("select q.userid,count(q.userid) as count from transaction t left join quote q on t.quoteid=q.id group by q.userid order by count desc limit 0,10 ")
         userids=[str(u.userid) for u in rankuser]
         userinfos = self.db.query(

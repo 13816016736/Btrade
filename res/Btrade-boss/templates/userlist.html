@@ -54,15 +54,6 @@
                         <td class="tc">
                             <!--<a class="btn btn-link" href="/users/userinfo/{{user.id}}" role="button">查看</a>-->
                             <a href="/users/userinfo/{{user.id}}" role="button">编辑</a>
-                            {% if user.membertype==0 %}
-                            <a href="/users/userinfo/{{user.id}}" role="button">升级</a>
-                            {% else %}
-                            {% if user.memberstatus==1 %}
-                            <a class="freeze" href="/member/updatestatus?id={{user.id}}&status=0" role="button">冻结</a>
-                            {% else %}
-                             <a class="thaw" href="/member/updatestatus?id={{user.id}}&status=1" role="button">解冻</a>
-                            {% end %}
-                            {% end %}
                             {% if user.status == 0 %}
                             <a class="red jrecover" href="/users/recover/{{user.id}}">解禁</a>
                             {% else %}
