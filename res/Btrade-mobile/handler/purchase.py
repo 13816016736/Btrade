@@ -131,6 +131,7 @@ class PurchaseInfoHandler(BaseHandler):
 
         if purchaseinfo==None:
             self.error("采购单不存在", "/")
+            return
 
         #获取采购单area信息
         areaid = purchaseinfo["areaid"]
