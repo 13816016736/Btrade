@@ -194,7 +194,7 @@ class ArticleHandler(BaseHandler):
     def get(self, articleid):
         article = self.db.get("select * from notification where receiver = %s and id = %s", self.session.get("userid"), articleid)
         result = self.db.execute("update notification set status = 1 where receiver = %s and id = %s", self.session.get("userid"), articleid)
-        print result
+        #print result
         article["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(article["createtime"])))
         self.render("article.html", article=article)
 
