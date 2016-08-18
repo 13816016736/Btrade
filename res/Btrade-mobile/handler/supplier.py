@@ -12,7 +12,7 @@ class SupplierDetailHandler(BaseHandler):
         transactions=None
         quanlity = self.db.get("select * from quality_supplier where id=%s", qid)
         if quanlity==None:
-            self.error(u"没找到该用户","/supplier")
+            self.error(u"没找到该用户","/")
             return
         else:
             user=self.db.get("select id,name,nickname,varietyids,scale,introduce from users where id=%s",quanlity["userid"])
