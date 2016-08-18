@@ -617,7 +617,7 @@ $(function(){
     var $goodsImg = $('.yc-form-img');
     // 上传图片
     $goodsImg.on('click', 'span', function() {
-        name=$(this).attr("name");
+        var name=$(this).attr("name");
         layer.open({
             area: ['700px'],
             closeBtn: 1,
@@ -670,9 +670,9 @@ $(function(){
 
     // 添加新图片
     $('.jaddPic').on('click', function() {
-        id=$(this).attr("id");
+        var id=$(this).attr("id");
         var $imgs = $(this).parent().prev().find('.yc-form-img');
-        count = $imgs.find('.goods-img').length;
+        var count = $imgs.find('.goods-img').length;
         if(id!="add-btn"){
                 modal = '<li class="goods-img">'
                     +       '<span name="clip2"></span>'
@@ -697,7 +697,7 @@ $(function(){
     // 添加新记录
     $('.jaddRecord').on('click', function() {
         var $groups = $(this).parent().parent().find('.group');
-        count = $groups.length-1;
+        var count = $groups.length-1;
         var modal = '<div class="group">'
                 +       '<div class="cols w1"><input type="text" onclick="laydate()" class="yc-ipt" value="" name="recordtime' + (count + 1) +'" autocomplete="off"></div>'
                 +       '<div class="cols w2"><input type="text" class="yc-ipt" value="" name="recorder' + (count + 1) +'" autocomplete="off"></div>'
@@ -709,7 +709,7 @@ $(function(){
 
     // 用户身份变化
     $('#usertype').change(function(){
-        select_type=$(this).children('option:selected').val()
+        var select_type=$(this).children('option:selected').val()
         html1='<span name="clip">本人头像</span>'
                +'<input type="hidden" value="" name="pic1">'
                +'<span name="clip">身份证正面</span>'
