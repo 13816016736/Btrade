@@ -219,7 +219,7 @@ class UpgradeUserHandler(BaseHandler):
                                 membertype, expiredtime)
 
                 # 成为药销通会员增加积分：
-                if int(membertype)==2:
+                if int(membertype)==2 or int(membertype)==1:
                     self.db.execute("update users set pushscore=pushscore+5 where id=%s", id)
 
         self.api_response({'status': 'success', 'message': '提交成功'})

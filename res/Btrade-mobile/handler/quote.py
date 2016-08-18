@@ -67,7 +67,7 @@ class QuoteHandler(BaseHandler):
         week_end = get_week_begin(t,1)
         quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
                                  , self.session.get("userid"), week_begin,week_end)
-        memberinfo=self.db.get("select id from member where type=2 and userid=%s and status=1",self.session.get("userid"))
+        memberinfo=self.db.get("select id from member where type in(1,2) and userid=%s and status=1",self.session.get("userid"))
         factor=1
         if memberinfo:
             factor=10
@@ -108,7 +108,7 @@ class QuoteHandler(BaseHandler):
         week_end = get_week_begin(t,1)
         quotecount = self.db.execute_rowcount("select id from quote where userid = %s and createtime > %s and createtime < %s"
                                  , self.session.get("userid"), week_begin,week_end)
-        memberinfo=self.db.get("select id from member where type=2 and userid=%s and status=1",self.session.get("userid"))
+        memberinfo=self.db.get("select id from member where type in(1,2) and userid=%s and status=1",self.session.get("userid"))
         factor=1
         if memberinfo:
             factor=10

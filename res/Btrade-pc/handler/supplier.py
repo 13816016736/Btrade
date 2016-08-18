@@ -28,8 +28,9 @@ class SupplierHandler(BaseHandler):
             conditionu=" and find_in_set(%s,varietyids)"%(varietyid)
             conditions=" and find_in_set(%s,variety)"%(varietyid)
         ordercondition=",case when id in (SELECT userid from member where type=2) then 4 " \
-                       "when id in (SELECT userid from quality_supplier) then 3 " \
-                       "when id in (select q.userid from transaction t left join quote q on t.quoteid=q.id) then 2 " \
+                       " when id in (SELECT userid from member where type=1) then 3 " \
+                       "when id in (SELECT userid from quality_supplier) then 2 " \
+                       "when id in (select q.userid from transaction t left join quote q on t.quoteid=q.id) then 1 " \
                        "else 0 end ordernum "#优先显示药销通会员和认证的，其次是有交易记录的
 
         usersnum=self.db.execute_rowcount("select id from users where type not in(1,2,9) %s"%conditionu)
@@ -82,7 +83,7 @@ class SupplierHandler(BaseHandler):
                     supply_variety_name.append(r.name)
             item["supply_variety_name"]=supply_variety_name
             if item["userid"]!=-1:
-                member=self.db.get("select * from member where userid=%s and type=2",item["userid"])
+                member=self.db.get("select * from member where userid=%s and type in (1,2)",item["userid"])
                 if member:
                     item["ismember"]=1
                 else:
@@ -152,7 +153,7 @@ class SupplierHandler(BaseHandler):
         quanlityinfos = self.db.query("select id,userid from quality_supplier where userid in (%s)" % ",".join(userids))
         quanlitymap=dict((i.userid, i.id) for i in quanlityinfos)
 
-        memberinfos=self.db.query("select * from member where userid in (%s) and type=2" % ",".join(userids))
+        memberinfos=self.db.query("select * from member where userid in (%s) and type in(1,2)" % ",".join(userids))
         membermap=dict((i.userid, i.id) for i in memberinfos)
 
         for rank in rankuser:

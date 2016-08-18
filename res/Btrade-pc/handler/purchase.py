@@ -269,7 +269,8 @@ class MyPurchaseInfoHandler(BaseHandler):
 
             #获取本采购单报价信息
             ordercondition = ",case when q.userid in (SELECT userid from member where type=2) then 4 " \
-                             "when q.userid in (SELECT userid from quality_supplier) then 3 " \
+                             " when q.userid in (SELECT userid from member where type=1) then 2 " \
+                             "when q.userid in (SELECT userid from quality_supplier) then 1 " \
                              "else 0 end ordernum "
             quotes = self.db.query("select q.*,u.name,u.nickname,u.phone,u.type"+ordercondition+" from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s order by ordernum desc", id)
             quoteids = []
@@ -287,7 +288,7 @@ class MyPurchaseInfoHandler(BaseHandler):
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}
 
-                memberinfos=self.db.query("select * from member where userid in (%s) and type=2"%",".join(quoteuserids))
+                memberinfos=self.db.query("select * from member where userid in (%s) and type in(1,2)"%",".join(quoteuserids))
                 membermap=dict((m.userid, m.id) for m in memberinfos)
 
                 qualities=self.db.query("select * from quality_supplier where userid in (%s)"%",".join(quoteuserids))
