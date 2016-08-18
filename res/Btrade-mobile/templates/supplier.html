@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block container %}
+
+    <section class="yc-content">
+        <div class="supplier">
+            <div class="bg">
+                <img src="{{ static_url('images/bg.jpg')}}" alt="">
+            </div>
+            <div class="info">
+                <h1>{{user.name}}</h1>
+                <h2>主营品种：{{ ",".join(user.supply_variety_name)}}</h2>
+                <p>经营规模：{{user.scale}}</p>
+                <p>地址：{{quanlity.address}}</p>
+            </div>
+        </div>
+
+        <div class="sp-floor sp-list">
+            <h3>最近供货记录<span>累计供货{% if transactions %} {{ len(transactions)}} {% else %} 0 {% end %}次</span></h3>
+            <ul>
+                {% if transactions %}
+                {% for item in transactions %}
+                <li>
+                    <time>{{ item["createtime"] }}</time>
+                    <span> 在药材购平台与{{ item["purchasename"] }}完成 {{ item["varietyname"] }}的交易</span>
+                </li>
+                {% end %}
+                {% else %}
+                暂无供货记录
+                {% end %}
+            </ul>
+            <div class="slide" id="slide1">
+                <ul>
+                    {% if transactions %}
+                    {% set shownum=0 %}
+                    {% for item in transactions %}
+                    {% for attachment in item["attachments"] %}
+                    {% if shownum<4 %}
+                    <li><img src="{{attachment.attachment.replace('_thumb','')}}" alt=""></li>
+                    {% set shownum=shownum+1 %}
+                    {% end %}
+                    {% end %}
+                    {% end %}
+                    {% end %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="sp-floor sp-goods">
+            <h3>现货资源</h3>
+            <ul>
+                {% for item in  quanlity["varietyimg"] %}
+                <li>
+                    <div class="img">
+                        <a href="#"><img src="{{item.attachment.replace('_thumb','')}}" alt=""></a>
+                    </div>
+                    <div class="name">
+                        <a href="#">{{item['varietyname']}}</a>
+                    </div>
+                    <div class="summary">
+                        <p>{{item['describeinfo']}}</p>
+                    </div>
+                </li>
+                {% end %}
+            </ul>
+        </div>
+
+        <div class="sp-floor">
+            <h3>企业资质&amp;生产环境</h3>
+            <div class="slide" id="slide2">
+                <ul>
+                    {% for item in quanlity["otherimg"] %}
+                    <li><img src="{{item.attachment.replace('_thumb','')}}" alt=""></li>
+                    {% end %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="sp-floor">
+            <h3>即刻采购</h3>
+            <div class="summary">
+                <p>每一个药销通会员都经过药材购工作人员的实地考察，从药材质量、药材价格以及按时</p>
+            </div>
+            <!--
+            <div class="link">
+                <a href="#" class="primany">立即邀请报价</a>
+            </div>
+            -->
+        </div>
+    </section><!-- /yc-content -->
+
+	
+    <script src="{{ static_url('js/jquery.min.js')}}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js')}}"></script>
+    <script src="{{ static_url('js/app.js')}}"></script>
+    <script>
+        $('.slide').each(function() {
+            var $self = $(this),
+                $nav,
+                length = $self.find('li').length;
+
+            if (length < 2) {
+                return;
+            }
+            var nav = ['<div class="nav">'];
+            for (var i = 0 ; i < length; i++) {
+                nav.push( i === 0 ? '<i class="current"></i>' : '<i></i>');
+            }
+            nav.push('</div>');
+            $self.append(nav.join(''));
+            $nav = $self.find('i');
+
+            $(this).swipeSlide({
+                index : 0,
+                continuousScroll : true,
+                autoSwipe : false,
+                lazyLoad : true,
+                firstCallback : function(i,sum){
+                    $nav.eq(i).addClass('current').siblings().removeClass('current');
+                },
+                callback : function(i,sum){
+                    $nav.eq(i).addClass('current').siblings().removeClass('current');
+                }
+            });
+        })
+        
+    </script>
+{% end %}

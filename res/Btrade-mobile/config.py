@@ -5,6 +5,7 @@ from handler.login import *
 from handler.register import *
 from handler.purchase import *
 from handler.quote import *
+from handler.supplier import *
 
 from globalconfig import *
 
@@ -69,6 +70,7 @@ handlers = [
     (r"/reply", ReplayHandler),
     (r"/replydetail", ReplayDetailHandler),
     (r"/variety", VarietySearchHandler),
+    (r"/supplier/detail", SupplierDetailHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
     (r".*", BaseHandler),
 ];
