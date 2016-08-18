@@ -238,6 +238,10 @@ class MyPurchaseInfoHandler(BaseHandler):
         "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
         "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
 
+        if purchaseinfo==None:
+            self.error("此采购订单不存在", "/mypurchase")
+            return
+
         #获取采购单area信息
         areaid = purchaseinfo["areaid"]
         areainfo=self.db.get("select position,parentid from area where id =%s",areaid)
@@ -264,8 +268,12 @@ class MyPurchaseInfoHandler(BaseHandler):
                                           purchaseinfo["id"], purchaseinfo["pid"])
 
             #获取本采购单报价信息
-            quotes = self.db.query("select q.*,u.name,u.nickname,u.phone,u.type from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s", id)
+            ordercondition = ",case when q.userid in (SELECT userid from member where type=2) then 4 " \
+                             "when q.userid in (SELECT userid from quality_supplier) then 3 " \
+                             "else 0 end ordernum "
+            quotes = self.db.query("select q.*,u.name,u.nickname,u.phone,u.type"+ordercondition+" from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s order by ordernum desc", id)
             quoteids = []
+            quoteuserids=[]
             mprice = None
             if quotes:
                 mprice = quotes[0]["price"]
@@ -273,10 +281,19 @@ class MyPurchaseInfoHandler(BaseHandler):
                     if mprice > quote.price:
                         mprice = quote.price
                     quoteids.append(str(quote.id))
+                    quoteuserids.append(str(quote.userid))
                     quote["datetime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(quote["createtime"])))
                     quote["unit"] = purchaseinfo["unit"]
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}
+
+                memberinfos=self.db.query("select * from member where userid in (%s) and type=2"%",".join(quoteuserids))
+                membermap=dict((m.userid, m.id) for m in memberinfos)
+
+                qualities=self.db.query("select * from quality_supplier where userid in (%s)"%",".join(quoteuserids))
+                qualitymap=dict((i.userid, i.id) for i in qualities)
+
+
                 for quoteattachment in quoteattachments:
                     base, ext = os.path.splitext(os.path.basename(quoteattachment.attachment))
                     quoteattachment.attachment = config.img_domain+quoteattachment.attachment[quoteattachment.attachment.find("static"):].replace(base, base+"_thumb")
@@ -285,6 +302,8 @@ class MyPurchaseInfoHandler(BaseHandler):
                     else:
                         myquoteattachments[quoteattachment.quoteid] = [quoteattachment]
                 for mq in quotes:
+                    mq.ismember=membermap.get(mq.userid,-1)
+                    mq.qid=qualitymap.get(mq.userid,-1)
                     if myquoteattachments.has_key(mq.id):
                         mq["attachments"] = myquoteattachments[mq.id]
                     else:

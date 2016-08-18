@@ -129,6 +129,10 @@ class PurchaseInfoHandler(BaseHandler):
         "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
         "pi.views,pi.status from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
 
+        if purchaseinfo==None:
+            self.error("采购单不存在", "/")
+            return
+
         #获取采购单area信息
         areaid = purchaseinfo["areaid"]
         areainfo=self.db.get("select position,parentid from area where id =%s",areaid)

@@ -191,25 +191,25 @@
                         <div class="goods-img">
                             <span>
                                 {% if len(transaction['attachments'])>=1 %}
-                                <img  src="{{transaction['attachments'][0].attachment}}"><i class="del" title="删除"></i>
+                                <img  src="{{transaction['attachments'][0].attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
                                 {% end %}
                             </span>
                             <input type="hidden" name="pic1" value="{% if len(transaction['attachments'])>=1 %}{{transaction['attachments'][0].attachment.replace('_thumb','')}}{% end %}">
                             <span>
                                 {% if len(transaction['attachments'])>=2 %}
-                                <img src="{{transaction['attachments'][1].attachment}}"><i class="del" title="删除"></i>
+                                <img src="{{transaction['attachments'][1].attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
                                 {% end %}
                             </span>
                             <input type="hidden" name="pic2" value="{% if len(transaction['attachments'])>=2 %}{{transaction['attachments'][1].attachment.replace('_thumb','')}}{% end %}">
                             <span>
                                 {% if len(transaction['attachments'])>=3 %}
-                                <img src="{{transaction['attachments'][2].attachment}}"><i class="del" title="删除"></i>
+                                <img src="{{transaction['attachments'][2].attachment.replace('_thumb','').replace('_thumb','')}}"><i class="del" title="删除"></i>
                                 {% end %}
                             </span>
                             <input type="hidden" name="pic3" value="{% if len(transaction['attachments'])>=3 %}{{transaction['attachments'][2].attachment.replace('_thumb','')}}{% end %}">
                             <span>
                                 {% if len(transaction['attachments'])>=4 %}
-                                <img src="{{transaction['attachments'][3].attachment}}"><i class="del" title="删除"></i>
+                                <img src="{{transaction['attachments'][3].attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
                                 {% end %}
                             </span>
                             <input type="hidden" name="pic4" value="{% if len(transaction['attachments'])>=4 %}{{transaction['attachments'][3].attachment.replace('_thumb','')}}{% end %}">

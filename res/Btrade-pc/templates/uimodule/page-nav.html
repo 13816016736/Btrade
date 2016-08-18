@@ -1,32 +1,55 @@
-<div>
-                    <ul class="pagination">
-                        {% set start = nav['cur'] - 5 if nav['cur'] - 5 > 0 else 1 %}
-                        {% set end = nav['cur'] + 5 if nav['cur'] + 5 < nav['num'] else nav['num'] %}
-                        {% if end - start < 10 and nav['num'] < 10 %}
-                        {% set start = 1 %}
-                        {% set end = nav['num'] %}
-                        {% elif end - start < 10 and nav['num'] > 10 %}
-                        {% if nav['cur'] - 5 < 0 %}
-                        {% set end = nav['num'] - start if nav['num'] - start < 10 else start + 9 %}
-                        {% end %}
-                        {% if nav['cur'] + 5 > nav['num'] %}
-                        {% set start = start - 1 if start - 1 < 10 else end - 9 %}
-                        {% end %}
-                        {% end %}
+<div class="pagin">
 
+    {% set start = nav['cur'] - 5 if nav['cur'] - 5 > 0 else 1 %}
+    {% set end = nav['cur'] + 5 if nav['cur'] + 5 < nav['num'] else nav['num'] %}
+    {% if end - start < 10 and nav['num'] < 10 %}
+    {% set start = 1 %}
+    {% set end = nav['num'] %}
+    {% elif end - start < 10 and nav['num'] > 10 %}
+    {% if nav['cur'] - 5 < 0 %}
+    {% set end = nav['num'] - start if nav['num'] - start < 10 else start + 9 %}
+    {% end %}
+    {% if nav['cur'] + 5 > nav['num'] %}
+    {% set start = start - 1 if start - 1 < 10 else end - 9 %}
+    {% end %}
+    {% end %}
+    {% if nav['num'] > 1 and nav['cur'] > 1 %}
+        <a href="/{{ nav['model'] }}?page={{ nav['cur'] - 1 }} {% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">上一页</a>
+    {% end %}
 
+    {% if start > 0 %}
+    {% set minEdge = 3 if start > 3 else start %}
+    {% for j in range(1, minEdge) %}
+        <a href="/{{ nav['model'] }}?page={{ j }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">{{ j }}</a>
+    {% end %}
+    {% if start > 3 %}
+        <i>...</i>
+    {% end %}
+    {% end %}
 
-                        {% if start > 1 %}
-                        <li><a href="/{{ nav['model'] }}?page=1{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">首页</a></li>
-                        {% end %}
-                        {% for i in range(start, end + 1) %}
-                            <li id="page-{{ i }}"><a href="/{{ nav['model'] }}?page={{ i }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">{{ i }} <span class="sr-only">(current)</span></a></li>
-                        {% end %}
-                        {% if end < nav['num'] %}
-                            <li><a href="/{{ nav['model'] }}?page={{ nav['num'] }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">末页</a></li>
-                        {% end %}
-                        {% if nav.has_key('total') %}
-                        <span style="margin-left:10px;padding-top:10px;">(共{{nav['total']}}条记录)</span>
-                        {% end %}
-                    </ul>
-                </div>
+    {% for i in range(start, end + 1) %}
+        {% if nav['cur'] == i %}
+        <span class="curr">{{ i }}</span>
+        {% else %}
+        <a href="/{{ nav['model'] }}?page={{ i }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">{{ i }}</a>
+        {% end %}
+    {% end %}
+
+    {% if end < nav['num'] %}
+        {% if nav['num'] - 2 > end %}
+        <i>...</i>
+        {% end %}
+        {% set maxEdge = nav['num'] - 2 if end < nav['num'] - 2 else end %}
+        {% for k in range(maxEdge + 1, nav['num'] + 1) %}
+        <a href="/{{ nav['model'] }}?page={{ k }}{% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">{{ k }}</a>
+        {% end %}
+    {% end %}
+
+    {% if nav['num'] > 1 and nav['cur'] != nav['num'] %}
+        <a href="/{{ nav['model'] }}?page={{ nav['cur'] + 1 }} {% if nav.has_key('query') and nav['query'] %}&{{nav['query']}}{% end %}">下一页</a>
+    {% end %}
+
+    {% if nav.has_key('total') %}
+        <em>共{{nav['total']}}条记录 / {{nav['num']}}页</em>
+    {% end %}
+</div>

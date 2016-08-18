@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
+{% from  config import * %}
 <div class="content-wrapper">
     <section class="content-header">
         <h1>会员管理</h1>
@@ -9,6 +10,7 @@
             <a href="javascript:history.back(-1);">&lt; 返回会员列表</a>
         </div>
         <div class="yc-form">
+            {% raw xsrf_form_html() %}
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>基本资料</span></div>
             <form id="userinfo" method="post" action="/users/userinfo" novalidate="novalidate">
                 <div class="group">
@@ -87,11 +89,15 @@
                         <span>主营品种</span>
                     </div>
                     <div class="cont yc-tag-list">
-                        <ul class="yc-ul" id="jMyTags"></ul>
+                        <ul class="yc-ul" id="jMyTags">
+                            {% for item in user.variety_name %}
+                            <li data-key="{{item.id}}"><span>{{item.name}}<i title="删除" class="remove"></i></span></li>
+                            {% end %}
+                        </ul>
                         <input value="" id="jVariety" name="variety" class="ipt" placeholder="请输入关键字查询" type="text">
                         <span class="error"></span>
                         <div class="list" id="jVarietyTags"></div>
-                        <input type="hidden" id="jVarietys" name="varietys">
+                        <input type="hidden" id="jVarietys" name="varietys" value="{{ user.varietyids}}">
                     </div>
                 </div>
 
@@ -100,7 +106,7 @@
                         <span>经营规模</span>
                     </div>
                     <div class="cont">
-                        <input type="text" class="ipt" name="scale" id="scale" value="">
+                        <input type="text" class="ipt" name="scale" id="scale" value="{{ user.scale}}">
                     </div>
                 </div>
 
@@ -109,7 +115,7 @@
                         <span>供应商介绍</span>
                     </div>
                     <div class="cont">
-                        <textarea rows="10" cols="30" id="jIntro" name="intro" class="ipt ipt-area"></textarea>
+                        <textarea rows="10" cols="30" id="jIntro" name="intro" class="ipt ipt-area">{% if user.introduce=="" %}{{user.nickname}}常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ user.introduce }} {% end %}</textarea>
                         <span class="error"></span>
                     </div>
                 </div>
@@ -124,22 +130,68 @@
         
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>认证信息</span></div>
-            <form id="" method="post" action="">
+            <form id="identifyinfo" method="post" action="/user/identify">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <input type="hidden" name="qid" value="{{quanlity['id'] }}">
                 <div class="group">
                     <div class="txt">
                         <span>用户身份</span>
                     </div>
                     <div class="cont">
-                        <input type="text" class="ipt" name="usertype" value="">
+                        <select name="usertype" id="usertype" class="slt">
+                            {% for key in suppliertype.keys() %}
+                            <option value="{{ key }}" {% if quanlity['type']==key %} selected {% end %} >{{suppliertype[key]}}</option>
+                            {% end %}
+                        </select>
                     </div>
                 </div>
 
-                <div class="group">
-                    <div class="txt">
-                        <span>真实姓名</span>
+
+                <div class="group company"  {% if quanlity["type"]==1  %} style="display:none" {% end %}>
+                    <div class="txt" id="companylabel">
+                        <span>
+                            {% if quanlity["type"]==2 %}
+                            合作社名称
+                            {% else %}
+                            企业名称
+                            {% end %}
+                        </span>
                     </div>
                     <div class="cont">
-                        <input type="text" class="ipt" name="realname">
+                        <input type="text" class="ipt" name="compny" value="{{ quanlity['company'] }}" >
+                    </div>
+                </div>
+
+
+                <div class="group address">
+                    <div class="txt" id="addresslabel">
+                        <span>
+                            {% if quanlity["type"]==2 %}
+                            合作社地址
+                            {% else %}
+                             收货地址
+                            {% end %}
+                        </span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="address" value="{{ quanlity['address'] }}" >
+                    </div>
+                </div>
+
+
+
+                <div class="group">
+                    <div class="txt" id="realnamelabel" >
+                        <span>
+                            {% if quanlity["type"]==1 %}
+                            真实姓名
+                            {% else %}
+                             联系人
+                            {% end %}
+                        </span>
+                    </div>
+                    <div class="cont">
+                        <input type="text" class="ipt" name="realname"  value="{{ quanlity['name'] }}">
                     </div>
                 </div>
 
@@ -148,7 +200,7 @@
                         <span>身份证号</span>
                     </div>
                     <div class="cont">
-                        <input type="text" class="ipt" name="idnumber">
+                        <input type="text" class="ipt" name="idnumber" value="{{ quanlity['identifiers'] }}">
                     </div>
                 </div>
 
@@ -158,76 +210,119 @@
                     </div>
                     <div class="cont yc-form-img">
                         <div class="goods-img">
-                            <span>本人头像</span>
-                            <input type="hidden" value="" name="pic1">
-                            <span>身份证正面</span>
-                            <input type="hidden" value="" name="pic2">
-                            <span>种植基地照片</span>
-                            <input type="hidden" value="" name="pic3">
+                            {% if quanlity["type"]==1 %}
+                            {% for key in imgmap1.keys() %}
+                            <span name="clip">
+                                {{imgmap1[key]}}
+                                {% if quanlity['attachments'].has_key(imgmap1[key]) %}
+                                <img src="{{quanlity['attachments'][imgmap1[key]].replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" value="{% if quanlity['attachments'].has_key(imgmap1[key]) %}{{quanlity['attachments'][imgmap1[key]].replace('_thumb','')}}{% end %}" name="pic{{key}}">
+                            {%  end %}
+                            {% else %}
+                            {% for key in imgmap2.keys() %}
+                            <span name="clip">
+                                {{imgmap2[key]}}
+                                {% if quanlity['attachments'].has_key(imgmap2[key]) %}
+                                <img src="{{quanlity['attachments'][imgmap2[key]].replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                {% end %}
+                            </span>
+                            <input type="hidden" value="{% if quanlity['attachments'].has_key(imgmap2[key]) %}{{quanlity['attachments'][imgmap2[key]].replace('_thumb','')}}{% end %}" name="pic{{key}}">
+                            {% end %}
+                            {% end %}
                         </div>
                     </div>
                 </div>
 
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                    <button type="submit" id="identify_submit" class="ubtn ubtn-orange button">提交</button>
                 </div>
             </form>
         </div>
 
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>现货资源</span><b>（请上传供货商现场图片，图片大小600*380）</b></div>
-            <form id="" method="post" action="">
+            <form id="varietyimg" method="post" action="/quality/upload">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <input type="hidden" name="imgtype" value="2">
                 <div class="group">
                     <div class="txt">
                         <span>上传照片</span>
                     </div>
                     <div class="cont">
                         <ul class="yc-ul yc-form-img">
-                            <li class="goods-img">
-                                <span></span>
+                                {% if len(quanlity["varietyimg"])!=0 %}
+                                {% for index,item in enumerate(quanlity["varietyimg"]) %}
+                                <li class="goods-img">
+                                <span name="clip1">
+                                <img src="{{item.attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                </span>
+                                <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index+1}}">
+                                <div class="desc">
+                                    <input type="text" class="ipt" name="descpic{{index+1}}" placeholder="照片说明" value="{{item['describeinfo']}}">
+                                    <input type="text" class="ipt" name="varietypic{{index+1}}" placeholder="品种名称" value="{{item['varietyname']}}">
+                                </div>
+                                 </li>
+                                {% end %}
+                                {% else %}
+                               <li class="goods-img">
+                                <span name="clip1"></span>
                                 <input type="hidden" value="" name="pic1">
-                                <b>照片说明</b>
-                                <input type="text" class="ipt" name="">
-                            </li>
-                            <li class="goods-img">
-                                <span></span>
-                                <input type="hidden" value="" name="pic1">
-                                <b>照片说明</b>
-                                <input type="text" class="ipt" name="">
-                            </li>
+                                <div class="desc">
+                                    <input type="text" class="ipt" name="descpic1" placeholder="照片说明">
+                                    <input type="text" class="ipt" name="varietypic1" placeholder="品种名称">
+                                </div>
+                                </li>
+                                {% end %}
                         </ul>
                     </div>
                 </div>
 
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
-                    <button type="button" id="" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                    <button type="submit" id="submit-btn" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="add-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
                 </div>
             </form>
         </div>
 
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>其他图片</span><b>（请上传企业资质&amp;生产环境图片，图片大小400*300）</b></div>
-            <form id="" method="post" action="">
+            <form id="otherimg" method="post" action="/quality/upload">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <input type="hidden" name="imgtype" value="3">
                 <div class="group">
                     <div class="txt">
                         <span>上传照片</span>
                     </div>
                     <div class="cont">
                         <ul class="yc-ul yc-form-img">
+                            {% if len(quanlity["otherimg"])!=0 %}
+                            {% for index,item in enumerate(quanlity["otherimg"]) %}
                             <li class="goods-img">
-                                <span></span>
+                                <span name="clip2">
+                                    <img src="{{item.attachment.replace('_thumb','')}}"><i class="del" title="删除"></i>
+                                </span>
+                                <input type="hidden" value="{{item.attachment.replace('_thumb','')}}" name="pic{{index+1}}">
+                                <b>照片说明</b>
+                                <input type="text" class="ipt" value="{{item['describeinfo']}}" name="descpic{{index+1}}">
+                            </li>
+                            {% end %}
+                            {% else %}
+                            <li class="goods-img">
+                                <span name="clip2"></span>
                                 <input type="hidden" value="" name="pic1">
                                 <b>照片说明</b>
-                                <input type="text" class="ipt" name="">
+                                <input type="text" class="ipt" name="descpic1">
                             </li>
+                            {% end %}
                         </ul>
                     </div>
                 </div>
 
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
-                    <button type="button" id="" class="ubtn ubtn-green button jaddPic">添加新图片</button>
+                    <button type="submit" id="submit-other-btn" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="add-other-btn" class="ubtn ubtn-green button jaddPic">添加新图片</button>
                 </div>
             </form>
         </div>
@@ -235,22 +330,34 @@
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>跟进记录</span></div>
             <div class="table-chart">
-            <form id="" method="post" action="">
+            <form id="recordinfo" method="post" action="/record/update">
+                <input type="hidden" name="id" value="{{user.id}}">
                 <div class="group">
                     <div class="cols w1">记录时间</div>
                     <div class="cols w2">记录人</div>
                     <div class="cols w3">接触类型</div>
                     <div class="cols w4">摘要</div>
                 </div>
+                 {% if records %}
+                 {% for index,item in enumerate(records)%}
                 <div class="group">
-                    <div class="cols w1"><input type="text" autocomplete="off" name="" value="" class="yc-ipt" onclick="laydate()"></div>
-                    <div class="cols w2"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
-                    <div class="cols w3"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
-                    <div class="cols w4"><input type="text" autocomplete="off" name="" value="" class="yc-ipt"></div>
+                   <div class="cols w1"><input type="text" autocomplete="off" name="recordtime{{index+1}}" value="{{item.recordtime}}" class="yc-ipt" onclick="laydate()"></div>
+                    <div class="cols w2"><input type="text" autocomplete="off" name="recorder{{index+1}}" value="{{item.recorder}}" class="yc-ipt"></div>
+                    <div class="cols w3"><input type="text" autocomplete="off" name="contacttype{{index+1}}" value="{{item.contacttype}}" class="yc-ipt"></div>
+                    <div class="cols w4"><input type="text" autocomplete="off" name="abstract{{index+1}}" value="{{item.abstract}}" class="yc-ipt"></div>
                 </div>
+                {% end %}
+                 {% else %}
+                <div class="group">
+                   <div class="cols w1"><input type="text" autocomplete="off" name="recordtime1" value="" class="yc-ipt" onclick="laydate()"></div>
+                    <div class="cols w2"><input type="text" autocomplete="off" name="recorder1" value="" class="yc-ipt"></div>
+                    <div class="cols w3"><input type="text" autocomplete="off" name="contacttype1" value="" class="yc-ipt"></div>
+                    <div class="cols w4"><input type="text" autocomplete="off" name="abstract1" value="" class="yc-ipt"></div>
+                </div>
+                {% end %}
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
-                    <button type="button" id="" class="ubtn ubtn-green button jaddRecord">添加新记录</button>
+                    <button type="submit" id="record-submit" class="ubtn ubtn-orange button">提交</button>
+                    <button type="button" id="add-record" class="ubtn ubtn-green button jaddRecord">添加新记录</button>
                 </div>
             </form>
             </div>
@@ -258,14 +365,19 @@
 
         <div class="yc-form mt15">
             <div class="group-title"><i class="fa fa-angle-down expand"></i><span>会员升级</span></div>
-            <form id="" method="post" action="">
+            <form id="upgrade" method="post" action="/user/upgrade">
+                 <input type="hidden" name="id" value="{{user.id}}">
                 <div class="group">
                     <div class="txt">
                         <span>升级类型</span>
                     </div>
                     <div class="cont">
-                        <select name="" id="" class="slt">
-                            <option value="">药采通</option>
+                        <select name="membertype" id="membertype" class="slt">
+                            {% for key in membertype.keys() %}
+                            {% if key>0 %}
+                            <option value="{{ key }}" {% if member and member.type==key %}selected {% end %}>{{membertype[key]}}</option>
+                            {% end %}
+                            {% end %}
                         </select>
                     </div>
                 </div>
@@ -274,14 +386,15 @@
                         <span>开通时长</span>
                     </div>
                     <div class="cont">
-                        <select name="" id="" class="slt">
-                            <option value="">2年</option>
+                        <select name="term" id="term" class="slt">
+                            <option value="1" {% if member and member.term==1 %}selected {% end %}>1年</option>
+                            <option value="2" {% if member and member.term==2 %}selected {% end %}>2年</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="ft">
-                    <button type="button" id="" class="ubtn ubtn-orange button">提交</button>
+                    <button type="submit" id="upgrade-submit" class="ubtn ubtn-orange button">提交</button>
                 </div>
             </form>
         </div>
@@ -296,6 +409,140 @@
 
 <script>
 $(function(){
+    var $jVariety = $('#jVariety');
+    var $jVarietys = $('#jVarietys');
+    var $jMyTags = $('#jMyTags');
+    var $varietyTags = $('#jVarietyTags');
+    var attentionArr = [];
+
+    $jVariety.on({
+        'input': function() {
+            if ($.trim(this.value) !== '') {
+                debounce(getKeywords, 400);
+            }
+        },
+        'keydown': function(event) {
+            var e = event.which;
+            switch (e) {
+                case 38: // up
+                    move($varietyTags, -1);
+                    break;
+                case 40: // down
+                    move($varietyTags, 1);
+                    break;
+                case 13: // enter
+                    var $this = $varietyTags.find('.on');
+                    if ($this.html().length > 0) {
+                        addVariety($this);
+                    }
+                    break;
+                case 27: //Esc
+                    // hidePop();
+                    break;
+                    // no default
+            }
+        }
+    })
+
+    // 添加主营品种
+    $varietyTags.on('click', 'span', function() {
+        addVariety($(this));
+        return false;
+    });
+
+    // 删除品种
+    $jMyTags.on('click', 'i', function() {
+        var key = $(this).closest('li').data('key') || '';
+        arrRemoveVal(attentionArr, key);
+        $(this).closest('li').remove();
+        $jVarietys.val(attentionArr.join(','));
+    });
+
+    // 删除数组元素
+    function arrRemoveVal(arr, val) {
+        var i = 0;
+        while (i < arr.length) {
+            if (arr[i] === val) {
+                arr.splice(i, 1);
+                break;
+            }
+            i++;
+        }
+    }
+
+      $jMyTags.find('li').each(function() {
+        var key = $(this).data('key');
+        if (attentionArr.indexOf(key) == -1) {
+            attentionArr.push(key);
+        }
+
+    });
+
+    function addVariety($this) {
+        var key = $this.data('key');
+        if (attentionArr.join('/').indexOf(key) == -1) {
+            attentionArr.push(key);
+            $jMyTags.append('<li data-key="' + key + '"><span>' + $this.html() + '<i title="删除"></i></span></li>');
+            _showMsg($jVarietys, false);
+        } else {
+            _showMsg($jVarietys, '请勿重复添加');
+        }
+        $jVariety.val('');
+        $jVarietys.val(attentionArr.join(','));
+        hidePop();
+    }
+
+    // 药材品种
+    function getKeywords() {
+        var keywords = $jVariety.val();
+        $.ajax({
+            url: '/supplier/variety',
+            //dataType: 'json',
+            data: {
+                varietyName: keywords
+            },
+            success: function(data) {
+                var html = [];
+                if (data.status === 'success') {
+                    var html = [];
+                    $.each(data.varieties, function(i, v) {
+                        html.push('<span data-key="' + v.id + '"' + (i === 0 ? ' class="on"' : '') + '>' + v.name + '</span>');
+                    });
+
+                } else if (data.status === 'notsupport') {
+                    html.push('<b class="error">暂不支持该品种请致电客服</b>');
+
+                } else {
+                    html.push(data.msg);
+                }
+                $varietyTags.show().html(html.join(''));
+            },
+            error: function() {}
+        })
+    }
+
+    function debounce(func, wait) {
+        this.timer && clearTimeout(this.timer);
+        this.timer = setTimeout(function() {
+            func()
+        }, wait);
+    }
+
+    var _showMsg = function($el, txt) {
+        if (txt) {
+            $el.next('.error').html(txt).next('.explain').hide();
+        } else {
+            $el.next('.error').html('').next('.explain').show();
+        }
+    }
+
+        // 关闭所有弹层
+    function hidePop() {
+        $varietyTags.hide();
+    }
+
+
+
     $('input[readonly]').on('focus', function(){
         this.blur();
     })
@@ -370,12 +617,13 @@ $(function(){
     var $goodsImg = $('.yc-form-img');
     // 上传图片
     $goodsImg.on('click', 'span', function() {
+        name=$(this).attr("name");
         layer.open({
-            area: ['600px'],
+            area: ['700px'],
             closeBtn: 1,
             type: 1,
             moveType: 1,
-            content: '<div class="img-upload-main"><div class="clip" id="imgCrop"></div></div>',
+            content: '<div class="img-upload-main"><div class="'+name+'" id="imgCrop"></div></div>',
             title: '上传图片',
             cancel: function() {
                 cropModal.destroy();
@@ -422,27 +670,231 @@ $(function(){
 
     // 添加新图片
     $('.jaddPic').on('click', function() {
-        var $imgs = $(this).parent().prev().find('.yc-form-img'),
-            count = $imgs.find('.goods-img').length,
-            modal = '<li class="goods-img">'
-                +       '<span></span>'
-                +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
-                +       '<b>照片说明</b>'
-                +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
-                +   '</li>';
+        id=$(this).attr("id");
+        var $imgs = $(this).parent().prev().find('.yc-form-img');
+        count = $imgs.find('.goods-img').length;
+        if(id!="add-btn"){
+                modal = '<li class="goods-img">'
+                    +       '<span name="clip2"></span>'
+                    +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
+                    +       '<b>照片说明</b>'
+                    +       '<input type="text" name="descpic' + (count + 1) +'" class="ipt">'
+                    +   '</li>';
+                    }
+        else{
+                modal = '<li class="goods-img">'
+                    +       '<span name="clip1"></span>'
+                    +       '<input type="hidden" name="pic' + (count + 1) +'" value="">'
+                    +       '<div class="desc">'
+                    +       '<input type="text" class="ipt" name="descpic' + (count + 1) +'" placeholder="照片说明">'
+                    +       '<input type="text" class="ipt" name="varietypic' + (count + 1) +'" placeholder="品种名称">'
+                    +       '</div>'
+                    +   '</li>';
+        }
         $imgs.append(modal);
     })
 
     // 添加新记录
     $('.jaddRecord').on('click', function() {
+        var $groups = $(this).parent().parent().find('.group');
+        count = $groups.length-1;
         var modal = '<div class="group">'
-                +       '<div class="cols w1"><input type="text" onclick="laydate()" class="yc-ipt" value="" name="" autocomplete="off"></div>'
-                +       '<div class="cols w2"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
-                +       '<div class="cols w3"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
-                +       '<div class="cols w4"><input type="text" class="yc-ipt" value="" name="" autocomplete="off"></div>'
+                +       '<div class="cols w1"><input type="text" onclick="laydate()" class="yc-ipt" value="" name="recordtime' + (count + 1) +'" autocomplete="off"></div>'
+                +       '<div class="cols w2"><input type="text" class="yc-ipt" value="" name="recorder' + (count + 1) +'" autocomplete="off"></div>'
+                +       '<div class="cols w3"><input type="text" class="yc-ipt" value="" name="contacttype' + (count + 1) +'" autocomplete="off"></div>'
+                +       '<div class="cols w4"><input type="text" class="yc-ipt" value="" name="abstract' + (count + 1) +'" autocomplete="off"></div>'
                 +   '</div>';
         $(this).parent().before(modal);
     })
+
+    // 用户身份变化
+    $('#usertype').change(function(){
+        select_type=$(this).children('option:selected').val()
+        html1='<span name="clip">本人头像</span>'
+               +'<input type="hidden" value="" name="pic1">'
+               +'<span name="clip">身份证正面</span>'
+               +'<input type="hidden" value="" name="pic2">'
+               +'<span name="clip">种植基地照片</span>'
+               +'<input type="hidden" value="" name="pic3">';
+        html2='<span name="clip">企业全景</span>'
+              +'<input type="hidden" value="" name="pic1">'
+              +'<span name="clip">联系人身份证正面</span>'
+              +'<input type="hidden" value="" name="pic2">'
+              +'<span name="clip">法人身份证正面</span>'
+              + '<input type="hidden" value="" name="pic3">'
+              + '<span name="clip">营业执照</span>'
+              + '<input type="hidden" value="" name="pic4">'
+              + '<span name="clip">GSP证书</span>'
+              + '<input type="hidden" value="" name="pic5">'
+              + '<span name="clip">中草药收购证</span>'
+              + '<input type="hidden" value="" name="pic6">'
+              + '<span name="clip">授权书2.0</span>'
+              + '<input type="hidden" value="" name="pic7">';
+        if(select_type=="1"){
+          $("#identifyinfo").find(".company").hide()
+          $("#addresslabel span").html("收货地址")
+          $("#realnamelabel span").html("真实姓名")
+          $("#identifyinfo .goods-img").empty()
+          $("#identifyinfo .goods-img").html(html1)
+        }
+        else if(select_type=="2"){
+          $("#identifyinfo").find(".company").show()
+          $("#identifyinfo").find(".address").show()
+          $("#realnamelabel span").html("联系人")
+          $("#companylabel span").html("合作社名称")
+          $("#addresslabel span").html("合作社地址")
+          $("#identifyinfo .goods-img").empty()
+          $("#identifyinfo .goods-img").html(html2)
+
+        }
+        else {
+            $("#identifyinfo").find(".company").show()
+            $("#identifyinfo").find(".address").show()
+            $("#realnamelabel span").html("联系人")
+            $("#companylabel span").html("企业名称")
+            $("#addresslabel span").html("收货地址")
+            $("#identifyinfo .goods-img").empty()
+            $("#identifyinfo .goods-img").html(html2)
+        }
+    })
+
+    $('#identifyinfo').validator({
+        fields: {
+            realname: '真实姓名/联系人: required',
+            idnumber: '身份证号: required',
+        },
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/user/identify',
+                    data: $('#identifyinfo').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
+
+    $('#varietyimg').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/quality/upload',
+                    data: $('#varietyimg').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
+
+    $('#otherimg').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/quality/upload',
+                    data: $('#otherimg').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
+
+     $('#recordinfo').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/record/update',
+                    data: $('#recordinfo').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
+
+     $('#upgrade').validator({
+        valid: function(form) {
+            if ( $(form).isValid() ) {
+                $.ajax({
+                    url: '/user/upgrade',
+                    data: $('#upgrade').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function(jqXHR, settings) {
+                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
+                    },
+                    success: function(data) {
+                        if(data.status == 'success'){
+                            layer.msg(data.message, {offset: 0});
+                        }else{
+                            layer.msg(data.message, {offset: 0});
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg(errorThrown, {offset: 0});
+                    }
+                });
+            }
+        }
+    });
+
+
+
+
 })
 </script>
 {% end %}

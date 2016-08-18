@@ -21,7 +21,7 @@ salt = "ycg20151012"
 img_domain = "http://static.yaocai.pro/"
 #img_domain="http://127.0.0.1:8089/"
 
-#img_path = "E:\\wamp\\www\\static\\uploadfiles\\"
+#img_path = "E:/wamp/www/static/uploadfiles/"
 img_path = "/opt/resources/static/uploadfiles"
 host = "http://m.yaocai.pro"
 
@@ -43,19 +43,19 @@ usertype={
     9:"采购经理",
     10:"销售经理"
 }
-
-usetypestr={
-    1: "饮片厂/饮片生产、加工",
-    2: "药厂/制药企业",
-    3: "药材贸易经营公司",
-    4: "种植合作社/种植基地",
-    5: "其他类型公司",
-    6: "个体经营",
-    7: "企业采购经理/业务员",
-    8: "采购药材为主",
-    9: "销售药材为主",
-    10: "既采购也销售药材"
+suppliertype={
+    1:"药材种植户",
+    2:"合作社",
+    3:"中间商",
+    4:"饮品厂",
+    5:"中药厂"
 }
+membertype={
+    0:"普通会员",
+    1:"药采通会员",
+    2:"药销通会员"
+}
+
 
 
 

@@ -5,6 +5,7 @@ from handler.login import *
 from handler.purchase import *
 from handler.register import *
 from handler.dashboard import *
+from handler.supplier import *
 from globalconfig import *
 
 
@@ -42,6 +43,8 @@ handlers = [
     (r"/getvarinfobyid", GetVarInfoByIdHandler),
     (r"/purchasesuccess", PurchaseSuccessHandler),
     (r"/dashboard", DashboardHandler),
+    (r"/supplier/detail", SupplierDetailHandler),
+    (r"/supplier", SupplierHandler),
     #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", MyPurchaseHandler),
     #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MyPurchaseHandler),
     (r"/mypurchase", MyPurchaseHandler),

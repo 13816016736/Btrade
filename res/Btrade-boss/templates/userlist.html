@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
+{% from  config import * %}
 <div class="content-wrapper">
     <section class="content-header">
         <h1>会员管理</h1>
@@ -22,13 +23,14 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>会员名</th>
-                        <th>个人/企业</th>
                         <th>真实姓名/公司全称</th>
-                        <th>个人称呼</th>
                         <th>手机号</th>
-                        <th>状态</th>
-                        <th width="100" class="tc">操作</th>
+                        <th>注册时间</th>
+                        <th>认证状态</th>
+                        <th>会员分类</th>
+                        <th>升级时间</th>
+                        <th>到期时间</th>
+                        <th width="150" class="tc">操作</th>
                     </tr>
                 </thead>
                 <tfoot></tfoot>
@@ -36,24 +38,19 @@
                     {% for user in users %}
                     <tr>
                         <td>{{user.id}}</td>
-                        <td>{{user.username}}</td>
-                        <td>
-                            {% if user.type in range(1,5) %}
-                            企业
-                            {% elif user.type in range(6,10) %}
-                            个人
-                            {% end %}
-                        </td>
                         <td>{{user.name}}</td>
-                        <td>{{user.nickname}}</td>
                         <td>{{user.phone}}</td>
+                        <td>{{user.createtime}}</td>
                         <td>
-                            {% if user.status == 0 %}
-                            禁用
+                            {% if user.quanlity!=-1 %}
+                            <font color="#76ee00">√</font>
                             {% else %}
-                            正常
+                            <font color="red">×</font>
                             {% end %}
                         </td>
+                        <td>{{membertype[user.membertype]}}</td>
+                        <td>{{user.upgradetime}}</td>
+                        <td>{{user.expiredtime}}</td>
                         <td class="tc">
                             <!--<a class="btn btn-link" href="/users/userinfo/{{user.id}}" role="button">查看</a>-->
                             <a href="/users/userinfo/{{user.id}}" role="button">编辑</a>
@@ -87,6 +84,20 @@ $(function(){
     $('body').on('click', '.jremove', function() {
         var url = $(this).attr('href');
         layer.confirm('确认要禁用当前用户吗？', {icon: 3, title:'禁用'}, function(index) {
+            location.href = url;
+        })
+        return false;
+    })
+    $('body').on('click', '.freeze', function() {
+        var url = $(this).attr('href');
+        layer.confirm('确认要冻结当前用户吗？', {icon: 3, title:'冻结'}, function(index) {
+            location.href = url;
+        })
+        return false;
+    })
+     $('body').on('click', '.thaw', function() {
+        var url = $(this).attr('href');
+        layer.confirm('确认要解冻当前用户吗？', {icon: 3, title:'解冻'}, function(index) {
             location.href = url;
         })
         return false;
