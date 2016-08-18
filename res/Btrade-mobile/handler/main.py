@@ -114,7 +114,7 @@ class CenterHandler(BaseHandler):
 class UserAttentionHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
-    def get(self, page=0):
+    def get(self):
         userid = self.session.get("userid")
         user = self.db.get("select varietyids from users where id = %s", userid)
         varieties = []
