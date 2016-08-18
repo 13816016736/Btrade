@@ -49,6 +49,7 @@ em,i{font-style:normal;}
 .icon-camera:before { content: "\e600"; }
 .icon-check-yes:before { content: "\e611"; }
 .icon-frown:before { content: "\e623"; }
+.icon-verify:before { content: "\e627"; }
 .icon-face:before { content: "\e624"; }
 .icon-envelope:before { content: "\e61b"; }
 .icon-bell:before { content: "\e61c"; }
@@ -64,6 +65,7 @@ em,i{font-style:normal;}
 .icon-arrow-right:before { content: "\e606"; }
 .icon-arrow-down:before { content: "\e607"; }
 .icon-unfold:before { content: "\e612"; }
+.icon-vip:before { content: "\e628"; }
 .icon-trade:before { content: "\e61e"; }
 
 /* checkbox */
@@ -81,6 +83,8 @@ em,i{font-style:normal;}
 .icon-time{color:#f90;}
 .icon-face{color:#8bc34a;}
 .icon-frown{color:#f52;}
+.icon-vip{color:#ff9700;font-size:1.8rem;}
+.icon-verify{color:#4bc615;font-size:1.8rem;;}
 
 /* color */
 .blue{color:#57c !important;}
@@ -315,6 +319,8 @@ em,i{font-style:normal;}
 .yc-quote-receive .hd .type{color:#f90;}
 .yc-quote-receive .hd .type:before{margin-right:10px;content: counter(a, decimal-leading-zero);}
 .yc-quote-receive .hd .name{display:block;height:22px;margin-top:9px;font-weight:700;overflow:hidden;}
+.yc-quote-receive .hd .name i{margin-left:10px;vertical-align:middle;}
+.yc-quote-receive .hd .name i:before{vertical-align:top;}
 .yc-quote-receive .hd .user{padding:10px 0 5px;border-bottom:1px dotted #ddd;}
 .yc-quote-receive .hd .user i{vertical-align:middle;}
 .yc-quote-receive .hd .user a{color:#f90;}

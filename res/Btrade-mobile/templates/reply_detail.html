@@ -123,7 +123,14 @@
                 <div class="hd">
                     <div class="tl">
                         <span class="type">供货商</span>
-                        <strong class="name">{{quote.uname}}</strong>
+                        <strong class="name"><a {% if quote.ismember!=-1 %}  href="/supplier/detail?qid={{quote.qid}}" {% else %} href="#" {% end %}>{{quote.uname}}</a>
+                            {% if quote.ismember!=-1 %}
+                            <i class="iconfont icon-vip"></i>
+                            {% end %}
+                            {% if quote.qid!=-1 %}
+                            <i class="iconfont icon-verify"></i>
+                            {% end %}
+                        </strong>
                     </div>
                     <div class="tr">
                         <time data-time="{{quote.datetime}}"></time>
