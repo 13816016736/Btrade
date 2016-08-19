@@ -7,42 +7,57 @@
                 <i class="iconfont icon-back"></i>
             </a>
         </div>
-        <div class="yc-header-title">设置关注品种</div>
+        <div class="yc-header-title">设置主营品种</div>
         <div class="yc-header-right">
-            <a class="button" id="jSave" href="#none">完成</a>
         </div>
     </header><!-- /yc-header -->
 
     <section class="yc-content">
-        <div class="yc-attention">
+        <div class="yc-breed">
             <div class="title">
-                <span>已关注品种</span>
-                <a class="edit" href="#none">修改</a>
+                <span>主营品种</span>
             </div>
-            <ul id="jMyTags">
-                {% for variety in varieties%}
-                <li data-key="{{ variety.id }}"><span>{{ variety.name }}<i></i></span></li>
-                {% end %}
-            </ul>
-        </div>
+            <div class="breeds">
+                <ul id="jBreeds">
+                    {% for item in varieties %}
+                    <li data-key="{{ item.id }}"><span>{{ item.name }}<i></i></span></li>
+                    {%  end %}
+                </ul>
+            </div>
 
-        <div class="yc-attention">
             <div class="search">
-                <form action="">
-                    <i class="iconfont icon-plussquare"></i>
-                    <input class="keywords" type="text" placeholder="输入品种名，添加新品种" />
-                </form>
+                <input type="text" placeholder="在此输入品种名，例如“黄连”，点击出现的选项" class="keywords">
             </div>
-            <div class="list">
+
+            <div class="list"></div>
+
+            <div class="tips">
+
+            </div>
+
+            <div class="button">
+                <button class="submit" id="jSubmit" type="button">提交</button>
             </div>
         </div>
     </section><!-- /yc-content -->
     <script>
     !(function(){
+        var $breeds = $('#jBreeds');
+        var $total = $('#jTotal');
+        var $ipt = $('.search .keywords');
+        var attentionArr = [];
+
+        $breeds.find('li').each(function() {
+            var key = $(this).data('key');
+            if(attentionArr.indexOf(key)==-1){
+                attentionArr.push(key);
+            }
+         });
+
+
         // 删除数组元素
         function arrRemoveVal(arr, val) {
             var i = 0;
-
             while(i < arr.length) {
                 if(arr[i] === val) {
                     arr.splice(i, 1);
@@ -52,63 +67,79 @@
             }
         }
 
-        // 编辑品种
-        var isEdit = false;
-        $('.yc-attention .title .edit').on('click', function() {
-            isEdit = !isEdit;
-            $(this).html(isEdit ? '确定' : '编辑');
-            $('.yc-attention').find('ul').toggleClass('edit');
-        })
+        // 添加新品种
+        $('.list').on('click', '.item', function() {
+            var key = $(this).data('key');
+            if ($.inArray(key, attentionArr) !== -1) {
+                lpPopover('已关注“' + $(this).html() + '”品种', 5e3);
+                $ipt.focus();
+
+            }  else {
+                attentionArr.push(key);
+                $breeds.append('<li data-key="' + key + '"><span>' + $(this).html() + '<i></i></span></li>');
+                $('.search .keywords').val('');
+                $('.list').empty();
+                $ipt.focus();
+            }
+        });
+
         // 删除品种
-        $('.yc-attention').on('click', 'i', function() {
+        $breeds.on('click', 'i', function() {
             var key = $(this).closest('li').data('key') || '';
             arrRemoveVal(attentionArr, key);
             $(this).closest('li').remove();
-            console.log(attentionArr);
-        });
-
-        // 保存
-        $('#jSave').on('click', function() {
-            $.ajax({
-                url: '/savevariety',
-                dataType: 'json',
-                data: {"varietyids":attentionArr.join(',')},
-                type: 'POST',
-                beforeSend: function(jqXHR, settings) {
-                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-                },
-                success: function(data) {
-                    if (data.status === 'success') {
-                        lpPopover('保存成功！');
-                        self.location=document.referrer;
-                    } else {
-                        $('.yc-attention .list').html(data.msg);
-                    }
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    lpPopover('网络连接超时，请您稍后重试！');
-                }
-            })
         });
 
         // 搜索品种
         function getKeywords() {
             var keywords = $('.search .keywords').val();
-            var reg = /^[u4E00-u9FA5]+$/;
-            if(keywords != "" && !reg.test(keywords)) {
-                $.ajax({
-                    url: '/getvarietyinfo',
+            $.ajax({
+                url: '/variety',
+                dataType: 'json',
+                data: {key: keywords},
+                success: function(data) {
+                    if (data.status === 'success') {
+                        toHtml(data.list, keywords);
+                    } else {
+                        $('.list').html(data.msg);
+                    }
+                },
+                error: function() {
+                    lpPopover('网络连接超时，请您稍后重试!');
+                }
+            })
+        }
+        function toHtml(json, keywords) {
+            var html = [];
+            $.each(json, function(i, v){
+                html.push('<div class="item" data-key="' + v.id + '">' + v.name + '</div>');
+            });
+            $('.list').html(html.join(''));
+        }
+        var lazyAjax = debounce(getKeywords, 400);
+        $ipt.on('input', lazyAjax);
+
+        // 提交
+        $('#jSubmit').on('click', function(){
+            if (attentionArr.length === 0) {
+                lpPopover('请添加主营品种', 5e3);
+                return;
+            }
+             else{
+               $.ajax({
+                    url: '/savevariety',
                     dataType: 'json',
-                    data: {"variety":keywords},
+                    data: {"varietyids":attentionArr.join(',')},
                     type: 'POST',
                     beforeSend: function(jqXHR, settings) {
                         jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
                     },
                     success: function(data) {
                         if (data.status === 'success') {
-                            toHtml(data.list, keywords);
+                            lpPopover('设置成功！');
+                            self.location=document.referrer;
                         } else {
-                            $('.yc-attention .list').html(data.msg);
+                            lpPopover(data.message);
                         }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -116,33 +147,11 @@
                     }
                 })
             }
-        }
-        function toHtml(json, keywords) {
-            var html = [];
-            $.each(json, function(i, v){
-                html.push('<div class="item" data-key="' + v.id + '">' + v.name + '</div>');
-            });
-            $('.yc-attention .list').html(html.join(''));
-        }
-        var lazyAjax = debounce(getKeywords, 400);
-        $('.search .keywords').on('input', lazyAjax);
 
-        var attentionArr = [];
-        $('#jMyTags').find('li').each(function() {
-            var key = $(this).data('key');
-            attentionArr.push(key);
-        });
-        // 添加新品种
-        $('.list').on('click', '.item', function() {
-            var key = $(this).data('key');
-            if ($.inArray(key, attentionArr) === -1) {
-                attentionArr.push(key);
-                $('#jMyTags').append('<li data-key="' + key + '"><span>' + $(this).html() + '<i></i></span></li>');
-            } else {
-                lpPopover('已关注“' + $(this).html() + '”品种', 5e3)
-            }
-            $('.search .keywords').val('');
-        });
+
+
+
+        })
 
     }(jQuery));
     </script>

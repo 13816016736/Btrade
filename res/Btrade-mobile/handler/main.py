@@ -114,7 +114,7 @@ class CenterHandler(BaseHandler):
 class UserAttentionHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
-    def get(self, page=0):
+    def get(self):
         userid = self.session.get("userid")
         user = self.db.get("select varietyids from users where id = %s", userid)
         varieties = []
@@ -194,7 +194,7 @@ class ArticleHandler(BaseHandler):
     def get(self, articleid):
         article = self.db.get("select * from notification where receiver = %s and id = %s", self.session.get("userid"), articleid)
         result = self.db.execute("update notification set status = 1 where receiver = %s and id = %s", self.session.get("userid"), articleid)
-        print result
+        #print result
         article["datetime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(article["createtime"])))
         self.render("article.html", article=article)
 
@@ -439,12 +439,19 @@ class ReplayDetailHandler(BaseHandler):
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
         #此采购单收到报价情况
-        quotes = self.db.query("select q.id,userid,q.price,q.quality,q.state,q.message,q.createtime,u.name uname,u.nickname,u.type usertype,u.phone "
+        ordercondition = ",case when q.userid in (SELECT userid from member where type=2) then 4 " \
+                         " when q.userid in (SELECT userid from member where type=1) then 3 " \
+                         "when q.userid in (SELECT userid from quality_supplier) then 2 " \
+                         "else 0 end ordernum "
+
+        quotes = self.db.query("select q.id,userid,q.price,q.quality,q.state,q.message,q.createtime,u.name uname,u.nickname,u.type usertype,u.phone "+ordercondition+
                                "from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s",pid)
         quoteids = []
+        quoteuserids = []
         if quotes:
             for quote in quotes:
                 quoteids.append(str(quote.id))
+                quoteuserids.append(str(quote.userid))
                 quote["datetime"] = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(float(quote["createtime"])))
                 quote["unit"] = purchaseinfo["unit"]
             quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
@@ -458,7 +465,17 @@ class ReplayDetailHandler(BaseHandler):
                     myquoteattachments[quoteattachment.quoteid].append(quoteattachment)
                 else:
                     myquoteattachments[quoteattachment.quoteid] = [quoteattachment]
+
+            memberinfos = self.db.query("select * from member where userid in (%s) and type in(1,2)" % ",".join(quoteuserids))
+            membermap = dict((m.userid, m.id) for m in memberinfos)
+
+            qualities = self.db.query("select * from quality_supplier where userid in (%s)" % ",".join(quoteuserids))
+            qualitymap = dict((i.userid, i.id) for i in qualities)
+
             for mq in quotes:
+                mq.ismember = membermap.get(mq.userid, -1)
+                mq.qid = qualitymap.get(mq.userid, -1)
+
                 if myquoteattachments.has_key(mq.id):
                     mq["attachments"] = myquoteattachments[mq.id]
                 else:

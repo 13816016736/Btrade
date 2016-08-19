@@ -5,6 +5,7 @@ from handler.login import *
 from handler.register import *
 from handler.purchase import *
 from handler.quote import *
+from handler.supplier import *
 
 from globalconfig import *
 
@@ -69,6 +70,7 @@ handlers = [
     (r"/reply", ReplayHandler),
     (r"/replydetail", ReplayDetailHandler),
     (r"/variety", VarietySearchHandler),
+    (r"/supplier/detail", SupplierDetailHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
     (r".*", BaseHandler),
 ];
@@ -79,7 +81,7 @@ conf = {
     #主页显示的文章数目
     'POST_NUM': 5,
     #每周能报价的次数
-    'QUOTE_NUM': 20,
+    'QUOTE_NUM': 5,
 }
 
 """日志设置

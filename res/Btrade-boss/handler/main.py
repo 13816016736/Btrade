@@ -4,7 +4,8 @@ import tornado.web
 from base import BaseHandler
 import config, time
 from utils import *
-
+import os
+from collections import defaultdict
 class MainHandler(BaseHandler):
     def get(self):
         self.redirect('/users/userlist')
@@ -27,6 +28,29 @@ class UserListHandler(BaseHandler):
             'query': "query=%s" % query if query else "",
         }
         users = self.db.query("SELECT * FROM users" + condition + " LIMIT %s,%s", page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        if users:
+            userids=[str(u.id) for u in users]
+            members=self.db.query("select * from member where userid in (%s)"%",".join(userids))
+            membermap=dict((m.userid, [m.type,m.upgradetime,m.expiredtime,m.status]) for m in members)
+            qualities=self.db.query("select userid,id from quality_supplier where userid in (%s)"%",".join(userids))
+            qualitymap=dict((q.userid, q.id) for q in qualities)
+            for item in users:
+                item.createtime = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.createtime)))
+                item.membertype=membermap.get(item.id,[0,"",""])[0]
+                if item.membertype!=0:
+                    item.upgradetime=membermap.get(item.id)[1]
+                    item.upgradetime=time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.upgradetime)))
+                    item.expiredtime=membermap.get(item.id)[2]
+                    item.expiredtime=time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.expiredtime)))
+                    item.memberstatus=membermap.get(item.id)[3]
+                else:
+                    item.upgradetime ="-"
+                    item.expiredtime ="-"
+                    item.memberstatus=0
+
+                item.quanlity=qualitymap.get(item.id,-1)
+
+
         self.render("userlist.html", users=users, nav=nav, query=query)
 
 class UserInfoHandler(BaseHandler):
@@ -34,20 +58,85 @@ class UserInfoHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, userid):
         user = self.db.get("SELECT * FROM users where id = %s", userid)
-        self.render("userinfo.html", user=user)
+        if user:
+            variety_list = user.varietyids.split(",")
+            vl = []
+            for v in variety_list:
+                if (v != ""):
+                    vl.append(str(v))
+            if len(vl)!=0:
+                supply_variety_name = self.db.query("select name,id from variety where id in (%s) " % ','.join(vl))
+                user["variety_name"] = supply_variety_name
+            else:
+                user["variety_name"]=""
+        quanlity=self.db.get("select * from quality_supplier where userid=%s",userid)
+        if quanlity==None:#数值初始化
+            quanlity={}
+            quanlity["id"]=""
+            quanlity["type"]=1
+            quanlity["name"]=""
+            quanlity["identifiers"] = ""
+            quanlity["company"] = ""
+            quanlity["address"] = ""
+            quanlity["attachments"]=defaultdict(list)
+            quanlity["varietyimg"]=[]
+            quanlity["otherimg"]=[]
+        else:
+            qualityattachments = self.db.query(
+                "select * from quality_attachment where quality_id=%s and type=1", quanlity["id"])
+            for qualityattachment in qualityattachments:
+                base, ext = os.path.splitext(os.path.basename(qualityattachment.attachment))
+                qualityattachment.attachment = config.img_domain + qualityattachment.attachment[
+                                                                   qualityattachment.attachment.find(
+                                                                     "static"):].replace(base, base + "_thumb")
+            attachmentmap=dict((i.describeinfo, i.attachment) for i in qualityattachments)
+            quanlity["attachments"] = attachmentmap
+
+            varietyimg = self.db.query(
+                "select * from quality_attachment where quality_id=%s and type=2", quanlity["id"])
+            for qualityattachment in varietyimg:
+                base, ext = os.path.splitext(os.path.basename(qualityattachment.attachment))
+                qualityattachment.attachment = config.img_domain + qualityattachment.attachment[
+                                                                   qualityattachment.attachment.find(
+                                                                     "static"):].replace(base, base + "_thumb")
+            quanlity["varietyimg"] = varietyimg
+
+            otherimg = self.db.query(
+                "select * from quality_attachment where quality_id=%s and type=3", quanlity["id"])
+
+            for qualityattachment in otherimg:
+                base, ext = os.path.splitext(os.path.basename(qualityattachment.attachment))
+                qualityattachment.attachment = config.img_domain + qualityattachment.attachment[
+                                                                   qualityattachment.attachment.find(
+                                                                     "static"):].replace(base, base + "_thumb")
+            quanlity["otherimg"] = otherimg
+
+        records=self.db.query("select * from follow_record where userid=%s",userid)
+        member=self.db.get("select * from member where userid=%s",userid)
+
+
+
+        self.render("userinfo.html", user=user,quanlity=quanlity,records=records,member=member)
 
     @tornado.web.authenticated
     def post(self):
-        if self.get_argument("userid") is None or self.get_argument("nickname") is None or self.get_argument("type") is None or self.get_argument("name") is None or self.get_argument("phone") is None:
+        nickname=self.get_argument("nickname",None),
+        type=self.get_argument("type",None),
+        name=self.get_argument("name",None),
+        phone=self.get_argument("phone",None),
+        userid=self.get_argument("userid",None)
+        scale=self.get_argument("scale","")
+        intro=self.get_argument("intro","")
+        variety=self.get_argument("varietys","")
+        if userid is None or nickname is None or type is None or name is None or phone is None:
             self.api_response({'status':'fail','message':'请完整填写表单'})
         else:
-            user = self.db.query("select * from users where phone = %s and id != %s", self.get_argument("phone"), self.get_argument("userid"))
+            user = self.db.query("select * from users where phone = %s and id != %s", phone, userid)
             if user:
                 self.api_response({'status':'fail','message':'此手机号已被他人注册过'})
             else:
-                self.db.execute("update users set nickname=%s,type=%s,name=%s,phone=%s where id = %s",
-                                self.get_argument("nickname"), self.get_argument("type"), self.get_argument("name"),
-                                self.get_argument("phone"), self.get_argument("userid"))
+                self.db.execute("update users set nickname=%s,type=%s,name=%s,phone=%s,scale=%s,introduce=%s,varietyids=%s where id = %s",
+                                nickname, type, name,phone,scale,intro,variety,userid)
                 self.api_response({'status':'success','message':'提交成功'})
 
 class UserRecoverHandler(BaseHandler):
@@ -176,4 +265,7 @@ class AdminUserHandler(BaseHandler):
                     else:
                         self.db.execute("insert into admin (username,password,createtime) value(%s,%s,%s)",username,md5(str(newpwd + config.salt)),int(time.time()))
                         self.api_response({'status': 'success', 'message': '添加成功'})
+
+
+
 

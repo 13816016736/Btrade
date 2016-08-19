@@ -157,8 +157,19 @@
                     <time>{{quote.datetime}}</time>
                 </div>
                 <div class="td2">
-                    <strong>{{quote.name}}</strong>
-                    <span><i class="iconfont icon-radio-yes"></i> <!--身份真实--></span>
+                    <strong><a {% if quote.ismember!=-1 %}  href="/supplier/detail?qid={{quote.qid}}" {% else %} href="#" {% end %}>{{quote.name}}</a>
+                    </strong>
+                    <span>
+                        <!--<i class="iconfont icon-radio-yes"></i> <!--身份真实- -->
+                        {% if quote.ismember!=-1 %}
+                            <i class="iconfont icon-vip"></i>
+                        {% end %}
+                        {% if quote.qid!=-1 %}
+                            <i class="iconfont icon-verify"></i>
+                        {% end %}
+                    </span>
+
+
                     <span class="category">
                         {% if quote.type == 1%}
                         饮片厂
