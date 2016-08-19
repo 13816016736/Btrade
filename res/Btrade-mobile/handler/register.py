@@ -14,6 +14,7 @@ class RegisterHandler(BaseHandler):
         userinfo = None
         code = self.get_argument("code", None)
         step= self.get_argument("step",'1')
+        registertype=self.get_argument("register",'1')
         if code:
             #请求获取access_token和openid
             url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (config.appid, config.secret, code)
@@ -51,9 +52,29 @@ class RegisterHandler(BaseHandler):
                     elif purchaseinfo["unit"]==u"吨":
                         sum_quantity += int(purchaseinfo["quantity"])
                         sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])*1000
-            show_data={"accept_company_num":accept_company_num,"accept_quote_user_num":accept_quote_user_num,
+
+            if int(registertype)==2:
+                user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
+                supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
+                total = user_count + supplier_count
+
+                totalquote=self.db.execute_rowcount("select id from quote")
+                totalpurchaseinfo=self.db.execute_rowcount("select distinct purchaseinfoid from quote")
+                averge_quote_num=0
+                if totalpurchaseinfo!=0:
+                    averge_quote_num=totalquote/totalpurchaseinfo
+
+
+                show_data = {"total": total, "accept_purchaseinfo_num": len(accept_purchaseinfo),
+                             "averge_quote_num": averge_quote_num, "sum_quantity": sum_quantity,
+                             "sum_price": int(sum_price / 10000)}
+            else:
+                show_data={"accept_company_num":accept_company_num,"accept_quote_user_num":accept_quote_user_num,
                    "accept_num":accept_num,"sum_quantity":sum_quantity,"sum_price":int(sum_price/10000)}
         elif step=="3":
+            if int(registertype)==2:
+                self.redirect("/regsuccess?next_url=%s"%next_url)
+                return
             attention=[]
             if next_url!="/":
                 url_split=next_url.split("/")
@@ -77,7 +98,7 @@ class RegisterHandler(BaseHandler):
                 attentionvariety = self.db.query(
                         "select id,name from variety where id in(%s)" % ",".join(attention))
 
-        self.render("register_%s.html"%step, next_url=next_url, userinfo=userinfo,data=show_data,attention=attentionvariety)
+        self.render("register_%s.html"%step, next_url=next_url, userinfo=userinfo,data=show_data,attention=attentionvariety,register=int(registertype))
 
     @purchase_push_trace
     def post(self):
@@ -113,6 +134,7 @@ class RegisterHandler(BaseHandler):
             username = "ycg" + time.strftime("%y%m%d%H%M%S")
             type = self.get_argument("type")
             name = self.get_argument("name")
+            registertype=self.get_argument("registertype",1)
             if name is None:
                 self.api_response({'status': 'fail', 'message': '真实姓名或单位名称不能为空'})
                 return
@@ -136,9 +158,9 @@ class RegisterHandler(BaseHandler):
                 self.session["openid"] = ""
                 self.session.save()
                 lastrowid = self.db.execute_lastrowid(
-                        "insert into users (username, password, phone, type, name, nickname,areaid, status, openid,createtime)"
-                        "value(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), phone
-                        , type, name, nickname,areaid, 1, openid, int(time.time()))
+                        "insert into users (username, password, phone, type, name, nickname,areaid, status, openid,registertype,createtime)"
+                        "value(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s,%s)", username, md5(str(password + config.salt)), phone
+                        , type, name, nickname,areaid, 1, openid,registertype, int(time.time()))
                 # 查看是否为供应商列表里面的供应商，如果是转移积分
                 supplier = self.db.query("select id,pushscore from supplier where mobile=%s", phone)
                 if supplier:
@@ -223,7 +245,7 @@ class CheckFansHandler(BaseHandler):
     def get(self):
         is_fans=False
         state= self.get_argument("state",None)
-        ret=self.db.get("select openid,name,username from users where id=%s",self.session.get("userid"))
+        ret=self.db.get("select openid,name,username registertype from users where id=%s",self.session.get("userid"))
         name=ret["name"]
         username=ret["username"]
         openid=ret["openid"]
