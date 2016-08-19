@@ -127,7 +127,7 @@ class RegisterHandler(BaseHandler):
             if city:
                 logging.info(city)
                 try:
-                    areaid=self.db.get("select id from where areaname=%s or shortname=%s ",city.encode("GBK"),city.encode("GBK"))
+                    areaid=self.db.get("select id from where areaname=%s or shortname=%s ",city.encode("utf8").decode("GBK"),city.encode("utf8").decode("GBK"))
                 except Exception,ex:
                     logging.info("get city ex=%s",str(ex))
 

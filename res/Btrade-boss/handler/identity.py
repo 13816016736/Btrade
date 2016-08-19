@@ -97,9 +97,6 @@ class IdentifyUserHandler(BaseHandler):
                     "value(%s, %s, %s, %s, %s, %s, %s)",
                     id,usertype,name,identifiers,compny,address ,int(time.time()))
 
-            # 成功认证实力供货商积分增加：
-            self.db.execute("update users set pushscore=pushscore+5 where id=%s", id)
-
             for picitem in piclist:
                 self.db.execute("insert into quality_attachment (type,quality_id,describeinfo,attachment) value(%s,%s,%s,%s)",1,lastrowid,picitem["describe"],picitem["path"])
             self.api_response(
