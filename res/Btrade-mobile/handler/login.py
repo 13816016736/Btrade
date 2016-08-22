@@ -47,7 +47,12 @@ class LoginHandler(BaseHandler):
             else:
                 ua = self.request.headers['User-Agent']
                 if ua.lower().find("micromessenger") != -1:#微信中就去绑定
-                    self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=bindwx#wechat_redirect")
+                    if author.registertype==1:
+                        self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect")
+                    else:
+                        self.redirect(
+                            "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
+
                 else:
                     self.redirect(self.get_argument("next_url", "/"))
         else:
@@ -70,8 +75,14 @@ class BindWxHandler(BaseHandler):
         state= self.get_argument("state", None)
         if code:
             # 请求获取access_token和openid
+            appid = config.appid
+            secret = config.secret
+            if state=="ycgpurchase":
+                appid = config.purchase_appid
+                secret = config.purchase_secret
+
             url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
-            config.appid, config.secret, code)
+                appid, secret, code)
             res = requests.get(url)
             message = json.loads(res.text.encode("utf-8"))
             access_token = message.get("access_token", None)
@@ -86,7 +97,7 @@ class BindWxHandler(BaseHandler):
                             self.session["user"] = userinfo[0].username
                             self.session["notification"] = len(notification)
                             self.session.save()
-                    elif state=="bindwx":
+                    else:
                          #绑定微信openid
                          self.db.execute("update users set openid=%s where id=%s", openid,
                                          self.session.get("userid"))

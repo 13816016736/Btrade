@@ -17,7 +17,12 @@ class RegisterHandler(BaseHandler):
         registertype=self.get_argument("register",'1')
         if code:
             #请求获取access_token和openid
-            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (config.appid, config.secret, code)
+            appid = config.appid
+            secret = config.secret
+            if int(registertype)==2:
+                appid = config.purchase_appid
+                secret = config.purchase_secret
+            url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (appid, secret, code)
             res = requests.get(url)
             message = json.loads(res.text.encode("utf-8"))
             access_token = message.get("access_token", None)
@@ -249,12 +254,13 @@ class CheckFansHandler(BaseHandler):
         name=ret["name"]
         username=ret["username"]
         openid=ret["openid"]
+        registertype=ret["registertype"]
         purchaseinfonum = self.db.execute_rowcount("select id from purchase_info where status!=0")
         if openid!="":
             openid = ret["openid"].strip("\r\n")
             # 请求获取access_token和openid
             wechart = WechartJSAPI(self.db)
-            access_token = wechart.getAccessToken()
+            access_token = wechart.getAccessToken(int(registertype))
             if access_token:
                 # 请求获取用户信息
                 url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (access_token, openid)
@@ -263,7 +269,7 @@ class CheckFansHandler(BaseHandler):
                 logging.info(data)
                 errorCode=data.get("errcode",None)
                 if errorCode:
-                    access_token = wechart.getRefeshAccessToken()
+                    access_token = wechart.getRefeshAccessToken(int(registertype))
                     url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" % (
                     access_token, openid)
                     res = requests.get(url)
@@ -278,14 +284,27 @@ class CheckFansHandler(BaseHandler):
             if state == "regsuccess":
                 # 发微信模板消息通知用户注册成功
                 regSuccessWx(openid, name, username)
-                self.render("register_A.html", type=2, url="/", username=self.session.get("user"),purchaseinfonum=purchaseinfonum)
+                if registertype==1:
+                    self.render("register_A.html", type=2, url="/", username=self.session.get("user"),purchaseinfonum=purchaseinfonum,registertype=registertype)
+                else:
+                    user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
+                    supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
+                    total = user_count + supplier_count
+
+                    purchase_user = self.db.execute_rowcount(
+                        "select distinct p.userid from purchase p left join  purchase_info pi on p.id=pi.purchaseid ")
+
+                    accept_quote = self.db.query("select id from quote where state=1")
+
+                    self.render("register_A.html", type=2, url="/", username=self.session.get("user"),
+                                purchaseinfonum=purchaseinfonum,total=total,purchase_user=purchase_user,accept_quote=accept_quote,registertype=registertype)
             elif state =="quotesuccess":
                 self.render("quote_success_A.html",purchaseinfonum=purchaseinfonum)
             else:
                 self.redirect("/")
         else:
             if state == "regsuccess":
-                self.render("register_B.html",purchaseinfonum=purchaseinfonum)
+                self.render("register_B.html",purchaseinfonum=purchaseinfonum,registertype=registertype)
             elif state =="quotesuccess":
                 self.render("quote_success_B.html",purchaseinfonum=purchaseinfonum)
             else:

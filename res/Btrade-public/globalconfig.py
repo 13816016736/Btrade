@@ -31,6 +31,12 @@ appid = "wx90e04052c49aa63e"
 secret = "b1146d3ec7e0a8a483064406f361a07b"
 token = ""
 
+purchase_appid="wx27d7d93c3eeb22d0"
+purchase_secret="a580e8f5259f3019113c79f23b8763b9"
+
+
+
+
 usertype={
     1:"饮片厂",
     2:"药厂",
