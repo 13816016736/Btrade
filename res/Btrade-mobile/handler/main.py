@@ -47,6 +47,7 @@ class CenterHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         userid = self.session.get("userid")
+        showtype=self.get_argument("type",1)
         user = self.db.get("select * from users where id = %s", userid)
         news = self.db.query("select * from notification where receiver = %s order by createtime desc", userid)
 
@@ -105,7 +106,7 @@ class CenterHandler(BaseHandler):
 
 
         self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces
-                    , quotenum=quotenum, replynum=replynum, purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote)
+                    , quotenum=quotenum, replynum=replynum, purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote,showtype=int(showtype))
 
     @tornado.web.authenticated
     def post(self):

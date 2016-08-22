@@ -8,13 +8,23 @@
             </div>
             <div class="main">
                 <div class="wechat">
+                    {% if registertype==1 %}
                     <img class="qrcode" src="{{ static_url('images/qucode_340_340.jpg') }}" alt="">
                     <h2 class="title">长按二维码并识别，关注【药材购】微信公众号，开启全新销路！</h2>
+                    {% else %}
+                     <img class="qrcode" src="{{ static_url('images/qrcode_purchase_340.jpg') }}" alt="">
+                     <h2 class="title">长按二维码并识别，关注【药材购-采购助手】微信公众号，随时随地跟进采购！</h2>
+                    {% end %}
                 </div>
                 <div class="tips">
+                    {% if registertype==1 %}
                     <p><i class="iconfont icon-heart"></i>{{purchaseinfonum}}批次采购需求，此刻等待您报价</p>
                     <p><i class="iconfont icon-heart"></i>药厂发布新采购，第一时间通知您</p>
                     <p><i class="iconfont icon-heart"></i>药厂答复您的报价，第一时间通知跟进</p>
+                    {% else %}
+                    <p><i class="iconfont icon-heart"></i>供货商报价，第一时间通知您</p>
+                    <p><i class="iconfont icon-heart"></i>随时随地报复和查看报价</p>
+                    {% end %}
                 </div>
             </div>
         </div>
