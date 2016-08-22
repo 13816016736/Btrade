@@ -250,7 +250,7 @@ class CheckFansHandler(BaseHandler):
     def get(self):
         is_fans=False
         state= self.get_argument("state",None)
-        ret=self.db.get("select openid,name,username registertype from users where id=%s",self.session.get("userid"))
+        ret=self.db.get("select openid,name,username,registertype from users where id=%s",self.session.get("userid"))
         name=ret["name"]
         username=ret["username"]
         openid=ret["openid"]
