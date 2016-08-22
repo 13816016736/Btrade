@@ -27,11 +27,13 @@
                     <span>2</span>
                     <strong>填写基础信息</strong>
                 </li>
+                {% if register==1 %}
                 <li><i class="iconfont icon-more"></i></li>
                 <li>
                     <span>3</span>
                     <strong>设置主营产品</strong>
                 </li>
+                {% end %}
             </ul>
         </div>
 
@@ -43,11 +45,22 @@
                     <label class="rdo cell">
                         <input name="type" value="8" type="radio" checked="">
                         <span class="ipt-rdo">个人经营</span>
-                    </label>   
+                    </label>
+                    {% if register==2 %}
+                    <label class="rdo">
+                        <input name="type" value="1" type="radio">
+                        <span class="ipt-rdo">饮片厂</span>
+                    </label>
+                    <label class="rdo">
+                        <input name="type" value="2" type="radio">
+                        <span class="ipt-rdo">药厂</span>
+                    </label>
+                    {% end %}
                     <label class="rdo">
                         <input name="type" value="3" type="radio">
                         <span class="ipt-rdo">药材经营公司</span>
-                    </label>  
+                    </label>
+                    {% if register==1 %}
                     <label class="rdo">
                         <input name="type" value="5" type="radio">
                         <span class="ipt-rdo">合作社</span>
@@ -55,7 +68,8 @@
                     <label class="rdo">
                         <input name="type" value="6" type="radio">
                         <span class="ipt-rdo">种植基地</span>
-                    </label>  
+                    </label>
+                    {% end %}
                     <label class="rdo">
                         <input name="type" value="7" type="radio">
                         <span class="ipt-rdo">其他</span>
@@ -181,6 +195,7 @@
                         "nickname":nickname,
                         "password":$pwd.val(),
                         "step":2,
+                        "registertype":{{register}}
                     };
 
                 $.ajax({
@@ -193,7 +208,7 @@
                     },
                     success: function(data) {
                         if (data.status === 'success') {
-                            location.href=encodeURI("/register/next_url/{{next_url}}?step=3")
+                            location.href=encodeURI("/register/next_url/{{next_url}}?step=3&register={{register}}")
                         } else {
                             lpPopover(data.message);
                         }
