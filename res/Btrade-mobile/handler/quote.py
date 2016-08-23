@@ -179,14 +179,14 @@ class QuoteHandler(BaseHandler):
 
 
         #发短信通知采购商有用户报价
-        #quoteSms(purchase["phone"], purchase["name"], quoter["name"], price, config.unit)
+        quoteSms(purchase["phone"], purchase["name"], quoter["name"], price, config.unit)
         #发微信模板消息通知采购商有用户报价
         quoteWx(purchase["openid"], purchaseinfoid, purchase["name"], quoter["name"], price, purchase["unit"], quality, today)
         if purchase["openid2"]!="":
             quoteWx(purchase["openid2"], purchaseinfoid, purchase["name"], quoter["name"], price, purchase["unit"],
                     quality, today,2)
         #发微信模板消息提示报价的供应商报价成功啦
-        #quoteSuccessWx(quoter["openid"], purchase["uname"], purchase["name"], purchase["specification"], purchase["quantity"], price, purchase["unit"], quality, today)
+        quoteSuccessWx(quoter["openid"], purchase["uname"], purchase["name"], purchase["specification"], purchase["quantity"], price, purchase["unit"], quality, today)
         self.api_response({'status':'success','message':'请求成功'})
 
 class QuoteUploadHandler(BaseHandler):

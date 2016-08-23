@@ -25,7 +25,6 @@ def sendwx(templateId, openid, link, data,sendtype=1):
                 'data' : data
             }
             res = requests.post(url,data=json.dumps(param), headers=headers)
-            print res.text
             return res.text
         else:
             return
