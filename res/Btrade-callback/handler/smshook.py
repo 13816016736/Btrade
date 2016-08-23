@@ -4,7 +4,7 @@ from config import *
 from base import BaseHandler
 from mongodb import PymongoDateBase
 from globalconfig import *
-from alipay import *
+from alipay import notify_verify
 
 class SmsHookHandler(BaseHandler):
     def get(self):
