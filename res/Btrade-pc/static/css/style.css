@@ -6,6 +6,8 @@ label,p{margin:0;font-weight:400;}
 i,em{font-style:normal;}
 a:focus{outline:none;}
 
+.blue{color:#007eff !important;}
+
 header,footer,.sec,.container{min-width:1170px;}
 .wrap{width:1200px;margin:0 auto;}
 
@@ -79,7 +81,7 @@ header,footer,.sec,.container{min-width:1170px;}
 .fl{float:left;}
 .fr{float:right;}
 .yc-cat{display:inline-block;min-width:80px;padding:1px 5px;color:#f90;border:1px solid #f90;-webkit-border-radius:4px;border-radius:4px;background:#fff;text-align:center;}
-
+.cbx{margin:0 4px 0 0 !important;vertical-align:-1px;}
 /* color */
 .c-orange{color:#fda21d !important;}
 
@@ -139,6 +141,7 @@ header .nav li{height:30px;padding:0 8px;}
 header .nav li.bl{margin-left:10px;padding-left:22px;border-left:1px solid #b4b4b4;}
 header .nav a{display:block;margin-top:-10px;padding:0 20px;line-height:50px;font-size:16px;font-weight:700;color:#515758;text-decoration:none;}
 header .nav a:hover{color:#ffa902;}
+header .nav em{color:#ffa902;}
 header .nav .current{color:#ffa902;border-bottom:2px solid #ffa902;}
 header .login{position:absolute;top:10px;right:15px;}
 header .login .btn{width:90px;margin-left:10px;padding:4px 10px;font-size:14px;}
@@ -245,3 +248,20 @@ footer .logo-mini{position:absolute;top:-25px;right:15px;}
 .lb-prev:hover{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);opacity:1;}
 .lb-next{right:0;background:url(../images/next.png) right 48% no-repeat;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);opacity:0;-webkit-transition:opacity 0.6s;-moz-transition:opacity 0.6s;-o-transition:opacity 0.6s;transition:opacity 0.6s;}
 .lb-next:hover{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);opacity:1;}
+
+
+/* 支付 */
+.payment{width:800px;margin:30px auto 80px;border-radius:0;border-color:#e7e7e7;font-size:14px;color:#333;}
+.payment .hd{padding:10px 30px;background:#f0eff5;border-color:#e7e7e7;}
+.payment .bd{padding:45px 0 15px;}
+.payment h1{margin:0;padding:5px 0;font-size:16px;font-weight:700;}
+.payment h1 span{font-weight:400;}
+.payment h4{margin:0 0 4px;font-size:16px;font-weight:700;}
+.payment dl{margin-bottom:16px;}
+.payment dt{width:130px;line-height:26px;font-weight:400;color:#999;}
+.payment dd{line-height:26px;margin-left:130px;}
+.payment dd em{font-size:12px;color:#999;}
+.payment ul,
+.payment ol{margin:0;}
+.payment .alipay{padding:27px 0 34px;}
+.payment .cbx{margin-right:9px !important;}
