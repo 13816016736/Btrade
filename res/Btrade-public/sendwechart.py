@@ -3,10 +3,15 @@ import requests, json
 from globalconfig import *
 
 import logging
-def sendwx(templateId, openid, link, data):
+def sendwx(templateId, openid, link, data,sendtype=1):
     if openid:
         #先获取access_token
-        accesstoken_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (appid, secret)
+        sendappid=appid
+        sendsecret=secret
+        if sendtype==2:
+            sendappid = purchase_appid
+            sendsecret = purchase_secret
+        accesstoken_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (sendappid, sendsecret)
         res = requests.get(accesstoken_url)
         message = json.loads(res.text.encode("utf-8"))
         access_token = message.get("access_token", None)
@@ -20,6 +25,7 @@ def sendwx(templateId, openid, link, data):
                 'data' : data
             }
             res = requests.post(url,data=json.dumps(param), headers=headers)
+            print res.text
             return res.text
         else:
             return

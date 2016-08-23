@@ -121,7 +121,7 @@ class QuoteHandler(BaseHandler):
             self.api_response({'status':'fail','message':'您已经对次采购单进行过报价,无法再次报价'})
             return
         #不能对自己的采购单进行报价
-        purchase = self.db.get("select t.*,u.name uname,u.phone,u.openid from (select p.userid,p.term,p.createtime,pi.name,pi.varietyid,pi.specification,pi.quantity,pi.unit from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
+        purchase = self.db.get("select t.*,u.name uname,u.phone,u.openid,u.openid2 from (select p.userid,p.term,p.createtime,pi.name,pi.varietyid,pi.specification,pi.quantity,pi.unit from purchase_info pi,purchase p where p.id = pi.purchaseid and pi.id = %s) "
                                "t left join users u on u.id = t.userid", purchaseinfoid)
         if purchase["userid"] == self.session.get("userid"):
             self.api_response({'status':'fail','message':'不能对自己的采购单进行报价'})
@@ -179,11 +179,14 @@ class QuoteHandler(BaseHandler):
 
 
         #发短信通知采购商有用户报价
-        quoteSms(purchase["phone"], purchase["name"], quoter["name"], price, config.unit)
+        #quoteSms(purchase["phone"], purchase["name"], quoter["name"], price, config.unit)
         #发微信模板消息通知采购商有用户报价
         quoteWx(purchase["openid"], purchaseinfoid, purchase["name"], quoter["name"], price, purchase["unit"], quality, today)
+        if purchase["openid2"]!="":
+            quoteWx(purchase["openid2"], purchaseinfoid, purchase["name"], quoter["name"], price, purchase["unit"],
+                    quality, today,2)
         #发微信模板消息提示报价的供应商报价成功啦
-        quoteSuccessWx(quoter["openid"], purchase["uname"], purchase["name"], purchase["specification"], purchase["quantity"], price, purchase["unit"], quality, today)
+        #quoteSuccessWx(quoter["openid"], purchase["uname"], purchase["name"], purchase["specification"], purchase["quantity"], price, purchase["unit"], quality, today)
         self.api_response({'status':'success','message':'请求成功'})
 
 class QuoteUploadHandler(BaseHandler):

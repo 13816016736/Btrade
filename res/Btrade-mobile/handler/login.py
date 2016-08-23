@@ -77,9 +77,11 @@ class BindWxHandler(BaseHandler):
             # 请求获取access_token和openid
             appid = config.appid
             secret = config.secret
+            logintype=1
             if state=="ycgpurchase":
                 appid = config.purchase_appid
                 secret = config.purchase_secret
+                logintype = 2
 
             url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" % (
                 appid, secret, code)
@@ -90,7 +92,10 @@ class BindWxHandler(BaseHandler):
                 openid = message.get("openid")
                 if openid :
                     if not self.current_user:
-                        userinfo=self.db.query("select id,username from users where openid =%s",openid)
+                        if logintype==1:
+                            userinfo=self.db.query("select id,username from users where openid =%s",openid)
+                        else:
+                            userinfo = self.db.query("select id,username from users where openid2 =%s", openid)
                         if len(userinfo)==1:#只能绑定一个
                             notification = self.db.query("select id from notification where receiver = %s", userinfo[0].id)
                             self.session["userid"] = userinfo[0].id
@@ -99,8 +104,12 @@ class BindWxHandler(BaseHandler):
                             self.session.save()
                     else:
                          #绑定微信openid
-                         self.db.execute("update users set openid=%s where id=%s", openid,
+                         if logintype==1:
+                            self.db.execute("update users set openid=%s where id=%s", openid,
                                          self.session.get("userid"))
+                         else:
+                             self.db.execute("update users set openid2=%s where id=%s", openid,
+                                             self.session.get("userid"))
 
         self.redirect(self.get_argument("next_url", "/"))
     def post(self):

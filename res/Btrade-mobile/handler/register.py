@@ -162,8 +162,14 @@ class RegisterHandler(BaseHandler):
                 self.session["phone"] = ""
                 self.session["openid"] = ""
                 self.session.save()
-                lastrowid = self.db.execute_lastrowid(
+                if int(registertype)==1:
+                    lastrowid = self.db.execute_lastrowid(
                         "insert into users (username, password, phone, type, name, nickname,areaid, status, openid,registertype,createtime)"
+                        "value(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s,%s)", username, md5(str(password + config.salt)), phone
+                        , type, name, nickname,areaid, 1, openid,registertype, int(time.time()))
+                else:
+                    lastrowid = self.db.execute_lastrowid(
+                        "insert into users (username, password, phone, type, name, nickname,areaid, status, openid2,registertype,createtime)"
                         "value(%s, %s, %s, %s,%s, %s, %s, %s, %s, %s,%s)", username, md5(str(password + config.salt)), phone
                         , type, name, nickname,areaid, 1, openid,registertype, int(time.time()))
                 # 查看是否为供应商列表里面的供应商，如果是转移积分
@@ -250,11 +256,13 @@ class CheckFansHandler(BaseHandler):
     def get(self):
         is_fans=False
         state= self.get_argument("state",None)
-        ret=self.db.get("select openid,name,username,registertype from users where id=%s",self.session.get("userid"))
+        ret=self.db.get("select openid,name,username,registertype,openid2 from users where id=%s",self.session.get("userid"))
         name=ret["name"]
         username=ret["username"]
         openid=ret["openid"]
         registertype=ret["registertype"]
+        if int(registertype)==2:
+            openid=ret["openid2"]
         purchaseinfonum = self.db.execute_rowcount("select id from purchase_info where status!=0")
         if openid!="":
             openid = ret["openid"].strip("\r\n")
@@ -283,7 +291,7 @@ class CheckFansHandler(BaseHandler):
         if is_fans:
             if state == "regsuccess":
                 # 发微信模板消息通知用户注册成功
-                regSuccessWx(openid, name, username)
+                regSuccessWx(openid, name, username,int(registertype))
                 if registertype==1:
                     self.render("register_A.html", type=2, url="/", username=self.session.get("user"),purchaseinfonum=purchaseinfonum,registertype=registertype)
                 else:
