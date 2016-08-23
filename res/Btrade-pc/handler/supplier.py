@@ -4,6 +4,8 @@ from utils import *
 import config,re
 import os,time
 from urllib import urlencode
+from alipay import *
+import tornado.web
 class SupplierHandler(BaseHandler):
     def get(self):
         query = self.get_argument("query", None)
@@ -243,4 +245,46 @@ class SupplierDetailHandler(BaseHandler):
             quanlity["otherimg"] = otherimg
         self.render("supplier.html",quanlity=quanlity,user=user,transactions=transactions)
     def post(self):
+        pass
+
+class PaymentHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        self.render("payment.html")
+        pass
+    def post(self):
+        userid=self.session.get("userid")
+        name=self.get_argument("name",None)
+        if name:
+            if name=="alipay":
+                payid=time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+                tn = payid
+                #插入一条交易记录
+                self.db.execute(
+                    "insert into payment (userid,paytype,paymode,money,payid,createtime) value(%s,%s,%s,%s,%s,%s)", userid,
+                    1, 1,config.deposit,payid,int(time.time()) )
+                subject = u'（药材购）阳光速配诚信保证金'
+                body = ''
+                bank = ""
+                tf = '%.2f' % config.deposit
+                url = create_direct_pay_by_user(tn, subject, body, bank, tf)
+
+                self.api_response({'status': 'success', 'url': url })
+        else:
+            self.api_response({'status': 'fail', 'message': '不支持的支付方式'})
+        pass
+
+class AlipayReturnHandler(BaseHandler):
+    def get(self):
+        params=self.request.arguments
+        if notify_verify(params):
+            tn = self.get_argument('out_trade_no')
+            trade_no = self.get_argument('trade_no')
+            trade_status = self.get_argument('trade_status')
+
+            if trade_status == 'TRADE_SUCCESS':#支付成功
+                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
+            else:
+                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",0, trade_no, tn)
+        self.redirect("/supplier")
         pass

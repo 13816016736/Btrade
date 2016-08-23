@@ -4,7 +4,7 @@ from config import *
 from base import BaseHandler
 from mongodb import PymongoDateBase
 from globalconfig import *
-
+from alipay import *
 
 class SmsHookHandler(BaseHandler):
     def get(self):
@@ -32,3 +32,22 @@ class SmsHookHandler(BaseHandler):
             self.api_response({'status': 'success', 'message': '成功接收消息'})
         else:
             self.api_response({'status': 'fail', 'message': '参数错误'})
+
+
+class AlipayNotifyHandler(BaseHandler):
+    def post(self):
+        self.log.info(self.request.arguments)
+        params=self.request.arguments
+        if notify_verify(params):
+            tn = self.get_argument('out_trade_no')
+            trade_no = self.get_argument('trade_no')
+            trade_status = self.get_argument('trade_status')
+            self.log.info("tn=%s,trade_no=%s,trade_status=%s",tn,trade_no,trade_status)
+
+            #if trade_status == 'TRADE_SUCCESS':#支付成功
+            #    self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
+            #else:
+            #    self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",0, trade_no, tn)
+            self.api_response("success")
+        else:
+            self.api_response("fail")

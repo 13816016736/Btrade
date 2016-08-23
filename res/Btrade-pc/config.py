@@ -45,6 +45,8 @@ handlers = [
     (r"/dashboard", DashboardHandler),
     (r"/supplier/detail", SupplierDetailHandler),
     (r"/supplier", SupplierHandler),
+    (r"/payment", PaymentHandler),
+    (r"/alipay/return", AlipayReturnHandler),
     #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", MyPurchaseHandler),
     #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MyPurchaseHandler),
     (r"/mypurchase", MyPurchaseHandler),
@@ -82,4 +84,5 @@ conf = {
 log = True
 #日志记录位置
 log_file = 'Btrade-pc/log/tornado.log'
+
 

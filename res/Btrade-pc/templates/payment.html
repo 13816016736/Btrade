@@ -1,25 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>首页-药材购</title>
-    <!-- 浏览器高速模式 -->
-    <meta name="renderer" content="webkit" />
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/index.css" />
-    <!--[if lt IE 9]>
-      <script src="js/html5shiv.min.js"></script>
-      <script src="js/respond.min.js"></script>
-    <![endif]-->
-</head>
-
-<body>
-
+{% extends "base.html" %}
+{% block container %}
+{% import config %}
+{% raw xsrf_form_html() %}
+<link rel="stylesheet" href="{{ static_url('css/index.css')}}" />
 <div class="panel panel-default payment">
     <div class="panel-heading hd"><h1>缴纳诚信保证金，开通阳光速配<span>（采购端）</span></h1></div>
     <div class="panel-body bd">
@@ -45,7 +29,7 @@
             <dt>诚信保证金：</dt>
             <dd>
                 <ul class="list-unstyled">
-                    <li><strong>5000</strong>元</li>
+                    <li><strong>{{config.deposit}}</strong>元</li>
                     <li>若没达成交易，可随时退还；若达成交易意向，验收大货后可退还。 </li>
                 </ul>
             </dd>
@@ -53,7 +37,7 @@
 
         <dl class="dl-horizontal">
             <dd class="alipay">
-                <a href="#"><img src="images/alipay.png" width="114" height="40" alt=""></a>
+                <a href="#"><img class="payimg" name="alipay" src="{{ static_url('images/alipay.png') }}" width="114" height="40" alt=""></a>
             </dd>
         </dl>
 
@@ -70,19 +54,44 @@
         </dl>
     </div>
 </div>
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-
+{% block javascript %}
+<script src="{{ static_url('js/jquery.min.js')}}"></script>
+<script src="{{ static_url('js/bootstrap.min.js')}}"></script>
+{% end %}
 <script>
-    var ran = (new Date).getTime();
-    $.get('header.html?ran=' + ran, function(data) {
-        $('body').prepend(data);
-    })
-    $.get('footer.html?ran=' + ran, function(data) {
-        $('body').append(data);
-    })
+    //var ran = (new Date).getTime();
+    //$.get('header.html?ran=' + ran, function(data) {
+    //    $('body').prepend(data);
+    //})
+    //$.get('footer.html?ran=' + ran, function(data) {
+    //    $('body').append(data);
+    //})
+  $(function() {
+     $(".dl-horizontal img").on('click', function() {
+         $.ajax({
+                url: "/payment",
+                data: { name: $(this).attr("name")},
+                dataType: 'json',
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if(data.status=="success") {
+                      window.open(data.url,"_blank")
+                    }else{
+                       console.log(data);
+                    }
+                },
+                error: function(data) {
+                   console.log("出现异常，请刷新页面再试");
+                }
+             });
+    });
+  });
+
+
 </script>
 
-</body>
+{% end %}
 
-</html>
