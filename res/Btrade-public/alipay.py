@@ -37,7 +37,7 @@ def params_filter(params):
     newparams = {}
     prestr = ''
     for k in ks:
-        v = params[k]
+        v = params[k][0]
         k = smart_str(k, ALIPAY_INPUT_CHARSET)
         if k not in ('sign', 'sign_type') and v != '':
             newparams[k] = smart_str(v, ALIPAY_INPUT_CHARSET)
@@ -96,16 +96,16 @@ def notify_verify(params):
     _, prestr = params_filter(params)
     mysign = build_mysign(prestr, ALIPAY_KEY, ALIPAY_SIGN_TYPE)
 
-    if mysign != params.get('sign'):
+    if mysign != params.get('sign')[0]:
         return False
 
     # 二级验证--查询支付宝服务器此条信息是否有效
-    params = {}
-    params['partner'] = ALIPAY_PARTNER
-    params['notify_id'] = params.get('notify_id')
+    paramsmap = {}
+    paramsmap['partner'] = ALIPAY_PARTNER
+    paramsmap['notify_id'] = params.get('notify_id')[0]
 
     gateway = 'https://mapi.alipay.com/gateway.do?service=notify_verify&'
-    verify_result = urlopen(gateway, urlencode(params)).read()
+    verify_result = urlopen(gateway, urlencode(paramsmap)).read()
     if verify_result.lower().strip() == 'true':
         return True
     return False
