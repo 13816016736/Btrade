@@ -5,6 +5,7 @@ from base import BaseHandler
 from mongodb import PymongoDateBase
 from globalconfig import *
 from alipay import *
+import time
 
 class SmsHookHandler(BaseHandler):
     def get(self):
@@ -51,8 +52,20 @@ class AlipayNotifyHandler(BaseHandler):
 
             if trade_status == 'TRADE_SUCCESS':#支付成功
                 self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
+                payment=self.db.get("select * from payment where payid=%s",tn)
+                if payment:
+                    userid=payment["userid"]
+                    status=payment["status"]
+                    if status==1:
+                        member = self.db.get("select * from member where userid=%s", userid)
+                        if member==None:
+                            self.db.execute(
+                                "insert into member (userid,term,upgradetime,type,expiredtime) value(%s,%s,%s,%s,%s)",
+                                userid, 0, int(time.time()),3,"")
+
+
             else:
                 self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",0, trade_no, tn)
-            self.api_response("success")
+            self.write("success")
         else:
-            self.api_response("fail")
+            self.write("fail")

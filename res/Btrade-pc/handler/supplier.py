@@ -6,6 +6,7 @@ import os,time
 from urllib import urlencode
 from alipay import *
 import tornado.web
+import random
 class SupplierHandler(BaseHandler):
     def get(self):
         query = self.get_argument("query", None)
@@ -250,14 +251,16 @@ class SupplierDetailHandler(BaseHandler):
 class PaymentHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("payment.html")
+        user=self.db.get("select * from users where id=%s",self.session.get("userid"))
+        self.render("payment.html",user=user)
         pass
     def post(self):
         userid=self.session.get("userid")
         name=self.get_argument("name",None)
         if name:
             if name=="alipay":
-                payid=time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+                rand = ''.join(random.sample(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], 4))
+                payid=time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))+rand
                 tn = payid
                 #插入一条交易记录
                 self.db.execute(
@@ -289,6 +292,16 @@ class AlipayReturnHandler(BaseHandler):
 
             if trade_status == 'TRADE_SUCCESS':#支付成功
                 self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
+                payment=self.db.get("select * from payment where payid=%s",tn)
+                if payment:
+                    userid=payment["userid"]
+                    status=payment["status"]
+                    if status==1:
+                        member = self.db.get("select * from member where userid=%s", userid)
+                        if member==None:
+                            self.db.execute(
+                                "insert into member (userid,term,upgradetime,type,expiredtime) value(%s,%s,%s,%s,%s)",
+                                userid,0, int(time.time()),3,"")
             else:
                 self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",0, trade_no, tn)
         self.redirect("/supplier")

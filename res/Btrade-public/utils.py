@@ -248,6 +248,8 @@ def regSuccessWx(openid, name, username,sendtype=1):
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     username = username.encode('utf-8') if isinstance(username, unicode) else username
     templateId = 'R49JXzySURAo-dgzpGtH1EDYXzgxgWVPYg3rQcuNzes'
+    if  sendtype==2:
+         templateId ="ZJDQ6nL1ttl__IAZ0ezqumplUbJiliUuRusBLvDWjnw"
     link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect'
     data = {
         "first": {
@@ -279,6 +281,8 @@ def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime,s
     unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
     templateId = 'aUADL3alEqWYfs5pEM1X5dtm3pstmrxMt1ktrMNs1qk'
+    if sendtype==2:
+         templateId="H99pLHOlhHtGHL9ycFdxo5Y32FivityMW-ZY23r9D-I"
     link = 'http://m.yaocai.pro/replydetail?pid=%s' % purchaseinfoid
     data = {
         "first": {
@@ -319,6 +323,8 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
     quoteunit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
     templateId = 'RGAztJ6ocuwvJosRCsCCJd8imGif6TT8B7vXYPa_KGs'
+    if sendtype == 2:
+        templateId = "OdMCEUgJsp-oyuTs62ZSveysmUp_CpOQs2J5JcS5_lY"
     link = 'http://m.yaocai.pro'
     data = {
         "first": {
@@ -356,6 +362,8 @@ def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime,
     nickname = nickname.encode('utf-8') if isinstance(nickname, unicode) else nickname
     phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
+    if sendtype == 2:
+        templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
     link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
@@ -390,6 +398,8 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime,sendtype
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     message = message.encode('utf-8') if isinstance(message, unicode) else message
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
+    if sendtype == 2:
+        templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
     link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
@@ -418,6 +428,8 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime,sendtype
 
 def pushPurchaseWx(openids, purchase,uuidmap,sendtype=1):
     templateId = 'OxXsRhlyc17kt6ubwV7F0fD8ffRl12rGGS3mnpvpoU4'
+    if sendtype == 2:
+        templateId = "lRRAoLj5-udp8NvSY3IY-tuRQbJb53Ca_FbAU30SdGo"
     link = 'http://m.yaocai.pro/purchase/purchaseinfo/%s' % purchase["purchaseinfoid"]
     qtime = int(purchase["createtime"])
     purchase["name"] = purchase["name"].encode('utf-8') if isinstance(purchase["name"], unicode) else purchase["name"]
@@ -590,6 +602,8 @@ def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid,uuid,sendtype=1
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     tip="您还有%s个报价未回复，最低报价：%s %s元/%s"%(num,name,price,unit)
     templateId = 'VHZtCPgyjeD00IG0RdfxeHo4fP6PwXj3pfaCmB91RJg'
+    if sendtype == 2:
+        templateId = "-RvagrAIVd4mA8Q8dgWQT7--nVLmP7jFR3BVBBojS2Q"
     link = 'http://m.yaocai.pro/replydetail?pid=%s'% pid+"&uuid="+uuid
     data = {
         "first": {
