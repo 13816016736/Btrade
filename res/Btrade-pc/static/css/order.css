@@ -1,4 +1,12 @@
 @charset "utf-8";
+.bubble{position:relative;height:80px;line-height:1.2;margin-top:20px;padding:13px 20px;background:#f4f4f4;border:1px solid #e7e7e7;overflow:hidden;*zoom:1;}
+.bubble .dt{float:left;width:70px;margin-top:-4px;padding-right:20px;font-size:24px;font-weight:700;color:#fa901c;text-align:center;}
+.bubble .dd{height:52px;margin-left:70px;padding-left:20px;border-left:1px solid #ccc;}
+.bubble .dd .tit{margin-bottom:10px;font-size:16px;}
+.bubble .dd span{display:inline-block;min-width:38px;line-height:18px;margin-right:10px;padding:0 5px;background:#f8f8f8;border:1px solid #ccc;text-align:center;}
+.bubble .dd i{font-family:tahoma;}
+.bubble .extra{float:right;margin-top:-16px;}
+
 .purchase-bubble{position:relative;}
 .purchase-bubble .tag{float:left;width:40px;font-size:20px;font-weight:700;color:#ffa902;text-align:center;}
 .purchase-bubble .step{float:right;width:570px;margin-top:15px;}
@@ -59,17 +67,13 @@
 .yc-purchase-form .mul{resize:none;}
 .yc-purchase-form .desc{display:block;width:700px;height:100px;resize:vertical;}
 .yc-purchase-form .desc .ipt{border-color:#fff #fff #999;}
-.yc-purchase-form .ipt-variety{width:90px;}
+.yc-purchase-form .ipt-variety{width:92px;}
 .yc-purchase-form .ipt-quantity{width:60px;margin-right:4px;}
 .yc-purchase-form .ipt-price{width:60px;margin-right:4px;}
 .yc-purchase-form .ipt-date{width:50px;margin:0 4px;}
 .yc-purchase-form .ipt-code{width:100px;margin-right:6px;}
-/*.yc-purchase-form .ipt-quality{height:18px;border-color:#fff;}*/
-/* .yc-purchase-form .ipt-quality.on{height:46px;border-color:#999;} */
  .yc-purchase-form .ipt-quality{height:46px;border-color:#999;} 
 .yc-purchase-form .ipt-area{height:26px;border-color:#999;}
-/*.yc-purchase-form .ipt-area{height:18px;border-color:#fff;}*/
-/*.yc-purchase-form .ipt-area.on{height:26px;border-color:#999;}*/
 .yc-purchase-form .custom{display:block;height:34px;padding:3px;zoom:1;overflow:hidden;}
 .yc-purchase-form .custom .btn{padding:4px 7px;font-size:12px;}
 .yc-purchase-form .custom .ipt{width:95px;margin-right:4px;}
@@ -83,6 +87,8 @@
 .yc-purchase-form .text .ipt{width:100%;}
 .yc-purchase-form .text .tags span{display:inline-block;margin-bottom:5px;padding:1px 4px;color:#333;border:1px solid #999;border-radius:3px;cursor:pointer;}
 .yc-purchase-form .area-wrap{width:180px;}
+.yc-purchase-form .lightning{width:16px;height:19px;background:url(../images/lightning.png) no-repeat;display:none;}
+.yc-purchase-form .poptips{display:none;width:92px;height:26px;padding-top:8px;text-align:center;color:#ffa902;background:url(../images/icons.png) no-repeat -89px -305px;}
 .variety-tags{position:relative;z-index:9;display:none;}
 .variety-tags .inner{position:absolute;top:-1px;left:0;background-color:#fff;border:1px solid #999;}
 .variety-tags dl{width:300px;margin:0;padding:5px;line-height:30px;}
