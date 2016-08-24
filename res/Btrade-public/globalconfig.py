@@ -108,3 +108,11 @@ task_type={
     "1":"采购单推送",
     "2":"采购单回复提醒"
 }
+#支付宝配置
+ALIPAY_PARTNER="2088421705597170"
+ALIPAY_KEY="f2zg8m8duuguxu9n87bnhm8263v4u7q5"
+ALIPAY_INPUT_CHARSET = 'utf-8'
+ALIPAY_SIGN_TYPE = 'MD5'
+_GATEWAY = 'https://mapi.alipay.com/gateway.do?'
+ALIPAY_RETURN_URL="http://yaocai.pro/alipay/return"#同步通知
+ALIPAY_NOTIFY_URL="http://cb.yaocai.pro/alipay/notify"#异步通知
