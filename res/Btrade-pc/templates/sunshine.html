@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 {% block container %}
 {% import config %}
+{% from urllib import urlencode %}
 {% raw xsrf_form_html() %}
 <link rel="stylesheet" href="{{ static_url('css/special.css')}}" />
 <section class="sec">
@@ -20,196 +21,98 @@
                 <dl class="dl-horizontal">
                     <dt>已开通品种&gt;&gt;</dt>
                     <dd>
-                        <a href="#" class="current">丹参</a>
-                        <a href="#">莪术</a>
-                        <a href="#">白芍</a>
-                        <a href="#">三七</a>
-                        <a href="#">丹参</a>
-                        <a href="#">丹参</a>
-                        <a href="#">全部</a>
+                        {% for item in hot %}
+                        {% if query==item %}
+                            <a href="/sunshine?{{urlencode({'query':item.encode('utf8')})}}" class="current">{{item}}</a>
+                        {% else %}
+                             <a href="/sunshine?{{urlencode({'query':item.encode('utf8')})}}" >{{item}}</a>
+                        {% end %}
+                        {% end %}
+                        {% if query %}
+                        <a href="/sunshine">全部</a>
+                        {% else %}
+                        <a href="/sunshine" class="current">全部</a>
+                        {% end %}
                     </dd>
                 </dl>
             </div>
 
             <div class="list">
                 <ul class="yc-ul">
+                    {% for item in suppliers %}
                     <li>
                         <div class="intro">
-                            <h3 class="name"><a href="#">亳州市沪谯药业有限公司</a><span>实力供货商</span></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
+                            <h3 class="name"><a href="/supplier/detail?qid={{item['qid']}}"> {{ item["name"] }}</a><span>实力供货商</span></h3>
+                            <p>累计报价：<b>{{item["quote"]}}</b>次  |  达成交易意向：<b>{{ item["acceptnum"] }}</b>次</p>
+                            <p>主营品种：{{ ",".join( item["supply_variety_name"])}}</p>
                         </div>
                         <div class="transaction">
-                            <dl>    
+                            <dl>
                                 <dt>供货记录</dt>
+                                {% for transaction in item["transactions"] %}
                                 <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">亳州市沪谯药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
+                                    <span>{{transaction["delivertime"]}}</span>
+                                    <span class="cname">{{ transaction["purchasename"]}}</span>
+                                    <span>{{transaction["varietyname"] }}</span>
+                                    <em>{{ transaction["quantity"] }}公斤</em>
                                 </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">上海万仕诚药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">广州采芝林北商药材有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
+                                {% end %}
                             </dl>
                         </div>
                         <div class="thumb">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-10.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-11.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/a81517461e502b281c1c751091e74c8b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-12.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/c7492b2b594f0962daf18dd240a11ede.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-13.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
-                        </div>
-                    </li>
-                    
-                    <li>
-                        <div class="intro">
-                            <h3 class="name"><a href="#">亳州市沪谯药业有限公司</a><span>实力供货商</span></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">亳州市沪谯药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">上海万仕诚药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">广州采芝林北商药材有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="thumb">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-10.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-11.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/a81517461e502b281c1c751091e74c8b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-12.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/c7492b2b594f0962daf18dd240a11ede.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-13.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
-                        </div>
-                    </li>
-                    
-                    <li>
-                        <div class="intro">
-                            <h3 class="name"><a href="#">亳州市沪谯药业有限公司</a><span>实力供货商</span></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">亳州市沪谯药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">上海万仕诚药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">广州采芝林北商药材有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="thumb">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-10.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-11.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/a81517461e502b281c1c751091e74c8b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-12.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/c7492b2b594f0962daf18dd240a11ede.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-13.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
+                            {% for index,img in enumerate(item["attachment"]) %}
+                            {% if index<4 %}
+                            <img src="{{img.attachment}}" data-src="{{img.attachment.replace('_thumb','')}}" width="210" height="133" alt="">
+                            {% end %}
+                            {% end %}
                         </div>
                     </li>
 
-                    <li>
-                        <div class="intro">
-                            <h3 class="name"><a href="#">亳州市沪谯药业有限公司</a><span>实力供货商</span></h3>
-                            <p>累计报价：<b>100</b>次  |  累计供货：<b>100</b>次</p>
-                            <p>主营品种：酸枣仁、柏子仁、山楂、柴胡、金银花</p>
-                        </div>
-                        <div class="transaction">
-                            <dl>    
-                                <dt>供货记录</dt>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">亳州市沪谯药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">上海万仕诚药业有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                                <dd>
-                                    <span>07-28</span>
-                                    <span class="cname">广州采芝林北商药材有限公司</span>
-                                    <span>白芍</span>
-                                    <em>2000公斤</em>
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="thumb">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-10.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-11.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/a81517461e502b281c1c751091e74c8b.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-12.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/c7492b2b594f0962daf18dd240a11ede.png" width="210" height="133" alt="">
-                            <img src="http://192.168.1.25/yaocai/pages/pc/uploads/pro-13.jpg" data-src="http://static.yaocai.pro/static/uploadfiles/20160708/878e89593200518c30e019dc3b4c8d1b.png" width="210" height="133" alt="">
-                        </div>
-                    </li>
+                    {% end %}
+
                 </ul>
             </div>
 
             <div class="hd">
-                <span>还有 <em>12873</em> 位普通供货商也在药材购</span>
+                <span>还有 <em>{{total}}</em> 位普通供货商也在药材购</span>
             </div>
 
-            <div class="pagin">
-                <div class="skip">
-                    共17页，到第<input type="text" class="ipt" onkeydown="javascript:if(event.keyCode==13){page_jump();return false;}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" value="1" maxlength="4" id="jPageSkip">页
-                    <button class="btn-skip" type="button" onclick="page_jump();">确定</button>
-                </div>
-                <div class="num">
-                    <span class="disabled">&lt;</span>
-                    <span class="curr">1</span>
-                    <a href="?page=2">2</a>
-                    <a href="?page=3">3</a>
-                    <a href="?page=4">4</a>
-                    <a href="?page=5">5</a>
-                    <a href="?page=6">6</a>
-                    <a href="?page=7">7</a>
-                    <i>...</i>
-                    <a href="?page=199">199</a>
-                    <a href="?page=200">200</a>
-                    <a href="?page=2">&gt;</a>
-                </div>
+       {% module PageNav(nav=nav, show=True) %}
+            <div>
+            <br>
             </div>
         </div>
 
+
+
         <div class="side">
+            {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
+            {% if member %}
+            <div class="group">
+                <div class="hd">
+                    <a href="#">我要向他们询价采购 &gt;&gt;</a>
+                </div>
+                <div class="bd">
+                    <div class="guide">
+                        <span>注册<br>会员</span>
+                        <i>&gt;</i>
+                        <span>缴纳诚信<br>保证金</span>
+                        <i>&gt;</i>
+                        <span>身份<br>核验</span>
+                    </div>
+
+                    <div class="welcome">
+                        <em>Hi，</em>{{handler.session.get('user')}}
+                        <span><em>已开通阳光速配</em></span>
+                        <span>诚信保证金余额：<i>{{config.deposit}}</i> 元 <!--<a href="#">退款</a>--></span>
+                        <span>已发布采购：<i>{{member.purchasesinfonum}}</i> 批次</span>
+                    </div>
+                    <div class="link">
+                        <a href="#" class="btn">发布采购，立即询价</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
 
             <div class="group">
                 <div class="hd">
@@ -223,42 +126,18 @@
                         <i>&gt;</i>
                         <span>身份<br>核验</span>
                     </div>
-                        
+
                     <div class="welcome">
-                        <em>Hi，</em>亳州永刚饮片厂有限公司
+                        <em>Hi，</em>{{handler.session.get('user')}}
                     </div>
 
                     <div class="link">
-                        <a href="#" class="btn">缴纳保证金，开通阳光速配</a>
+                        <a href="/payment" class="btn">缴纳保证金，开通阳光速配</a>
                     </div>
                 </div>
             </div>
-
-            <div class="group">
-                <div class="hd">
-                    <a href="#">我要向他们询价采购 &gt;&gt;</a>
-                </div>
-                <div class="bd">
-                    <div class="guide">
-                        <span>注册<br>会员</span>
-                        <i>&gt;</i>
-                        <span>缴纳诚信<br>保证金</span>
-                        <i>&gt;</i>
-                        <span>身份<br>核验</span>
-                    </div>
-                        
-                    <div class="welcome">
-                        <em>Hi，</em>亳州永刚饮片厂有限公司
-                        <span><em>已开通阳光速配</em></span>
-                        <span>诚信保证金余额：<i>5000</i> 元 <a href="#">退款</a></span>
-                        <span>已发布采购：<i>28</i> 批次</span>
-                    </div>
-                    <div class="link">
-                        <a href="#" class="btn">发布采购，立即询价</a>
-                    </div>
-                </div>
-            </div>
-
+            {% end %}
+            {% else %}
             <div class="group">
                 <div class="hd">
                     <a href="#">我要向他们询价采购，申请加入 &gt;&gt;</a>
@@ -282,13 +161,15 @@
 
                     <div class="surplus">
                         <p>本期仅限 <em>10</em> 位采购商</p>
-                        <p>还剩 <i>6</i> 位</p>
+                        <p>还剩 <i>{{10-membernum}}</i> 位</p>
                     </div>
                 </div>
                 <div class="button">
-                    <a href="#" class="btn-l">立即注册</a><a href="#" class="btn-r">已有账号，登录</a>
+                    <a href="/register" class="btn-l">立即注册</a><a href="/login" class="btn-r">已有账号，登录</a>
                 </div>
             </div>
+            {% end %}
+
 
             <div class="group">
                 <div class="hd">
@@ -316,27 +197,15 @@
                 </div>
                 <div class="bd">
                     <ul class="yc-ul record">
+                        {% for p in newpurchaseinfo %}
                         <li>
-                            <em class="fb">黄连</em>
-                            <span>买方：亳州沪谯药业有...</span>
-                            <em>2000公斤</em>
-                            <span>卖方：潘登</span>
-                            <time>1天前</time>
+                            <em class="fb">{{p["name"]}}</em>
+                            <span title="{{p['purchaseusername']}}">买方：{{p["purchaseusername"]}}</span>
+                            <em>{{p["quantity"]}}公斤</em>
+                            <span title="{{p['quoteusername']}}">卖方：{{p["quoteusername"]}}</span>
+                            <time data-time="{{p['updatetime']}}"></time>
                         </li>
-                        <li>
-                            <em class="fb">黄连</em>
-                            <span>买方：亳州沪谯药业有...</span>
-                            <em>2000公斤</em>
-                            <span>卖方：潘登</span>
-                            <time>1天前</time>
-                        </li>
-                        <li>
-                            <em class="fb">黄连</em>
-                            <span>买方：亳州沪谯药业有...</span>
-                            <em>2000公斤</em>
-                            <span>卖方：潘登</span>
-                            <time>1天前</time>
-                        </li>
+                        {% end %}
                     </ul>
                 </div>
             </div>
@@ -446,6 +315,62 @@
 
 <script>
  $(function() {
+
+   /**
+     * [dateDiff 算时间差]
+     * @param  {[type=Number]} hisTime [历史时间戳，必传]
+     * @param  {[type=Number]} nowTime [当前时间戳，不传将获取当前时间戳]
+     * @return {[string]}         [string]
+     */
+     function dateDiff(hisTime, nowTime) {
+        if (!hisTime) {
+            return '';
+        }
+        var now = nowTime || (new Date).getTime() /1e3 ;
+        var seconds = parseInt(now, 10) - parseInt(hisTime, 10);
+        var str = '';
+        var minute = 60
+            hour = minute * 60,
+            day = hour * 24,
+            week = day * 7,
+            month = day * 30,
+            year = month * 12;
+
+        if (seconds < minute) {
+            str = '刚刚';
+
+        } else  if (seconds < hour){
+            str = Math.round(seconds/minute) + '分钟前';
+
+        } else  if (seconds < day){
+            str = Math.round(seconds / hour) + '小时前';
+
+        } else  if (seconds < week){
+            str = Math.round(seconds / day) + '天前';
+
+        } else  if (seconds < month){
+            str = Math.round(seconds / week) + '周前';
+
+        } else  if (seconds < year){
+            str = Math.round(seconds / month) + '月前';
+
+        } else {
+            str = Math.round(seconds / year) + '年前';
+        }
+        return str;
+
+    }
+    $('time[data-time]').each(function(){
+        $(this).html(dateDiff($(this).data('time')));
+    })
+
+
+
+
+
+
+
+
     });
 </script>
 {% end %}

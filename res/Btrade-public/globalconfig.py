@@ -18,8 +18,8 @@ app = {
 salt = "ycg20151012"
 
 #图片服务器域名
-img_domain = "http://static.yaocai.pro/"
-#img_domain="http://127.0.0.1:8089/"
+#img_domain = "http://static.yaocai.pro/"
+img_domain="http://127.0.0.1:8089/"
 
 #img_path = "E:/wamp/www/static/uploadfiles/"
 img_path = "/opt/resources/static/uploadfiles"
@@ -126,4 +126,4 @@ paymode={
 }
 
 #保证金额
-deposit=0.01
+deposit=5000
