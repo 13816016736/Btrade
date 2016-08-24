@@ -45,7 +45,6 @@
 .sp-list{margin-top:30px;}
 .sp-list .list{float:left;width:930px;}
 .sp-list .list b{color:#fda21d;font-weight:400;}
-
 .sp-list .list .search{border:1px solid #e7e7e7;font-size:14px;overflow:hidden;*zoom:1;}
 .sp-list .list .search .form{float:left;line-height:34px;padding:12px 20px;border-right:1px solid #e7e7e7;}
 .sp-list .list .search .form .ipt{width:160px;height:34px;line-height:18px;padding:7px;font-size:14px;color:#333;border:1px solid #ccc;}
