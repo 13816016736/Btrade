@@ -4,6 +4,7 @@
 {% import config %}
 {% raw xsrf_form_html() %}
 <link rel="stylesheet" href="{{ static_url('css/index.css')}}" />
+
 <div class="panel panel-default payment">
     <div class="panel-heading hd"><h1>缴纳诚信保证金，开通阳光速配<span>（采购端）</span></h1></div>
     <div class="panel-body bd">
@@ -36,8 +37,8 @@
         </dl>
 
         <dl class="dl-horizontal">
-            <dd class="alipay">
-                <a href="#"><img class="payimg" name="alipay" src="{{ static_url('images/alipay.png') }}" width="114" height="40" alt=""></a>
+            <dd class="alipay"  name="alipay">
+                <a href="#"><img src="{{ static_url('images/alipay.png') }}" width="114" height="40" alt=""></a>
             </dd>
         </dl>
 
@@ -54,21 +55,30 @@
         </dl>
     </div>
 </div>
+
+
+<div class="dialogOverlay"></div>
+<div id="dialog" class="dialog">
+    <div class="hd">支付保证金</div>
+    <div class="bd">
+        <p>您在支付过程中碰到任何问题，可致电客服173-0967-3939解答处理</p>
+        <div class="buttons">
+            <button class="btn btn-orange">支付完成</button>
+            <button class="btn btn-white">碰到问题，再次支付</button>
+        </div>
+    </div>
+    <div class="d-close"></div>
+</div>
 {% block javascript %}
 <script src="{{ static_url('js/jquery.min.js')}}"></script>
 <script src="{{ static_url('js/bootstrap.min.js')}}"></script>
 {% end %}
+
 <script>
-    //var ran = (new Date).getTime();
-    //$.get('header.html?ran=' + ran, function(data) {
-    //    $('body').prepend(data);
-    //})
-    //$.get('footer.html?ran=' + ran, function(data) {
-    //    $('body').append(data);
-    //})
-  $(function() {
-     $(".dl-horizontal img").on('click', function() {
-         $.ajax({
+    $(function() {
+        var $dialog = $('#dialog');
+        $('.alipay').on('click', function() {
+          $.ajax({
                 url: "/payment",
                 data: { name: $(this).attr("name")},
                 dataType: 'json',
@@ -87,10 +97,23 @@
                    console.log("出现异常，请刷新页面再试");
                 }
              });
-    });
-  });
+            $dialog.fadeIn(200).prev().fadeIn(200);
+        });
+
+        $dialog.on('click', '.d-close', function() {
+            $dialog.fadeOut(200).prev().fadeOut(200);
+        });
+
+        $dialog.on('click', '.btn-orange', function() {
+            $dialog.fadeOut(200).prev().fadeOut(200);
+        });
+
+        $dialog.on('click', '.btn-white', function() {
+            $dialog.fadeOut(200).prev().fadeOut(200);
+        });
 
 
+    })
 </script>
 
 {% end %}
