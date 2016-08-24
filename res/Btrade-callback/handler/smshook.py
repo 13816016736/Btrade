@@ -38,7 +38,12 @@ class AlipayNotifyHandler(BaseHandler):
     def post(self):
         self.log.info(self.request.arguments)
         params=self.request.arguments
-        if notify_verify(params):
+        ks = params.keys()
+        newparams = {}
+        for k in ks:
+            v = params[k][0]
+            newparams[k]=v
+        if notify_verify(newparams):
             tn = self.get_argument('out_trade_no')
             trade_no = self.get_argument('trade_no')
             trade_status = self.get_argument('trade_status')
