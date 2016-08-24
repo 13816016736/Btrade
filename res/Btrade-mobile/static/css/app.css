@@ -48,6 +48,7 @@ em,i{font-style:normal;}
 .icon-pagelines:before { content: "\e616"; }
 .icon-camera:before { content: "\e600"; }
 .icon-check-yes:before { content: "\e611"; }
+.icon-sun:before { content: "\e629"; }
 .icon-frown:before { content: "\e623"; }
 .icon-verify:before { content: "\e627"; }
 .icon-face:before { content: "\e624"; }
@@ -112,6 +113,10 @@ em,i{font-style:normal;}
 .fl{float:left;}
 .fr{float:right;}
 .yc-cat{display:inline-block;min-width:80px;padding:1px 5px;color:#f90;border:1px solid #f90;-webkit-border-radius:4px;border-radius:4px;background:#fff;text-align:center;}
+.yc-speed{display:inline-block;height:2rem;line-height:1.6rem;margin-right:2px;padding:1px 5px;font-size:1.2rem;color:#fff1a3;border:1px solid #e47600;background:#ffa902;-webkit-border-radius:10px;border-radius:10px;overflow:hidden;vertical-align:top;}
+.yc-speed i{color:#fff1a3;vertical-align:-2px;margin-left:-2px;}
+.yc-speed-gray{color:#999;background:#f5f5f5;border-color:#ccc;}
+.yc-speed-gray i{color:#999;}
 
 
 /* 评分 */
@@ -154,6 +159,9 @@ em,i{font-style:normal;}
 .yc-sub-title{padding:10px;background-color:#fff;color:#aaa;overflow:hidden;}
 .yc-sub-title span{color:#333;}
 .yc-sub-title b{margin:0 3px;color:#f90;}
+.yc-tips{margin-top:10px;padding:10px;background:#ffa902;color:#fff1a3;font-size:1.6rem;font-weight:700;}
+.yc-tips a{position:relative;display:block;color:#fff1a3;}
+.yc-tips a span{position:absolute;top:.2rem;right:0;font-size:1.4rem;font-weight:400;color:#fff;}
 
 /* 我的标签 */
 .yc-tag-list{padding-bottom:4px;background-color:#fff;}
@@ -411,6 +419,7 @@ em,i{font-style:normal;}
 .yc-user .myinfo .edit{position:absolute;right:0;top:50%;-webkit-transform:translate(0,-50%);transform:translate(0,-50%);}
 .yc-user .myinfo .edit span{display:inline-block;padding:2px 6px;background-color:#f90;font-size:1.2rem;color:#fff;-webkit-border-radius:10rem;border-radius:10rem;vertical-align:middle;}
 .yc-user .myinfo .edit i{line-height:1;vertical-align:middle;}
+.yc-user .speed{padding:0 0 10px 46px;}
 .yc-user .mes{display:block;line-height:44px;border-top:1px solid #eee;color:#aaa;}
 .yc-user .mes i{color:#f90;font-size:2.2rem;vertical-align:middle;}
 .yc-user .mes b{display:inline-block;min-width:20px;min-height:20px;line-height:20px;margin-left:18px;background:#f90;color:#fff;border-radius:100%;text-align:center;vertical-align:middle;overflow:hidden;}
@@ -733,3 +742,42 @@ em,i{font-style:normal;}
 .sp-list ul{padding:0 10px;}
 .sp-list li{border-top:1px dotted #ccc;}
 .sp-list li span{display:block;}
+
+
+/* 阳光速配*/
+.yc-sunshine{padding:10px 13px;background:#fff;}
+.yc-sunshine .title{margin:0;padding:10px;font-size:1.8rem;font-weight:700;background:url(../images/bg-title.png) no-repeat 50%;background-size:156px auto;text-align:center;}
+.yc-sunshine .sub-title{text-align:center;font-size:1.40rem;color:#666;}
+.yc-sunshine .summary{margin-top:20px;padding:0 10px;border:1px solid #ccc;font-size:1.40rem;}
+.yc-sunshine .summary .hd{margin:0 0 5px;padding:15px 0;font-size:1.4rem;font-weight:700;color:#fda21d;text-align:center;border-bottom:1px dotted #ccc;}
+.yc-sunshine .summary dl{margin:0;padding-bottom:8px;}
+.yc-sunshine .summary dt{padding:8px 0 2px;font-weight:400;}
+.yc-sunshine .summary dd{color:#999;line-height:2.2rem;}
+.yc-sunshine .condition{line-height:2.2rem;margin-top:20px;padding-bottom:8px;font-size:1.40rem;border-bottom:1px solid #ccc;}
+.yc-sunshine .condition h2{margin:0 0 5px;font-size:1.40rem;color:#666;}
+.yc-sunshine .condition h3{margin:0;font-size:1.40rem;}
+.yc-sunshine .condition ol{padding-left:15px;list-style-type:decimal;color:#999;}
+.yc-sunshine .condition ol ol{list-style-type:lower-latin;}
+.yc-sunshine .detail{margin-top:20px;font-size:1.40rem;}
+.yc-sunshine .detail .hd{margin:0 0 10px;font-size:1.6rem;font-weight:700;color:#fda21d;text-align:center;}
+.yc-sunshine .detail .time{text-align:center;font-size:1.40rem;color:#666;}
+.yc-sunshine .detail dl{margin:0;padding-bottom:8px;}
+.yc-sunshine .detail dt{padding:8px 0;font-weight:400;}
+.yc-sunshine .detail dd{color:#999;line-height:2.2rem;text-align:justify;}
+.yc-sunshine .detail dd span{display:inline-block;width:23%;line-height:28px;border:1px solid #ccc;text-align:center;}
+.yc-sunshine .detail dd span:nth-child(n+4){margin-bottom:2.6666%;}
+.yc-sunshine .detail dd .fix{height:0;margin:0;padding:0;overflow:hidden;border:none;}
+.yc-sunshine .detail ul{overflow:hidden;border-left:1px solid #e7e7e7;}
+.yc-sunshine .detail li{float:left;width:25%;border:1px solid #e7e7e7;border-left:0;}
+.yc-sunshine .detail li img{max-width:100%;max-height:100%;}
+.yc-sunshine .detail .brands{margin-top:-30px;padding-bottom:0;}
+.yc-sunshine .text{padding:24px 0;color:#333;text-align:center;}
+.yc-sunshine .text p{line-height:2.2rem;margin:0;}
+.yc-sunshine .state{padding:10px;border:1px solid #ccc;background:#f5f5f5;}
+.yc-sunshine .state p{line-height:2.2rem;margin:0;}
+.yc-sunshine .state .extra{margin-top:-22px;text-align:right;}
+.yc-sunshine .state a{color:#007eff;}
+.yc-sunshine .join{margin:20px 0 30px;}
+.yc-sunshine .join a{display:block;line-height:44px;background:#fda21d;text-align:center;font-size:1.6rem;color:#fff;border-radius:4px;}
+.yc-sunshine .hotline{color:#999;font-size:1.3rem;}
+.yc-sunshine .hotline i{vertical-align:middle;}
