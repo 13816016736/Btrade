@@ -48,6 +48,6 @@ class AlipayNotifyHandler(BaseHandler):
             #    self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
             #else:
             #    self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",0, trade_no, tn)
-            self.api_response("success")
+            self.write("success")
         else:
-            self.api_response("fail")
+            self.write("fail")
