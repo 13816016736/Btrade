@@ -41,7 +41,10 @@ class UserListHandler(BaseHandler):
                     item.upgradetime=membermap.get(item.id)[1]
                     item.upgradetime=time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.upgradetime)))
                     item.expiredtime=membermap.get(item.id)[2]
-                    item.expiredtime=time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.expiredtime)))
+                    if item.expiredtime!="":
+                        item.expiredtime=time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item.expiredtime)))
+                    else:
+                        item.expiredtime ="-"
                     item.memberstatus=membermap.get(item.id)[3]
                 else:
                     item.upgradetime ="-"

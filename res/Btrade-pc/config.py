@@ -47,6 +47,7 @@ handlers = [
     (r"/supplier", SupplierHandler),
     (r"/payment", PaymentHandler),
     (r"/alipay/return", AlipayReturnHandler),
+    (r"/sunshine", SunshineHandler),
     #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)/page/([0-9]+)", MyPurchaseHandler),
     #(r"/mypurchase/type/(-?[0-9]+)/starttime/(.*)/endtime/(.*)", MyPurchaseHandler),
     (r"/mypurchase", MyPurchaseHandler),

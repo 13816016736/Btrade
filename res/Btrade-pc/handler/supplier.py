@@ -306,3 +306,7 @@ class AlipayReturnHandler(BaseHandler):
                 self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",0, trade_no, tn)
         self.redirect("/supplier")
         pass
+
+class SunshineHandler(BaseHandler):
+    def get(self):
+        self.render("sunshine.html")
