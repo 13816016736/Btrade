@@ -243,13 +243,11 @@ def is_cn(check_unicode):
         if ch < u'\u4e00' or ch > u'\u9fff':
             return False
     return bool
-def regSuccessWx(openid, name, username,sendtype=1):
+def regSuccessWx(openid, name, username):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     username = username.encode('utf-8') if isinstance(username, unicode) else username
     templateId = 'R49JXzySURAo-dgzpGtH1EDYXzgxgWVPYg3rQcuNzes'
-    if  sendtype==2:
-         templateId ="ZJDQ6nL1ttl__IAZ0ezqumplUbJiliUuRusBLvDWjnw"
     link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect'
     data = {
         "first": {
@@ -269,11 +267,11 @@ def regSuccessWx(openid, name, username,sendtype=1):
            "color":"#173177"
         }
     }
-    thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
 
 #供应商报价,通知给采购方
-def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime,sendtype=1):
+def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
     name = name.encode('utf-8') if isinstance(name, unicode) else name
@@ -281,8 +279,6 @@ def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime,s
     unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
     templateId = 'aUADL3alEqWYfs5pEM1X5dtm3pstmrxMt1ktrMNs1qk'
-    if sendtype==2:
-         templateId="H99pLHOlhHtGHL9ycFdxo5Y32FivityMW-ZY23r9D-I"
     link = 'http://m.yaocai.pro/replydetail?pid=%s' % purchaseinfoid
     data = {
         "first": {
@@ -310,10 +306,10 @@ def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime,s
            "color":"#173177"
         }
     }
-    thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
 #供应商报价,通知给供应商报价成功
-def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, qtime,sendtype=1):
+def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
@@ -323,8 +319,6 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
     quoteunit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     quality = quality.encode('utf-8') if isinstance(quality, unicode) else quality
     templateId = 'RGAztJ6ocuwvJosRCsCCJd8imGif6TT8B7vXYPa_KGs'
-    if sendtype == 2:
-        templateId = "OdMCEUgJsp-oyuTs62ZSveysmUp_CpOQs2J5JcS5_lY"
     link = 'http://m.yaocai.pro'
     data = {
         "first": {
@@ -352,9 +346,9 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
            "color":"#173177"
         }
     }
-    thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
 #采购方对报价进行回复（认可报价）,通知给供应方
-def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime,sendtype=1):
+def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
@@ -362,8 +356,6 @@ def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime,
     nickname = nickname.encode('utf-8') if isinstance(nickname, unicode) else nickname
     phone = phone.encode('utf-8') if isinstance(phone, unicode) else phone
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
-    if sendtype == 2:
-        templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
     link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
@@ -388,18 +380,16 @@ def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime,
            "color":"#173177"
         }
     }
-    thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
 #采购方对报价进行回复（拒绝报价）,通知给供应方
-def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime,sendtype=1):
+def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     message = message.encode('utf-8') if isinstance(message, unicode) else message
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
-    if sendtype == 2:
-        templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
     link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
@@ -424,12 +414,10 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime,sendtype
            "color":"#173177"
         }
     }
-    thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
+    thread.start_new_thread(sendwx, (templateId, openid, link, data))
 
-def pushPurchaseWx(openids, purchase,uuidmap,sendtype=1):
+def pushPurchaseWx(openids, purchase,uuidmap):
     templateId = 'OxXsRhlyc17kt6ubwV7F0fD8ffRl12rGGS3mnpvpoU4'
-    if sendtype == 2:
-        templateId = "lRRAoLj5-udp8NvSY3IY-tuRQbJb53Ca_FbAU30SdGo"
     link = 'http://m.yaocai.pro/purchase/purchaseinfo/%s' % purchase["purchaseinfoid"]
     qtime = int(purchase["createtime"])
     purchase["name"] = purchase["name"].encode('utf-8') if isinstance(purchase["name"], unicode) else purchase["name"]
@@ -469,7 +457,7 @@ def pushPurchaseWx(openids, purchase,uuidmap,sendtype=1):
         }
         uuid = uuidmap[openid]
         sendlink=link+"?uuid="+uuid
-        reuslt=sendwx(templateId, openid, sendlink, data,sendtype)
+        reuslt=sendwx(templateId, openid, sendlink, data)
         if reuslt:
             message = json.loads(reuslt.encode("utf-8"))
             db = PymongoDateBase.instance().get_db()
@@ -501,12 +489,18 @@ def purchasetransaction(self, data):
         varids = []
         for i,purchase in data['purchases'].iteritems():
             varids.append(purchase["nVarietyId"])
+            #判定是否为品种是否为阳光速配，会员是否为阳光速配
+            member=self.db.get("select * from member where userid=%s and type=3 and status=1",self.session.get("userid"))
+            variety=self.db.get("select id ,state from variety where id=%s",purchase["nVarietyId"])
+            shine=0
+            if member and variety and variety.state==1:
+                shine=1
             purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
             cursor.execute("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
-                            " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                            " quality, origin, price,shine)value(%s, %s, %s, %s, %s, %s, %s, %s, %s,%s)",
                                              (purchaseid, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
                             purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
-                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice']))
+                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'],shine))
             print cursor.lastrowid
             #插入图片
             if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
@@ -545,12 +539,18 @@ def updatepurchase(self, id, data):
         varids = []
         for i,purchase in data['purchases'].iteritems():
             varids.append(purchase["nVarietyId"])
+            #判定是否为品种是否为阳光速配，会员是否为阳光速配
+            member=self.db.get("select * from member where userid=%s and type=3 and status=1",self.session.get("userid"))
+            variety=self.db.get("select id ,state from variety where id=%s",purchase["nVarietyId"])
+            shine=0
+            if member and variety and variety.state==1:
+                shine=1
             purchase['nPrice'] = purchase['nPrice'] if purchase['nPrice'] else 0
             cursor.execute("insert into purchase_info (purchaseid, varietyid, name, specification, quantity, unit,"
-                            " quality, origin, price)value(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                            " quality, origin, price,shine)value(%s, %s, %s, %s, %s, %s, %s, %s, %s,%s)",
                            (id, purchase["nVarietyId"], purchase['nVariety'], purchase['nRank'],
                             purchase['nQuantity'], purchase['nUnit'], ",".join([ q for q in purchase['nQuality'] if q != '' ]),
-                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice']))
+                            ",".join([ a for a in purchase['nArea'] if a != '' ]), purchase['nPrice'],shine))
             #插入图片
             if self.session.get("uploadfiles") and self.session.get("uploadfiles").has_key(i):
                 for attachment in self.session.get("uploadfiles")[i]:
@@ -595,15 +595,13 @@ def reply_quote_notify(phone, num, name, price, unit,pid,uuid):
     vars = '{"%num%":"'+num+'","%name%":"'+name+'","%price%":"'+price+'","%unit%":"'+unit+'","%purchaseinfoid%":"'+pid+'&uuid='+ uuid +'"}'
     print vars
     send(templateId, phone, vars)
-def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid,uuid,sendtype=1):
+def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid,uuid):
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     tip="您还有%s个报价未回复，最低报价：%s %s元/%s"%(num,name,price,unit)
     templateId = 'VHZtCPgyjeD00IG0RdfxeHo4fP6PwXj3pfaCmB91RJg'
-    if sendtype == 2:
-        templateId = "-RvagrAIVd4mA8Q8dgWQT7--nVLmP7jFR3BVBBojS2Q"
     link = 'http://m.yaocai.pro/replydetail?pid=%s'% pid+"&uuid="+uuid
     data = {
         "first": {
@@ -624,4 +622,4 @@ def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid,uuid,sendtype=1
            "color":"#173177"
         }
     }
-    sendwx(templateId, openid, link, data,sendtype)
+    sendwx(templateId, openid, link, data)

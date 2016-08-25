@@ -6,17 +6,46 @@
 <link rel="stylesheet" href="{{ static_url('css/order.css')}}" />
 <section class="sec">
     <div class="container">
-        <div class="yc-bubble purchase-bubble">
-            <div class="tag">即刻采购</div>
-            <div class="step">
-                <span>发布采购计划</span>
-                <span>精准匹配推送</span>
-                <span>供应商报价</span>
-                <span>选择意向供应商洽谈</span>
-                <span>安心交易</span>
+        {% if handler.session.has_key('user') and handler.session.get('user') != "" and  user["memberid"]!=-1  %}
+        <div class="bubble">
+            <div class="dt">
+                阳光速配
             </div>
-            <div class="txt">饮片厂、药厂发布采购计划、经营公司、经营户发布找货需求，海量产地供应商给您急速报价。</div>
+            <div class="dd">
+                <p class="tit">严格筛选有实力、口碑好的供货商，确保货源质量、价格优势，一键直达！您发采购，他们及时报价，只因有您对诚信的坚守！</p>
+                <p>
+                    已开通品种：
+                    {% for variety in hot %}
+                    <span>{{variety}}</span>
+                    {% end %}
+                    更多品种陆续开通中...
+                </p>
+            </div>
+            <div class="extra">
+                <a href="/sunshine">了解更多&gt;</a>
+            </div>
         </div>
+       {% else %}
+        <div class="bubble">
+            <div class="dt">
+                即刻采购
+            </div>
+            <div class="dd">
+                <p class="tit">饮片厂、药厂发布采购计划、经营公司、经营户发布找货需求，海量产地供应商给您急速报价。</p>
+                <p>
+                    <em>发布采购计划</em>
+                    <i>&gt;</i>
+                    <em>精准匹配推送</em>
+                    <i>&gt;</i>
+                    <em>供应商报价</em>
+                    <i>&gt;</i>
+                    <em>选择意向供应商洽谈</em>
+                    <i>&gt;</i>
+                    <em>安心交易</em>
+                </p>
+            </div>
+        </div>
+        {% end %}
 
         <div class="yc-purchase-form">
             <form action="/mypurchase/update/{{purchase.id}}" method="post" id="registerForm" autocomplete="off">
@@ -52,6 +81,9 @@
                                 销售经理
                                 {% end %}
                             </span>
+                            {% if user["memberid"]!=-1 %}
+                            <span class="yc-speed"><i class="iconfont icon-sun"></i>已开通阳光速配</span>
+                            {% end %}
                         </h3>
                         <div class="userinfo">
                             <i class="iconfont icon-user"></i><span>{{ user.nickname }}</span>
@@ -71,7 +103,7 @@
                     <table id="jInventory">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th width="26"></th>
                                 <th>药材品种*</th>
                                 <th>规格等级*</th>
                                 <th>采购数量</th>
@@ -85,14 +117,13 @@
                                         <span class="pop-msg">上传合格品样例照<br>供应商更懂你<br>1分钟教会你拍样例照</span>
                                     </span>
                                 </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for purchaseinfo in purchase.purchaseinfo%}
                             <tr>
-                                <td>
-                                    <i class="iconfont icon-close del"></i>
-                                </td>
+                                <td><i class="lightning" title="阳光速配服务" {% if purchaseinfo.shine==1 %} style="display: block;" {% end %}></i></td>
                                 <td>
                                     <div>
                                         <input class="ipt ipt-variety" type="text" name="nVariety" autocomplete="off" value="{{purchaseinfo.name}}" varietyid="{{purchaseinfo.varietyid}}" origin="{{purchaseinfo.allorigin}}">
@@ -149,6 +180,9 @@
                                         <img src="{% if purchaseinfo.attachments %}{{purchaseinfo.attachments.attachment}}{% end %}" alt="">
                                         <i class="del-pic" title="删除"></i>
                                     </p>
+                                </td>
+                                  <td>
+                                    <i title="删除" class="iconfont icon-close del-tr"></i>
                                 </td>
                             </tr>
                             {% end %}
@@ -426,7 +460,7 @@
             <dd>
                 {% if 'mypurchasevar' in globals() %}
                 {% for mp in mypurchasevar %}
-                <span varietyid="{{mp.id}}" origin="{{mp.origin}}">{{mp.name}}</span>
+                <span state="{{mp.state}}" varietyid="{{mp.id}}" origin="{{mp.origin}}">{{mp.name}}</span>
                 {% end %}
                 {% end %}
             </dd>
@@ -436,7 +470,7 @@
             <dd>
                 {% if 'varietys' in globals() %}
                 {% for variety in varietys %}
-                <span varietyid="{{variety.id}}" origin="{{variety.origin}}">{{variety.name}}</span>
+                <span state="{{variety.state}}" varietyid="{{variety.id}}" origin="{{variety.origin}}">{{variety.name}}</span>
                 {% end %}
                 {% end %}
             </dd>

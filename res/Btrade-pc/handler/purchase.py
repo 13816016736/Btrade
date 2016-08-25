@@ -32,7 +32,7 @@ class PurchaseHandler(BaseHandler):
             self.session.save()
         if self.session.get("userid"):
             user = self.db.get("SELECT id,username,name,nickname,phone,type,varietyids FROM users WHERE id = %s", self.session.get("userid"))
-            member=self.db.get("select * from member where userid =%s and type=3",self.session.get("userid"))
+            member=self.db.get("select * from member where userid =%s and type=3 and status=1",self.session.get("userid"))
             if user:
                 #最近采购品种，id,name,origin
                 mypurchase = self.db.query("select v.id,v.name,v.origin,v.state from "
@@ -559,12 +559,30 @@ class MyPurchaseUpdateHandler(BaseHandler):
 
         purchaseids = [str(p["id"]) for p in purchases]
         user = self.db.get("SELECT id,username,name,nickname,phone,type,varietyids FROM users WHERE id = %s", self.session.get("userid"))
+
+        hot = self.db.query("select id ,name from variety where state=1")
+        if hot:
+            hot = [h.name for h in hot]
+        else:
+            hot = []
         #最近采购品种，id,name,origin
-        mypurchasevar = self.db.query("select v.id,v.name,v.origin from purchase_info pi left join variety v on pi.varietyid = v.id where pi.purchaseid in ("+",".join(purchaseids)+") group by v.id")
+        mypurchasevar = self.db.query("select v.id,v.name,v.origin,v.state from purchase_info pi left join variety v on pi.varietyid = v.id where pi.purchaseid in ("+",".join(purchaseids)+") group by v.id")
         #我关注的品种，id,name,origin
         varietys = []
         if user["varietyids"]:
-            varietys = self.db.query("SELECT id,name,origin FROM variety WHERE id in ("+user["varietyids"]+")")
+            varietys = self.db.query("SELECT id,name,origin,state FROM variety WHERE id in ("+user["varietyids"]+")")
+        member = self.db.get("select * from member where userid =%s and type=3 and status=1",
+                                 self.session.get("userid"))
+
+        if member:
+            user["memberid"] = member.id
+        else:
+            user["memberid"] = -1
+            # 所有品种变为非阳光速配
+            for item in mypurchasevar:
+                item.state = 0
+            for item in varietys:
+                item.state = 0
 
         purchaseinfos = self.db.query("select pi.*,v.id varietyid,v.specification allspec,v.origin allorigin,v.unit allunit from purchase_info pi left join variety v on pi.varietyid = v.id where pi.purchaseid = %s",id)
         purchaseinfoids = [str(purchaseinfo["id"]) for purchaseinfo in purchaseinfos]
@@ -615,7 +633,7 @@ class MyPurchaseUpdateHandler(BaseHandler):
         purchase["supplier"] = purchase["supplier"].split("&")
         print purchase
         if user:
-            self.render("updatepurchase.html", purchase=purchase, provinces=provinces, city=city, district=district, area=area, user=user, mypurchasevar=mypurchasevar, varietys=varietys)
+            self.render("updatepurchase.html", purchase=purchase, provinces=provinces, city=city, district=district, area=area, user=user, mypurchasevar=mypurchasevar, varietys=varietys,hot=hot)
         else:
             self.error("此用户不存在", "/login")
 
