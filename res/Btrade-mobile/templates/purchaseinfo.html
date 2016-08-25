@@ -38,10 +38,11 @@
             {% end %}
         </div>
     </div>
-
+   {% if purchase.shine==1 %}
     <div class="yc-tips">
-        <a href="#">阳光速配，安心保障<span>了解详情</span></a>
+        <a href="/sunshine?pid={{purchase.pid}}">阳光速配，安心保障<span>了解详情</span></a>
     </div>
+    {% end %}
 
     <div class="yc-purchase-detail">
         <h3>采购品种及要求</h3>

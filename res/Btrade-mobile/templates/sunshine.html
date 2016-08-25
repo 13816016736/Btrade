@@ -1,16 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>销售药材</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+{% extends "basenofoot.html" %}
+{% block container %}
+{% import time %}
+{% import config %}
 <body class="yc-body">
     <header class="yc-header">
         <div class="yc-header-back">
@@ -18,31 +10,6 @@
         </div>
         <div class="yc-header-title">阳光速配</div>
     </header><!-- /yc-header -->
-
-    <footer class="yc-footer">
-        <nav class="yc-nav">
-            <ul>
-                <li>
-                    <a class="current" href="index.html">
-                        <i class="iconfont icon-plane"></i>
-                        <span>去报价</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="yaocaigou.html">
-                        <i class="iconfont icon-car"></i>
-                        <span>发采购</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="new-msg" href="center.html">
-                        <i class="iconfont icon-center"></i>
-                        <span>我的工作台</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </footer>
 
     <section class="yc-content">
         <div class="yc-sunshine">
@@ -63,7 +30,7 @@
                 <h2>参加要求：</h2>
                 <ol>
                     <li>通过药材购身份核验；</li>
-                    <li>缴纳3000元诚信保证金（若没达成交易，随时退款；若达成交易意向，采购方验收后退款）</li>
+                    <li>缴纳{{config.sdeposit}}元诚信保证金（若没达成交易，随时退款；若达成交易意向，采购方验收后退款）</li>
                     <li>
                         <h3>承诺诚信交易：</h3>
                         <ol>
@@ -84,14 +51,9 @@
                 <dl>
                     <dt>已开通品种：</dt>
                     <dd>
-                        <span>香附子</span>
-                        <span>三七</span>
-                        <span>白芍</span>
-                        <span>茯苓</span>
-                        <span>香附子</span>
-                        <span>三七</span>
-                        <span>白芍</span>
-                        <span>茯苓</span>
+                        {% for var in  hot %}
+                        <span>{{var}}</span>
+                        {% end %}
                         <span class="fix">&nbsp;</span>
                         <span class="fix">&nbsp;</span>
                         <span class="fix">&nbsp;</span>
@@ -102,10 +64,10 @@
                     <dt>已报名的采购药企：</dt>
                     <dd>
                         <ul>
-                            <li><img src="images/brand_1.png" alt=""></li>
-                            <li><img src="images/brand_2.png" alt=""></li>
-                            <li><img src="images/brand_3.png" alt=""></li>
-                            <li><img src="images/brand_4.png" alt=""></li>
+                            <li><img src="{{ static_url('images/brand_1.png')}}" alt=""></li>
+                            <li><img src="{{ static_url('images/brand_2.png')}}" alt=""></li>
+                            <li><img src="{{ static_url('images/brand_3.png')}}" alt=""></li>
+                            <li><img src="{{ static_url('images/brand_4.png')}}" alt=""></li>
                         </ul>
                     </dd>
                 </dl>
@@ -114,19 +76,22 @@
                     <p>只要货源有优势，放心供货。</p> 
                     <p>供货商火热招募中，赶紧报名吧！</p>
                 </div>
-
+                {% if memberinfo %}
                 <div class="state">
-                    <p>严飞，您好！</p>
+                    <p>{{handler.session.get('user')}}，您好！</p>
                     <p>您已开通阳光速配供货商资格</p>
-                    <p>已缴纳保证金：3000元</p>
+                    <p>已缴纳保证金：{{config.sdeposit}}元</p>
                     <div class="extra">
-                        <a href="#">退款</a>
+                        <!--<a href="#">退款</a>-->
                     </div>
                 </div>
 
+
                 <div class="join">
-                    <a href="#">立即报名</a>
+                    <a href="{{next}}">立即报价</a>
                 </div>
+
+                {% else %}
                 
                 <div class="state">
                     <p>您当前还未开通阳光速配供货商资格</p>
@@ -134,6 +99,7 @@
                 <div class="join">
                     <a href="#">缴纳保证金，立即开通</a>
                 </div>
+                {% end %}
 
                 <div class="hotline">
                     <i class="iconfont icon-question"></i>
@@ -145,7 +111,7 @@
     </section><!-- /yc-content -->
 
 	
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="{{ static_url('js/jquery.min.js')}}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js')}}"></script>
 </body>
-</html>
+{% end %}

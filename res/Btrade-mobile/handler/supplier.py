@@ -83,3 +83,22 @@ class SupplierDetailHandler(BaseHandler):
         self.render("supplier.html",quanlity=quanlity,user=user,transactions=transactions)
     def post(self):
         pass
+
+class SunshineHandler(BaseHandler):
+    def get(self):
+        pid=self.get_argument("pid", None)
+        next="/"
+        if pid:
+            next="/purchase/purchaseinfo/%s"%pid
+        memberinfo = None
+        if self.session.has_key('user'):
+            userid = self.session.get("userid")
+            memberinfo = self.db.get("select * from member where userid=%s and type=2 and status=1", userid)#阳光匹配供货商
+        #开通品种
+        hot=self.db.query("select id ,name from variety where state=1")
+        if hot:
+            hot=[h.name for h in hot]
+        else:
+            hot=[]
+        self.render("sunshine.html",memberinfo=memberinfo,hot=hot,next=next)
+        pass

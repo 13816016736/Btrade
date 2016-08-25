@@ -25,8 +25,11 @@
             </div>
         </a>
         <div class="speed">
+            {% if member %}
             <span class="yc-speed"><i class="iconfont icon-sun"></i>已开通阳光速配</span>
+            {% else %}
             <a href="#"><span class="yc-speed yc-speed-gray"><i class="iconfont icon-question"></i>未开通阳光速配</span></a>
+            {% end %}
         </div>
         {% if unread != 0%}
         <a class="mes" href="/news/type/{{unreadtype}}">

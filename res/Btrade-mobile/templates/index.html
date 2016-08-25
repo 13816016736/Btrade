@@ -67,7 +67,6 @@ $(function(){
             temp.push(         '<i class="iconfont icon-user"></i><span>', _this.uname, '</span>');
             temp.push(     '</h3>');
             temp.push(     '<div class="yc-cat">', userType[_this.type], '</div>');
-            temp.push(     '<div class="yc-speed"><i class="iconfont icon-sun"></i>已开通阳光速配</div>');
             temp.push( '</div>');
 
             for (var j = 0; j < _this.purchaseinfo.length; j ++) {
@@ -75,7 +74,12 @@ $(function(){
                 temp.push( '<a href=/purchase/purchaseinfo/', _that.id, '>');
                 temp.push(     '<div class="bd">');
                 temp.push(         '<h4 class="name"><i class="iconfont icon-arrow-right"></i>', _that.name, '</h4>');
-                temp.push(         '<div class="tag">', _that.specification, ' ', _that.origin, '</div>');
+                 if(_this.status != 0&& _this.shine==1){
+                    temp.push(         '<div class="tag">', _that.specification, ' ', _that.origin, '&nbsp;&nbsp;<div class="yc-speed"><i class="iconfont icon-sun"></i>已开通阳光速配</div></div>');
+                 }
+                 else{
+                    temp.push(         '<div class="tag">', _that.specification, ' ', _that.origin, '</div>');
+                 }
                 temp.push(         '<div class="weight">', _that.quantity, _that.unit, '</div>');
                 temp.push(         '<div class="desc">');
                 _that.attachments&&temp.push( '<p class="thumb"><img src="', _that.attachments.attachment, '" data-src="', _that.attachments.attachment.replace('_thumb',''), '"></p>');

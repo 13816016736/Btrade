@@ -119,11 +119,14 @@ ALIPAY_RETURN_URL="http://yaocai.pro/alipay/return"#同步通知
 ALIPAY_NOTIFY_URL="http://cb.yaocai.pro/alipay/notify"#异步通知
 
 paytype={
-    1:"支付保证金"
+    1:"阳光匹配（采购商）保证金",
+    2:"阳光匹配（供货商）保证金",
 }
 paymode={
-    1:"支付宝支付"
+    1:"支付宝支付",
+    2:"微信支付"
 }
 
 #保证金额
 deposit=5000
+sdeposit=3000

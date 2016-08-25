@@ -66,7 +66,7 @@ class PurchaseHandler(BaseHandler):
         #                          "left join users u on ta.userid = u.id order by orderid desc,myvariety desc,ta.pid desc", number, config.conf['POST_NUM'])
 
         #获取采购单信息，优先显示我关注的
-        purchases=self.db.query("select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,"
+        purchases=self.db.query("select p.*,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views,pi.shine,"
                                  "(case when p.term = 0 then 1 when p.createtime + p.term*86400 < unix_timestamp(now()) then 0 else 1 end) orderid,"
                                   "(case when pi.varietyid in (%s)"%str(myvarietyid)+" then 1 else 0 end) myvariety from "
                                   "purchase_info pi left join purchase p on p.id = pi.purchaseid where p.status != 0 and pi.status=1 order by orderid desc,"
@@ -127,7 +127,7 @@ class PurchaseInfoHandler(BaseHandler):
 
         purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
         "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
-        "pi.views,pi.status from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
+        "pi.views,pi.status,pi.shine from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
 
         if purchaseinfo==None:
             self.error("采购单不存在", "/")

@@ -56,12 +56,17 @@ class AlipayNotifyHandler(BaseHandler):
                 if payment:
                     userid=payment["userid"]
                     status=payment["status"]
+                    membertype=2
+                    if payment.paytype == 1:
+                        membertype=3
+                    elif payment.paytype == 2:
+                        membertype = 2
                     if status==1:
                         member = self.db.get("select * from member where userid=%s", userid)
                         if member==None:
                             self.db.execute(
                                 "insert into member (userid,term,upgradetime,type,expiredtime) value(%s,%s,%s,%s,%s)",
-                                userid, 0, int(time.time()),3,"")
+                                userid, 0, int(time.time()),membertype,"")
 
 
             else:
