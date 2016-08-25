@@ -94,6 +94,9 @@ header,footer,.sec,.container{min-width:1170px;}
 .fr{float:right;}
 .yc-cat{display:inline-block;min-width:80px;padding:1px 5px;color:#f90;border:1px solid #f90;-webkit-border-radius:4px;border-radius:4px;background:#fff;text-align:center;}
 .cbx{margin:0 4px 0 0 !important;vertical-align:-1px;}
+.yc-speed{margin-left:6px;padding:1px 5px;font-size:12px;color:#fff1a3;border:1px solid #e47600;background:#ffa902;-webkit-border-radius:10px;border-radius:10px;}
+.yc-speed .icon-sun{color:#fff1a3;vertical-align:-1px;margin:0;}
+
 /* color */
 .c-orange{color:#fda21d !important;}
 

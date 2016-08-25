@@ -33,6 +33,9 @@ $mobile.on('blur', function() {
 $code.on('blur', function() {
 	checkCode();
 });
+$cname.on('blur', function() {
+	checkCname();
+});
 
 function checkUsername() {
     var val = $username.val();
@@ -135,7 +138,6 @@ var $body = $('body'),
 	url = '/uploadfile' ,
     maxUploadFileSize = 5 * 1024 *1024, // 限制上传的文件大小(bytes)
     acceptFileTypes = /\.(jpe?g|png|gif|bmp)$/i; // 限制的上传文件类型(正则匹配)
-
 
 // 防抖处理
 function debounce(func, wait) {
@@ -477,6 +479,11 @@ $table.on({
 				break;
 			// no default
 		}
+	},
+	'blur': function() {
+		// 阳光速配
+		var lightning = true;
+		$(this).closest('td').prev().find('.lightning').css('display', lightning ? 'block' : 'none');
 	}
 }, '.ipt-variety');
 
