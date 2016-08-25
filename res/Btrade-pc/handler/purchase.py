@@ -32,15 +32,16 @@ class PurchaseHandler(BaseHandler):
             self.session.save()
         if self.session.get("userid"):
             user = self.db.get("SELECT id,username,name,nickname,phone,type,varietyids FROM users WHERE id = %s", self.session.get("userid"))
+            member=self.db.get("select * from member where userid =%s and type=3",self.session.get("userid"))
             if user:
                 #最近采购品种，id,name,origin
-                mypurchase = self.db.query("select v.id,v.name,v.origin from "
+                mypurchase = self.db.query("select v.id,v.name,v.origin,v.state from "
                                            "(select pi.varietyid from purchase p left join purchase_info pi on p.id = pi.purchaseid where p.userid = %s) t "
                                            "left join variety v on t.varietyid = v.id group by v.id", self.session.get("userid"))
                 #我关注的品种，id,name,origin
                 varietys = []
                 if user["varietyids"]:
-                    varietys = self.db.query("SELECT id,name,origin FROM variety WHERE id in ("+user["varietyids"]+")")
+                    varietys = self.db.query("SELECT id,name,origin,state FROM variety WHERE id in ("+user["varietyids"]+")")
                 user["name"] = user.get("name")
                 #取上次采购单的交货地
                 purchase = self.db.get("select areaid from purchase where userid = %s order by createtime desc limit 1", self.session.get("userid"))
@@ -49,7 +50,21 @@ class PurchaseHandler(BaseHandler):
                     district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
                     city = self.db.query("SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid", area.get("parentid"))
                     area["gparentid"] = city[0]["parentid"]
-                self.render("purchase.html", provinces=provinces, city=city, district=district, area=area, user=user, mypurchase=mypurchase, varietys=varietys)
+                if member:
+                    user["memberid"]=member.id
+                else:
+                    user["memberid"]=-1
+                    #所有品种变为非阳光速配
+                    for item in mypurchase:
+                        item.state=0
+                    for item in varietys:
+                        item.state=0
+                hot = self.db.query("select id ,name from variety where state=1")
+                if hot:
+                    hot = [h.name for h in hot]
+                else:
+                    hot = []
+                self.render("purchase.html", provinces=provinces, city=city, district=district, area=area,hot=hot, user=user, mypurchase=mypurchase, varietys=varietys)
             else:
                 self.render("purchase.html", provinces=provinces, city=city, district=district, area=area)
         else:
@@ -87,6 +102,7 @@ class PurchaseHandler(BaseHandler):
         data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"
         data['permit'] = data['permit'] if data.has_key('permit') and data['permit'] != "" else "0"
         data['deadline'] = data['deadline'] if data.has_key('deadline') and data['deadline'] != "" else "0"
+        
         #存储采购主体信息
         if data.has_key("address"):
             # purchaseid = get_purchaseid()
@@ -405,10 +421,21 @@ class GetVarietyInfoHandler(BaseHandler):
         if variety == "":
             self.api_response({'status':'fail','message':'请填写品种'})
         elif is_cn(variety):
-            varietyinfo = self.db.query("SELECT id,name,origin FROM variety WHERE name like %s or alias like %s", "%"+variety+"%", "%"+variety+"%")
+            varietyinfo = self.db.query("SELECT id,name,origin,state FROM variety WHERE name like %s or alias like %s", "%"+variety+"%", "%"+variety+"%")
             if len(varietyinfo) == 0:
                 self.api_response({'status':'notsupport','message':'没有该品种'})
             else:
+                userid=self.session.get('userid')
+                ismember=0
+                if userid:
+                    member = self.db.get("select * from member where userid =%s and type=3",
+                                           self.session.get("userid"))
+                    if member:
+                        ismember=1
+                if ismember==0:
+                    for item in varietyinfo:
+                        item["state"]=0
+
                 self.api_response({'status':'success','message':'请求成功','list':varietyinfo})
         else:
             self.api_response({'status':'fail','message':'请输入中文'})

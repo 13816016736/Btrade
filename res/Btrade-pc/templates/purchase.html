@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{ static_url('css/order.css')}}" />
 <section class="sec">
     <div class="container">
+       {% if handler.session.has_key('user') and handler.session.get('user') != "" and  user["memberid"]!=-1  %}
         <div class="bubble">
             <div class="dt">
                 阳光速配
@@ -13,14 +14,18 @@
             <div class="dd">
                 <p class="tit">严格筛选有实力、口碑好的供货商，确保货源质量、价格优势，一键直达！您发采购，他们及时报价，只因有您对诚信的坚守！</p>
                 <p>
-                    已开通品种：<span>黄连</span><span>山药</span><span>芡实</span><span>枸杞子</span>更多品种陆续开通中...
+                    已开通品种：
+                    {% for variety in hot %}
+                    <span>{{variety}}</span>
+                    {% end %}
+                    更多品种陆续开通中...
                 </p>
             </div>
             <div class="extra">
-                <a href="#">了解更多&gt;</a>
+                <a href="/sunshine">了解更多&gt;</a>
             </div>
         </div>
-
+       {% else %}
         <div class="bubble">
             <div class="dt">
                 即刻采购
@@ -40,7 +45,7 @@
                 </p>
             </div>
         </div>
-
+        {% end %}
         <div class="yc-purchase-form">
             <form action="/purchase" method="post" id="registerForm" autocomplete="off">
             <div class="item">
@@ -76,7 +81,9 @@
                                 销售经理
                                 {% end %}
                             </span>
+                            {% if user["memberid"]!=-1 %}
                             <span class="yc-speed"><i class="iconfont icon-sun"></i>已开通阳光速配</span>
+                            {% end %}
                         </h3>
                         <div class="userinfo">
                             <i class="iconfont icon-user"></i><span>{{ user.nickname }}</span>
@@ -462,7 +469,7 @@
             <dd>
                 {% if 'mypurchase' in globals() %}
                 {% for mp in mypurchase %}
-                <span varietyid="{{mp.id}}" origin="{{mp.origin}}">{{mp.name}}</span>
+                <span state="{{mp.state}}" varietyid="{{mp.id}}" origin="{{mp.origin}}">{{mp.name}}</span>
                 {% end %}
                 {% end %}
             </dd>
@@ -472,7 +479,7 @@
             <dd>
                 {% if 'varietys' in globals() %}
                 {% for variety in varietys %}
-                <span varietyid="{{variety.id}}" origin="{{variety.origin}}">{{variety.name}}</span>
+                <span state="{{variety.state}}" varietyid="{{variety.id}}" origin="{{variety.origin}}">{{variety.name}}</span>
                 {% end %}
                 {% end %}
             </dd>

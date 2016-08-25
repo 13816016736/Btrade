@@ -421,7 +421,10 @@ class SunshineHandler(BaseHandler):
 
         #开通品种
         hot=self.db.query("select id ,name from variety where state=1")
-        hot=[h.name for h in hot]
+        if hot:
+            hot=[h.name for h in hot]
+        else:
+            hot=[]
 
         #最新交易意向
         newpurchaseinfo=self.db.query("select pi.id, pi.name,pi.quantity,pi.purchaseid,q.userid as quserid,q.updatetime from purchase_info pi  left join quote q on q.purchaseinfoid=pi.id where q.state=1 order by q.updatetime desc limit 0,10")

@@ -326,7 +326,7 @@ function move(elem, k) {
 function toHtml(data, $wrap) {
     var html = [];
     $.each(data, function(i, v){
-        html.push('<span varietyid="' + v.id + '" origin="' + v.origin + '"' + (i === 0 ? ' class="on"' : '') + '>' + v.name + '</span>');
+        html.push('<span state="' + v.state + '"  varietyid="' + v.id + '" origin="' + v.origin + '"' + (i === 0 ? ' class="on"' : '') + '>' + v.name + '</span>');
     });
     $wrap.find('.search dd').html(html.join(''));
     showTags(true, $wrap);
@@ -482,13 +482,19 @@ $table.on({
 	},
 	'blur': function() {
 		// 阳光速配
-		var lightning = true;
-		$(this).closest('td').prev().find('.lightning').css('display', lightning ? 'block' : 'none');
+		//var lightning = true;
+		//$(this).closest('td').prev().find('.lightning').css('display', lightning ? 'block' : 'none');
 	}
 }, '.ipt-variety');
 
 $varietyTags.on('click', 'span', function() {
 	$tags.val($(this).html());
+	var lightning=false;
+	var state=$(this).attr("state");
+	if(state=="1"){
+	lightning=true;
+	}
+	$(this).closest('td').prev().find('.lightning').css('display', lightning ? 'block' : 'none');
 	setSelect($varietyTags.closest('tr'), $(this).attr("varietyid"),$(this).attr("origin"));
 });
 
