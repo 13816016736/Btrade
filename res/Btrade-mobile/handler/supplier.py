@@ -4,6 +4,11 @@ from utils import *
 import config,re
 import os,time
 from urllib import urlencode
+import tornado.web
+import random
+from wxpay import *
+import requests
+import logging
 
 class SupplierDetailHandler(BaseHandler):
     def get(self):
@@ -101,4 +106,32 @@ class SunshineHandler(BaseHandler):
         else:
             hot=[]
         self.render("sunshine.html",memberinfo=memberinfo,hot=hot,next=next)
+        pass
+
+class PaymentHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        pass
+    def post(self):
+        userid=self.session.get("userid")
+        rand = ''.join(random.sample(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], 4))
+        payid=time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))+rand
+        #插入一条交易记录
+        self.db.execute(
+                "insert into payment (userid,paytype,paymode,money,payid,createtime) value(%s,%s,%s,%s,%s,%s)", userid,
+                2, 2,config.sdeposit,payid,int(time.time()) )
+        body=u"速采科技-保证金"
+        ip="127.0.0.1"
+        uo=UnifiedOrder_pub(body,payid,str(config.sdeposit*100),ip)
+        url="https://api.mch.weixin.qq.com/pay/unifiedorder"
+        logging.info(uo.getParameters())
+        #headers = {'Content-Type': 'application/xml',"Accept":"text/html,application/xhtml+xml,application/xml;"}
+        #res = requests.post(url, headers=headers,data=uo.getParameters())
+
+        httpclient=UrllibClient()
+        data=httpclient.postXml(xml, url)
+        logging.info(data)
+        params=None
+        self.api_response({'status': 'success', 'params': params})
+
         pass
