@@ -272,6 +272,12 @@ def regSuccessWx(openid, name, username,sendtype=1):
            "color":"#173177"
         }
     }
+    if sendtype==2:
+        data["remark"]={
+           "value":"点击“详情”，立即发布采购需求，自动对接全国13000余供货商，极速获取报价。",
+           "color":"#173177"
+        }
+        link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx?next_url=yaocaigou&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect'
     thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
 
 
