@@ -35,7 +35,7 @@
 .sp-gallery{padding-top:40px;overflow:hidden;*zoom:1;}
 .sp-gallery li{float:left;width:400px;height:300px;}
 
-.sp-text{padding:120px 0;text-align:center;color:#666;}
+.sp-text{padding:120px 0 80px;text-align:center;color:#666;}
 .sp-text h2{margin:0 0 20px;line-height:26px;font-size:26px;font-weight:700;}
 .sp-text p{margin:0;line-height:30px;font-size:14px;}
 .sp-text .button{margin-top:50px;}
