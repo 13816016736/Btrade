@@ -8,6 +8,10 @@ from webbasehandler import purchase_push_trace
 class LoginHandler(BaseHandler):
     @purchase_push_trace
     def get(self):
+        binwx=self.get_argument("bindwx",None)
+        if binwx:
+            self.session["binwx"] = binwx
+            self.session.save()
         if self.current_user:
             self.redirect('/')
         else:
@@ -47,10 +51,16 @@ class LoginHandler(BaseHandler):
             else:
                 ua = self.request.headers['User-Agent']
                 if ua.lower().find("micromessenger") != -1:#微信中就去绑定
-                    if author.registertype==1:
-                        self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect")
-                    else:
+                    binwx = self.session.get("binwx")
+                    if binwx and int(binwx)==1:
                         self.redirect(
+                            "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
+                        return
+                    else:
+                        if author.registertype==1:
+                            self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect")
+                        else:
+                            self.redirect(
                             "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
 
                 else:

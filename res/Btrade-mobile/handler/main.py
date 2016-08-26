@@ -40,7 +40,12 @@ class YaocaigouHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
-        self.render("yaocaigou.html")
+        showtype=self.get_argument("type",1)
+        if int(showtype) == 1:
+            self.render("yaocaigou.html")
+        else:
+            self.render("purchase_yaocaigou.html")
+
 
 class CenterHandler(BaseHandler):
     @purchase_push_trace
@@ -49,7 +54,11 @@ class CenterHandler(BaseHandler):
         userid = self.session.get("userid")
         showtype=self.get_argument("type",1)
         user = self.db.get("select * from users where id = %s", userid)
-        member=self.db.get("select * from member where userid = %s and type=2 and status=1", userid)
+        member=None
+        if showtype==1:
+            member=self.db.get("select * from member where userid = %s and type=2 and status=1", userid)
+        else:
+            member=self.db.get("select * from member where userid = %s and type=3 and status=1", userid)
         news = self.db.query("select * from notification where receiver = %s order by createtime desc", userid)
 
         unread = 0
@@ -105,9 +114,14 @@ class CenterHandler(BaseHandler):
                     if q["state"] == 0:
                         unreadquote += 1
 
-
-        self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces
-                    , quotenum=quotenum, replynum=replynum, purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote,showtype=int(showtype),member=member)
+        if int(showtype)==1:
+            self.render("center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase, faces=faces
+                    , quotenum=quotenum, replynum=replynum, purchaseinfos=purchaseinfos, quotes=quotes, unreadquote=unreadquote,member=member)
+        else:
+            self.render("purchase_center.html", user=user, unread=unread, unreadtype=unreadtype, sell=sell, purchase=purchase,
+                        faces=faces
+                        , quotenum=quotenum, replynum=replynum, purchaseinfos=purchaseinfos, quotes=quotes,
+                        unreadquote=unreadquote, member=member)
 
     @tornado.web.authenticated
     def post(self):

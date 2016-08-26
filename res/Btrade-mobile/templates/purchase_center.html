@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_purchase.html" %}
 {% block container %}
 <header class="yc-header">
     <div class="yc-header-title">我的工作台</div>
@@ -39,52 +39,6 @@
         </a>
         {% end %}
     </div>
-    <div class="yc-user">
-        <div class="hd">
-            <h2><i class="iconfont icon-pagelines"></i>卖货情况</h2>
-        </div>
-        <div class="bd">
-            <div class="total">
-                <div class="sum clearfix">
-                    <div class="col">
-                        <a href="/quotelist">
-                            <span>{{quotenum}}</span>个<em>发出报价</em>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="/quotelist">
-                            <span>{{quotenum}}</span>个<em>收到答复</em>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="list">
-                <ul>
-                    {% for i,s in enumerate(sell) %}
-                    {% if i > 5 %}
-                    {% break %}
-                    {% end %}
-                    <li>
-                        <a class="title" href="/quotedetail/quoteid/{{s.content}}/nid/{{s.id}}">
-                            <i class="iconfont {% if faces.has_key(s.content) and faces[s.content] == 1 %}icon-face{% elif faces.has_key(s.content) and faces[s.content] == 2 %}icon-frown{% else %}icon-envelope{% end %} icon"></i>
-                            <span>{{s.title}}</span>
-                            <time class="time">{{s.datetime}}</time>
-                            <i class="iconfont icon-more"></i>
-                        </a>
-                    </li>
-                    {% end %}
-                    <li class="more">
-                        <a href="/news/type/1">
-                            <span>更多卖货消息</span>
-                            <i class="iconfont icon-more"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-
     <div class="yc-user">
         <div class="hd">
             <h2><i class="iconfont icon-car"></i>采购情况</h2>

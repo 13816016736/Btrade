@@ -1,0 +1,19 @@
+<footer class="yc-footer">
+    <nav class="yc-nav">
+        <ul>
+            <li>
+                <a {% if request.uri =="/yaocaigou" %}class="current"{% end %} href="/yaocaigou?type=2">
+                    <i class="iconfont icon-car"></i>
+                    <span>发采购</span>
+                </a>
+            </li>
+            <li>
+                <a {% if request.uri =="/center" %}class="current {% if handler.session.has_key('notification') and handler.session.get('notification') != 0  %}new-msg{% end %}"
+                  {% elif handler.session.has_key('notification') and handler.session.get('notification') != 0 %} class="new-msg"{% end %} href="/center?type=2">
+                    <i class="iconfont icon-center"></i>
+                    <span>我的工作台</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</footer>
