@@ -153,7 +153,7 @@ def regInfo(phone, name, password):
     thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
 def regSuccess(phone, name, username,registertype=1):
     if registertype==1:
-        templateId = 862
+        templateId = 863
     else:
         templateId = 2293
     phone = phone
@@ -161,7 +161,7 @@ def regSuccess(phone, name, username,registertype=1):
     thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
 
 def regSuccessPc(phone, name, username):
-    templateId = 863
+    templateId = 862
     phone = phone
     vars = '{"%name%":"'+name+'","%username%":"'+username+'"}'
     thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
