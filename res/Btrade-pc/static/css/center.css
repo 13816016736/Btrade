@@ -1,5 +1,6 @@
 @charset "utf-8";
 header{background-color:#36404c;border-bottom:none;}
+header .logo a:hover{background:rgba(54, 64, 76, .3);}
 header .nav a{color:#fff;}
 header .login{margin:0;padding:30px 20px;background:#2c2f33;}
 header .login .hd a{color:#fff;}

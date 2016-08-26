@@ -155,7 +155,7 @@ header .wrap{position:relative;height:90px;}
 header .logo{float:left;width:270px;height:100%;background:url(../images/logo.png) no-repeat 50%;overflow:hidden;}
 header .logo a{display:block;height:90px;text-indent:-100%;outline:none;}
 header .logo a:hover{background:rgba(255,255,255,.3);}
-header .nav{float:left;padding:30px;line-height:30px;color:#515758;text-align:center;}
+header .nav{margin:0 230px 0 270px;padding-top:30px;line-height:30px;color:#515758;text-align:center;}
 header .nav li{display:inline-block;height:30px;*display:inline;*zoom:1;}
 header .nav li.bl{margin-left:10px;padding-left:22px;border-left:1px solid #b4b4b4;}
 header .nav a{display:block;margin-top:-10px;padding:0 20px;line-height:50px;font-size:16px;font-weight:700;color:#515758;text-decoration:none;}
