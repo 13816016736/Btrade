@@ -302,7 +302,7 @@ class CheckFansHandler(BaseHandler):
                     purchase_user = self.db.execute_rowcount(
                         "select distinct p.userid from purchase p left join  purchase_info pi on p.id=pi.purchaseid ")
 
-                    accept_quote = self.db.query("select id from quote where state=1")
+                    accept_quote = self.db.execute_rowcount("select id from quote where state=1")
 
                     self.render("register_A.html", type=2, url="/", username=self.session.get("user"),
                                 purchaseinfonum=purchaseinfonum,total=total,purchase_user=purchase_user,accept_quote=accept_quote,registertype=registertype)
