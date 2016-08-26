@@ -265,7 +265,7 @@ class CheckFansHandler(BaseHandler):
             openid=ret["openid2"]
         purchaseinfonum = self.db.execute_rowcount("select id from purchase_info where status!=0")
         if openid!="":
-            openid = ret["openid"].strip("\r\n")
+            openid = openid .strip("\r\n")
             # 请求获取access_token和openid
             wechart = WechartJSAPI(self.db)
             access_token = wechart.getAccessToken(int(registertype))
