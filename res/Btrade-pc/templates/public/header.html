@@ -1,36 +1,30 @@
 <header>
-    <div class="container">
+    <div class="wrap">
         <div class="logo">
-            <a href="/">
-                {% if any(str_ in request.uri for str_ in ("/mypurchase", "/account")) %}
-                <img src="{{ static_url('images/logo_a.png')}}" />
-                {% else %}
-                <img class="img-responsive" src="{{ static_url('images/logo.png')}}" />
-                {% end %}
-            </a>
+            <a href="/">药材购</a>
         </div>
 
         <nav class="nav">
             <ul class="yc-ul">
-                 <li><a {% if request.uri =="/" %}class="current"{% end %} href="/">首页</a></li>
+                <li><a {% if request.uri =="/" %}class="current"{% end %} href="/">首页</a></li>
                 <li><a {% if request.uri =="/purchase" %}class="current"{% end %} href="/purchase">发采购</a></li>
                 <li><a {% if request.uri =="/account" %}class="current"{% end %} href="/mypurchase">我的工作台</a></li>
                 <!--
-                <li><a {% if request.uri.find("/sunshine")==0 %}class="current"{% end %} href="/sunshine">实力供货商·阳光速配</a></li>
+                <li><a {% if request.uri.find("/sunshine")==0 %}class="current"{% end %} href="/sunshine"><em>实力供货商·阳光速配</em></a></li>
                 -->
-
                 <li class="bl"><a {% if request.uri =="/quote" %}class="current"{% end %} href="/quote">我要供货·去报价</a></li>
             </ul>
         </nav>
 
-
         {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
         <div class="login">
-            <div class="menu">
-                <a href="/mypurchase">我的工作台，{{ handler.session.get('user') }}</a>
-                <em>0</em>
-                <i></i>
-                <div class="submenu">
+            <div class="dropdown">
+                <div class="hd">
+                    <a href="/mypurchase">我的工作台，{{ handler.session.get('user') }}</a>
+                    <em>0</em>
+                    <i></i>
+                </div>
+                <div class="bd">
                     <a href="/mypurchase">我的采购</a>
                     <a href="/account">账户设置</a>
                     <a href="/logout">退出</a>

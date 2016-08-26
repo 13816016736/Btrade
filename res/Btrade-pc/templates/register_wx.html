@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <title>微信注册-药材购</title>
+    <!-- 浏览器高速模式 -->
+    <meta name="renderer" content="webkit" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/login.css" />
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="wraper">
+    <div class="reg-box">
+
+        <div class="hd cf">
+            <h1><i class="iconfont icon-arrow"></i>免费注册成功采购商</h1>
+            <div class="extra"><a href="#">我是供货商，我要卖货</a></div>
+        </div>
+
+        <div class="bd cf">
+            <div class="col tc br">
+                <img src="images/qrcode_assistant.jpg" width="200" height="200" alt="药材购-采购助手">
+                <em>微信扫一扫</em> 
+                <span>注册成为药材购采购商</span>
+            </div>
+            <div class="col bl">
+                <h4>成为药材购采购商，您可以：</h4>
+                <ol>
+                    <li>随时随地发布采购</li>
+                    <li>即刻对接 <b>13122</b> 位供货</li>
+                    <li>最快 <b>1</b> 分钟收到报价</li>
+                    <li>专业找货团队为您深度找货</li>
+                    <li>药材购协助您安心交易</li>
+                </ol>
+
+                <h4>每天都有采购商成功买货</h4>
+                <ol class="m0">
+                    <li>已有 <b>166</b> 批次采购单找到满意货源</li>
+                    <li>每个采购单平均收到 <b>5</b> 个报价</li>
+                    <li>共计成交大货 <b>531</b> 吨, <b>2372</b> 万元</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+$(function() {
+    var $mobile = $('#jUsername'),
+        $code = $('#jCode'),
+        $send = $('#jSend'),
+        timeout = 0, 
+        timer = 0,
+        delay = 60,
+        txt = '秒后重试',
+        $error = $('#jMsg');
+
+    var _clock = function() {
+        timer && clearInterval(timer);
+        timer = setInterval(function() {
+            timeout --;
+            $send.text(timeout + txt).prop('disabled', true);
+            if (timeout === 0) {
+                clearInterval(timer);
+                $send.text('获取验证码').prop('disabled', false);
+            }
+        }, 1e3);
+    }
+
+    var _showMsg = function(txt) {
+        if (txt) {
+            $error.html(txt);
+        } else {
+            $error.html('');
+        }
+    }
+
+    function checkMobile() {
+        var val = $mobile.val();
+        if (!val) {
+            _showMsg('请输入手机号码');
+        } else if (!/^1[345678]\d{9}$|^01[345678]\d{9}$/.test(val)) {
+            _showMsg('手机号码格式错误');
+        } else {
+            _showMsg(false);
+            return true;
+        }
+        $mobile.focus();
+        return false;
+    }
+    function checkCode() {
+        var val = $code.val();
+        if (!val) {
+            _showMsg('请输入手机验证码');
+        } else {
+            _showMsg(false);
+            return true;
+        }
+        $code.focus();
+        return false;
+    }
+    function checkIpt() {
+        if (checkMobile() && checkCode()) {
+            return true;
+        } 
+        return false;
+    }
+    $('#jSubmit').on('click', function() {
+        return checkIpt();
+    });
+
+    // 验证码
+    $send.prop('disabled', false).on('click', function() {
+        if(checkMobile() && timeout === 0) {
+            timeout = delay;
+            $send.text(timeout + txt).prop('disabled', true).prev().focus();
+            _clock();
+        }
+    });
+})
+
+
+
+</script>
+<script>
+    var ran = (new Date).getTime();
+    $.get('header.html?ran=' + ran, function(data) {
+        $('body').prepend(data);
+    })
+    $.get('footer.html?ran=' + ran, function(data) {
+        $('body').append(data);
+    })
+</script>
+</body>
+
+</html>
