@@ -35,6 +35,7 @@ handlers = [
     (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/yaocaigou", YaocaigouHandler),
     (r"/center", CenterHandler),
+    (r"/payment", PaymentHandler),
     (r"/user/attention", UserAttentionHandler),
     (r"/user/updatepassword", UserUpdatePasswordHandler),
     (r"/user/updatenickname", UserUpdateNicknameHandler),
@@ -71,7 +72,7 @@ handlers = [
     (r"/replydetail", ReplayDetailHandler),
     (r"/variety", VarietySearchHandler),
     (r"/supplier/detail", SupplierDetailHandler),
-    (r"/sunshine", SunshineHandler),
+    (r"/sunshine/", SunshineHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
     (r".*", BaseHandler),
 ];

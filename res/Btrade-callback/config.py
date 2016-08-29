@@ -21,6 +21,7 @@ settings = {
 handlers = [
     (r"/pushpurchase/smshook", SmsHookHandler),
     (r"/alipay/notify", AlipayNotifyHandler),
+    (r"/wxpay/notify", WxpayNotifyHandler),
 ];
 
 

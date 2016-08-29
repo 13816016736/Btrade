@@ -20,11 +20,13 @@ class QuoteHandler(BaseHandler):
         #"p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,p.term,p.status,p.areaid,p.invoice,pi.id pid,"
         #"pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,pi.views from purchase p,purchase_info pi "
         #"where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid", purchaseinfoid)
+
+
         #获取采购单信息
         purchaseinfo = self.db.get(
             "select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
             "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
-            "pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s", purchaseinfoid)
+            "pi.views,pi.shine from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s", purchaseinfoid)
 
         # 获取采购单area信息
         areaid = purchaseinfo["areaid"]
@@ -35,7 +37,15 @@ class QuoteHandler(BaseHandler):
             purchaseinfo["position"] =""
 
 
-            #获得采购品种图片
+        # 判断用户状态以及采购单是否为阳光速配
+        if purchaseinfo["shine"]==1:
+            member = self.db.get("select * from member where userid = %s and type=2 and status=1", self.session.get("userid"))
+            if member==None:#未开通供货商阳光速配
+                self.redirect('/sunshine/?pid=%s'%purchaseinfoid)
+                return
+
+
+        #获得采购品种图片
         attachments = self.db.query("select * from purchase_attachment where purchase_infoid = %s", purchaseinfoid)
         for attachment in attachments:
             base, ext = os.path.splitext(os.path.basename(attachment["attachment"]))

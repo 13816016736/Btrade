@@ -46,13 +46,15 @@ class LoginHandler(BaseHandler):
             self.session["user"] = author.username
             self.session["notification"] = len(notification)
             self.session.save()
-            if author.openid!="":
+            if author.openid!="" and author.openid2!="":
                 self.redirect(self.get_argument("next_url", "/"))
             else:
                 ua = self.request.headers['User-Agent']
                 if ua.lower().find("micromessenger") != -1:#微信中就去绑定
                     binwx = self.session.get("binwx")
-                    if binwx and int(binwx)==1:
+                    self.session["binwx"]=""
+                    self.session.save()
+                    if binwx and binwx=='1':
                         self.redirect(
                             "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
                         return
@@ -83,6 +85,7 @@ class BindWxHandler(BaseHandler):
     def get(self):
         code = self.get_argument("code", None)
         state= self.get_argument("state", None)
+        nexturl="/"
         if code:
             # 请求获取access_token和openid
             appid = config.appid
@@ -102,6 +105,7 @@ class BindWxHandler(BaseHandler):
                 openid = message.get("openid")
                 if openid :
                     if not self.current_user:
+                        userinfo=[]
                         if logintype==1:
                             userinfo=self.db.query("select id,username from users where openid =%s",openid)
                         else:
@@ -120,7 +124,9 @@ class BindWxHandler(BaseHandler):
                          else:
                              self.db.execute("update users set openid2=%s where id=%s", openid,
                                              self.session.get("userid"))
+            if logintype==2:
+                nexturl="/center?type=2"
 
-        self.redirect(self.get_argument("next_url", "/"))
+        self.redirect(self.get_argument("next_url", nexturl))
     def post(self):
         pass

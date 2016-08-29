@@ -291,7 +291,7 @@ class AlipayReturnHandler(BaseHandler):
             trade_status = self.get_argument('trade_status')
 
             if trade_status == 'TRADE_SUCCESS':#支付成功
-                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
+                self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s",1,trade_no,int(time.time()),tn)
                 payment=self.db.get("select * from payment where payid=%s",tn)
                 if payment:
                     userid=payment["userid"]
@@ -309,7 +309,7 @@ class AlipayReturnHandler(BaseHandler):
                                 userid, 0, int(time.time()),membertype,"")
 
             else:
-                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",0, trade_no, tn)
+                self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s",2, trade_no,int(time.time()),tn)
         self.redirect("/sunshine")
         pass
 
@@ -349,7 +349,7 @@ class SunshineHandler(BaseHandler):
                          " when id in (SELECT userid from member where type=1) then 3 " \
                          "else 0 end ordernum "  # 优先显示药销通会员和认证的，其次是有交易记录的
         suppliers = self.db.query(
-            "select id as userid,name,varietyids as variety " + ordercondition + "from users where id in (SELECT userid from member where type in(1,2)) %s" % conditionu + " order by ordernum desc limit %s,%s",
+            "select id as userid,name,varietyids as variety " + ordercondition + "from users where id in (SELECT userid from member where type=1) %s" % conditionu + " order by ordernum desc limit %s,%s",
             page * config.conf['POST_NUM'], config.conf['POST_NUM'])
 
         for item in suppliers:
