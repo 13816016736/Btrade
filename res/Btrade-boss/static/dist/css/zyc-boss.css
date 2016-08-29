@@ -650,16 +650,6 @@ table.text-center,table.text-center td,table.text-center th{text-align:center}
 .lockscreen-credentials .form-control{border:0!important}
 .lockscreen-credentials .btn{background-color:#fff;border:0;padding:0 10px}
 .lockscreen-footer{margin-top:10px}
-.login-logo,.register-logo{font-size:35px;text-align:center;margin-bottom:25px;font-weight:300}
-.login-logo a,.register-logo a{color:#444}
-.login-page,.register-page{background:#d2d6de}
-.login-box,.register-box{width:360px;margin:7% auto}
-@media (max-width:768px){
-    .login-box,.register-box{width:90%;margin-top:20px}
-}
-.login-box-body,.register-box-body{background:#fff;padding:20px;color:#444;border-top:0;color:#666}
-.login-box-body .form-control-feedback,.register-box-body .form-control-feedback{color:#777}
-.login-box-msg,.register-box-msg{margin:0;text-align:center;padding:0 20px 20px 20px}
 .social-auth-links{margin:10px 0}
 .error-page{width:600px;margin:20px auto 0 auto}
 @media (max-width:991px){
