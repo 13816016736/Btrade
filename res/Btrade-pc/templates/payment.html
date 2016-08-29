@@ -69,6 +69,11 @@
     </div>
     <div class="d-close"></div>
 </div>
+
+<form action="/payment" id="payform" target="_blank">
+    <input type="hidden" name="alipay" value="alipay">
+</form>
+
 {% block javascript %}
 <script src="{{ static_url('js/jquery.min.js')}}"></script>
 <script src="{{ static_url('js/bootstrap.min.js')}}"></script>
@@ -78,25 +83,26 @@
     $(function() {
         var $dialog = $('#dialog');
         $('.alipay').on('click', function() {
-          $.ajax({
-                url: "/payment",
-                data: { name: $(this).attr("name")},
-                dataType: 'json',
-                type: 'POST',
-                beforeSend: function(jqXHR, settings) {
-                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-                },
-                success: function(data) {
-                    if(data.status=="success") {
-                      window.open(data.url,"_blank")
-                    }else{
-                       console.log(data);
-                    }
-                },
-                error: function(data) {
-                   console.log("出现异常，请刷新页面再试");
-                }
-             });
+            $('#payform').submit();
+            // $.ajax({
+            //     url: "/payment",
+            //     data: { name: $(this).attr("name")},
+            //     dataType: 'json',
+            //     type: 'POST',
+            //     beforeSend: function(jqXHR, settings) {
+            //         jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            //     },
+            //     success: function(data) {
+            //         if(data.status=="success") {
+            //           window.open(data.url,"_blank")
+            //         }else{
+            //            console.log(data);
+            //         }
+            //     },
+            //     error: function(data) {
+            //        console.log("出现异常，请刷新页面再试");
+            //     }
+            // });
             $dialog.fadeIn(200).prev().fadeIn(200);
         });
 
