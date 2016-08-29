@@ -271,10 +271,9 @@ class PaymentHandler(BaseHandler):
                 bank = ""
                 tf = '%.2f' % config.deposit
                 url = create_direct_pay_by_user(tn, subject, body, bank, tf)
-
-                self.api_response({'status': 'success', 'url': url })
+                self.redirect(url)
         else:
-            self.api_response({'status': 'fail', 'message': '不支持的支付方式'})
+            self.error("不支持该支付方式", "/payment")
         pass
 
 class AlipayReturnHandler(BaseHandler):

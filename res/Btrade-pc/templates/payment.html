@@ -70,8 +70,9 @@
     <div class="d-close"></div>
 </div>
 
-<form action="/payment" id="payform" target="_blank">
-    <input type="hidden" name="alipay" value="alipay">
+<form action="/payment" id="payform" target="_blank" method="post">
+    {% raw xsrf_form_html() %}
+    <input type="hidden" name="name" value="alipay">
 </form>
 
 {% block javascript %}
