@@ -3,6 +3,7 @@
 {% block container %}
 {% import time %}
 {% import config %}
+{% raw xsrf_form_html() %}
 <body class="yc-body">
     <header class="yc-header">
         <div class="yc-header-back">
@@ -97,7 +98,7 @@
                     <p>您当前还未开通阳光速配供货商资格</p>
                 </div>
                 <div class="join">
-                    <a href="#">缴纳保证金，立即开通</a>
+                    <a href="#" id="pay">缴纳保证金，立即开通</a>
                 </div>
                 {% end %}
 
@@ -114,4 +115,22 @@
     <script src="{{ static_url('js/jquery.min.js')}}"></script>
     <script src="{{ static_url('js/bootstrap.min.js')}}"></script>
 </body>
+
+<script>
+    $(function() {
+      $("#pay").on('click', function() {
+                $.ajax({
+                type: 'post',
+                url: '/payment',
+                dataType: 'json',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    //alert(data);
+                }
+            })
+      });
+    });
+</script>
 {% end %}
