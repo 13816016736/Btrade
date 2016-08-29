@@ -13,17 +13,39 @@ product = "embed"
 
 class RegisterHandler(BaseHandler):
     def get(self):
-        gt = geetest.geetest(captcha_id, private_key)
-        url = ""
-        httpsurl = ""
-        try:
-            challenge = gt.geetest_register()
-        except:
-            challenge = ""
-        if len(challenge) == 32:
-            url = "http://%s%s&challenge=%s&product=%s" % (BASE_URL, captcha_id, challenge, product)
-            httpsurl = "https://%s%s&challenge=%s&product=%s" % (BASE_URL, captcha_id, challenge, product)
-	    self.render("register.html", url=url)
+        accept_purchaseinfo = self.db.query("select distinct purchaseinfoid from quote where state=1")
+        accept_purchaseinfoids = []
+        if accept_purchaseinfo:
+            accept_purchaseinfoids = [str(item["purchaseinfoid"]) for item in accept_purchaseinfo]
+        sum_quantity = 0
+        sum_price = 0
+        for item in accept_purchaseinfoids:
+            purchaseinfo = self.db.get("select quantity,unit from purchase_info where id=%s", item)
+            if purchaseinfo:
+                quoteinfo = self.db.get(
+                    "select price from quote where purchaseinfoid=%s and state=1 order by price desc limit 0,1", item)
+                if purchaseinfo["unit"] == u"公斤":
+                    sum_quantity += int(purchaseinfo["quantity"]) / 1000
+                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])
+
+                elif purchaseinfo["unit"] == u"吨":
+                    sum_quantity += int(purchaseinfo["quantity"])
+                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"]) * 1000
+
+        user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
+        supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
+        total = user_count + supplier_count
+
+        totalquote = self.db.execute_rowcount("select id from quote")
+        totalpurchaseinfo = self.db.execute_rowcount("select distinct purchaseinfoid from quote")
+        averge_quote_num = 0
+        if totalpurchaseinfo != 0:
+            averge_quote_num = totalquote / totalpurchaseinfo
+
+        #data = {"total": total, "accept_purchaseinfo_num": len(accept_purchaseinfo),"averge_quote_num": averge_quote_num, "sum_quantity": sum_quantity,"sum_price": int(sum_price / 10000)}
+	    self.render("register_wx.html",total=total,accept_purchaseinfo_num=len(accept_purchaseinfo),
+                    averge_quote_num=averge_quote_num,sum_quantity=sum_quantity,sum_price=int(sum_price / 10000)
+                    )
 
     def post(self):
         pass
