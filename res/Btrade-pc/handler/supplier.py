@@ -349,7 +349,7 @@ class SunshineHandler(BaseHandler):
                          " when id in (SELECT userid from member where type=1) then 3 " \
                          "else 0 end ordernum "  # 优先显示药销通会员和认证的，其次是有交易记录的
         suppliers = self.db.query(
-            "select id as userid,name,varietyids as variety " + ordercondition + "from users where id in (SELECT userid from member where type in(1,2)) %s" % conditionu + " order by ordernum desc limit %s,%s",
+            "select id as userid,name,varietyids as variety " + ordercondition + "from users where id in (SELECT userid from member where type=1) %s" % conditionu + " order by ordernum desc limit %s,%s",
             page * config.conf['POST_NUM'], config.conf['POST_NUM'])
 
         for item in suppliers:

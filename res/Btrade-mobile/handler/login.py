@@ -46,13 +46,15 @@ class LoginHandler(BaseHandler):
             self.session["user"] = author.username
             self.session["notification"] = len(notification)
             self.session.save()
-            if author.openid!="":
+            if author.openid!="" and author.openid2!="":
                 self.redirect(self.get_argument("next_url", "/"))
             else:
                 ua = self.request.headers['User-Agent']
                 if ua.lower().find("micromessenger") != -1:#微信中就去绑定
                     binwx = self.session.get("binwx")
-                    if binwx and int(binwx)==1:
+                    self.session["binwx"]=""
+                    self.session.save()
+                    if binwx and binwx=='1':
                         self.redirect(
                             "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
                         return
@@ -63,8 +65,7 @@ class LoginHandler(BaseHandler):
                             self.redirect(
                             "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
 
-                else:
-                    self.redirect(self.get_argument("next_url", "/"))
+
         else:
             self.render("login.html", error="用户名或密码错误", next_url=self.get_argument("next_url", "/"))
 
@@ -102,6 +103,7 @@ class BindWxHandler(BaseHandler):
                 openid = message.get("openid")
                 if openid :
                     if not self.current_user:
+                        userinfo=[]
                         if logintype==1:
                             userinfo=self.db.query("select id,username from users where openid =%s",openid)
                         else:
