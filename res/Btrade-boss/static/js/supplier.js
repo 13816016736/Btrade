@@ -11,11 +11,15 @@ $(function() {
 
     var _showMsg = function($el, txt) {
         if (txt) {
-            $el.next('.error').html(txt).next('.explain').hide();
+            $el.next('.error').show().html(txt).next('.explain').hide();
         } else {
-            $el.next('.error').html('').next('.explain').show();
+            $el.next('.error').hide().html('').next('.explain').show();
         }
     }
+
+    $('.ipt').on('focus', function() {
+        _showMsg($(this), false);
+    })
 
     var _checkMobile = function() {
         var val = $jMobile.val();
