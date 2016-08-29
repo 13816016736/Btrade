@@ -65,7 +65,8 @@ class LoginHandler(BaseHandler):
                             self.redirect(
                             "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
 
-
+                else:
+                    self.redirect(self.get_argument("next_url", "/"))
         else:
             self.render("login.html", error="用户名或密码错误", next_url=self.get_argument("next_url", "/"))
 
@@ -84,6 +85,7 @@ class BindWxHandler(BaseHandler):
     def get(self):
         code = self.get_argument("code", None)
         state= self.get_argument("state", None)
+        nexturl="/"
         if code:
             # 请求获取access_token和openid
             appid = config.appid
@@ -122,7 +124,9 @@ class BindWxHandler(BaseHandler):
                          else:
                              self.db.execute("update users set openid2=%s where id=%s", openid,
                                              self.session.get("userid"))
+            if logintype==2:
+                nexturl="/center?type=2"
 
-        self.redirect(self.get_argument("next_url", "/"))
+        self.redirect(self.get_argument("next_url", nexturl))
     def post(self):
         pass
