@@ -13,7 +13,12 @@ class LoginHandler(BaseHandler):
             self.session["binwx"] = binwx
             self.session.save()
         if self.current_user:
-            self.redirect('/')
+            if binwx=="1":
+                self.redirect(
+                    "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
+                return
+            else:
+                self.redirect('/')
         else:
             self.render("login.html", next_url=self.get_argument("next", "/"))
 
