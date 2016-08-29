@@ -593,14 +593,3 @@ class NativeLink_pub(Common_util_pub):
         self.createLink()
         return self.url
 
-
-def test():
-    c = HttpClient()
-    assert c.get("http://www.baidu.com")[:15] == "<!DOCTYPE html>"
-    c2 = HttpClient()
-    assert id(c) == id(c2)
-
-
-
-if __name__ == "__main__":
-    test()
