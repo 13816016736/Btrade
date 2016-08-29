@@ -130,12 +130,12 @@
 					}
 				}
 
-				imageWidth = Math.max(300, imageWidth);
-				imageHeight = Math.max(300, imageHeight);
+				imageWidth = Math.max(290, imageWidth);
+				imageHeight = Math.max(290, imageHeight);
 
 				self.$lightbox.animate({
-					width: imageWidth + 8,
-					height: imageHeight + 8,
+					width: imageWidth,
+					height: imageHeight,
 					marginLeft: -(imageWidth + 8)/2,
 					marginTop: -(imageHeight + 8)/2
 				}, self.options.fadeDuration, 'swing', function() {
@@ -151,11 +151,11 @@
 			img.onerror = function() {
 				this.onerror = null;
 				this.onload = null;
-				var imageWidth = 360;
-				var imageHeight = 360;
+				var imageWidth = 290;
+				var imageHeight = 290;
 				self.$lightbox.animate({
-					width: imageWidth + 8,
-					height: imageHeight + 8,
+					width: imageWidth,
+					height: imageHeight,
 					marginLeft: -(imageWidth + 8)/2,
 					marginTop: -(imageHeight + 8)/2
 				}, self.options.fadeDuration, 'swing', function() {
