@@ -291,7 +291,7 @@ class AlipayReturnHandler(BaseHandler):
             trade_status = self.get_argument('trade_status')
 
             if trade_status == 'TRADE_SUCCESS':#支付成功
-                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
+                self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s",1,trade_no,int(time.time()),tn)
                 payment=self.db.get("select * from payment where payid=%s",tn)
                 if payment:
                     userid=payment["userid"]
@@ -309,7 +309,7 @@ class AlipayReturnHandler(BaseHandler):
                                 userid, 0, int(time.time()),membertype,"")
 
             else:
-                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",2, trade_no, tn)
+                self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s",2, trade_no,int(time.time()),tn)
         self.redirect("/sunshine")
         pass
 

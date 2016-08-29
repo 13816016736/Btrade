@@ -52,7 +52,7 @@ class AlipayNotifyHandler(BaseHandler):
             self.log.info("tn=%s,trade_no=%s,trade_status=%s",tn,trade_no,trade_status)
 
             if trade_status == 'TRADE_SUCCESS':#支付成功
-                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,tn)
+                self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s",1,trade_no,int(time.time()),tn)
                 payment=self.db.get("select * from payment where payid=%s",tn)
                 if payment:
                     userid=payment["userid"]
@@ -71,7 +71,7 @@ class AlipayNotifyHandler(BaseHandler):
 
 
             else:
-                self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",2, trade_no, tn)
+                self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s",2, trade_no,int(time.time()), tn)
             self.write("success")
         else:
             self.write("fail")
@@ -108,7 +108,7 @@ class WxpayNotifyHandler(BaseHandler):
                 out_trade_no = result["out_trade_no"]  # 商户系统的订单号，与请求一致。
                 trade_no = result["transaction_id"]
                 if result_code==SUCCESS:
-                    self.db.execute("update payment set status=%s,tradeno=%s where payid=%s",1,trade_no,out_trade_no)
+                    self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s",1,trade_no,int(time.time()),out_trade_no)
                     payment=self.db.get("select * from payment where payid=%s",out_trade_no)
                     if payment:
                         userid=payment["userid"]
@@ -125,6 +125,6 @@ class WxpayNotifyHandler(BaseHandler):
                                     "insert into member (userid,term,upgradetime,type,expiredtime) value(%s,%s,%s,%s,%s)",
                                     userid, 0, int(time.time()),membertype,"")
                 else:
-                    self.db.execute("update payment set status=%s,tradeno=%s where payid=%s", 2, trade_no, out_trade_no)
+                    self.db.execute("update payment set status=%s,tradeno=%s,callbacktime=%s where payid=%s", 2, trade_no,int(time.time()), out_trade_no)
 
         self.write(notify.returnXml())
