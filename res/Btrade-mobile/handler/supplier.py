@@ -7,7 +7,7 @@ from urllib import urlencode
 import tornado.web
 import random
 from wxpay import *
-import requests
+#import requests
 import logging
 
 class SupplierDetailHandler(BaseHandler):
@@ -90,6 +90,7 @@ class SupplierDetailHandler(BaseHandler):
         pass
 
 class SunshineHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         pid=self.get_argument("pid", None)
         next="/"
@@ -114,6 +115,7 @@ class PaymentHandler(BaseHandler):
         pass
     def post(self):
         userid=self.session.get("userid")
+        user=self.db.get("select id,openid from users where id=%s",userid)
         rand = ''.join(random.sample(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], 4))
         payid=time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))+rand
         #插入一条交易记录
@@ -121,17 +123,27 @@ class PaymentHandler(BaseHandler):
                 "insert into payment (userid,paytype,paymode,money,payid,createtime) value(%s,%s,%s,%s,%s,%s)", userid,
                 2, 2,config.sdeposit,payid,int(time.time()) )
         body=u"速采科技-保证金"
-        ip="127.0.0.1"
-        uo=UnifiedOrder_pub(body,payid,str(config.sdeposit*100),ip)
-        url="https://api.mch.weixin.qq.com/pay/unifiedorder"
-        logging.info(uo.getParameters())
-        #headers = {'Content-Type': 'application/xml',"Accept":"text/html,application/xhtml+xml,application/xml;"}
-        #res = requests.post(url, headers=headers,data=uo.getParameters())
+        money = int(float(config.sdeposit) * 100)
 
-        httpclient=UrllibClient()
-        data=httpclient.postXml(xml, url)
-        logging.info(data)
-        params=None
-        self.api_response({'status': 'success', 'params': params})
+        jsApi = JsApi_pub()
+        unifiedOrder = UnifiedOrder_pub()
+        unifiedOrder.setParameter("openid", user.openid)  # 商品描述
+        unifiedOrder.setParameter("body", body)  # 商品描述
+        timeStamp = time.time()
+        out_trade_no = payid
+        unifiedOrder.setParameter("out_trade_no", out_trade_no)  # 商户订单号
+        unifiedOrder.setParameter("total_fee", str(money))  # 总金额
+        unifiedOrder.setParameter("notify_url", WxPayConf_pub.NOTIFY_URL)  # 通知地址
+        unifiedOrder.setParameter("trade_type", "JSAPI")  # 交易类型
+        #unifiedOrder.setParameter("attach", "支付测试")  # 附件数据，可分辨不同商家(string(127))
+        jsApiParameters=""
+        try:
+            prepay_id = unifiedOrder.getPrepayId()
+            jsApi.setPrepayId(prepay_id)
+            jsApiParameters = jsApi.getParameters()
+        except Exception as e:
+            print(e)
+
+        self.api_response({'status': 'success', 'params': jsApiParameters})
 
         pass

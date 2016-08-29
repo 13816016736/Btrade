@@ -129,4 +129,4 @@ paymode={
 
 #保证金额
 deposit=5000
-sdeposit=0.01
+sdeposit=5000
