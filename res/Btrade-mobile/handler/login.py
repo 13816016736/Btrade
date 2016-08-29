@@ -14,11 +14,13 @@ class LoginHandler(BaseHandler):
             self.session.save()
         if self.current_user:
             if binwx=="1":
-                self.redirect(
-                    "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
-                return
-            else:
-                self.redirect('/')
+                author = self.db.get("SELECT * FROM users WHERE id = %s", self.session.get("userid"))
+                ua = self.request.headers['User-Agent']
+                if ua.lower().find("micromessenger") != -1 and author.openid2=="":  # 微信中并且没有openid2
+                    self.redirect(
+                        "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
+                    return
+            self.redirect('/')
         else:
             self.render("login.html", next_url=self.get_argument("next", "/"))
 
