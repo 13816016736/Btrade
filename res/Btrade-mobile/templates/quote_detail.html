@@ -10,8 +10,6 @@
 </header><!-- /yc-header -->
 
 <section class="yc-content">
-
-
     <div class="yc-sub-title">
         <div class="cf">
             <div class="fl">采购编码：<span>{{ purchase.id }}</span></div>
@@ -36,9 +34,14 @@
         </div>
     </div>
 
-    <div class="yc-purchase-detail yc-purchase-bg">
-        <h3>我的报价<time class="time" data-time="{{quote.datetime}}">{{quote.datetime}}</time></h3>
-        <dl class="yc-demand">
+    <div class="yc-floor yc-floor-bg">
+        <div class="hd">
+            <h3>我的报价</h3>
+            <div class="extra">
+                <time data-time="{{quote.datetime}}">{{quote.datetime}}</time>
+            </div>
+        </div>
+        <dl class="demand">
             <!--<dt>含税含运费价：</dt>
             <dd>78 元 / 公斤</dd>-->
             <dt>裸价：</dt>
@@ -64,17 +67,19 @@
         {% end %}
     </div>
 
-    <div class="yc-purchase-detail yc-purchase-bg">
-        <h3>采购结果</h3>
+    <div class="yc-floor yc-floor-bg">
+        <div class="hd">
+            <h3>采购结果</h3>
+        </div>
         {% if quote.state == 1 %}
-        <dl class="yc-demand">
+        <dl class="demand">
             <dt>联系人：</dt>
             <dd>{{user.name}}</dd>
             <dt>联系电话：</dt>
             <dd>{{user.phone}}</dd>
         <dl>
         {% else %}
-        <dl class="yc-result">
+        <dl class="result">
             <dt>采购商从<b>{{len(quotes)}}</b>个报价中甄选了以下{{len(acceptuser)}}家洽谈</dt>
             {% for u in acceptuser %}
             <dd><i class="iconfont icon-arrow-right"></i>{{u.nickname}}</dd>
@@ -83,12 +88,16 @@
         {% end %}
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>采购品种及要求</h3>
-        <div class="bd">
-            <h4 class="name">{{ purchase.name }}</h4>
-            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购品种及要求</h3>
+        </div>
+        <div class="pro">
+            <div class="hd">
+                <strong>{{ purchase.name }}</strong>
+                <span>{{ purchase.specification }} {{ purchase.origin }}</span>
+                <em>{{ purchase.quantity }}{{purchase.unit}}</em>
+            </div>
             <div class="desc">
                 <p>{{ purchase.quantity }}</p>
                 <p><span>封顶价</span>
@@ -97,22 +106,25 @@
                     {% else %}
                         面议
                     {% end %}</p>
+                {% if purchase.attachments %}
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
                 <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>
+                {% end %}
                 {% end %}
             </div>
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>采购商</h3>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购商</h3>
+        </div>
         <div class="bd">
-            <h4 class="company">
-                <span>{{user.nickname}}</span>
+            <div class="name">
+                {{user.nickname}}
                 <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
-            </h4>
-            <div class="yc-cat fr">
+                <em class="yc-cat">
                 {% if user.type == 1%}
                 饮片厂
                 {% elif user.type == 2%}
@@ -134,6 +146,7 @@
                 {% elif user.type == 10%}
                 销售经理
                 {% end %}
+                </em>
             </div>
             <div class="total">
                 <!--
@@ -142,14 +155,16 @@
                 </span>
                 <span class="txt">成功采购：<b>{{purchases}}单</b></span>
                 -->
-                <span class="fr">报价答复率：<b>{{reply}}%</b></span>
+                <span>报价答复率：<b>{{reply}}%</b></span>
             </div>
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>交收要求</h3>
-        <dl class="yc-demand">
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>交收要求</h3>
+        </div>
+        <dl class="demand">
             <dt>交货地：</dt>
             <dd>{{ purchase.position }}</dd>
             <dt>发票要求：</dt>
@@ -186,9 +201,11 @@
     </div>
 
 
-    <div class="yc-purchase-detail">
-        <h3>供应商要求</h3>
-        <dl class="yc-demand">
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>供应商要求</h3>
+        </div>
+        <dl class="demand">
             <dt>供应商资质：</dt>
             <dd>
                 {% if '1' in purchase.supplier.split("&") %}

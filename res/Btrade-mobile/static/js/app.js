@@ -208,8 +208,8 @@ $(function(){
 	gallery(true);
 
 	// 折叠菜单
-	$('.yc-purchase-detail .icon-fold').on('click', function() {
-		$(this).toggleClass('icon-unfold').parent().next().toggle();
+	$('.yc-floor .icon-fold').on('click', function() {
+		$(this).toggleClass('icon-unfold').closest('.hd').next().toggle();
 	});
 
     // 时间显示

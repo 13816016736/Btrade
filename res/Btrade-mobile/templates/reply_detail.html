@@ -35,26 +35,37 @@
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>采购品种及要求</h3>
-        <div class="bd">
-            <h4 class="name">{{ purchase.name }}</h4>
-            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购品种及要求</h3>
+        </div>
+        <div class="pro">
+            <div class="hd">
+                <strong>{{ purchase.name }}</strong>
+                <span>{{ purchase.specification }} {{ purchase.origin }}</span>
+                <em>{{ purchase.quantity }}{{purchase.unit}}</em>
+            </div>
             <div class="desc">
                 <p>{{ purchase.quality }}</p>
                 <p><span>封顶价</span> {% if purchase.price > 0 %}{{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}{% else %}面议{% end %}</p>
+                {% if purchase.attachments %}
                 <p><span>合格品样例照</span></p>
                 {% for attachment in purchase.attachments %}
                 <p class="thumb"><img src="{{ attachment.attachment }}" data-src="{{ attachment.attachment.replace('_thumb', '') }}" alt=""></p>
+                {% end %}
                 {% end %}
             </div>
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>交收要求<i class="iconfont icon-fold"></i></h3>
-        <dl class="yc-demand yc-demand-fold">
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>交收要求</h3>
+            <div class="extra">
+                <i class="iconfont icon-fold icon-unfold"></i>
+            </div>
+        </div>
+        <dl class="demand demand-fold">
             <dt>交货地：</dt>
             <dd>{% if purchase.areaid %}{{ purchase.position }}{% else %}亲自上门看货提货{% end %}</dd>
             <dt>发票要求：</dt>
@@ -90,12 +101,14 @@
         </dl>
     </div>
 
-
-
-
-    <div class="yc-purchase-detail">
-        <h3>供应商要求<i class="iconfont icon-fold"></i></h3>
-        <dl class="yc-demand yc-demand-fold">
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>供应商要求</h3>
+            <div class="extra">
+                <i class="iconfont icon-fold icon-unfold"></i>
+            </div>
+        </div>
+        <dl class="demand demand-fold">
             <dt>供应商资质：</dt>
             <dd>
                 {% if '1' in purchase.supplier.split("&") %}

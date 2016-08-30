@@ -36,14 +36,15 @@
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>采购商</h3>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购商</h3>
+        </div>
         <div class="bd">
-            <h4 class="company">
-                <span>{{user.name}}</span>
+            <div class="name">
+                {{user.name}}
                 <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
-            </h4>
-            <div class="yc-cat fr">
+                <em class="yc-cat">
                 {% if user.type == 1%}
                 饮片厂
                 {% elif user.type == 2%}
@@ -65,23 +66,33 @@
                 {% elif user.type == 10%}
                 销售经理
                 {% end %}
+                </em>
             </div>
             <div class="total">
                 <!-- 
-                <span class="yc-star yc-star-4">
-                    <i></i><i></i><i></i><i></i><i></i>
-                </span>
                 <span class="txt">成功采购：<b>{{purchases}}单</b></span> 
                 -->
-                <span class="txt fl">发布采购：<b>{{purchasesinfocout}}批次</b></span>
-                <span class="txt">报价答复率：<b>{{reply}}%</b></span>
+                <div class="left">
+                    <p class="txt">发布采购：<b>{{purchasesinfocout}}批次</b></p>
+                    <p class="txt">达成意向：<b>{{purchasesinfocout}}批次</b></p>
+                </div>
+                <div class="right">
+                    <p class="txt">报价答复率：<b>{{reply}}%</b></p>
+                    <p class="txt">&#12288;累计采购：<b>50吨 146万元</b></p>
+                </div>
+                <div class="link"><a href="#" class="blue">查看TA的采购详情</a></div>
             </div>
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>交收要求<i class="iconfont icon-fold icon-unfold"></i></h3>
-        <dl class="yc-demand" style="display: none;">
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>交收要求</h3>
+            <div class="extra">
+                <i class="iconfont icon-fold icon-unfold"></i>
+            </div>
+        </div>
+        <dl class="demand demand-fold">
             <dt>交货地：</dt>
             <dd>{% if purchase.areaid %}{{ purchase.position }}{% else %}亲自上门看货提货{% end %}</dd>
             <dt>发票要求：</dt>
@@ -115,6 +126,52 @@
             <dt>补充说明：</dt>
             <dd id="other">{{ purchase.other }}</dd>
         </dl>
+    </div>
+    
+    
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>最近达成的交易意向</h3>
+        </div>
+        <div class="hd">
+            <ol class="yc-record">
+                <li>
+                    <i>1</i>
+                    <em>毫州天天药材行</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>2</i>
+                    <em>潘登</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>3</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>4</i>
+                    <em>毫州天天药材行</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>5</i>
+                    <em>潘登</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>6</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>10</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+            </ol>
+        </div>
     </div>
 
     <div class="yc-purchase">

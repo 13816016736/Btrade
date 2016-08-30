@@ -38,18 +38,22 @@
             {% end %}
         </div>
     </div>
-   {% if purchase.shine==1 %}
+    {% if purchase.shine==1 %}
     <div class="yc-tips">
         <a href="/sunshine/?pid={{purchase.pid}}">阳光速配，安心保障<span>了解详情</span></a>
     </div>
     {% end %}
 
-    <div class="yc-purchase-detail">
-        <h3>采购品种及要求</h3>
-        <div class="bd">
-            <h4 class="name">{{ purchase.name }}</h4>
-            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购品种及要求</h3>
+        </div>
+        <div class="pro">
+            <div class="hd">
+                <strong>{{ purchase.name }}</strong>
+                <span>{{ purchase.specification }} {{ purchase.origin }}</span>
+                <em>{{ purchase.quantity }}{{purchase.unit}}</em>
+            </div>
             <div class="desc">
                 <p>{{ purchase.quality }}</p>
                 <p><span>封顶价</span> {% if purchase.price > 0 %}{{ purchase.price }}元/{% if purchase.unit == u'吨' %}公斤{% else %}{{purchase.unit}}{% end %}{% else %}面议{% end %}</p>
@@ -63,14 +67,15 @@
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>采购商</h3>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购商</h3>
+        </div>
         <div class="bd">
-            <h4 class="company">
-                <span>{{user.name}}</span>
+            <div class="name">
+                {{user.name}}
                 <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
-            </h4>
-            <div class="yc-cat fr">
+                <em class="yc-cat">
                 {% if user.type == 1%}
                 饮片厂
                 {% elif user.type == 2%}
@@ -92,23 +97,30 @@
                 {% elif user.type == 10%}
                 销售经理
                 {% end %}
+                </em>
             </div>
             <div class="total">
                 <!--
-                <span class="yc-star yc-star-4">
-                    <i></i><i></i><i></i><i></i><i></i>
-                </span>
                 <span class="txt">成功采购：<b>{{purchases}}单</b></span>
                 -->
-                <span class="txt fl">发布采购：<b>{{purchasesinfocout}}批次</b></span>
-                <span class="txt">报价答复率：<b>{{reply}}%</b></span>
+                <div class="left">
+                    <div>发布采购：<b>{{purchasesinfocout}}批次</b></div>
+                    <div>达成意向：<b>{{purchasesinfocout}}批次</b></div>
+                </div>
+                <div class="right">
+                    <div>报价答复率：<b>{{reply}}%</b></div>
+                    <div>累计采购：<b>50吨 146万元</b></div>
+                </div>
+                <div class="link"><a href="#" class="blue">查看TA的采购详情</a></div>
             </div>
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>交收要求</h3>
-        <dl class="yc-demand">
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>交收要求</h3>
+        </div>
+        <dl class="demand">
             <dt>交货地：</dt>
             <dd>{% if purchase.areaid %}{{ purchase.position }}{% else %}亲自上门看货提货{% end %}</dd>
             {% if purchase.invoice!=0 %}
@@ -155,10 +167,12 @@
     </div>
 
 
-    <div class="yc-purchase-detail">
-        {% if purchase.supplier!="0" and purchase.remark!="" %}
-        <h3>供应商要求</h3>
-        <dl class="yc-demand">
+    {% if purchase.supplier!="0" and purchase.remark!="" %}
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>供应商要求</h3>
+        </div>
+        <dl class="demand">
             {% if purchase.supplier!="0" %}
             <dt>供应商资质：</dt>
             <dd>
@@ -180,8 +194,55 @@
             <dd id="remark">{{purchase.remark}}</dd>
             {% end %}
         </dl>
-        {% end %}
     </div>
+    {% end %}
+
+    
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>最近达成的交易意向</h3>
+        </div>
+        <div class="hd">
+            <ol class="yc-record">
+                <li>
+                    <i>1</i>
+                    <em>毫州天天药材行</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>2</i>
+                    <em>潘登</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>3</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>4</i>
+                    <em>毫州天天药材行</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>5</i>
+                    <em>潘登</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>6</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>10</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+            </ol>
+        </div>
+    </div>
+
 
     {% if others <> 0 %}
     <div class="yc-more">
@@ -189,6 +250,17 @@
         <a href="/purchaseinfobatch/purchaseid/{{purchase.id}}">该批次采购单还包括其它<b>{{ others }}</b>个品种</a>
     </div>
     {% end %}
+
+    <div class="yc-tips">
+        <a href="#">1分钟了解药材购怎么帮药商卖货&gt;&gt;</a>
+    </div>
+
+    <div class="yc-hotline">
+        <i class="iconfont icon-question"></i>
+        如有疑问，请致电药材购客服电话： 
+        <a href="tel:17309673939" target="_blank">173-0967-3939</a>
+    </div>  
+
 </section><!-- /yc-content -->
 {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0 and purchase.status!=0) or (purchase.term == 0 and purchase.status!=0)%}
 <footer class="yc-footer">

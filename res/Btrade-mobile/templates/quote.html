@@ -213,12 +213,16 @@
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>采购品种及要求</h3>
-        <div class="bd">
-            <h4 class="name">{{ purchase.name }}</h4>
-            <div class="tag">{{ purchase.specification }} {{ purchase.origin }}</div>
-            <div class="weight">{{ purchase.quantity }}{{purchase.unit}}</div>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购品种及要求</h3>
+        </div>
+        <div class="pro">
+            <div class="hd">
+                <strong>{{ purchase.name }}</strong>
+                <span>{{ purchase.specification }} {{ purchase.origin }}</span>
+                <em>{{ purchase.quantity }}{{purchase.unit}}</em>
+            </div>
             <div class="desc">
                 <p>{{ purchase.quality }}</p>
                 <p><span>封顶价</span>
@@ -235,14 +239,15 @@
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
-        <h3>采购商</h3>
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>采购商</h3>
+        </div>
         <div class="bd">
-            <h4 class="company">
-                <span>{{purchaser.name}}</span>
+            <div class="name">
+                {{purchaser.name}}
                 <!--<i class="iconfont icon-radio-yes"></i> 通过认证，身份真实有效-->
-            </h4>
-            <div class="yc-cat fr">
+                <em class="yc-cat">
                 {% if purchaser.type == 1%}
                 饮片厂
                 {% elif purchaser.type == 2%}
@@ -264,60 +269,70 @@
                 {% elif purchaser.type == 10%}
                 销售经理
                 {% end %}
+                </em>
             </div>
             <div class="total">
                 <!--
-                <span class="yc-star yc-star-4">
-                    <i></i><i></i><i></i><i></i><i></i>
-                </span>
                 <span class="txt">成功采购：<b>{{purchases}}单</b></span>
                 -->
-                <span class="fr">报价答复率：<b>{{reply}}%</b></span>
+                <div class="left">
+                    <div>发布采购：<b>11批次</b></div>
+                    <div>达成意向：<b>22批次</b></div>
+                </div>
+                <div class="right">
+                    <div>报价答复率：<b>{{reply}}%</b></div>
+                    <div>&#12288;累计采购：<b>50吨 146万元</b></div>
+                </div>
+                <div class="link"><a href="#">查看TA的采购详情</a></div>
             </div>
         </div>
     </div>
 
-    <div class="yc-purchase-detail">
+    <div class="yc-floor">
+        <div class="hd">
             <h3>交收要求</h3>
-            <dl class="yc-demand">
-                <dt>交货地：</dt>
-                <dd>{{ purchase.position }}</dd>
-                <dt>发票要求：</dt>
-                <dd>
-                    {% if purchase.invoice == 1%}
-                    无需发票
-                    {% elif purchase.invoice == 2%}
-                    普通发票
-                    {% elif purchase.invoice == 3 %}
-                    增值税发票
-                    {% end %}
-                </dd>
-                <dt>交易及付款：</dt>
-                <dd>
-                    {% if purchase.pay == 1%}
-                    药采购"安心交易"(预付全款)
-                    {% elif purchase.pay == 2%}
-                    双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
-                    {% else %}
-                    {{purchase.payinfo}}
-                    {% end %}
-                </dd>
-                <dt>验证及包装：</dt>
-                <dd>
-                    <ol>
-                        <li id="accept">{{ purchase.accept }}</li>
-                    </ol>
-                </dd>
-                <dt>寄样：</dt>
-                <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span id="receive">{{ purchase.receive }}</span></dd>
-                <dt>补充说明：</dt>
-                <dd id="other">{{ purchase.other }}</dd>
-            </dl>
         </div>
+        <dl class="demand">
+            <dt>交货地：</dt>
+            <dd>{{ purchase.position }}</dd>
+            <dt>发票要求：</dt>
+            <dd>
+                {% if purchase.invoice == 1%}
+                无需发票
+                {% elif purchase.invoice == 2%}
+                普通发票
+                {% elif purchase.invoice == 3 %}
+                增值税发票
+                {% end %}
+            </dd>
+            <dt>交易及付款：</dt>
+            <dd>
+                {% if purchase.pay == 1%}
+                药采购"安心交易"(预付全款)
+                {% elif purchase.pay == 2%}
+                双方直接交易，验证合格后<b>{{purchase.payday}}</b>天内付款
+                {% else %}
+                {{purchase.payinfo}}
+                {% end %}
+            </dd>
+            <dt>验证及包装：</dt>
+            <dd>
+                <ol>
+                    <li id="accept">{{ purchase.accept }}</li>
+                </ol>
+            </dd>
+            <dt>寄样：</dt>
+            <dd>{% if purchase.send == 1 %}要求报价后必须寄样{% end %}<span id="receive">{{ purchase.receive }}</span></dd>
+            <dt>补充说明：</dt>
+            <dd id="other">{{ purchase.other }}</dd>
+        </dl>
+    </div>
 
-    <div class="yc-purchase-detail">
-        <h3>供应商要求</h3>
-        <dl class="yc-demand">
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>供应商要求</h3>
+        </div>
+        <dl class="demand">
             <dt>供应商资质：</dt>
             <dd>
                 {% if '1' in purchase.supplier.split("&") %}
@@ -335,6 +350,51 @@
             <dt>其它要求：</dt>
             <dd id="remark">{{purchase.remark}}</dd>
         </dl>
+    </div>
+    
+    <div class="yc-floor">
+        <div class="hd">
+            <h3>最近达成的交易意向</h3>
+        </div>
+        <div class="hd">
+            <ol class="yc-record">
+                <li>
+                    <i>1</i>
+                    <em>毫州天天药材行</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>2</i>
+                    <em>潘登</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>3</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>4</i>
+                    <em>毫州天天药材行</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>5</i>
+                    <em>潘登</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>6</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+                <li>
+                    <i>10</i>
+                    <em>严飞</em>
+                    <time>08-29 13:11</time>
+                </li>
+            </ol>
+        </div>
     </div>
 
 </section><!-- /yc-content -->
