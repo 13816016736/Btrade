@@ -220,6 +220,7 @@ em,i{font-style:normal;}
 .yc-floor .bd .total .fix{display:inline-block;width:100%;}
 .yc-floor .bd .total .right{position:absolute;right:0;top:0;}
 .yc-floor .bd .total .link{text-align:right;}
+.yc-floor .bd .total span{display:inline-block;}
 .yc-floor .pro{margin-top:10px;}
 .yc-floor .pro .hd strong{margin-right:10px;font-size:1.6rem;color:#000;}
 .yc-floor .pro .hd em{position:absolute;top:0;right:0;color:#3cae94;}
