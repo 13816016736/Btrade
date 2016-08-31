@@ -1,6 +1,5 @@
 {% extends "basenofoot.html" %}
 {% block container %}
-<body class="yc-body-nofoot">
     <header class="yc-header">
         <div class="yc-header-back">
             <a href="javascript:history.back();">
@@ -69,6 +68,9 @@
 
 
     </section><!-- /yc-content -->
+    {% end %}
+
+{% block js %}
     <script>
     !(function($){
         var $breeds = $('#jBreeds');
@@ -201,5 +203,4 @@
 
     }(jQuery));
     </script>
-</body>
 {% end %}

@@ -5,6 +5,7 @@
 {% block container %}
 {% import time %}
 {% raw xsrf_form_html() %}
+
 <header class="yc-header">
     <div class="yc-header-back">
         <a href="/">
@@ -262,13 +263,36 @@
     </div>  
 
 </section><!-- /yc-content -->
+
+
+
 {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0 and purchase.status!=0) or (purchase.term == 0 and purchase.status!=0)%}
+
+<section class="action-bar">
+    <div class="cell cart"><a href="/quote/purchaseinfoid/{{purchase.pid}}">有货，立即报价</a></div>
+    <div class="cell share">
+        <a href="#">
+            <i class="iconfont icon-share"></i>
+            发给朋友
+        </a>
+    </div>
+    <div class="cell frown">
+        <a href="#">
+            <i class="iconfont icon-frown"></i>
+            暂不参加
+        </a>
+    </div>
+</section>
+<!-- 
 <footer class="yc-footer">
     <div class="yc-quote">
         <a href="/quote/purchaseinfoid/{{purchase.pid}}"><i class="iconfont icon-plane"></i>立即报价</a>
     </div>
-</footer>
+</footer> -->
 {% end %}
+{% end %}
+
+{% block js %}
 <script>
 $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
 $("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));

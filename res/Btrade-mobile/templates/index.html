@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block container %}
 {% raw xsrf_form_html() %}
+
+<header class="yc-header">
+    <div class="yc-header-title">药材购</div>
+</header><!-- /yc-header -->
+
 <section class="yc-content">
     {% if handler.session.has_key('user') and handler.session.get('user') != ""  %}
     <div class="yc-tag-list">
@@ -37,6 +42,12 @@
         </div>
     </div>
 </section><!-- /yc-content -->
+
+{% include public/footer.html %}
+
+{% end %}
+
+{% block js %}
 <script>
 $(function(){
     var userType = {

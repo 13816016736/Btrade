@@ -1,200 +1,166 @@
 {% extends "base.html" %}
 {% block container %}
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="javascript:history.back();">
-                <i class="iconfont icon-back"></i>
-            </a>
-        </div>
-        <div class="yc-header-title">拍照</div>
-    </header><!-- /yc-header -->
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="javascript:history.back();">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">拍照</div>
+</header><!-- /yc-header -->
 
-    <section class="yc-content">
-        <div class="yc-uploads">
-            <div class="title">
-                可参考如下示例图及说明拍摄
+<section class="yc-content">
+    <div class="yc-uploads">
+        <div class="title">
+            可参考如下示例图及说明拍摄
+        </div>
+        
+        <div class="pic">
+            <div class="tab">
+                <ul>
+                    <li class="current">手捧照</li>
+                    <li>细节照</li>
+                    <li>混货照</li>
+                    <li>质检报告</li>
+                    <li>其它照片</li>
+                    <li>其它照片</li>
+                </ul>
             </div>
-            
-            <div class="pic">
-                <div class="tab">
-                    <ul>
-                        <li class="current">手捧照</li>
-                        <li>细节照</li>
-                        <li>混货照</li>
-                        <li>质检报告</li>
-                        <li>其它照片</li>
-                        <li>其它照片</li>
-                    </ul>
+            <div class="cont">
+                <div class="item">
+                    <div class="tit">
+                        <span>药材放手心，用于展现规格、外形、颜色的表象</span>
+                    </div>
+                    <div class="preview">
+                        <img src="{{static_url('uploads/u1.png')}}" alt="">
+                    </div>
                 </div>
-                <div class="cont">
-                    <div class="item">
-                        <div class="tit">
-                            <span>药材放手心，用于展现规格、外形、颜色的表象</span>
-                        </div>
-                        <div class="preview">
-                            <img src="{{static_url('uploads/u1.png')}}" alt="">
-                        </div>
+                <div class="item">
+                    <div class="tit">
+                        <span>清晰展现药材细节，如大小、性状、色泽等</span>
                     </div>
-                    <div class="item">
-                        <div class="tit">
-                            <span>清晰展现药材细节，如大小、性状、色泽等</span>
-                        </div>
-                        <div class="preview">
-                            <img src="{{static_url('uploads/u2.png')}}" alt="">
-                        </div>
+                    <div class="preview">
+                        <img src="{{static_url('uploads/u2.png')}}" alt="">
                     </div>
-                    <div class="item">
-                        <div class="tit">
-                            <span>展现药材断面细节</span>
-                        </div>
-                        <div class="preview">
-                            <img src="{{static_url('uploads/u3.png')}}" alt="">
-                        </div>
+                </div>
+                <div class="item">
+                    <div class="tit">
+                        <span>展现药材断面细节</span>
                     </div>
-                    <div class="item">
-                        <div class="tit">
-                            <span>展现大货整体质量情况</span>
-                        </div>
-                        <div class="preview">
-                            <img src="{{static_url('uploads/u4.png')}}" alt="">
-                        </div>
+                    <div class="preview">
+                        <img src="{{static_url('uploads/u3.png')}}" alt="">
                     </div>
-                    <div class="item">
-                        <div class="tit">
-                            <span>展现大货整体质量情况</span>
-                        </div>
-                        <div class="preview">
-                            <img src="{{static_url('uploads/u4.png')}}" alt="">
-                        </div>
+                </div>
+                <div class="item">
+                    <div class="tit">
+                        <span>展现大货整体质量情况</span>
                     </div>
-                    <div class="item">
-                        <div class="tit">
-                            <span>展现大货整体质量情况</span>
-                        </div>
-                        <div class="preview">
-                            <img src="{{static_url('uploads/u4.png')}}" alt="">
-                        </div>
+                    <div class="preview">
+                        <img src="{{static_url('uploads/u4.png')}}" alt="">
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="tit">
+                        <span>展现大货整体质量情况</span>
+                    </div>
+                    <div class="preview">
+                        <img src="{{static_url('uploads/u4.png')}}" alt="">
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="tit">
+                        <span>展现大货整体质量情况</span>
+                    </div>
+                    <div class="preview">
+                        <img src="{{static_url('uploads/u4.png')}}" alt="">
                     </div>
                 </div>
             </div>
         </div>
-    </section><!-- /yc-content -->
+    </div>
+</section><!-- /yc-content -->
 
 
-    <footer class="yc-footer">
-        <div class="yc-uploads-op">
-            <form method="post" action="upImg.php" target="up" enctype="multipart/form-data">
-                <div class="file po">
-                    <i class="iconfont icon-folder"></i>
-                    <span>上传</span>
-                    <input type="file" accept="image/gif,image/jpeg,image/png" id="jUpload" />
-                </div>
-                <div class="file camera">
-                    <i class="iconfont icon-camera"></i>
-                    <span>拍照</span>
-                    <input type="file" capture="camera" id="jCamera">
-                </div>
-            </form>
-            <iframe name="up" style="display:none;"></iframe> 
-        </div>
-    </footer>
-    <script src="{{ static_url('js/uploads.js') }}"></script>
-    <script src="{{ static_url('js/lrz.bundle.js') }}"></script>
-    <script>
-    $('.tab').on('click', 'li', function() {
-        var index = $(this).index();
-        $(this).addClass('current').siblings().removeClass('current');
-        $('.cont .item').eq(index).show().siblings().hide();
-    });
+<footer class="yc-footer">
+    <div class="yc-uploads-op">
+        <form method="post" action="upImg.php" target="up" enctype="multipart/form-data">
+            <div class="file po">
+                <i class="iconfont icon-folder"></i>
+                <span>上传</span>
+                <input type="file" accept="image/gif,image/jpeg,image/png" id="jUpload" />
+            </div>
+            <div class="file camera">
+                <i class="iconfont icon-camera"></i>
+                <span>拍照</span>
+                <input type="file" capture="camera" id="jCamera">
+            </div>
+        </form>
+        <iframe name="up" style="display:none;"></iframe> 
+    </div>
+</footer>
 
-    $('input[type="file"]').on('change', function(ev) {
-        var index = $('.tab .current').index();
-        // var $preview = $('.cont .item').eq(index).find('.preview');
-        //方案一:用lrz压缩图片并上传,但是要自己写图片验证，比如格式验证，大小验证等
-        //图片验证
+{% end %}
 
-        //图片lrz压缩上传
-        lrz($(this).get(0).files[0], {
-            width: 800
-        }).then(function (rst) {
-            base64 = rst.base64;
-            base64 = base64.substr(base64.indexOf(',') + 1);
-            $.ajax({
-                url: "/uploadfile",
-                data: {
-                    base64_string: base64,
-                    'type': {{type}},
-                    '_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]
-                },
-                type: 'post',
-                dataType: 'json',
-                beforeSend: function(jqXHR, settings) {
-                    lpPopover('图片正在上传，请稍后...');
-                },
-                success: function(data) {
-                    if (data.status === 'success') {
-                        lpPopover('上传图片成功，稍后会自动跳转回报价页面！');
-                        location.href = '/quote/purchaseinfoid/{{purchaseinfoid}}';
-                    } else {
-                        lpPopover('上传图片失败，请刷新页面重试！');
-                    }
+{% block js %}
+<script src="{{ static_url('js/uploads.js') }}"></script>
+<script src="{{ static_url('js/lrz.bundle.js') }}"></script>
+<script>
+$('.tab').on('click', 'li', function() {
+    var index = $(this).index();
+    $(this).addClass('current').siblings().removeClass('current');
+    $('.cont .item').eq(index).show().siblings().hide();
+});
 
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    lpPopover('网络连接超时，请您稍后重试！');
+$('input[type="file"]').on('change', function(ev) {
+    var index = $('.tab .current').index();
+    //方案一:用lrz压缩图片并上传,但是要自己写图片验证，比如格式验证，大小验证等
+
+    //图片lrz压缩上传
+    lrz($(this).get(0).files[0], {
+        width: 800
+    }).then(function (rst) {
+        base64 = rst.base64;
+        base64 = base64.substr(base64.indexOf(',') + 1);
+        $.ajax({
+            url: "/uploadfile",
+            data: {
+                base64_string: base64,
+                'type': {{type}},
+                '_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]
+            },
+            type: 'post',
+            dataType: 'json',
+            beforeSend: function(jqXHR, settings) {
+                lpPopover('图片正在上传，请稍后...');
+            },
+            success: function(data) {
+                if (data.status === 'success') {
+                    lpPopover('上传图片成功，稍后会自动跳转回报价页面！');
+                    location.href = '/quote/purchaseinfoid/{{purchaseinfoid}}';
+                } else {
+                    lpPopover('上传图片失败，请刷新页面重试！');
                 }
-            })
-        }).catch(function (err) {
-            // 处理失败会执行
-            lpPopover(err);
-        }).always(function () {
-            // 不管是成功失败，都会执行
-        });;
-
-        //方案二:uploadpic类实现图片压缩并上传，但是使用android手机，图片压缩全部成黑色，因为压缩出的base64有问题，好处是自带了图片验证
-        /*new UploadPic({
-            el: ev,
-            // $preview: $preview, // 不需要预览功能
-            maxWidth: 800,
-            maxHeight: 800,
-            callback: function(base64) {
-                $.ajax({
-                    url: "/uploadfile",
-                    data: {
-                        base64_string: base64,
-                        'type': {{type}},
-                        '_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    beforeSend: function(jqXHR, settings) {
-                        lpPopover('图片正在上传，请稍后...');
-                    },
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            lpPopover('上传图片成功，稍后会自动跳转回报价页面！');
-                            location.href = '/quote/purchaseinfoid/{{purchaseinfoid}}';
-                        } else {
-                            lpPopover('上传图片失败，请刷新页面重试！');
-                        }
-
-                    },
-                    error: function(XMLHttpRequest, textStatus, errorThrown) {
-                        lpPopover('网络连接超时，请您稍后重试！');
-                    }
-                })
 
             },
-        });*/
-    })
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                lpPopover('网络连接超时，请您稍后重试！');
+            }
+        })
+    }).catch(function (err) {
+        // 处理失败会执行
+        lpPopover(err);
+    }).always(function () {
+        // 不管是成功失败，都会执行
+    });;
+})
 
-    // 高亮显示
-    var newsType = {{type}};
-    if (newsType) {
-        var index = parseInt(newsType, 10);
-        if (typeof index === 'number' && $('.tab li').length >= index ) {
-            index > 1 && $('.tab li').eq(index - 1).trigger('click');
-        }
+// 高亮显示
+var newsType = {{type}};
+if (newsType) {
+    var index = parseInt(newsType, 10);
+    if (typeof index === 'number' && $('.tab li').length >= index ) {
+        index > 1 && $('.tab li').eq(index - 1).trigger('click');
     }
-    </script>
+}
+</script>
 {% end %}
