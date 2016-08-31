@@ -127,26 +127,7 @@
             <dd id="other">{{ purchase.other }}</dd>
         </dl>
     </div>
-    
-    
-    <div class="yc-floor">
-        {% if len(quoteaccept)!=0 %}
-        <div class="hd">
-            <h3>最近达成的交易意向</h3>
-        </div>
-        <div class="hd">
-            <ol class="yc-record">
-                {% for index,item in enumerate(quoteaccept) %}
-                <li>
-                    <i>{{index+1}}</i>
-                    <em>{{item["name"]}}</em>
-                    <time>{{item["updatetime"]}}</time>
-                </li>
-                {% end %}
-            </ol>
-        </div>
-        {% end %}
-    </div>
+
 
     <div class="yc-purchase">
         <h2 class="title">本批次采购以下{{len(purchase.purchaseinfo)}}个品种，点击可报价</h2>

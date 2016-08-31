@@ -38,6 +38,7 @@
             </div>
         </div>
 
+        {% if len(transactions)!=0 %}
         <div class="yc-floor">
             <div class="hd">
                 <h3>最近采购记录</h3>
@@ -67,10 +68,11 @@
 
                 </ul>
             </div>
-        </div>
 
+        </div>
+        {% end %}
+         {% if len(quoteaccept)!=0 %}
         <div class="yc-floor">
-        {% if len(quoteaccept)!=0 %}
         <div class="hd">
             <h3>最近达成的交易意向</h3>
         </div>
@@ -85,8 +87,8 @@
                 {% end %}
             </ol>
         </div>
-        {% end %}
         </div>
+        {% end %}
 
         <div class="yc-link">
             <a href="{{url}}">返回报价</a>

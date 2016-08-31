@@ -276,14 +276,14 @@
                 <span class="txt">成功采购：<b>{{purchases}}单</b></span>
                 -->
                 <div class="left">
-                    <div>发布采购：<b>11批次</b></div>
-                    <div>达成意向：<b>22批次</b></div>
+                    <div>发布采购：<b>{{purchases}}批次</b></div>
+                    <div>达成意向：<b>{{accept}}批次</b></div>
                 </div>
                 <div class="right">
                     <div>报价答复率：<b>{{reply}}%</b></div>
-                    <div>&#12288;累计采购：<b>50吨 146万元</b></div>
+                    <div>&#12288;累计采购：<b>{{accept_quantity}}吨 {{accept_price}}万元</b></div>
                 </div>
-                <div class="link"><a href="#">查看TA的采购详情</a></div>
+                <div class="link"><a href="/purchase/detail?id={{purchase.userid}}&next={{request.uri}}">查看TA的采购详情</a></div>
             </div>
         </div>
     </div>
@@ -351,54 +351,39 @@
             <dd id="remark">{{purchase.remark}}</dd>
         </dl>
     </div>
-    
+    {% if len(quoteaccept)!=0 %}
     <div class="yc-floor">
+
         <div class="hd">
-            <h3>最近达成的交易意向</h3>
+            <h3>已报价的供货商</h3>
         </div>
         <div class="hd">
             <ol class="yc-record">
+                {% for index,item in enumerate(quoteaccept) %}
                 <li>
-                    <i>1</i>
-                    <em>毫州天天药材行</em>
-                    <time>08-29 13:11</time>
+                    <i>{{index+1}}</i>
+                    <em>{{item["name"]}}</em>
+                    <time>{{item["createtime"]}}</time>
                 </li>
-                <li>
-                    <i>2</i>
-                    <em>潘登</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>3</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>4</i>
-                    <em>毫州天天药材行</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>5</i>
-                    <em>潘登</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>6</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>10</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
+                {% end %}
             </ol>
         </div>
+
+    </div>
+    {% end %}
+
+        <div class="yc-tips">
+        <a href="/about">1分钟了解药材购怎么帮药商卖货&gt;&gt;</a>
+    </div>
+
+    <div class="yc-hotline">
+        <i class="iconfont icon-question"></i>
+        如有疑问，请致电药材购客服电话：
+        <a href="tel:17309673939" target="_blank">173-0967-3939</a>
     </div>
 
 </section><!-- /yc-content -->
-
+<!--
 <section class="action-bar">
     <div class="cell cart"><a href="#">有货，立即报价</a></div>
     <div class="cell share">
@@ -410,6 +395,7 @@
             暂不参加
     </div>
 </section>
+-->
 
 {% end %}
 

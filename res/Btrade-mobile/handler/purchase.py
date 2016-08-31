@@ -209,18 +209,12 @@ class PurchaseInfoHandler(BaseHandler):
         accept=0
         accept_quantity=0
         accept_price=0
-        quoteaccept=[]
         if purchasesinfocout!=0:
             purchasesinfos= self.db.query(
                 "select pi.id,pi.quantity,pi.unit from purchase p  left join purchase_info pi on p.id=pi.purchaseid where p.userid in(%s) " % ",".join(
                     childs))
             purchasesinfomap=dict((i.id, [i.quantity, i.unit]) for i in purchasesinfos)
             purchaseinfoids=[str(i.id) for i in purchasesinfos]
-            quoteaccept = self.db.query(
-                "select u.name,q.updatetime from quote q  left join users u on q.userid=u.id where q.purchaseinfoid in(%s) and q.state=1 order by q.updatetime desc limit 0,10 " % ",".join(
-                    purchaseinfoids))
-            for item in quoteaccept:
-                item["updatetime"] = time.strftime("%m-%d %H:%M", time.localtime(float(item["updatetime"])))
             accept_purchaseinfos=self.db.query("select purchaseinfoid,price from quote where purchaseinfoid in(%s) and state=1 group by purchaseinfoid ORDER BY price  "%",".join(purchaseinfoids))
             accept=len(accept_purchaseinfos)
             for item in accept_purchaseinfos:
@@ -234,6 +228,10 @@ class PurchaseInfoHandler(BaseHandler):
                     elif unit==u"吨":
                         accept_quantity+=int(quantity)
                         accept_price+=int(quantity)*float(price)*1000
+        quoteaccept = self.db.query(
+                        "select u.name,q.createtime from quote q  left join users u on q.userid=u.id where q.purchaseinfoid=%s order by q.createtime desc",id)
+        for item in quoteaccept:
+                    item["createtime"] = time.strftime("%m-%d %H:%M", time.localtime(float(item["createtime"])))
 
 
 
@@ -330,18 +328,18 @@ class PurchaseinfoBatchHandler(BaseHandler):
             accept = 0
             accept_quantity = 0
             accept_price = 0
-            quoteaccept = []
+            #quoteaccept = []
             if purchasesinfocout != 0:
                 purchasesinfos = self.db.query(
                     "select pi.id,pi.quantity,pi.unit from purchase p  left join purchase_info pi on p.id=pi.purchaseid where p.userid in(%s) " % ",".join(
                         childs))
                 purchasesinfomap = dict((i.id, [i.quantity, i.unit]) for i in purchasesinfos)
                 purchaseinfoids = [str(i.id) for i in purchasesinfos]
-                quoteaccept = self.db.query(
-                    "select u.name,q.updatetime from quote q  left join users u on q.userid=u.id where q.purchaseinfoid in(%s) and q.state=1 order by q.updatetime desc limit 0,10 " % ",".join(
-                        purchaseinfoids))
-                for item in quoteaccept:
-                    item["updatetime"] = time.strftime("%m-%d %H:%M", time.localtime(float(item["updatetime"])))
+                #quoteaccept = self.db.query(
+                #    "select u.name,q.updatetime from quote q  left join users u on q.userid=u.id where q.purchaseinfoid in(%s) and q.state=1 order by q.updatetime desc limit 0,10 " % ",".join(
+                #        purchaseinfoids))
+                #for item in quoteaccept:
+                #    item["updatetime"] = time.strftime("%m-%d %H:%M", time.localtime(float(item["updatetime"])))
                 accept_purchaseinfos = self.db.query(
                     "select purchaseinfoid,price from quote where purchaseinfoid in(%s) and state=1 group by purchaseinfoid ORDER BY price  " % ",".join(
                         purchaseinfoids))
@@ -360,7 +358,7 @@ class PurchaseinfoBatchHandler(BaseHandler):
 
             self.render("purchaseinfo_batch.html", user=user, purchase=purchase, purchases=purchases,purchasesinfocout=purchasesinfocout,
                         reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),accept=accept,
-                    accept_quantity=accept_quantity,accept_price=int(accept_price/10000),quoteaccept=quoteaccept)
+                    accept_quantity=accept_quantity,accept_price=int(accept_price/10000))
         else:
             self.error("采购单不存在","/")
 
