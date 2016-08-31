@@ -578,7 +578,7 @@ class PurchaseDetailHandler(BaseHandler):
                 purchaseinfoids = [str(i.id) for i in purchasesinfos]
                 # 交易记录
                 transactions = self.db.query(
-                    "select id,purchaseinfoid,quoteid,quantity,unity,price,total,suppliercomment,score_to_supplier,createtime from transaction where status=1 and purchaseinfoid in(%s) order by createtime desc"%",".join(
+                    "select id,purchaseinfoid,quoteid,quantity,unity,price,total,suppliercomment,score_to_supplier,createtime from transaction where status=1 and purchaseinfoid in(%s) order by createtime desc limit 0,5"%",".join(
                         purchaseinfoids))
                 if transactions:
                     purchaseinfoids = [str(item["purchaseinfoid"]) for item in transactions]
