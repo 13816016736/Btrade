@@ -260,14 +260,74 @@
     </div>
 </footer> -->
 {% end %}
+
+
+<div class="dialog-mask" id="jwxShare">
+    <h2 class="hd">点击这里</h2>
+    <p>然后点击 <em>【发送给朋友】</em> 或 <em>【分享到朋友圈】</em> <br> 把这个采购单分享给您的朋友们，他们会感谢您的~</p>
+    <div class="arrow"><img src="images/arrow.png" width="85" height="115" alt=""></div>
+</div>
+
+<div class="dialog-mask" id="jshare">  
+    <p>找到浏览器的<em>分享按钮</em><br>通过微信或朋友圈<br>把这个采购单分享给您的朋友们，他们会感谢您的~</p>
+</div>
+
+<div class="dialog-mask" id="jresult">
+    <h2 class="hd">请告知您的真实情况，以帮改进：</h2>
+    <div class="bd">
+        <button class="btn">暂时没货</button>
+        <button class="btn">不做这个品种了</button>
+        <button class="btn">质量不满足</button>
+        <button class="btn">麻烦，不太了解</button>
+    </div>
+</div>
+
+<div class="dialog-mask" id="jsuccess">
+    <div class="bd">
+        <p><i class="iconfont icon-face"></i></p>
+        <p>知道了，希望下次能够更好的服务您！</p>
+    </div>
+    <div class="bd">
+        <a href="http://www.baidu.com" class="btn">去看看药材购其他采购单</a>
+    </div>
+</div>
+
 {% end %}
 
 {% block js %}
 <script>
-$("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
-$("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
-$("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
-$("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
+    $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
+    $("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
+    $("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
+    $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
+    var isWeChat = is_weixn();
+    // 发给朋友
+    $('.share').on('click', function() {
+        if (isWeChat) {
+            $('#jwxShare').show();
+        } else {
+            $('#jshare').show();
+        }
+    });
+
+    // 暂不参加
+    $('.frown').on('click', function() {
+        $('#jresult').show();
+    });
+
+    $('#jresult').on('click', '.btn', function(e) {
+        e.stopPropagation();
+        $('#jresult').hide();
+        $('#jsuccess').show();
+    });
+
+    $('#jsuccess').on('click', '.btn', function(e) {
+        e.stopPropagation();
+    });
+
+    $('body').on('click', '.dialog-mask', function() {
+        $(this).hide();
+    });
 </script>
 <script src="{{ static_url('js/jweixin-1.0.0.js') }}"></script>
 <script src="{{ static_url('js/wechart.js') }}"></script>

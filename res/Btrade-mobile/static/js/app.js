@@ -189,6 +189,15 @@ var timeago = {
     }
 }
 
+function is_weixn(){  
+    var ua = navigator.userAgent.toLowerCase();  
+    if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+        return true;  
+    } else {  
+        return false;  
+    }  
+}  
+
 $(function(){
 	// 主页我的标签文字处理
 	$('.yc-tag-list').each(function(){
