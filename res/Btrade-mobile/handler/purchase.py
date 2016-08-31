@@ -516,3 +516,136 @@ class RemovePurchaseHandler(BaseHandler):
                     self.api_response({'status': 'fail', 'message': '请求失败，没有该采购单'})
         else:
             self.api_response({'status': 'fail', 'message': '参数不全'})
+
+class PurchaseDetailHandler(BaseHandler):
+    @purchase_push_trace
+    def get(self):
+        id=self.get_argument("id",None)
+        url=self.get_argument("next","/")
+        if id:
+            user=self.db.get("select id,name,type from users where id=%s",id)
+            childs = []
+            # 判断是否是主账号
+            parent = self.db.query("select * from child_user where parent_user_id=%s", id)
+            if parent:
+                # 取所有子账号id
+                for item in parent:
+                    childs.append(str(item["child_user_id"]))
+            else:
+                # 判断是否是子账号
+                maxNum = 0  # 主账号的子账号最大数目
+                maxParent = None
+                childids = self.db.query("select * from child_user where child_user_id=%s", id)
+                if childids:
+                    for c in childids:
+                        parentids = self.db.query("select * from child_user where parent_user_id=%s",
+                                                  c["parent_user_id"])
+                        if len(parentids) > maxNum:
+                            maxNum = len(parentids)
+                            maxParent = parentids
+                if maxParent:
+                    # 取所有子账号id
+                    for item in maxParent:
+                        childs.append(str(item["child_user_id"]))
+            if childs == []:
+                childs.append(str(id))
+
+
+
+            # 此采购商采购批次数
+            purchasesinfocout = self.db.execute_rowcount(
+                "select * from purchase p  left join purchase_info pi on p.id=pi.purchaseid where p.userid in(%s) " % ",".join(
+                    childs))
+
+
+            # 此采购商回复供应商比例
+            purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
+                                             "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
+                                             "on p.id = t.purchaseid where p.userid in(%s)" % ",".join(childs))
+            reply = 0
+
+            accept_quantity=0
+            accept_price=0
+            accept=0
+            quoteaccept = []
+            transactions=[]
+            for purchaser_quote in purchaser_quotes:
+                if purchaser_quote.state is not None and purchaser_quote.state != 0:
+                    reply = reply + 1
+            if purchasesinfocout != 0:
+                purchasesinfos = self.db.query(
+                    "select pi.id,pi.quantity,pi.unit from purchase p  left join purchase_info pi on p.id=pi.purchaseid where p.userid in(%s) " % ",".join(
+                        childs))
+                purchasesinfomap = dict((i.id, [i.quantity, i.unit]) for i in purchasesinfos)
+                purchaseinfoids = [str(i.id) for i in purchasesinfos]
+                # 交易记录
+                transactions = self.db.query(
+                    "select id,purchaseinfoid,quoteid,quantity,unity,price,total,suppliercomment,score_to_supplier,createtime from transaction where status=1 and purchaseinfoid in(%s) order by createtime desc"%",".join(
+                        purchaseinfoids))
+                if transactions:
+                    purchaseinfoids = [str(item["purchaseinfoid"]) for item in transactions]
+                    #tids=[str(item["id"]) for item in transactions]
+                    qutoeids = [str(item["quoteid"]) for item in transactions]
+                    purchaseinfos = self.db.query(
+                        "select p.userid,pi.id, pi.name,pi.specification from purchase_info pi left join purchase p on pi.purchaseid=p.id where pi.id in(%s)" % ",".join(
+                            purchaseinfoids))
+                    puserids = [str(item["userid"]) for item in purchaseinfos]
+                    purchaseinfomap = dict((i.id, [i.userid, i.name, i.specification]) for i in purchaseinfos)
+
+                    puserinfos = self.db.query(
+                        "select id, name,nickname from users where id in (%s)" % ",".join(puserids))
+                    pusermap = dict((i.id, [i.name, i.nickname]) for i in puserinfos)
+
+                    quoteuserinfos = self.db.query(
+                        "select q.id,u.name,u.nickname from quote q left join users u on q.userid=u.id where q.id in(%s)" % ",".join(
+                            qutoeids))
+                    quoteusermap = dict((i.id, [i.name, i.nickname]) for i in quoteuserinfos)
+
+                    for item in transactions:
+                        item["varietyname"] = purchaseinfomap[item["purchaseinfoid"]][1]
+                        item["specification"] = purchaseinfomap[item["purchaseinfoid"]][2]
+                        item["purchasename"] = pusermap[purchaseinfomap[item["purchaseinfoid"]][0]][0]
+                        item["purchasenick"] = pusermap[purchaseinfomap[item["purchaseinfoid"]][0]][1]
+                        item["quotename"] = quoteusermap[item["quoteid"]][0]
+                        item["quotenick"] = quoteusermap[item["quoteid"]][1]
+                        item["createtime"] = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item["createtime"])))
+                        transactionattachments = self.db.query(
+                            "select * from transaction_attachment where transaction_id=%s",item["id"])
+
+                        for attachment in transactionattachments:
+                            base, ext = os.path.splitext(os.path.basename(attachment.attachment))
+                            attachment.attachment = config.img_domain + attachment.attachment[
+                                                                        attachment.attachment.find("static"):].replace(
+                                base,
+                                base + "_thumb")
+                        item["attachment"]=transactionattachments
+
+
+
+
+                quoteaccept = self.db.query(
+                    "select u.name,q.updatetime from quote q  left join users u on q.userid=u.id where q.purchaseinfoid in(%s) and q.state=1 order by q.updatetime desc limit 0,10 " % ",".join(
+                        purchaseinfoids))
+                for item in quoteaccept:
+                    item["updatetime"] = time.strftime("%m-%d %H:%M", time.localtime(float(item["updatetime"])))
+                accept_purchaseinfos = self.db.query(
+                    "select purchaseinfoid,price from quote where purchaseinfoid in(%s) and state=1 group by purchaseinfoid ORDER BY price  " % ",".join(
+                        purchaseinfoids))
+                accept = len(accept_purchaseinfos)
+                for item in accept_purchaseinfos:
+                    unit = purchasesinfomap[item["purchaseinfoid"]][1]
+                    quantity = purchasesinfomap[item["purchaseinfoid"]][0]
+                    price = item["price"]
+                    if unit == u"公斤":
+                        accept_quantity += int(quantity) / 1000
+                        accept_price += int(quantity) * float(price)
+
+                    elif unit == u"吨":
+                        accept_quantity += int(quantity)
+                        accept_price += int(quantity) * float(price) * 1000
+            self.render("purchase_intro.html",user=user,reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),purchasesinfocout =purchasesinfocout,
+                        quotes=len(purchaser_quotes),accept=accept,accept_quantity=accept_quantity,accept_price=int(accept_price/10000), quoteaccept = quoteaccept,transactions=transactions,url=url)
+        else:
+            self.error("采购商不存在", "/")
+
+

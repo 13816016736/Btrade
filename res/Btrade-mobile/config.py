@@ -73,6 +73,7 @@ handlers = [
     (r"/replydetail", ReplayDetailHandler),
     (r"/variety", VarietySearchHandler),
     (r"/supplier/detail", SupplierDetailHandler),
+    (r"/purchase/detail", PurchaseDetailHandler),
     (r"/sunshine/", SunshineHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
     (r".*", BaseHandler),

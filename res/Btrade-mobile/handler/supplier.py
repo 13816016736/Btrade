@@ -9,8 +9,10 @@ import random
 from wxpay import *
 #import requests
 import logging
+from webbasehandler import purchase_push_trace
 
 class SupplierDetailHandler(BaseHandler):
+    @purchase_push_trace
     def get(self):
         qid=self.get_argument("qid", "")
         user=None
@@ -90,6 +92,7 @@ class SupplierDetailHandler(BaseHandler):
         pass
 
 class SunshineHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         pid=self.get_argument("pid", None)
@@ -110,6 +113,7 @@ class SunshineHandler(BaseHandler):
         pass
 
 class PaymentHandler(BaseHandler):
+    @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
         pass
