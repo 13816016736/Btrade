@@ -1,4 +1,4 @@
-{% extends "base_purchase.html" %}
+{% extends "basenofoot.html" %}
 {% block container %}
 <header class="yc-header">
     <div class="yc-header-title">我的工作台</div>
@@ -91,9 +91,13 @@
         </div>
     </div>
 
-    <div class="yc-contentus">
+    <div class="yc-hotline">
         <i class="iconfont icon-question"></i>
-        <a href="tel:17309673939">有疑问，直接电话药材购团队</a>
-    </div>
+        如有疑问，请致电药材购客服电话： 
+        <a href="tel:17309673939" target="_blank">173-0967-3939</a>
+    </div>  
+
 </section><!-- /yc-content -->
+
+{% include public/purchase_footer.html %}
 {% end %}

@@ -2,18 +2,15 @@
 <html lang="en">
 {% include public/head.html %}
 <body class="yc-body">
-{% include public/header.html %}
-{% include public/footer.html %}
+
 {% block container %}
 {% end %}
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?4eebbffa947d0e96a475423d34addb32";
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
+
+<script src="{{ static_url('js/jquery.min.js') }}"></script>
+<script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+<script src="{{ static_url('js/app.js') }}"></script>
+{% block js %}
+{% end %}
+<script src="//hm.baidu.com/hm.js?4eebbffa947d0e96a475423d34addb32"></script>
 </body>
 </html>

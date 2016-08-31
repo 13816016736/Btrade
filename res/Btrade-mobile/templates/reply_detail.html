@@ -241,120 +241,120 @@
 
 <!-- 弹层提示 -->
 <div class="modal yc-modal" id="jModalMsg" tabindex="-1" role="dialog" aria-labelledby="tit5">
-<div class="modal-dialog modal-sm" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="tit5">停止报价</h4>
-        </div>
-        <div class="modal-body">
-            <div class="result">
-                <p class="success"><i class="iconfont icon-radio-yes"></i>操作成功</p>
-                <p class="tips">3秒后自动关闭</p>
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tit5">停止报价</h4>
             </div>
-            <div class="button">
-                <button type="button" class="btn btn-default" data-dismiss="modal">立即关闭</button>
+            <div class="modal-body">
+                <div class="result">
+                    <p class="success"><i class="iconfont icon-radio-yes"></i>操作成功</p>
+                    <p class="tips">3秒后自动关闭</p>
+                </div>
+                <div class="button">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">立即关闭</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-</div>
 
+{% end %}
+
+{% block js %}
 <script>
-    $(function() {
-$("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
-$("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
-$("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
-$("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
+$(function() {
+    $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));
+    $("#receive").html("{{"-".join(purchase.receive.split())}}".split("-").join("<br>"));
+    $("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
+    $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
 
-        var $jModalOk = $('#jModalOk');
-        var $jModalFail = $('#jModalFail');
-        var $jModalMsg = $('#jModalMsg');
-        var qid;
+    var $jModalOk = $('#jModalOk');
+    var $jModalFail = $('#jModalFail');
+    var $jModalMsg = $('#jModalMsg');
+    var qid;
 
-        var showMsg = function(tit) {
-            $jModalMsg.find('.modal-title').html(tit);
-            $jModalMsg.modal('show');
-            this.timer && clearTimeout(this.timer);
-            this.timer = setTimeout(function() {
-                $jModalMsg.modal('hide');
-            }, 3e3);
+    var showMsg = function(tit) {
+        $jModalMsg.find('.modal-title').html(tit);
+        $jModalMsg.modal('show');
+        this.timer && clearTimeout(this.timer);
+        this.timer = setTimeout(function() {
+            $jModalMsg.modal('hide');
+        }, 3e3);
+    }
+
+    var setFoot = function(status, msg) {
+        var $tools = $('#qid' + qid);
+        var temp = [];
+        temp.push('<div class="ft">');
+        if (status === 1) {
+            temp.push('<div class="status-accept"><i class="iconfont icon-face">', msg , '</i></div>');
+        } else {
+            temp.push('<div class="status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：', msg,'</div>');
         }
+        temp.push('</div>');
+        $tools.after(temp.join(''));
+        $tools.remove();
+    }
 
-        var setFoot = function(status, msg) {
-            var $tools = $('#qid' + qid);
-            var temp = [];
-            temp.push('<div class="ft">');
-            if (status === 1) {
-                temp.push('<div class="status-accept"><i class="iconfont icon-face">', msg , '</i></div>');
-            } else {
-                temp.push('<div class="status-refuse"><i class="iconfont icon-frown"></i>已拒绝，原因：', msg,'</div>');
+    // 报价合适
+    $('.yc-quote-receive').on('click', '.smile', function() {
+        // $jModalOk.find("input[name='qid']").val($(this).attr("qid"));
+        qid = $(this).data('qid');
+        $jModalOk.modal();
+        return false;
+    });
+    // 报价不合适
+    $('.yc-quote-receive').on('click', '.sad', function() {
+        // $jModalFail.find("input[name='qid']").val($(this).attr("qid"));
+        qid = $(this).data('qid');
+        $jModalFail.modal();
+        return false;
+    });
+
+    $jModalOk.on('click', '.btn', function() {
+        $.ajax({
+            type:'post',
+            url: '/updatequotestate',
+            data: {qid:qid, state:1,message:""},
+            // data: {qid:$jModalOk.find("input[name='qid']").val(),state:1,message:""},
+            dataType: 'json',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                $jModalOk.modal('hide');
+                showMsg('报价合适');  
+                setFoot(1, '已甄选为意向供应商');                  
             }
-            temp.push('</div>');
-            $tools.after(temp.join(''));
-            $tools.remove();
-        }
+        })
+    });
 
-        // 报价合适
-        $('.yc-quote-receive').on('click', '.smile', function() {
-            // $jModalOk.find("input[name='qid']").val($(this).attr("qid"));
-            qid = $(this).data('qid');
-            $jModalOk.modal();
-            return false;
+    var message = [];
+    var $form = $('#jFormReason');
+    $jModalFail.on('click', '.btn', function() {
+        $form.find('input:checked').each(function() {
+            message.push(this.value);
         });
-        // 报价不合适
-        $('.yc-quote-receive').on('click', '.sad', function() {
-            // $jModalFail.find("input[name='qid']").val($(this).attr("qid"));
-            qid = $(this).data('qid');
-            $jModalFail.modal();
-            return false;
-        });
-
-        $jModalOk.on('click', '.btn', function() {
-            $.ajax({
-                type:'post',
-                url: '/updatequotestate',
-                data: {qid:qid, state:1,message:""},
-                // data: {qid:$jModalOk.find("input[name='qid']").val(),state:1,message:""},
-                dataType: 'json',
-                beforeSend: function(jqXHR, settings) {
-                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-                },
-                success: function(data) {
-                    $jModalOk.modal('hide');
-                    showMsg('报价合适');  
-                    setFoot(1, '已甄选为意向供应商');                  
-                }
-            })
-        });
-
-        var message = [];
-        var $form = $('#jFormReason');
-        $jModalFail.on('click', '.btn', function() {
-            $form.find('input:checked').each(function() {
-                message.push(this.value);
-            });
-            var desc = $.trim($form.find('textarea').val());
-            desc.length > 0 && message.push(desc);
-            $.ajax({
-                type: 'post',
-                url: '/updatequotestate',
-                data: {qid: qid,state:2,message:message.join('、')},
-                // data: {"qid":$jModalFail.find("input[name='qid']").val(),"state":2,"message":message.join()},
-                dataType: 'json',
-                beforeSend: function(jqXHR, settings) {
-                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-                },
-                success: function(data) {
-                    $jModalFail.modal('hide');
-                    showMsg('报价不合适');
-                    setFoot(2, message.join('、'));      
-                }
-            })
-        });
-
-        
-
-    })
+        var desc = $.trim($form.find('textarea').val());
+        desc.length > 0 && message.push(desc);
+        $.ajax({
+            type: 'post',
+            url: '/updatequotestate',
+            data: {qid: qid,state:2,message:message.join('、')},
+            // data: {"qid":$jModalFail.find("input[name='qid']").val(),"state":2,"message":message.join()},
+            dataType: 'json',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                $jModalFail.modal('hide');
+                showMsg('报价不合适');
+                setFoot(2, message.join('、'));      
+            }
+        })
+    });
+})
 </script>
 {% end %}

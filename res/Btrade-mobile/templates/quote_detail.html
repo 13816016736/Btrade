@@ -226,6 +226,7 @@
     </div>
 
 </section><!-- /yc-content -->
+
 {% if quote.state == 2%}
 <footer class="yc-footer">
     <div class="yc-quote">
@@ -239,6 +240,10 @@
     </div>
 </footer>
 {% end %}
+{% end %}
+
+
+{% block js %}
 <script>
 !(function(){
     $("#accept").html("{{"-".join(purchase.accept.split())}}".split("-").join("<br>"));

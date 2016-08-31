@@ -1,6 +1,5 @@
 {% extends "basenofoot.html" %}
 {% block container %}
-<body class="yc-body-nofoot">
     <header class="yc-header">
         <div class="yc-header-back">
             <a href="javascript:" onclick="self.location=document.referrer;">
@@ -40,8 +39,11 @@
             </div>
         </div>
     </section><!-- /yc-content -->
+    {% end %}
+
+{% block js %}
     <script>
-    !(function(){
+    !(function($){
         var $breeds = $('#jBreeds');
         var $total = $('#jTotal');
         var $ipt = $('.search .keywords');

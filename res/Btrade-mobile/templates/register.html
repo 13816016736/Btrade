@@ -1,347 +1,348 @@
 {% extends "basenofoot.html" %}
 {% block container %}
 {% raw xsrf_form_html() %}
-<body class="yc-body-nofoot">
-    <header class="yc-header">
-        <div class="yc-header-back">
-            <a href="javascript:history.back();">
-                <i class="iconfont icon-back"></i>
-            </a>
-        </div>
-        <div class="yc-header-title">注册</div>
-        <div class="yc-header-right">
-            <a href="/login">已有账号，直接登录</a>
-        </div>
-    </header><!-- /yc-header -->
+<header class="yc-header">
+    <div class="yc-header-back">
+        <a href="javascript:history.back();">
+            <i class="iconfont icon-back"></i>
+        </a>
+    </div>
+    <div class="yc-header-title">注册</div>
+    <div class="yc-header-right">
+        <a href="/login">已有账号，直接登录</a>
+    </div>
+</header><!-- /yc-header -->
 
-    <section class="yc-content">
-        <div class="yc-form yc-login">
-            <div class="title tit-msg">
-                <i class="iconfont icon-user"></i>
-                <span>1分钟注册成为药材购会员</span>
-                <p><i class="iconfont icon-pagelines"></i> 卖货：海量实时采购单，随时随地报价</p>
-                <p><i class="iconfont icon-car"></i> 采购：发布采购单，自动匹配优质供货商报价</p>
+<section class="yc-content">
+    <div class="yc-form yc-login">
+        <div class="title tit-msg">
+            <i class="iconfont icon-user"></i>
+            <span>1分钟注册成为药材购会员</span>
+            <p><i class="iconfont icon-pagelines"></i> 卖货：海量实时采购单，随时随地报价</p>
+            <p><i class="iconfont icon-car"></i> 采购：发布采购单，自动匹配优质供货商报价</p>
+        </div>
+        <div class="title">
+            <span>基础信息</span>
+        </div> 
+    </div>
+
+    <div class="yc-form">
+        <form action="/regsuccess" method="post">
+            {% raw xsrf_form_html() %}
+            <input type="hidden" name="next_url" value="{{next_url}}" />
+            <div class="item">
+                <label class="txt">手机号</label>
+                <input class="ipt" type="text" value="" id="jMobile" placeholder="请输入手机号" />
+                <span class="error"></span>
             </div>
+            <div class="item">
+                <label class="txt">验证码</label>
+                <input class="ipt" type="text" value="" id="jCode" placeholder="请输入验证码" />
+                <span class="error"></span>
+                <button class="btn-send" id="jSendCode" type="button">获取验证码</button>
+            </div>
+            <div class="item">
+                <label class="txt">会员名</label>
+                <input class="ipt" type="text" value="" id="jName" placeholder="6-20位字母、数字" />
+                <span class="error"></span>
+            </div>
+            <div class="item">
+                <label class="txt">登录密码</label>
+                <input class="ipt" type="password" value="" id="jPwd" placeholder="6-20位字母、数字" />
+                <span class="error"></span>
+            </div>
+            <div class="item">
+                <label class="txt">确认密码</label>
+                <input class="ipt" type="password" value="" id="jRepPwd" placeholder="请在输入一遍密码" />
+                <span class="error"></span>
+            </div>
+            {% if userinfo %}
+            <div class="item">
+                <label class="txt">微信绑定</label>
+                <span class="ipt">{{userinfo['nickname'].encode('raw_unicode_escape')}}<img src="{{userinfo['headimgurl']}}" alt=""></span>
+                <span class="error"></span>
+            </div>
+            {% end %}
             <div class="title">
-                <span>基础信息</span>
-            </div> 
-        </div>
+                <span>经营主体</span>
+            </div>
+            <div class="item">
+                <label class="txt">账号类型</label>
+                <label class="rdo">
+                    <input name="type" value="Personal" type="radio" checked="">
+                    <span class="ipt-rdo">注册个人账户</span>
+                </label>   
+                <label class="rdo">
+                    <input name="type" value="Company" type="radio">
+                    <span class="ipt-rdo">注册企业账户</span>
+                </label>   
+                <div class="tips current" id="jPersonalMsg">
+                    <span>适用于：无营业执照的经营个人，或企业采购经理/业务员个人注册</span>   
+                </div>
+                <div class="tips" id="jCompanyMsg">
+                    <span>适用于：拥有营业执照的主体，包括饮片厂、药厂、药材经营公司、合作社、种植地基、个体工商户等</span>
+                </div>
+            </div>
+            <div class="item" id="jPersonal">
+                <label class="txt">真实姓名</label>
+                <input class="ipt" type="text" value="" id="jRealName" placeholder="请填写您的真实姓名">
+                <span class="error"></span>
+            </div>
+            <div class="item" id="jCompany" style="display:none;">
+                <label class="txt">单位全称</label>
+                <input class="ipt" type="text" value="" id="jCompName" placeholder="请填写工商注册的企业全称">
+                <span class="error"></span>
+            </div>
+            <div class="item">
+                <label class="txt">个人称呼</label>
+                <input class="ipt" type="text" value="" id="jNickName" placeholder="请填写您个人的姓名或称呼，用于联系">
+                <span class="error"></span>
+            </div>
+            <div class="button">
+                <button class="submit" id="jSubmit" type="button">注 册</button>
+            </div>
+        </form>
+    </div>
+</section><!-- /yc-content -->
+{% end %}
 
-        <div class="yc-form">
-            <form action="/regsuccess" method="post">
-                {% raw xsrf_form_html() %}
-                <input type="hidden" name="next_url" value="{{next_url}}" />
-                <div class="item">
-                    <label class="txt">手机号</label>
-                    <input class="ipt" type="text" value="" id="jMobile" placeholder="请输入手机号" />
-                    <span class="error"></span>
-                </div>
-                <div class="item">
-                    <label class="txt">验证码</label>
-                    <input class="ipt" type="text" value="" id="jCode" placeholder="请输入验证码" />
-                    <span class="error"></span>
-                    <button class="btn-send" id="jSendCode" type="button">获取验证码</button>
-                </div>
-                <div class="item">
-                    <label class="txt">会员名</label>
-                    <input class="ipt" type="text" value="" id="jName" placeholder="6-20位字母、数字" />
-                    <span class="error"></span>
-                </div>
-                <div class="item">
-                    <label class="txt">登录密码</label>
-                    <input class="ipt" type="password" value="" id="jPwd" placeholder="6-20位字母、数字" />
-                    <span class="error"></span>
-                </div>
-                <div class="item">
-                    <label class="txt">确认密码</label>
-                    <input class="ipt" type="password" value="" id="jRepPwd" placeholder="请在输入一遍密码" />
-                    <span class="error"></span>
-                </div>
-                {% if userinfo %}
-                <div class="item">
-                    <label class="txt">微信绑定</label>
-                    <span class="ipt">{{userinfo['nickname'].encode('raw_unicode_escape')}}<img src="{{userinfo['headimgurl']}}" alt=""></span>
-                    <span class="error"></span>
-                </div>
-                {% end %}
-                <div class="title">
-                    <span>经营主体</span>
-                </div>
-                <div class="item">
-                    <label class="txt">账号类型</label>
-                    <label class="rdo">
-                        <input name="type" value="Personal" type="radio" checked="">
-                        <span class="ipt-rdo">注册个人账户</span>
-                    </label>   
-                    <label class="rdo">
-                        <input name="type" value="Company" type="radio">
-                        <span class="ipt-rdo">注册企业账户</span>
-                    </label>   
-                    <div class="tips current" id="jPersonalMsg">
-                        <span>适用于：无营业执照的经营个人，或企业采购经理/业务员个人注册</span>   
-                    </div>
-                    <div class="tips" id="jCompanyMsg">
-                        <span>适用于：拥有营业执照的主体，包括饮片厂、药厂、药材经营公司、合作社、种植地基、个体工商户等</span>
-                    </div>
-                </div>
-                <div class="item" id="jPersonal">
-                    <label class="txt">真实姓名</label>
-                    <input class="ipt" type="text" value="" id="jRealName" placeholder="请填写您的真实姓名">
-                    <span class="error"></span>
-                </div>
-                <div class="item" id="jCompany" style="display:none;">
-                    <label class="txt">单位全称</label>
-                    <input class="ipt" type="text" value="" id="jCompName" placeholder="请填写工商注册的企业全称">
-                    <span class="error"></span>
-                </div>
-                <div class="item">
-                    <label class="txt">个人称呼</label>
-                    <input class="ipt" type="text" value="" id="jNickName" placeholder="请填写您个人的姓名或称呼，用于联系">
-                    <span class="error"></span>
-                </div>
-                <div class="button">
-                    <button class="submit" id="jSubmit" type="button">注 册</button>
-                </div>
-            </form>
-        </div>
-    </section><!-- /yc-content -->
-    <script>
-    !(function($){
-        // 表单内容tab切换
-        $('.rdo').on('click', 'input:radio', function() {
-            if (this.checked) {
-                var id = $(this).val();
-                $('#jPersonal,#jCompany,#jPersonalMsg,#jCompanyMsg').hide();
-                $('#j' + id).show();
-                $('#j' + id + 'Msg').show();
-            }
-        });
+{% block js %}
+<script>
+!(function($){
+    // 表单内容tab切换
+    $('.rdo').on('click', 'input:radio', function() {
+        if (this.checked) {
+            var id = $(this).val();
+            $('#jPersonal,#jCompany,#jPersonalMsg,#jCompanyMsg').hide();
+            $('#j' + id).show();
+            $('#j' + id + 'Msg').show();
+        }
+    });
 
-        var $mobile = $('#jMobile'),
-            $code = $('#jCode'),
-            $name = $('#jName'),
-            $pwd = $('#jPwd'),
-            $repPwd = $('#jRepPwd'),
-            $realName = $('#jRealName'),
-            $compName = $('#jCompName'),
-            $nickName = $('#jNickName');
+    var $mobile = $('#jMobile'),
+        $code = $('#jCode'),
+        $name = $('#jName'),
+        $pwd = $('#jPwd'),
+        $repPwd = $('#jRepPwd'),
+        $realName = $('#jRealName'),
+        $compName = $('#jCompName'),
+        $nickName = $('#jNickName');
 
-        function checkMobile() {
-            var val = $mobile.val();
-            if (!val) {
-                $mobile.next().html('请输入手机号码').show();
-            } else if (!/^1[345678]\d{9}$|^01[345678]\d{9}$/.test(val)) {
-                $mobile.next().html('手机号码格式错误').show();
-            } else {
-                $mobile.next().html('').hide();
-                return true;
-            }
-            $mobile.focus();
-            return false;
+    function checkMobile() {
+        var val = $mobile.val();
+        if (!val) {
+            $mobile.next().html('请输入手机号码').show();
+        } else if (!/^1[345678]\d{9}$|^01[345678]\d{9}$/.test(val)) {
+            $mobile.next().html('手机号码格式错误').show();
+        } else {
+            $mobile.next().html('').hide();
+            return true;
         }
-        function checkCode() {
-            var val = $code.val();
-            if (!val) {
-                $code.next().html('请输入手机验证码').show();
-            } else {
-                $code.next().html('').hide();
-                return true;
-            }
-            $code.focus();
-            return false;
+        $mobile.focus();
+        return false;
+    }
+    function checkCode() {
+        var val = $code.val();
+        if (!val) {
+            $code.next().html('请输入手机验证码').show();
+        } else {
+            $code.next().html('').hide();
+            return true;
         }
-        function checkName() {
-            var val = $name.val();
-            if (!val) {
-                $name.next().html('请输入会员名').show();
-            } else if (!/[a-z0-9]{6,20}/.test(val)) {
-                $name.next().html('会员名格式错误，6-20位字母、数字').show();
-            } else {
-                $name.next().html('').hide();
-                return true;
-            }
-            $name.focus();
-            return false;
+        $code.focus();
+        return false;
+    }
+    function checkName() {
+        var val = $name.val();
+        if (!val) {
+            $name.next().html('请输入会员名').show();
+        } else if (!/[a-z0-9]{6,20}/.test(val)) {
+            $name.next().html('会员名格式错误，6-20位字母、数字').show();
+        } else {
+            $name.next().html('').hide();
+            return true;
         }
-        function checkPwd() {
-            var val = $pwd.val();
-            if (!val) {
-                $pwd.next().html('请输入新密码').show();
-            } else if (!/[a-z0-9]{6,20}/.test(val)) {
-                $pwd.next().html('密码格式错误，6-20位字母、数字').show();
-            } else {
-                $pwd.next().html('').hide();
-                return true;
-            }
-            $pwd.focus();
-            return false;
+        $name.focus();
+        return false;
+    }
+    function checkPwd() {
+        var val = $pwd.val();
+        if (!val) {
+            $pwd.next().html('请输入新密码').show();
+        } else if (!/[a-z0-9]{6,20}/.test(val)) {
+            $pwd.next().html('密码格式错误，6-20位字母、数字').show();
+        } else {
+            $pwd.next().html('').hide();
+            return true;
         }
-        function checkRepPwd() {
-            var val = $repPwd.val();
-            if (!val) {
-                $repPwd.next().html('请输入确认密码').show();
-            } else if (val !== $pwd.val()) {
-                $repPwd.next().html('两次输入的密码不一致').show();
-            } else {
-                $repPwd.next().html('').hide();
-                return true;
-            }
-            $repPwd.focus();
-            return false;
+        $pwd.focus();
+        return false;
+    }
+    function checkRepPwd() {
+        var val = $repPwd.val();
+        if (!val) {
+            $repPwd.next().html('请输入确认密码').show();
+        } else if (val !== $pwd.val()) {
+            $repPwd.next().html('两次输入的密码不一致').show();
+        } else {
+            $repPwd.next().html('').hide();
+            return true;
         }
-        function checkRealName() {
-            var val = $realName.val();
-            if (!val) {
-                $realName.next().html('请输入真实姓名').show();
-            } else {
-                $realName.next().html('').hide();
-                return true;
-            }
-            $realName.focus();
-            return false;
+        $repPwd.focus();
+        return false;
+    }
+    function checkRealName() {
+        var val = $realName.val();
+        if (!val) {
+            $realName.next().html('请输入真实姓名').show();
+        } else {
+            $realName.next().html('').hide();
+            return true;
         }
-        function checkCompName() {
-            var val = $compName.val();
-            if (!val) {
-                $compName.next().html('请输入单位名称').show();
-            } else {
-                $compName.next().html('').hide();
-                return true;
-            }
-            $compName.focus();
-            return false;
+        $realName.focus();
+        return false;
+    }
+    function checkCompName() {
+        var val = $compName.val();
+        if (!val) {
+            $compName.next().html('请输入单位名称').show();
+        } else {
+            $compName.next().html('').hide();
+            return true;
         }
-        function checkNickName() {
-            var val = $nickName.val();
-            if (!val) {
-                $nickName.next().html('请输入姓名或称呼').show();
-            } else {
-                $nickName.next().html('').hide();
-                return true;
-            }
-            $nickName.focus();
-            return false;
+        $compName.focus();
+        return false;
+    }
+    function checkNickName() {
+        var val = $nickName.val();
+        if (!val) {
+            $nickName.next().html('请输入姓名或称呼').show();
+        } else {
+            $nickName.next().html('').hide();
+            return true;
         }
-        function checkIpt() {
-            if (checkMobile() && checkCode() && checkName() && checkPwd() && checkRepPwd()) {
-                if ($('.rdo input:radio:checked').val() === 'Personal') {
-                    if (checkRealName() && checkNickName()) {
-                        return true;
-                    }
-                } else {
-                    if (checkCompName() && checkNickName()) {
-                        return true;
-                    }
+        $nickName.focus();
+        return false;
+    }
+    function checkIpt() {
+        if (checkMobile() && checkCode() && checkName() && checkPwd() && checkRepPwd()) {
+            if ($('.rdo input:radio:checked').val() === 'Personal') {
+                if (checkRealName() && checkNickName()) {
+                    return true;
                 }
-            } 
-            return false;
-        }
-        // 保存
-        $('#jSubmit').on('click', function() {
-            bool = checkIpt();
-            if(bool){
-                var type = ($("#jPersonalMsg").is(":visible")) ? 8 : 7;
-                var name = (type == 8) ? $realName.val() : $compName.val();
-                var data = {
-                    "phone":$mobile.val(),
-                    "smscode":$code.val(),
-                    "username":$name.val(),
-                    "password":$pwd.val(),
-                    "repeatpassword":$repPwd.val(),
-                    "type":type,
-                    "name":name,
-                    "nickname":$nickName.val(),
-                    "openid":"{% if userinfo %}{{userinfo['openid']}}{% end %}"
-                };
-                $.ajax({
-                    url: '/register',
-                    dataType: 'json',
-                    data: data,
-                    type: 'POST',
-                    beforeSend: function(jqXHR, settings) {
-                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-                    },
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            $("form").submit();
-                        } else {
-                            lpPopover(data.message);
-                        }
-                    },
-                    error: function(XMLHttpRequest, textStatus, errorThrown) {
-                        lpPopover('网络连接超时，请您稍后重试!');
-                    }
-                })
+            } else {
+                if (checkCompName() && checkNickName()) {
+                    return true;
+                }
             }
-            return bool;
-        });
-
-        $('body').on('click', function() {
-            $('.error').html('').hide();
-        })
-
-        var txt = "秒重新获取",
-            second = 0, //间隔时间，单位：秒
-            $send = $("#jSendCode");
-
-        // 短信验证码
-        var sendMessageCode = {
-            send: function() {
-                var obj = this;
-                $.ajax({
-                    url: '/getsmscode',
-                    dataType: 'json',
-                    data: 'phone='+$mobile.val(),
-                    type: 'POST',
-                    beforeSend: function(jqXHR, settings) {
-                        jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
-                    },
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            $send.text(second + txt).prop('disabled', true);
-                            obj.lock();
-                            lpPopover(data.message);
-                        }else{
-                            lpPopover(data.message);
-                        }
-                    },
-                    error: function(XMLHttpRequest, textStatus, errorThrown) {
-                        lpPopover('网络连接超时，请您稍后重试!');
+        } 
+        return false;
+    }
+    // 保存
+    $('#jSubmit').on('click', function() {
+        bool = checkIpt();
+        if(bool){
+            var type = ($("#jPersonalMsg").is(":visible")) ? 8 : 7;
+            var name = (type == 8) ? $realName.val() : $compName.val();
+            var data = {
+                "phone":$mobile.val(),
+                "smscode":$code.val(),
+                "username":$name.val(),
+                "password":$pwd.val(),
+                "repeatpassword":$repPwd.val(),
+                "type":type,
+                "name":name,
+                "nickname":$nickName.val(),
+                "openid":"{% if userinfo %}{{userinfo['openid']}}{% end %}"
+            };
+            $.ajax({
+                url: '/register',
+                dataType: 'json',
+                data: data,
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        $("form").submit();
+                    } else {
+                        lpPopover(data.message);
                     }
-                })
-            },
-            lock: function() {
-                var that = this;
-                that.timer && clearInterval(that.timer);
-                that.timer = setInterval(function() {
-                    second --;
-                    $send.text(second + txt).prop('disabled', true);
-                    if (second === 0) {
-                        clearInterval(that.timer);
-                        $send.text("获取验证码").prop('disabled', false);
-                    }
-                }, 1e3);
-            }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    lpPopover('网络连接超时，请您稍后重试!');
+                }
+            })
         }
+        return bool;
+    });
 
-        $send.on("click", function() {
-            bool = checkMobile();
-            if(bool){
+    $('body').on('click', function() {
+        $('.error').html('').hide();
+    })
+
+    var txt = "秒重新获取",
+        second = 0, //间隔时间，单位：秒
+        $send = $("#jSendCode");
+
+    // 短信验证码
+    var sendMessageCode = {
+        send: function() {
+            var obj = this;
+            $.ajax({
+                url: '/getsmscode',
+                dataType: 'json',
+                data: 'phone='+$mobile.val(),
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        $send.text(second + txt).prop('disabled', true);
+                        obj.lock();
+                        lpPopover(data.message);
+                    }else{
+                        lpPopover(data.message);
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    lpPopover('网络连接超时，请您稍后重试!');
+                }
+            })
+        },
+        lock: function() {
+            var that = this;
+            that.timer && clearInterval(that.timer);
+            that.timer = setInterval(function() {
+                second --;
+                $send.text(second + txt).prop('disabled', true);
                 if (second === 0) {
-                    second = 60;
-                    sendMessageCode.send();
+                    clearInterval(that.timer);
+                    $send.text("获取验证码").prop('disabled', false);
                 }
+            }, 1e3);
+        }
+    }
+
+    $send.on("click", function() {
+        bool = checkMobile();
+        if(bool){
+            if (second === 0) {
+                second = 60;
+                sendMessageCode.send();
             }
-            return bool;
-        })
+        }
+        return bool;
+    })
 
-        // 填充个人称呼
-        $realName.on('blur', function() {
-            var val = $(this).val();
-            val && $nickName.val(val);
-        })
+    // 填充个人称呼
+    $realName.on('blur', function() {
+        var val = $(this).val();
+        val && $nickName.val(val);
+    })
 
-    }(jQuery));
-    </script>
-</body>
+}(jQuery));
+</script>
 {% end %}
