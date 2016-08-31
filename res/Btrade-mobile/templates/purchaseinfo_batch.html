@@ -74,11 +74,11 @@
                 -->
                 <div class="left">
                     <p class="txt">发布采购：<b>{{purchasesinfocout}}批次</b></p>
-                    <p class="txt">达成意向：<b>{{purchasesinfocout}}批次</b></p>
+                    <p class="txt">达成意向：<b>{{accept}}批次</b></p>
                 </div>
                 <div class="right">
                     <p class="txt">报价答复率：<b>{{reply}}%</b></p>
-                    <p class="txt">&#12288;累计采购：<b>50吨 146万元</b></p>
+                    <p class="txt">&#12288;累计采购：<b>{{accept_quantity}}吨 {{accept_price}}万元</b></p>
                 </div>
                 <div class="link"><a href="#" class="blue">查看TA的采购详情</a></div>
             </div>
@@ -130,48 +130,22 @@
     
     
     <div class="yc-floor">
+        {% if len(quoteaccept)!=0 %}
         <div class="hd">
             <h3>最近达成的交易意向</h3>
         </div>
         <div class="hd">
             <ol class="yc-record">
+                {% for index,item in enumerate(quoteaccept) %}
                 <li>
-                    <i>1</i>
-                    <em>毫州天天药材行</em>
-                    <time>08-29 13:11</time>
+                    <i>{{index+1}}</i>
+                    <em>{{item["name"]}}</em>
+                    <time>{{item["updatetime"]}}</time>
                 </li>
-                <li>
-                    <i>2</i>
-                    <em>潘登</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>3</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>4</i>
-                    <em>毫州天天药材行</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>5</i>
-                    <em>潘登</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>6</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>10</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
+                {% end %}
             </ol>
         </div>
+        {% end %}
     </div>
 
     <div class="yc-purchase">
@@ -218,16 +192,12 @@
 <section class="action-bar">
     <div class="cell cart"><a href="#">有货，立即报价</a></div>
     <div class="cell share">
-        <a href="#">
             <i class="iconfont icon-share"></i>
             发给朋友
-        </a>
     </div>
     <div class="cell frown">
-        <a href="#">
             <i class="iconfont icon-frown"></i>
             暂不参加
-        </a>
     </div>
 </section>
 {% end %}

@@ -282,24 +282,85 @@ class PurchaseinfoBatchHandler(BaseHandler):
                 purchase["expire"] = datetime.datetime.fromtimestamp(float(purchase["createtime"])) + datetime.timedelta(purchase["term"])
                 purchase["timedelta"] = (purchase["expire"] - datetime.datetime.now()).days
 
-            #此采购商成功采购单数
-            purchases = self.db.execute_rowcount("select * from purchase where userid = %s and status = 4", user["id"])
+            childs = []
+            # 判断是否是主账号
+            parent = self.db.query("select * from child_user where parent_user_id=%s", user["id"])
+            if parent:
+                # 取所有子账号id
+                for item in parent:
+                    childs.append(str(item["child_user_id"]))
+            else:
+                # 判断是否是子账号
+                maxNum = 0  # 主账号的子账号最大数目
+                maxParent = None
+                childids = self.db.query("select * from child_user where child_user_id=%s", user["id"])
+                if childids:
+                    for c in childids:
+                        parentids = self.db.query("select * from child_user where parent_user_id=%s",
+                                                  c["parent_user_id"])
+                        if len(parentids) > maxNum:
+                            maxNum = len(parentids)
+                            maxParent = parentids
+                if maxParent:
+                    # 取所有子账号id
+                    for item in maxParent:
+                        childs.append(str(item["child_user_id"]))
+            if childs == []:
+                childs.append(str(user["id"]))
+
+            # 此采购商采购单数
+            purchases = self.db.execute_rowcount("select * from purchase where userid in(%s) " % ",".join(childs))
             # 此采购商采购批次数
             purchasesinfocout = self.db.execute_rowcount(
-                "select * from purchase p  left join purchase_info pi on p.id=pi.purchaseid where userid = %s ",
-                user["id"])
+                "select * from purchase p  left join purchase_info pi on p.id=pi.purchaseid where p.userid in(%s) " % ",".join(
+                    childs))
 
-            #此采购商回复供应商比例
+
+            # 此采购商回复供应商比例
             purchaser_quotes = self.db.query("select p.id,p.userid,t.state state from purchase p left join "
-                "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
-                    "on p.id = t.purchaseid where p.userid = %s", user["id"])
+                                             "(select pi.purchaseid,q.state from purchase_info pi left join quote q on pi.id = q.purchaseinfoid) t "
+                                             "on p.id = t.purchaseid where p.userid in(%s)" % ",".join(childs))
             reply = 0
+
             for purchaser_quote in purchaser_quotes:
                 if purchaser_quote.state is not None and purchaser_quote.state != 0:
                     reply = reply + 1
 
+            # 此采购商达成意向的批次数
+            accept = 0
+            accept_quantity = 0
+            accept_price = 0
+            quoteaccept = []
+            if purchasesinfocout != 0:
+                purchasesinfos = self.db.query(
+                    "select pi.id,pi.quantity,pi.unit from purchase p  left join purchase_info pi on p.id=pi.purchaseid where p.userid in(%s) " % ",".join(
+                        childs))
+                purchasesinfomap = dict((i.id, [i.quantity, i.unit]) for i in purchasesinfos)
+                purchaseinfoids = [str(i.id) for i in purchasesinfos]
+                quoteaccept = self.db.query(
+                    "select u.name,q.updatetime from quote q  left join users u on q.userid=u.id where q.purchaseinfoid in(%s) and q.state=1 order by q.updatetime desc limit 0,10 " % ",".join(
+                        purchaseinfoids))
+                for item in quoteaccept:
+                    item["updatetime"] = time.strftime("%m-%d %H:%M", time.localtime(float(item["updatetime"])))
+                accept_purchaseinfos = self.db.query(
+                    "select purchaseinfoid,price from quote where purchaseinfoid in(%s) and state=1 group by purchaseinfoid ORDER BY price  " % ",".join(
+                        purchaseinfoids))
+                accept = len(accept_purchaseinfos)
+                for item in accept_purchaseinfos:
+                    unit = purchasesinfomap[item["purchaseinfoid"]][1]
+                    quantity = purchasesinfomap[item["purchaseinfoid"]][0]
+                    price = item["price"]
+                    if unit == u"公斤":
+                        accept_quantity += int(quantity) / 1000
+                        accept_price += int(quantity) * float(price)
+
+                    elif unit == u"吨":
+                        accept_quantity += int(quantity)
+                        accept_price += int(quantity) * float(price) * 1000
+
             self.render("purchaseinfo_batch.html", user=user, purchase=purchase, purchases=purchases,purchasesinfocout=purchasesinfocout,
-                        reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0))
+                        reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),accept=accept,
+                    accept_quantity=accept_quantity,accept_price=int(accept_price/10000),quoteaccept=quoteaccept)
         else:
             self.error("采购单不存在","/")
 
