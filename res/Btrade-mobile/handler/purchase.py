@@ -182,8 +182,7 @@ class PurchaseInfoHandler(BaseHandler):
                 # 取所有子账号id
                 for item in maxParent:
                     childs.append(str(item["child_user_id"]))
-        if childs==[]:
-            childs.append(str(user["id"]))
+        childs.append(str(user["id"]))
 
 
 
@@ -303,8 +302,7 @@ class PurchaseinfoBatchHandler(BaseHandler):
                     # 取所有子账号id
                     for item in maxParent:
                         childs.append(str(item["child_user_id"]))
-            if childs == []:
-                childs.append(str(user["id"]))
+            childs.append(str(user["id"]))
 
             # 此采购商采购单数
             purchases = self.db.execute_rowcount("select * from purchase where userid in(%s) " % ",".join(childs))
@@ -545,8 +543,7 @@ class PurchaseDetailHandler(BaseHandler):
                     # 取所有子账号id
                     for item in maxParent:
                         childs.append(str(item["child_user_id"]))
-            if childs == []:
-                childs.append(str(id))
+            childs.append(str(id))
 
 
 
@@ -581,12 +578,12 @@ class PurchaseDetailHandler(BaseHandler):
                     "select id,purchaseinfoid,quoteid,quantity,unity,price,total,suppliercomment,score_to_supplier,createtime from transaction where status=1 and purchaseinfoid in(%s) order by createtime desc limit 0,5"%",".join(
                         purchaseinfoids))
                 if transactions:
-                    purchaseinfoids = [str(item["purchaseinfoid"]) for item in transactions]
+                    transactionpids = [str(item["purchaseinfoid"]) for item in transactions]
                     #tids=[str(item["id"]) for item in transactions]
                     qutoeids = [str(item["quoteid"]) for item in transactions]
                     purchaseinfos = self.db.query(
                         "select p.userid,pi.id, pi.name,pi.specification from purchase_info pi left join purchase p on pi.purchaseid=p.id where pi.id in(%s)" % ",".join(
-                            purchaseinfoids))
+                            transactionpids))
                     puserids = [str(item["userid"]) for item in purchaseinfos]
                     purchaseinfomap = dict((i.id, [i.userid, i.name, i.specification]) for i in purchaseinfos)
 

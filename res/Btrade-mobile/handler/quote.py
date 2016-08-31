@@ -80,8 +80,8 @@ class QuoteHandler(BaseHandler):
                 # 取所有子账号id
                 for item in maxParent:
                     childs.append(str(item["child_user_id"]))
-        if childs == []:
-            childs.append(str(purchaser["id"]))
+
+        childs.append(str(purchaser["id"]))
 
 
         #此采购商成功采购单数
