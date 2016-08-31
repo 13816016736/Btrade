@@ -105,11 +105,11 @@
                 -->
                 <div class="left">
                     <div>发布采购：<b>{{purchasesinfocout}}批次</b></div>
-                    <div>达成意向：<b>{{purchasesinfocout}}批次</b></div>
+                    <div>达成意向：<b>{{accept}}批次</b></div>
                 </div>
                 <div class="right">
                     <div>报价答复率：<b>{{reply}}%</b></div>
-                    <div>累计采购：<b>50吨 146万元</b></div>
+                    <div>累计采购：<b>{{accept_quantity}}吨 {{accept_price}}万元</b></div>
                 </div>
                 <div class="link"><a href="#" class="blue">查看TA的采购详情</a></div>
             </div>
@@ -199,48 +199,22 @@
 
     
     <div class="yc-floor">
+         {% if len(quoteaccept)!=0 %}
         <div class="hd">
             <h3>最近达成的交易意向</h3>
         </div>
         <div class="hd">
             <ol class="yc-record">
+                {% for index,item in enumerate(quoteaccept) %}
                 <li>
-                    <i>1</i>
-                    <em>毫州天天药材行</em>
-                    <time>08-29 13:11</time>
+                    <i>{{index+1}}</i>
+                    <em>{{item["name"]}}</em>
+                    <time>{{item["updatetime"]}}</time>
                 </li>
-                <li>
-                    <i>2</i>
-                    <em>潘登</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>3</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>4</i>
-                    <em>毫州天天药材行</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>5</i>
-                    <em>潘登</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>6</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
-                <li>
-                    <i>10</i>
-                    <em>严飞</em>
-                    <time>08-29 13:11</time>
-                </li>
+                {% end %}
             </ol>
         </div>
+        {% end %}
     </div>
 
 
@@ -252,7 +226,7 @@
     {% end %}
 
     <div class="yc-tips">
-        <a href="#">1分钟了解药材购怎么帮药商卖货&gt;&gt;</a>
+        <a href="/about">1分钟了解药材购怎么帮药商卖货&gt;&gt;</a>
     </div>
 
     <div class="yc-hotline">

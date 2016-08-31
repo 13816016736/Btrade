@@ -45,7 +45,39 @@ class YaocaigouHandler(BaseHandler):
             self.render("yaocaigou.html")
         else:
             self.render("purchase_yaocaigou.html")
+class AboutHandler(BaseHandler):
+    def get(self):
+        accept_purchaseinfo = self.db.query("select distinct purchaseinfoid from quote where state=1")
+        accept_company_num = 0
+        accept_purchaseinfoids = []
+        if accept_purchaseinfo:
+            accept_purchaseinfoids = [str(item["purchaseinfoid"]) for item in accept_purchaseinfo]
+            accept_company_num = self.db.execute_rowcount(
+                "select distinct p.userid from purchase p left join  purchase_info pi on p.id=pi.purchaseid where pi.id in (%s)" % (
+                ",".join(accept_purchaseinfoids)))
+        accept_quote_user_num = self.db.execute_rowcount("select distinct userid  from quote where state=1")
+        accept_num = len(accept_purchaseinfoids)
+        sum_quantity = 0
+        sum_price = 0
+        for item in accept_purchaseinfoids:
+            purchaseinfo = self.db.get("select quantity,unit from purchase_info where id=%s", item)
+            if purchaseinfo:
+                quoteinfo = self.db.get(
+                    "select price from quote where purchaseinfoid=%s and state=1 order by price desc limit 0,1", item)
+                if purchaseinfo["unit"] == u"公斤":
+                    sum_quantity += int(purchaseinfo["quantity"]) / 1000
+                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])
 
+                elif purchaseinfo["unit"] == u"吨":
+                    sum_quantity += int(purchaseinfo["quantity"])
+                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"]) * 1000
+
+        user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
+        supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
+        total = user_count + supplier_count
+        show_data = {"accept_company_num": accept_company_num, "accept_quote_user_num": accept_quote_user_num,"total":total,
+                         "accept_num": accept_num, "sum_quantity": sum_quantity, "sum_price": int(sum_price / 10000)}
+        self.render("about.html",data=show_data)
 
 class CenterHandler(BaseHandler):
     @purchase_push_trace

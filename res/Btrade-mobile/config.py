@@ -35,6 +35,7 @@ handlers = [
     (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/yaocaigou", YaocaigouHandler),
     (r"/center", CenterHandler),
+    (r"/about", AboutHandler),
     (r"/payment", PaymentHandler),
     (r"/user/attention", UserAttentionHandler),
     (r"/user/updatepassword", UserUpdatePasswordHandler),
