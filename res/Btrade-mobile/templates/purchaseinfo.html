@@ -317,6 +317,19 @@
 
     $('#jresult').on('click', '.btn', function(e) {
         e.stopPropagation();
+         $.ajax({
+            url: '/feedBack',
+            dataType: 'json',
+            data: {"content":$(this).html(),"pid":{{purchase.pid}}},
+            type: 'POST',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+            }
+        })
         $('#jresult').hide();
         $('#jsuccess').show();
     });

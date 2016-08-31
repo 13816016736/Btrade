@@ -10,6 +10,7 @@ import time
 from collections import defaultdict
 from webbasehandler import purchase_push_trace
 import logging
+from mongodb import PymongoDateBase
 
 class QuoteHandler(BaseHandler):
 
@@ -408,3 +409,23 @@ class QuoteListHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         pass
+
+
+class FeedBackHandler(BaseHandler):
+    @purchase_push_trace
+    def get(self):
+        pass
+    def post(self):
+        uuid = self.session.get("uuid")
+        userid=self.session.get("userid")
+        content=self.get_argument("content","")
+        pid=self.get_argument("pid","")
+        if userid==None:
+            userid=""
+        if uuid==None:
+            uuid=""
+        mongodb = PymongoDateBase.instance().get_db()
+        item={"uuid":uuid,"userid":userid,"content":content,"purchaseinfoid":pid,"createtime":int(time.time())}
+        mongodb.feedback.insert(item)
+        self.api_response({'status': 'success', 'message': '反馈成功'})
+
