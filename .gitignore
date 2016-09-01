@@ -8,3 +8,4 @@ nohup.out
 *.rdb
 celerybeat-schedule
 celerybeat.pid
+/file/redis/64bit/dump.rdb
