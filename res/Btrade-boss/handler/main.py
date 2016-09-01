@@ -6,6 +6,7 @@ import config, time
 from utils import *
 import os
 from collections import defaultdict
+from urllib import urlencode
 class MainHandler(BaseHandler):
     def get(self):
         self.redirect('/users/userlist')
@@ -270,5 +271,41 @@ class AdminUserHandler(BaseHandler):
                         self.api_response({'status': 'success', 'message': '添加成功'})
 
 
+class UserPaymentHandler(BaseHandler):
+    def get(self):
+        paytype=self.get_argument("paytype", 0)
+        paymode=self.get_argument("paymode", 0)
+        page = self.get_argument("page",0)
+        page = (int(page) - 1) if page > 0 else 0
+        conditionstr = ""
+        search_condition = []
+        if int(paytype)!=0:
+            search_condition.append(
+                "paytype=%s"%paytype)
+        if int(paymode)!=0:
+            search_condition.append(
+                "paymode=%s"%paymode)
+        if search_condition:
+            conditionstr = ("where " + (" and ".join(search_condition)))
 
+        payments = self.db.query("select * from payment " + conditionstr + " order by createtime desc limit %s, %s",
+                                  page * config.conf['POST_NUM'], config.conf['POST_NUM'])
+        for item in payments:
+            item.createtime = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item["createtime"])))
+            if item["callbacktime"]!="":
+                item.callbacktime = time.strftime("%Y-%m-%d %H:%M", time.localtime(float(item["callbacktime"])))
+            else:
+                item.callbacktime ="-"
+
+
+        query_str={}
+        query_str["paytype"]=paytype
+        query_str["paymode"]=paymode
+        nav = {
+            'model': 'users/payment',
+            'cur': page + 1,
+            'num': self.db.execute_rowcount("SELECT * FROM payment " + conditionstr),
+            'query': urlencode(query_str),
+        }
+        self.render("payment.html", payments=payments,paytype=paytype,paymode=paymode,nav=nav)
 

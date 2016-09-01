@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block container %}
+{% import config %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>支付记录</h1>
+        </section>
+        <section class="filter">
+            <form>
+                <div class="item">
+                    <label>支付渠道类型：</label>
+                     <a class="ubtn {% if int(paymode)==0 %}ubtn-pink{%else%}ubtn-gray{%end%}" href="/users/payment">所有</a>
+                    <a class="ubtn {% if int(paymode)==2 %}ubtn-pink{%else%}ubtn-gray{%end%}" href="/users/payment?paymode=2">微信</a>
+                    <a class="ubtn {% if int(paymode)==1 %}ubtn-pink{%else%}ubtn-gray{%end%}" href="/users/payment?paymode=1">支付宝</a>
+                </div>
+                <div class="item">
+                    <label>支付场景：</label>
+                    <select id="paytype">
+                        <option value ="0" {% if int(paytype)==0 %} selected {%end %}>所有场景</option>
+                        <option value ="1" {% if int(paytype)==1 %} selected {%end %}>阳光匹配（采购商）保证金</option>
+                        <option value ="2" {% if int(paytype)==2 %} selected {%end %}>阳光匹配（供货商）保证金</option>
+                    </select>
+                    <button type="button" class="ubtn ubtn-green" id="pquery">查询</button>
+                </div>
+            </form>
+        </section>
+        <section class="content">
+            <div class="mychart mychart-bg">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>支付场景</th>
+                            <th>支付渠道</th>
+                            <th>付款会员id</th>
+                            <th>支付金额</th>
+                            <th>支付渠道流水</th>
+                            <th>支付状态</th>
+                            <th>支付渠道反馈时间</th>
+                            <th>创建时间</th>
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody>
+                           {% for item in payments %}
+                            <tr>
+                                <td>{{item.payid}}</td>
+                                <td>{{config.pay_mode[item.paymode]}}</td>
+                                <td>{{config.pay_type[item.paytype]}}</td>
+                                <td>{{item.userid}}</td>
+                                <td>{{item.money}}</td>
+                                <td>{{item.tradeno}}</td>
+                                <td>{{config.pay_status[item.status]}}</td>
+                                <td>{{item.callbacktime}}</td>
+                                <td>{{item.createtime}}</td>
+                            </tr>
+                    {% end %}
+                    </tbody>
+                </table>
+            </div>
+            {% module PageNav(nav=nav, show=True) %}
+        </section>
+    </div>
+    <script src="{{ static_url('plugins/laydate/laydate.js') }}"></script>
+    <script>
+        $(function() {
+            $("#pquery").click(function() {
+                var paytype=$("#paytype").val();
+                location.href='/users/payment?paymode={{paymode}}&paytype='+paytype;
+            });
+        })
+    </script>
+{% end %}
+
+
