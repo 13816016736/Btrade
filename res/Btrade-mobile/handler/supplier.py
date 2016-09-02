@@ -133,7 +133,7 @@ class PaymentHandler(BaseHandler):
         unifiedOrder = UnifiedOrder_pub()
         unifiedOrder.setParameter("openid", user.openid)  # 商品描述
         unifiedOrder.setParameter("body", body)  # 商品描述
-        timeStamp = time.time()
+        #timeStamp = time.time()
         out_trade_no = payid
         unifiedOrder.setParameter("out_trade_no", out_trade_no)  # 商户订单号
         unifiedOrder.setParameter("total_fee", str(money))  # 总金额
@@ -146,7 +146,7 @@ class PaymentHandler(BaseHandler):
             jsApi.setPrepayId(prepay_id)
             jsApiParameters = jsApi.getParameters()
         except Exception as e:
-            print(e)
+            logging.info(e)
 
         self.api_response({'status': 'success', 'params': jsApiParameters})
 
