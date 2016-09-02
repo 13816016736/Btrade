@@ -75,6 +75,7 @@ handlers = [
     (r"/supplier/area", SupplierAreaHandler),
     (r"/supplier/variety", SupplierVarietyHandler),
     (r"/supplier/result", SupplierResultHandler),
+    (r"/users/payment", UserPaymentHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
 ];
 

@@ -45,6 +45,11 @@
                         <i class="fa fa-circle-o"></i> 后台会员管理
                     </a>
                     </li>
+                     <li {% if request.uri.split('/')[2].find("payment")!=-1 %}class="active"{% end %}>
+                    <a href="/users/payment">
+                        <i class="fa fa-circle-o"></i> 支付记录
+                    </a>
+                    </li>
                </ul>
             </li>
             <li class="treeview {% if request.uri.split('/')[1] == "purchase" %}active{% end %}">
