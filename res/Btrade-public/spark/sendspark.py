@@ -90,7 +90,13 @@ def sendPush(rdd):
                                     thread.start_new_thread(reply_quote_notify,(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),uuid))
 
                             elif channel==2:
+                                print sendid
                                 if sendid!="":
+                                    user=sqldb.query("select id from users where openid=%s", sendid)
+                                    if user:
+                                        sendtype=1
+                                    else:
+                                        sendtype=2
                                     uuid = md5(str(time.time()) + str(sendid))[8:-8]
                                     createtime = int(time.time())
                                     push_user = {"pushid": "", "uuid": uuid, "createtime": createtime, "click": 0,
@@ -101,9 +107,9 @@ def sendPush(rdd):
                                     colleciton = mongodb.notify_record
                                     notify_user = {"createtime": int(time.time()), "sendid": sendid, "type": channel,"purchaseinfoid":purchaseinfoid,"recordid":record_id}
                                     colleciton.insert(notify_user)
-                                    #print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8"),str(purchaseinfo["purchaseid"])
+                                    #print sendid, str(num),purchaseinfo["name"].encode("utf8"),purchaseinfo["price"].encode("utf8"),purchaseinfo["unit"].encode("utf8"),str(purchaseinfo["purchaseid"]),sendtype
                                     #reply_wx_notify(sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]))
-                                    thread.start_new_thread(reply_wx_notify, (sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]),uuid))
+                                    thread.start_new_thread(reply_wx_notify, (sendid, str(num), purchaseinfo["name"],purchaseinfo["price"], purchaseinfo["unit"], str(purchaseinfoid),str(purchaseinfo["purchaseid"]),uuid,sendtype))
                                     pass
 
 

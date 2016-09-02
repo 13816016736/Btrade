@@ -30,6 +30,6 @@ sys.path.append(os.path.join(sys.path[0],".."))
 #print '\xe4\xba\xb3\xe5\xb7\x9e'
 #regSuccessWx("oTEeNweXKZh8FXoP3Fwu_y3AGPkk", "肖先生", "ycg")
 from pushengine.tasks import task_generate
-task = {"purchaseinfoid": str("1389"), "tasktype": 2, "channel": 1}
+task = {"purchaseinfoid": str("525"), "tasktype": 2, "channel": 2}
 print task
 task_generate.apply_async(args=[task])

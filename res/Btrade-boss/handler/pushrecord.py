@@ -177,8 +177,12 @@ class RecordDetailHandler(BaseHandler):
                                 register = 2
                    else:
                        users = self.db.query("select id,phone from users where openid=%s", sendid)
+                       user2 = self.db.query("select id,phone from users where openid2=%s", sendid)
                        if users:
                            phone=users[0]["phone"]
+                       elif user2:
+                           phone=user2[0]["phone"]
+
                        register = 2
                    loginurl=mongodb.user_view.find({"uuid":uuid,"userid":{"$ne":-1}}).count()
                    if loginurl!=0:

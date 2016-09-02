@@ -96,25 +96,30 @@ def task_generate(task):#生成发送任务
             if order>max_notify_time or (int(time.time())-int(record[0]["createtime"]))<notify_days*24*60*60:
                 return
 
-        sendid=""
+        sendids=[]
         if channel==1:
             userphone=sqldb.get("select id,phone from users where id=%s",purchaseinfo["uid"])
             if userphone:
-                sendid=userphone["phone"]
+                sendids.append(userphone["phone"])
         elif channel==2:
             useropenid=sqldb.get("select id,openid from users where id=%s",purchaseinfo["uid"])
             if useropenid:
-                sendid=useropenid["openid"]
-        print "channel=%s,sendid=%s"%(channel,sendid)
-        if sendid!="":
-            task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": channel, "order": order,
+                sendids.append(useropenid["openid"])
+            useropenid2 = sqldb.get("select id,openid2 from users where id=%s", purchaseinfo["uid"])
+            if useropenid:
+                sendids.append(useropenid2["openid2"])
+
+        print "channel=%s,sendid=%s"%(channel,sendids)
+        if sendids!=[]:
+            for sendid in sendids:
+                task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": channel, "order": order,
                     "status": 0, "createtime": int(time.time())}
-            taskid = mongodb.celery_task.insert(task)
-            taskinfo = {"taskid": taskid, "sendlist": sendid}
-            collection = mongodb.celery_task_info
-            collection.insert(taskinfo)
-            sendkafka.apply_async(args=[taskid])
-        pass
+                taskid = mongodb.celery_task.insert(task)
+                taskinfo = {"taskid": taskid, "sendlist": sendid}
+                collection = mongodb.celery_task_info
+                collection.insert(taskinfo)
+                sendkafka.apply_async(args=[taskid])
+
 
 
 
