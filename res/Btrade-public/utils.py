@@ -5,6 +5,7 @@ from sendsms import *
 from sendwechart import *
 from globalconfig import *
 from mongodb import PymongoDateBase
+import platform
 def md5(str):
     import hashlib
     import types
@@ -183,6 +184,8 @@ def rejectQuote(phone, name, variety, price, unit, message):
     thread.start_new_thread(send, (templateId, phone, vars))
 
 def pushPurchase(phones, purchase,uuidmap):
+    if 'Linux' not in platform.system():
+        return
     templateId = 870
     for (k,v) in purchase.items():
         purchase[k] = purchase[k].encode('utf-8') if isinstance(purchase[k], unicode) else purchase[k]
@@ -436,6 +439,8 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime,sendtype
     thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
 
 def pushPurchaseWx(openids, purchase,uuidmap,sendtype=1):
+    if 'Linux' not in platform.system():
+        return
     templateId = 'OxXsRhlyc17kt6ubwV7F0fD8ffRl12rGGS3mnpvpoU4'
     if sendtype == 2:
         templateId = "lRRAoLj5-udp8NvSY3IY-tuRQbJb53Ca_FbAU30SdGo"
