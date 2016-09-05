@@ -387,17 +387,22 @@ class UploadFileHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
-        type = self.get_argument("type")
+        upload_type=self.get_argument("upload","1")#默认为报价图片上传
         base64_string = self.get_argument("base64_string")
         imgData = base64.b64decode(base64_string)
         now = datetime.date.today().strftime("%Y%m%d")
+        root_path = config.img_path
         #文件的暂存路径
         # root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-        root_path = config.img_path
         upload_path = os.path.join(root_path, now)
         if os.path.exists(upload_path) is False:
             os.mkdir(upload_path)
-        name = str(int(time.time())) + str(self.session.get("userid")) + type
+
+        if upload_type=="1":
+            type = self.get_argument("type")
+            name = str(int(time.time())) + str(self.session.get("userid")) + type
+        else:
+            name = str(int(time.time())) + str(self.session.get("userid"))
         ext = ".png"
         filename = md5(str(name))+ext
         filepath = os.path.join(upload_path,filename)
@@ -407,10 +412,14 @@ class UploadFileHandler(BaseHandler):
                 up.write(imgData)
             #生成缩略图
             make_thumb(filepath,upload_path,300,300)
-            uploadfiles = self.session.get("uploadfiles_quote", {})
-            uploadfiles[type] = filepath
-            self.session["uploadfiles_quote"] = uploadfiles
-            self.session.save()
+            if upload_type=="1":
+                uploadfiles = self.session.get("uploadfiles_quote", {})
+                uploadfiles[type] = filepath
+                self.session["uploadfiles_quote"] = uploadfiles
+                self.session.save()
+            elif upload_type=="2":
+                #filepath转服务器上url
+                filepath = config.img_domain + filepath[filepath.find("static"):]
             self.api_response({'status':'success','message':'上传成功','path':filepath})
         except IOError:
             print ' in  IOError'
@@ -462,6 +471,17 @@ class GetVarietyInfoHandler(BaseHandler):
             if len(varietyinfo) == 0:
                 self.api_response({'status':'fail','message':'没有该品种'})
             else:
+                userid = self.session.get('userid')
+                ismember = 0
+                if userid:
+                    member = self.db.get("select * from member where userid =%s and type=3 and status=1",
+                                         self.session.get("userid"))
+                    if member:
+                        ismember = 1
+                if ismember == 0:
+                    for item in varietyinfo:
+                        item["state"] = 0
+
                 self.api_response({'status':'success','message':'请求成功','list':varietyinfo})
                 # specifications = self.db.query("SELECT id,specification FROM specification WHERE varietyid = %s", varietyinfo[0]["id"])
                 # self.api_response({'status':'success','message':'请求成功','list':varietyinfo,'specifications':specifications})

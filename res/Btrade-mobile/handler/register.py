@@ -184,7 +184,7 @@ class RegisterHandler(BaseHandler):
                 self.session["notification"] = len(notification)
                 self.session.save()
                 # 发短信通知用户注册成功
-                regSuccess(phone, name, username,int(registertype))
+                #regSuccess(phone, name, username,int(registertype))
                 self.api_response({'status': 'success', 'message': '注册成功'})
             else:
                 self.api_response({'status': 'fail', 'message': 'session过期'})
@@ -221,11 +221,11 @@ class GetSmsCodeHandler(BaseHandler):
             self.api_response({'status':'fail','message':'此手机号已被使用'})
             return
         smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
-        #print smscode
-        #message={}
-        #message["result"]="112"
-        message = getSmsCode(phone, smscode)
-        message = json.loads(message.encode("utf-8"))
+        print smscode
+        message={}
+        message["result"]="112"
+        #message = getSmsCode(phone, smscode)
+        #message = json.loads(message.encode("utf-8"))
         if message["result"]:
             self.session["smscode"] = smscode
             self.session.save()
@@ -325,7 +325,7 @@ class VarietySearchHandler(BaseHandler):
         varietyName=self.get_argument("key",None)
         #print varietyName
         if varietyName:
-            varieties=self.db.query("select id,name from variety where name like '%%%%%s%%%%' or find_in_set('%s',alias)" %(varietyName,varietyName))
+            varieties=self.db.query("select id,name from variety where name like %s or alias like %s" ,"%"+varietyName+"%", "%"+varietyName+"%",)
             if len(varieties)!=0:
                 self.api_response({"status": "success", "list": varieties})
             else:

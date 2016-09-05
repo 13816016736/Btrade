@@ -44,7 +44,53 @@ class YaocaigouHandler(BaseHandler):
         if int(showtype) == 1:
             self.render("yaocaigou.html")
         else:
-            self.render("purchase_yaocaigou.html")
+            provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
+            city = []
+            district = []
+            area = defaultdict(list)
+            user = self.db.get("SELECT id,username,name,nickname,phone,type,varietyids FROM users WHERE id = %s",
+                               self.session.get("userid"))
+            member = self.db.get("select * from member where userid =%s and type=3 and status=1",
+                             self.session.get("userid"))
+            if user:
+                # 最近采购品种，id,name,origin
+                mypurchase = self.db.query("select v.id,v.name,v.origin,v.state from "
+                                       "(select pi.varietyid from purchase p left join purchase_info pi on p.id = pi.purchaseid where p.userid = %s) t "
+                                       "left join variety v on t.varietyid = v.id group by v.id",
+                                       self.session.get("userid"))
+                # 我关注的品种，id,name,origin
+                varietys = []
+                if user["varietyids"]:
+                    varietys = self.db.query(
+                        "SELECT id,name,origin,state FROM variety WHERE id in (" + user["varietyids"] + ")")
+                user["name"] = user.get("name")
+                # 取上次采购单的交货地
+                purchase = self.db.get("select areaid from purchase where userid = %s order by createtime desc limit 1",
+                                   self.session.get("userid"))
+                if purchase and purchase.get("areaid") != 0:
+                    area = self.db.get("SELECT id,parentid,areaname FROM area WHERE id = %s", purchase.get("areaid"))
+                    district = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", area.get("parentid"))
+                    city = self.db.query(
+                        "SELECT c.id,c.areaname,a.parentid FROM area c,(SELECT id,parentid,areaname FROM area WHERE id = %s) a WHERE a.parentid = c.parentid",
+                        area.get("parentid"))
+                    area["gparentid"] = city[0]["parentid"]
+                if member:
+                    user["memberid"] = member.id
+                else:
+                    user["memberid"] = -1
+                    # 所有品种变为非阳光速配
+                    for item in mypurchase:
+                        item.state = 0
+                    for item in varietys:
+                        item.state = 0
+                hot = self.db.query("select id ,name from variety where state=1")
+                if hot:
+                    hot = [h.name for h in hot]
+                else:
+                    hot = []
+                self.render("purchase_yaocaigou.html",provinces=provinces, city=city, district=district, area=area,hot=hot, user=user, mypurchase=mypurchase, varietys=varietys)
+            else:
+                self.error("该用户不存在","/")
 class AboutHandler(BaseHandler):
     def get(self):
         accept_purchaseinfo = self.db.query("select distinct purchaseinfoid from quote where state=1")
