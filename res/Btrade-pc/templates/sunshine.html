@@ -90,7 +90,7 @@
             {% if member %}
             <div class="group">
                 <div class="hd">
-                    <a href="#">我要向他们询价采购 &gt;&gt;</a>
+                    <a href="/purchase">我要向他们询价采购 &gt;&gt;</a>
                 </div>
                 <div class="bd">
                     <div class="guide">
@@ -108,7 +108,7 @@
                         <span>已发布采购：<i>{{member.purchasesinfonum}}</i> 批次</span>
                     </div>
                     <div class="link">
-                        <a href="#" class="btn">发布采购，立即询价</a>
+                        <a href="/purchase" class="btn">发布采购，立即询价</a>
                     </div>
                 </div>
             </div>
@@ -116,7 +116,7 @@
 
             <div class="group">
                 <div class="hd">
-                    <a href="#">我要向他们询价采购，申请加入 &gt;&gt;</a>
+                    <a href="/payment">我要向他们询价采购，申请加入 &gt;&gt;</a>
                 </div>
                 <div class="bd">
                     <div class="guide">
@@ -140,7 +140,7 @@
             {% else %}
             <div class="group">
                 <div class="hd">
-                    <a href="#">我要向他们询价采购，申请加入 &gt;&gt;</a>
+                    <a href="/register">我要向他们询价采购，申请加入 &gt;&gt;</a>
                 </div>
                 <div class="bd">
                     <div class="guide">
@@ -165,7 +165,7 @@
                     </div>
                 </div>
                 <div class="button">
-                    <a href="/register" class="btn-l">立即注册</a><a href="/login" class="btn-r">已有账号，登录</a>
+                    <a href="/register" class="btn-l">立即注册</a><a href="/login?next=sunshine" class="btn-r">已有账号，登录</a>
                 </div>
             </div>
             {% end %}

@@ -487,8 +487,8 @@ class ReplayDetailHandler(BaseHandler):
             purchaseinfo["timedelta"] = (purchaseinfo["expire"] - datetime.datetime.now()).days
         purchaseinfo["attachments"] = attachments
         #此采购单收到报价情况
-        ordercondition = ",case when q.userid in (SELECT userid from member where type=2) then 4 " \
-                         " when q.userid in (SELECT userid from member where type=1) then 3 " \
+        ordercondition = ",case when q.userid in (SELECT userid from member where type=2 and status=1) then 4 " \
+                         " when q.userid in (SELECT userid from member where type=1 and status=1) then 3 " \
                          "when q.userid in (SELECT userid from quality_supplier) then 2 " \
                          "else 0 end ordernum "
 
@@ -514,7 +514,7 @@ class ReplayDetailHandler(BaseHandler):
                 else:
                     myquoteattachments[quoteattachment.quoteid] = [quoteattachment]
 
-            memberinfos = self.db.query("select * from member where userid in (%s) and type in(1,2)" % ",".join(quoteuserids))
+            memberinfos = self.db.query("select * from member where userid in (%s) and type in(1,2) and status=1" % ",".join(quoteuserids))
             membermap = dict((m.userid, m.id) for m in memberinfos)
 
             qualities = self.db.query("select * from quality_supplier where userid in (%s)" % ",".join(quoteuserids))

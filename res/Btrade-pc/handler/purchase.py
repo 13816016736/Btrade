@@ -284,8 +284,8 @@ class MyPurchaseInfoHandler(BaseHandler):
                                           purchaseinfo["id"], purchaseinfo["pid"])
 
             #获取本采购单报价信息
-            ordercondition = ",case when q.userid in (SELECT userid from member where type=2) then 4 " \
-                             " when q.userid in (SELECT userid from member where type=1) then 2 " \
+            ordercondition = ",case when q.userid in (SELECT userid from member where type=2 and status=1) then 4 " \
+                             " when q.userid in (SELECT userid from member where type=1 and status=1) then 2 " \
                              "when q.userid in (SELECT userid from quality_supplier) then 1 " \
                              "else 0 end ordernum "
             quotes = self.db.query("select q.*,u.name,u.nickname,u.phone,u.type"+ordercondition+" from quote q left join users u on q.userid = u.id where q.purchaseinfoid = %s order by ordernum desc", id)
@@ -304,7 +304,7 @@ class MyPurchaseInfoHandler(BaseHandler):
                 quoteattachments = self.db.query("select * from quote_attachment where quoteid in (" + ",".join(quoteids) + ")")
                 myquoteattachments = {}
 
-                memberinfos=self.db.query("select * from member where userid in (%s) and type in(1,2)"%",".join(quoteuserids))
+                memberinfos=self.db.query("select * from member where userid in (%s) and type in(1,2) and status=1"%",".join(quoteuserids))
                 membermap=dict((m.userid, m.id) for m in memberinfos)
 
                 qualities=self.db.query("select * from quality_supplier where userid in (%s)"%",".join(quoteuserids))
@@ -428,7 +428,7 @@ class GetVarietyInfoHandler(BaseHandler):
                 userid=self.session.get('userid')
                 ismember=0
                 if userid:
-                    member = self.db.get("select * from member where userid =%s and type=3",
+                    member = self.db.get("select * from member where userid =%s and type=3 and status=1",
                                            self.session.get("userid"))
                     if member:
                         ismember=1
