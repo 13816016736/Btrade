@@ -72,7 +72,7 @@ function gallery(weChatImagePreview) {
 		bindEvent();
 	}
 	function bindEvent() {
-		$('body').on('click', '.gallery-close, .gallery-back, .gallery', closeGallery);
+		$('body').on('touchstart', '.gallery-close, .gallery-back, .gallery-ubtn', closeGallery);
 		$('body').on('click', '.thumb img', function() {
             var index = $(this).index();
             var imgUrls = [];
@@ -89,11 +89,24 @@ function gallery(weChatImagePreview) {
             }
 			return false;
 		});
+
+        var sX = 0;    // 手指初始x坐标
+        var sY = 0;    // 手指初始y坐标
+        var disX = 0;  // 滑动差值
+        var disY = 0;  // 滑动差值
+
+        $('.gallery-box').on('touchstart', function(e){
+            e.preventDefault();
+        })
+        $('.gallery-box').on('touchstart', 'img', function(e){
+            e.preventDefault();
+        })
 	}    
-	function closeGallery() {
+	function closeGallery(e) {
 		$('.gallery').remove();
         $('.gallery-box').hide();
         $('body').removeClass('gallery-body');
+        e.preventDefault();
 	}
 	function showBigPic(imgUrls, index) {
         var _result = '<div class="gallery"><ul>';
