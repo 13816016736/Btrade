@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>发采购</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css?id=22">
+</head>
+<body class="yc-body-nofoot">
+    <header class="yc-header">
+        <div class="yc-header-title">发采购</div>
+    </header><!-- /yc-header -->
+
+    <section class="yc-content">
+        <div class="form">
+            <form action="" id="myform">
+                <div class="group">
+                    <div class="title">
+                        <span>采购药材清单</span>
+                    </div>
+                    <div class="item">
+                        <label class="txt"><i>*</i>药材品种：</label>
+                        <input class="ipt" type="text" value="" id="nVariety" placeholder="" />
+                        <span class="error"></span>
+                        <div class="suggest" id="suggest">
+                            <dl class="search"></dl>
+                            <dl class="history">
+                                <dt>最近采购品种</dt>
+                                <dd>三七</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="item item-slt">
+                        <label class="txt"><i>*</i>规格等级：</label>
+                        <div class="slt" style="border-left:0;padding-left:0;margin-left:-4px;">
+                            <select name="" id="nRank">
+                                <option value="" disabled></option>
+                                <option value="" disabled>请先输入药材品种</option>
+                            </select>
+                        </div>
+                        <span class="error"></span>
+                    </div>
+                    <div class="item">
+                        <label class="txt"><i>*</i>采购数量：</label>
+                        <input class="ipt" type="number" value="" id="nQuantity" placeholder="" />
+                        <span class="error"></span>
+                        <div class="slt slt-small">
+                            <select name="" id="nUnit">
+                                <option value="" disabled></option>
+                                <option value="" disabled>请先输入药材品种</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <label class="txt">质量要求：</label>
+                        <input class="ipt" type="text" value="" id="nQuality" placeholder="请输入" />
+                        <span class="error"></span>
+                        <div id="qualityList">
+                            <label class="rdo"><input type="checkbox" name="quality" value="通用要求"><em>通用要求</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="2015版药典标准"><em>2015版药典标准</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="硫不超标"><em>硫不超标</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="无虫蛀"><em>无虫蛀</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="无霉"><em>无霉</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="无变色"><em>无变色</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="无走油"><em>无走油</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="干度好"><em>干度好</em></label>
+                            <label class="rdo"><input type="checkbox" name="quality" value="杂质少"><em>杂质少</em></label>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <label class="txt">产地要求：</label>
+                        <input class="ipt" type="text" value="" id="nArea" placeholder="请输入" />
+                        <span class="error"></span>
+                        <div id="originArea"></div>
+                    </div>
+                    <div class="item">
+                        <label class="txt">封顶裸价：</label>
+                        <input class="ipt" type="price" value="" id="nPrice" placeholder="" />
+                        <span class="error"></span>
+                        <i class="unit" id="unit">元/公斤</i>
+                    </div>
+                    <div class="item">
+                        <label class="txt">合格例照：</label>
+                        <div class="file iconfont icon-camera">
+                            <input type="file" id="uploadImg">
+                            <p class="thumb"><img src="http://static.yaocai.pro/static/uploadfiles/20160509/e5439d3bf63d8ecde9197e89702008cb_thumb.png" data-src="http://static.yaocai.pro/static/uploadfiles/20160509/e5439d3bf63d8ecde9197e89702008cb.png"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="title">
+                        <span>交收要求</span>
+                    </div>
+                    <div class="item item-slt">
+                        <label class="txt">交货地址：</label>
+                        <div class="slt">
+                            <select name="" id="province">
+                                <option value="110000">北京</option>
+                                <option value="120000">天津</option>
+                                <option value="130000">河北省</option>
+                                <option value="140000">山西省</option>
+                                <option value="150000">内蒙古自治区</option>
+                                <option value="210000">辽宁省</option>
+                                <option value="220000">吉林省</option>
+                                <option value="230000">黑龙江省</option>
+                                <option value="310000">上海</option>
+                                <option value="320000">江苏省</option>
+                                <option value="330000">浙江省</option>
+                                <option value="340000">安徽省</option>
+                                <option value="350000">福建省</option>
+                                <option value="360000">江西省</option>
+                                <option value="370000">山东省</option>
+                                <option value="410000">河南省</option>
+                                <option value="420000">湖北省</option>
+                                <option value="430000">湖南省</option>
+                                <option value="440000">广东省</option>
+                                <option value="450000">广西壮族自治区</option>
+                                <option value="460000">海南省</option>
+                                <option value="500000">重庆</option>
+                                <option value="510000">四川省</option>
+                                <option value="520000">贵州省</option>
+                                <option value="530000">云南省</option>
+                                <option value="540000">西藏自治区</option>
+                                <option value="610000">陕西省</option>
+                                <option value="620000">甘肃省</option>
+                                <option value="630000">青海省</option>
+                                <option value="640000">宁夏回族自治区</option>
+                                <option value="650000">新疆维吾尔自治区</option>
+                                <option value="710000">台湾</option>
+                                <option value="810000">香港特别行政区</option>
+                                <option value="820000">澳门特别行政区</option>
+                                <option value="900000">钓鱼岛</option>
+                            </select>
+                        </div>
+                        <div class="slt">
+                            <select name="" id="city">
+                                <option value="">--市--</option>
+                            </select>
+                        </div>
+                        <div class="slt">
+                            <select name="" id="area">
+                                <option value="">--区--</option>
+                            </select>
+                        </div>
+                        <span class="error"></span>
+                    </div>
+                    <div class="item">
+                        <label><input type="checkbox" class="icbx">亲自上门看货提货</label>
+                    </div>
+                    <div class="item">
+                        <label class="txt">交易及付款</label>
+                        <label class="block"><input type="radio" name="paytype" value="1" class="irdo">验收合格立即付款</label>
+                        <label class="block"><input type="radio" name="paytype" value="2" class="irdo">验收合格<input type="text" class="ipt ipt-date">天内付款</label>
+                        <label class="block"><input type="radio" name="paytype" value="3" class="irdo">其他<input type="text" class="ipt ipt-other"></label>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <div class="item item-h">
+                        <label class="txt">有效期：</label>
+                        <label class="rc"><input type="radio" name="deadline" value="3" class="irdo">3天</label>
+                        <label class="rc"><input type="radio" name="deadline" value="7" class="irdo" checked>7天</label>
+                        <label class="rc"><input type="radio" name="deadline" value="15" class="irdo">15天</label>
+                        <label class="rc"><input type="radio" name="deadline" value="30" class="irdo">30天</label>
+                        <label class="rc"><input type="radio" name="deadline" value="0" class="irdo">常年采购</label>
+                    </div>
+                    <div class="button">
+                        <button type="submit" class="ubtn ubtn-orange" id="submit">立即发布，坐等报价</button>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    </section><!-- /yc-content -->
+
+    <script src="js/zepto.min.js"></script>
+    <script src="js/lrz.bundle.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/publish.js"></script>
+    <script src="js/area.js"></script>
+</body>
+</html>
