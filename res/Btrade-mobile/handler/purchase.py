@@ -436,25 +436,43 @@ class DeleteFileHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
     def post(self):
-        type = self.get_argument("type")
-        uploadfiles = self.session.get("uploadfiles_quote")
-        if uploadfiles.has_key(type):
-            if os.path.isfile(uploadfiles[type]):
-                os.remove(uploadfiles[type])
-                base, ext = os.path.splitext(os.path.basename(uploadfiles[type]))
-                filename = uploadfiles[type].replace(base, base+"_thumb")
-                os.remove(filename)
-                del uploadfiles[type]
-                self.session["uploadfiles_quote"] = uploadfiles
-                self.session.save()
-                self.api_response({'status':'success','message':'删除成功'})
+        upload_type = self.get_argument("upload", "1")  # 默认为报价图片上传
+        if upload_type=="1":
+            type = self.get_argument("type")
+            uploadfiles = self.session.get("uploadfiles_quote")
+            if uploadfiles.has_key(type):
+                if os.path.isfile(uploadfiles[type]):
+                    os.remove(uploadfiles[type])
+                    base, ext = os.path.splitext(os.path.basename(uploadfiles[type]))
+                    filename = uploadfiles[type].replace(base, base+"_thumb")
+                    os.remove(filename)
+                    del uploadfiles[type]
+                    self.session["uploadfiles_quote"] = uploadfiles
+                    self.session.save()
+                    self.api_response({'status':'success','message':'删除成功'})
+                else:
+                    del uploadfiles[type]
+                    self.session["uploadfiles_quote"] = uploadfiles
+                    self.session.save()
+                    self.api_response({'status':'fail','message':'文件不存在'})
+
             else:
-                del uploadfiles[type]
-                self.session["uploadfiles_quote"] = uploadfiles
-                self.session.save()
-                self.api_response({'status':'fail','message':'文件不存在'})
+                self.api_response({'status':'success','message':'文件路径不存在'})
+        elif upload_type=="2":#删除上传的图片
+            imgUrl= self.get_argument("url")
+            rpath = config.img_path
+            img_path = rpath[0:rpath.find("static")] + imgUrl[imgUrl.find("static/"):]
+            try:
+                base, ext = os.path.splitext(os.path.basename(img_path))
+                thumbpath = img_path[img_path.find("static"):].replace(base, base + "_thumb")
+                thumbpath = rpath[0:rpath.find("static")] + thumbpath[thumbpath.find("static"):]
+                os.remove(img_path)
+                os.remove(thumbpath)
+            except:
+                pass
+            self.api_response({'status': 'success', 'message': '删除成功'})
         else:
-            self.api_response({'status':'success','message':'文件路径不存在'})
+            self.api_response({'status': 'success', 'message': '参数不正确'})
 
 class GetVarietyInfoHandler(BaseHandler):
 
