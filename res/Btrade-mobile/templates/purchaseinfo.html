@@ -303,7 +303,7 @@
     var isWeChat = is_weixn();
     var show={{show}};
     if (isWeChat&&show==1) {
-            $('#jwxShare').show();
+            $('#jwxShare').show();//如果用户是发布成功引导过来的便会显示浮窗
      }
     // 发给朋友
     $('.share').on('click', function() {
