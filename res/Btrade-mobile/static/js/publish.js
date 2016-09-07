@@ -286,7 +286,7 @@ $(function() {
 			window.scrollTo(offset[0], 0);
 			return result;
 		}
-
+        /*
 		if($address.val()) {
 			$address.next().hide();
 		} else {
@@ -294,7 +294,7 @@ $(function() {
 			result.pass = false;
 			window.scrollTo(offset[3], 0);
 			return result;
-		}
+		}*/
 
 
 	result.address = $address.val();
