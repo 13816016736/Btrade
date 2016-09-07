@@ -536,8 +536,7 @@ def purchasetransaction(self, data):
                                       "value(%s, %s)", (cursor.lastrowid, attachment))
                 self.session["uploadfiles"] = {}
                 self.session.save()
-            else:#从参数中取
-                pass
+
 
         self.db._db.commit()
     except MySQLdb.OperationalError, e:

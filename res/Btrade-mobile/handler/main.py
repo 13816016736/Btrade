@@ -9,6 +9,7 @@ from collections import defaultdict
 from utils import *
 from wechatjsapi import *
 from webbasehandler import purchase_push_trace
+from pushengine.tasks import task_generate
 
 class MainHandler(BaseHandler):
     @purchase_push_trace
@@ -41,9 +42,7 @@ class YaocaigouHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         showtype=self.get_argument("type",1)
-        if int(showtype) == 1:
-            self.render("yaocaigou.html")
-        else:
+        if int(showtype) in(1,2) :
             provinces = self.db.query("SELECT id,areaname FROM area WHERE parentid = 100000")
             city = []
             district = []
@@ -101,7 +100,35 @@ class YaocaigouHandler(BaseHandler):
                 data[key] = eval(arg[0])
             else:
                 data[key] = arg[0]
-        print data
+        data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" else "0"
+        data['paytype'] = data['paytype'] if data.has_key("paytype") and data['paytype'] != "" else "0"
+        data['payday'] = data['payday'] if data.has_key('payday') and data['payday'] != "" else "0"
+        data['payinfo'] = data['payinfo'] if data.has_key('payinfo') and data['payinfo'] != "" else ""
+        data['sample'] = data['sample'] if data.has_key('sample') and data['sample'] != "" else "0"
+        data['permit'] = data['permit'] if data.has_key('permit') and data['permit'] != "" else "0"
+        data['deadline'] = data['deadline'] if data.has_key('deadline') and data['deadline'] != "" else "0"
+        data['contact']=""
+        data['demand']=""
+        data['replenish']=""
+        data['others']=""
+        status, purchaseid, varids = purchasetransaction(self, data)
+        if status:
+            # 为采购商积分：
+            self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
+            try:
+                purchaseinfo = self.db.query("select id,status from purchase_info where purchaseid=%s", purchaseid)
+                for item in purchaseinfo:
+                    if item["status"] != 0:
+                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
+                        task_generate.apply_async(args=[task])
+                        task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
+                        task_generate.apply_async(args=[task])
+            except Exception, ex:
+                self.log.info("purchaseinfo task_generate error %s", str(ex))
+
+            self.api_response({'status': 'success', 'message': '请求成功', 'data': varids, 'purchaseid': purchaseid})
+        else:
+            self.api_response({'status': 'fail', 'message': '发布失败，请刷新页面重试'})
         pass
 
 class AboutHandler(BaseHandler):

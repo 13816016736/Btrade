@@ -20,14 +20,16 @@
                         <span class="error"></span>
                         <div class="suggest" id="suggest">
                             <dl class="search"></dl>
+                             {% if len(mypurchase)!=0 %}
                             <dl class="history">
-                                {% if len(mypurchase)!=0 %}
+
                                 <dt>最近采购品种</dt>
                                 {% for purchase in mypurchase %}
                                 <dd data-state="{{purchase.state}}" data-varietyid="{{purchase.id}}" data-origins="{{purchase.origin}}">{{purchase.name}}</dd>
                                 {% end %}
-                                {% end %}
+
                             </dl>
+                            {% end %}
                         </div>
                     </div>
                     <div class="item item-slt">
@@ -92,7 +94,7 @@
                         <span>交收要求</span>
                     </div>
                     <div class="item item-slt">
-                        <label class="txt">交货地址：</label>
+                        <label class="txt"><i>*</i>交货地址：</label>
                         <div class="slt">
                             <select name="" id="province">
                                 {% if len(area)==0 %}
@@ -122,11 +124,11 @@
                                     <option value="{{d.id}}" {% if area and  d.id == area.id %} selected {% end %}>{{d.areaname}}</option>
                                 {% end %}
                             </select>
+                            <span class="error"></span>
                         </div>
-                        <span class="error"></span>
                     </div>
                     <div class="item">
-                        <label><input type="checkbox" class="icbx">亲自上门看货提货</label>
+                        <label><input type="checkbox" class="icbx" id="selectaddress">亲自上门看货提货</label>
                     </div>
                     <div class="item" id="jPaytype">
                         <label class="txt">交易及付款</label>

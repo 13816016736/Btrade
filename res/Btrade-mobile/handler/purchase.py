@@ -420,6 +420,10 @@ class UploadFileHandler(BaseHandler):
                 self.api_response({'status': 'success', 'message': '上传成功', 'path': filepath})
             elif upload_type=="2":
                 #filepath转服务器上url
+                uploadfiles = self.session.get("uploadfiles", {})
+                uploadfiles[0] = [filepath]
+                self.session["uploadfiles"] = uploadfiles
+                self.session.save()
                 img_url = config.img_domain + filepath[filepath.find("static"):]
                 thumb_url= config.img_domain + thumb_path[thumb_path.find("static"):]
                 self.api_response({'status': 'success', 'message': '上传成功', 'path': img_url,"thumb":thumb_url})
@@ -467,6 +471,10 @@ class DeleteFileHandler(BaseHandler):
             imgUrl= self.get_argument("url")
             rpath = config.img_path
             img_path = rpath[0:rpath.find("static")] + imgUrl[imgUrl.find("static/"):]
+            uploadfiles = self.session.get("uploadfiles")
+            del uploadfiles
+            self.session["uploadfiles"] = {}
+            self.session.save()
             try:
                 base, ext = os.path.splitext(os.path.basename(img_path))
                 thumbpath = img_path[img_path.find("static"):].replace(base, base + "_thumb")

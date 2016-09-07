@@ -224,7 +224,7 @@ $(function() {
 	// 删除图片
 	$('.gallery-box').append('<div class="gallery-button"><button class="ubtn ubtn-red gallery-ubtn">删除</button></div>');
 	$('.gallery-box').on('touchstart', '.gallery-ubtn', function(e) {
-	    var imgurl=$('#uploadImg').next().find("img").data("src");
+	    var imgurl=$('#uploadDiv').find("img").data("src");
 	    $.ajax({
             url: '/delfile',
             dataType: 'json',
@@ -298,12 +298,14 @@ $(function() {
 
 
 	result.address = $address.val();
-	if($(".icbx").is(':checked')){
+
+	if($("#selectaddress").is(':checked')){
 	    result.address = 0
 	}else{
 		if (result.address==0){
-	        $(".icbx").next().show().html('请填写地址');
+			$address.next().show().html('请选择交货地址');
 			result.pass = false;
+			window.scrollTo(offset[3], 0);
 			return result;
 		}
 	}
@@ -330,7 +332,7 @@ $(function() {
 		 		val6.unshift(this.value);
 		 	});
 		     purchase={
-		 		nVarietyId: $variety.data('varietyid'),
+		 		nVarietyId: $variety.attr('varietyid'),
 		 		nVariety: $variety.val(),
 		 		nRank: $rank.val(),
 		 		nQuantity: $quantity.val(),
