@@ -178,11 +178,9 @@ $(function() {
 	    setOriginArea(origins);
 	});
 
-
-	// 上传图片
-	$('#uploadImg').on('change', function(ev) {
-	    //图片lrz压缩上传
-	    lrz($(this).get(0).files[0], {
+    var uploadimgfunc=function(control){
+    	    //图片lrz压缩上传
+	    lrz(control.get(0).files[0], {
 	        width: 800
 	    }).then(function (rst) {
 	        base64 = rst.base64;
@@ -219,6 +217,12 @@ $(function() {
 	    }).always(function () {
 	        // 不管是成功失败，都会执行
 	    });;
+
+    }
+
+	// 上传图片
+	$('#uploadImg').on('change', function(ev) {
+	    uploadimgfunc($(this));
 	})
 
 	// 删除图片
@@ -236,6 +240,9 @@ $(function() {
             success: function(data) {
                 if (data.status === 'success') {
                     $('#uploadDiv').html('<input type="file" id="uploadImg">')
+                    $('#uploadImg').on('change', function(ev) {
+	                        uploadimgfunc($(this));
+	                        })
                 } else {
                     lpPopover(data.message);
                 }
