@@ -109,6 +109,7 @@ def make_thumb(path, thumb_path, w, h):
     print filename
     # 保存
     thumb.save(filename, quality=70)
+    return filename
 
 def merge_thumb(files, output_file):
     """合并图片"""
@@ -535,6 +536,9 @@ def purchasetransaction(self, data):
                                       "value(%s, %s)", (cursor.lastrowid, attachment))
                 self.session["uploadfiles"] = {}
                 self.session.save()
+            else:#从参数中取
+                pass
+
         self.db._db.commit()
     except MySQLdb.OperationalError, e:
         self.db._db.rollback()

@@ -411,16 +411,21 @@ class UploadFileHandler(BaseHandler):
             with open(filepath,'wb') as up:
                 up.write(imgData)
             #生成缩略图
-            make_thumb(filepath,upload_path,300,300)
+            thumb_path=make_thumb(filepath,upload_path,300,300)
             if upload_type=="1":
                 uploadfiles = self.session.get("uploadfiles_quote", {})
                 uploadfiles[type] = filepath
                 self.session["uploadfiles_quote"] = uploadfiles
                 self.session.save()
+                self.api_response({'status': 'success', 'message': '上传成功', 'path': filepath})
             elif upload_type=="2":
                 #filepath转服务器上url
-                filepath = config.img_domain + filepath[filepath.find("static"):]
-            self.api_response({'status':'success','message':'上传成功','path':filepath})
+                img_url = config.img_domain + filepath[filepath.find("static"):]
+                thumb_url= config.img_domain + thumb_path[thumb_path.find("static"):]
+                self.api_response({'status': 'success', 'message': '上传成功', 'path': img_url,"thumb":thumb_url})
+            else:
+                self.api_response({'status': 'fail', 'message': '上传失败'})
+
         except IOError:
             print ' in  IOError'
             self.api_response({'status':'fail','message':'上传失败'})
@@ -681,3 +686,9 @@ class PurchaseDetailHandler(BaseHandler):
             self.error("采购商不存在", "/")
 
 
+class PurchaseSuccessHandler(BaseHandler):
+    @purchase_push_trace
+    @tornado.web.authenticated
+    def get(self):
+        self.render("purchase_success.html")
+        pass

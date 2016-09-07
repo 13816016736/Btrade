@@ -1,24 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>发采购</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css?id=22">
-</head>
-<body class="yc-body-nofoot">
+{% extends "basenofoot.html" %}
+{% block container %}
+{% from config import * %}
+{% raw xsrf_form_html() %}
     <header class="yc-header">
         <div class="yc-header-title">发采购</div>
     </header><!-- /yc-header -->
 
     <section class="yc-content">
         <div class="form">
-            <form action="" id="myform">
+            <form action="/yaocaigou" id="myform">
                 <div class="group">
                     <div class="title">
                         <span>采购药材清单</span>
@@ -30,8 +21,12 @@
                         <div class="suggest" id="suggest">
                             <dl class="search"></dl>
                             <dl class="history">
+                                {% if len(mypurchase)!=0 %}
                                 <dt>最近采购品种</dt>
-                                <dd>三七</dd>
+                                {% for purchase in mypurchase %}
+                                <dd data-state="{{purchase.state}}" data-varietyid="{{purchase.id}}" data-origins="{{purchase.origin}}">{{purchase.name}}</dd>
+                                {% end %}
+                                {% end %}
                             </dl>
                         </div>
                     </div>
@@ -86,9 +81,8 @@
                     </div>
                     <div class="item">
                         <label class="txt">合格例照：</label>
-                        <div class="file iconfont icon-camera">
+                        <div class="file iconfont icon-camera" id="uploadDiv">
                             <input type="file" id="uploadImg">
-                            <p class="thumb"><img src="http://static.yaocai.pro/static/uploadfiles/20160509/e5439d3bf63d8ecde9197e89702008cb_thumb.png" data-src="http://static.yaocai.pro/static/uploadfiles/20160509/e5439d3bf63d8ecde9197e89702008cb.png"></p>
                         </div>
                     </div>
                 </div>
@@ -101,51 +95,32 @@
                         <label class="txt">交货地址：</label>
                         <div class="slt">
                             <select name="" id="province">
-                                <option value="110000">北京</option>
-                                <option value="120000">天津</option>
-                                <option value="130000">河北省</option>
-                                <option value="140000">山西省</option>
-                                <option value="150000">内蒙古自治区</option>
-                                <option value="210000">辽宁省</option>
-                                <option value="220000">吉林省</option>
-                                <option value="230000">黑龙江省</option>
-                                <option value="310000">上海</option>
-                                <option value="320000">江苏省</option>
-                                <option value="330000">浙江省</option>
-                                <option value="340000">安徽省</option>
-                                <option value="350000">福建省</option>
-                                <option value="360000">江西省</option>
-                                <option value="370000">山东省</option>
-                                <option value="410000">河南省</option>
-                                <option value="420000">湖北省</option>
-                                <option value="430000">湖南省</option>
-                                <option value="440000">广东省</option>
-                                <option value="450000">广西壮族自治区</option>
-                                <option value="460000">海南省</option>
-                                <option value="500000">重庆</option>
-                                <option value="510000">四川省</option>
-                                <option value="520000">贵州省</option>
-                                <option value="530000">云南省</option>
-                                <option value="540000">西藏自治区</option>
-                                <option value="610000">陕西省</option>
-                                <option value="620000">甘肃省</option>
-                                <option value="630000">青海省</option>
-                                <option value="640000">宁夏回族自治区</option>
-                                <option value="650000">新疆维吾尔自治区</option>
-                                <option value="710000">台湾</option>
-                                <option value="810000">香港特别行政区</option>
-                                <option value="820000">澳门特别行政区</option>
-                                <option value="900000">钓鱼岛</option>
+                                {% if len(area)==0 %}
+                                <option value="0" selected >省</option>
+                                {% end %}
+                                {% for province in provinces %}
+                                    <option value="{{province.id}}" {% if area and  province.id == area.gparentid %} selected {% end %}>{{province.areaname}}</option>
+                                {% end %}
                             </select>
                         </div>
                         <div class="slt">
                             <select name="" id="city">
-                                <option value="">--市--</option>
+                                {% if len(area)==0 %}
+                                <option value="0" selected >市</option>
+                                {% end %}
+                                  {% for c in city %}
+                                    <option value="{{c.id}}" {% if area and  c.id == area.parentid %} selected {% end %}>{{c.areaname}}</option>
+                                {% end %}
                             </select>
                         </div>
                         <div class="slt">
                             <select name="" id="area">
-                                <option value="">--区--</option>
+                                {% if len(area)==0 %}
+                                <option value="0" selected >区/县</option>
+                                {% end %}
+                                  {% for d in district %}
+                                    <option value="{{d.id}}" {% if area and  d.id == area.id %} selected {% end %}>{{d.areaname}}</option>
+                                {% end %}
                             </select>
                         </div>
                         <span class="error"></span>
@@ -171,7 +146,7 @@
                         <label class="rc"><input type="radio" name="deadline" value="0" class="irdo">常年采购</label>
                     </div>
                     <div class="button">
-                        <button type="submit" class="ubtn ubtn-orange" id="submit">立即发布，坐等报价</button>
+                        <button type="button" class="ubtn ubtn-orange" id="submit">立即发布，坐等报价</button>
                     </div>
                 </div>
 
@@ -179,11 +154,9 @@
             </form>
         </div>
     </section><!-- /yc-content -->
-
-    <script src="js/zepto.min.js"></script>
-    <script src="js/lrz.bundle.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/publish.js"></script>
-    <script src="js/area.js"></script>
-</body>
-</html>
+{% end %}
+{% block js %}
+    <script src="{{ static_url('js/lrz.bundle.js')}}"></script>
+    <script src="{{ static_url('js/publish.js')}}"></script>
+    <script src="{{ static_url('js/area.js') }}"></script>
+{% end %}

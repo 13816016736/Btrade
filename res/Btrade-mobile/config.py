@@ -34,6 +34,7 @@ handlers = [
     (r"/removepurchase", RemovePurchaseHandler),
     (r"/updatequotestate", UpdateQuoteStateHandler),
     (r"/yaocaigou", YaocaigouHandler),
+    (r"/purchasesuccess", PurchaseSuccessHandler),
     (r"/center", CenterHandler),
     (r"/about", AboutHandler),
     (r"/payment", PaymentHandler),
@@ -76,6 +77,8 @@ handlers = [
     (r"/purchase/detail", PurchaseDetailHandler),
     (r"/feedBack", FeedBackHandler),
     (r"/sunshine/", SunshineHandler),
+    (r"/getvarinfobyid", VarinfoHandler),
+    (r"/getparentarea",  GetParentAreaHandler),
     (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "./static"}),
     (r".*", BaseHandler),
 ];

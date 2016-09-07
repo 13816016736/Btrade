@@ -84,9 +84,13 @@ $(function() {
 	// 药材品种
 	var getKeywords = function() {
 		$.ajax({
-			url: 'json/keywords.json',
+			url: '/getvarietyinfo',
 	        dataType: 'json',
-	        data: {key: $variety.val()},
+	        method: 'post',
+	        data: {variety: $variety.val()},
+	        beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
 	        success: function(data) {
 	            if (data.status === 'success') {
 	                toHtml(data.list);
@@ -117,9 +121,13 @@ $(function() {
 	// 设置规格等级和采购数量单位
 	 var setSelect = function(varietyid) {
 		$.ajax({
-			url: 'json/getvarinfobyid.json',
+			url: '/getvarinfobyid',
 	        dataType: 'json',
+	        method: 'post',
 			data: {varietyid: varietyid},
+			beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
 			success: function(data) {
 				fillSelect($rank, data.rank);
 				fillSelect($unit, data.unit);
@@ -182,7 +190,7 @@ $(function() {
 	            url: "/uploadfile",
 	            data: {
 	                base64_string: base64,
-	                'type': 'aa',
+	                'upload': '2',
 	                '_xsrf':document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]
 	            },
 	            type: 'post',
@@ -192,7 +200,9 @@ $(function() {
 	            },
 	            success: function(data) {
 	                if (data.status === 'success') {
-	                    lpPopover('上传图片成功，稍后会自动跳转回报价页面！');
+	                    //lpPopover('上传图片成功，稍后会自动跳转回报价页面！');
+	                    var htmlText='<p class="thumb"><img src="'+data.thumb+'" data-src="'+data.path+'"></p>';
+	                   $('#uploadDiv').html(htmlText);
 	                } else {
 	                    lpPopover('上传图片失败，请刷新页面重试！');
 	                }
@@ -213,7 +223,27 @@ $(function() {
 	// 删除图片
 	$('.gallery-box').append('<div class="gallery-button"><button class="ubtn ubtn-red gallery-ubtn">删除</button></div>');
 	$('.gallery-box').on('touchstart', '.gallery-ubtn', function(e) {
-	    $('#uploadImg').next().remove();
+	    var imgurl=$('#uploadImg').next().find("img").data("src");
+	    $.ajax({
+            url: '/delfile',
+            dataType: 'json',
+            data: {"upload":"2",'url':imgurl},
+            type: 'POST',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
+            success: function(data) {
+                if (data.status === 'success') {
+                    $('#uploadDiv').html('<input type="file" id="uploadImg">')
+                } else {
+                    lpPopover(data.message);
+                }
+                return ;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                lpPopover('网络连接超时，请您稍后重试!');
+            }
+        })
 	});
 
 	// 隐藏错误提示
@@ -257,28 +287,68 @@ $(function() {
 		}
 
 
+	result.address = $('#area').val();
+	if($(".icbx").is(':checked')){
+	    result.address = 0
+	}else{
+	if (result.address==0){
+	        $(".icbx").next().show().html('请填写地址');
+			result.pass = false;
+			return result;
+	}
+	}
 
-		// if (result.pass) {
-		// 	var val5 = [$quality.val()];
-		// 	$('#qualityList').find('input:checked').each(function() {
-		// 		val5.unshift(this.value);
-		// 	});
-		// 	var val6 = [$area.val()];
-		// 	$('#originArea').find('input:checked').each(function() {
-		// 		val6.unshift(this.value);
-		// 	});
-		// 	result.purchase.push({
-		// 		nVarietyId: $variety.data('varietyid'),
-		// 		nVariety: $variety.val(),
-		// 		nRank: $rank.val(),
-		// 		nQuantity: $quantity.val(),
-		// 		nUnit: $unit.val(),
-		// 		nQuality: val5,
-		// 		nArea: val6,
-		// 		nPrice: $('#nPrice').val(),
-		// 		nUrl: $('#uploadImg').next().find('img').attr('src') || '';
-		// 	});
-		// }
+	result.paytype = $('#jPaytype input:radio:checked').val() || '';
+	switch (result.paytype) {
+		case "1":
+			break;
+		case "2":
+			result.payday = $('#jPaytype .ipt-date').val();
+			break;
+		case "3":
+			result.payinfo = $('#jPaytype .ipt-other').val();
+			break;
+	}
+	result.demand = $('#jDemand').val();
+	if ($('#jSample').prop('checked')) {
+		result.sample = 1
+		result.contact = $('#jContact').val();
+	} else {
+		result.sample = 0
+		result.contact = '';
+	}
+	result.replenish = $('#jReplenish').val();
+	result.permit = '';
+	$('#jPermit input').each(function() {
+		result.permit += this.checked ? (this.value + '&') : '';
+	})
+	result.deadline = $('#jDeadline input:radio:checked').val() || '';
+	result.others = $('#jOthers').val();
+
+
+		 if (result.pass) {
+		 	var val5 = [$quality.val()];
+		 	$('#qualityList').find('input:checked').each(function() {
+		 		val5.unshift(this.value);
+		 	});
+		 	var val6 = [$area.val()];
+		 	$('#originArea').find('input:checked').each(function() {
+		 		val6.unshift(this.value);
+		 	});
+		     purchase={
+		 		nVarietyId: $variety.data('varietyid'),
+		 		nVariety: $variety.val(),
+		 		nRank: $rank.val(),
+		 		nQuantity: $quantity.val(),
+		 		nUnit: $unit.val(),
+		 		nQuality: val5,
+		 		nArea: val6,
+		 		nPrice: $('#nPrice').val(),
+		 		nUrl: $('#uploadImg').next().find('img').attr('src') || '',
+		 	};
+		 	result.purchases[0] = purchase;
+		 }
+		result.purchases = JSON.stringify(result.purchases)
 
 		return result
 	}
@@ -292,10 +362,37 @@ $(function() {
 		if (result.pass) {
 			isSubmit = true;
 			$body.append('<div class="loading"><i></i></div>');
-			$('#myform').submit();
-		} 
-		// e.preventDefault(); // 阻止表单提交
-		// e.stopPropagation();
+		    $.ajax({
+			url: $("#myform").attr('action'),
+			type: 'POST',
+			dataType: 'json',
+			data: result,
+			beforeSend: function(jqXHR, settings) {
+				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+			},
+			success: function(data) {
+				isSubmit = false;
+				$('.loading').remove();
+				if(data.status == "success"){
+					$("#varids").val(data.data.join(","));
+					$("#purchaseid").val(data.purchaseid);
+					location.href=encodeURI("/purchasesuccess")
+				}else{
+					alert(data.message);
+				}
+			},
+			error: function() {
+				isSubmit = false;
+				$('.loading').remove();
+			}
+		})
+
+		}
+		else{
+		   isSubmit=false
+		}
+		//e.preventDefault(); // 阻止表单提交
+		//e.stopPropagation();
 		return false;
 	});
 

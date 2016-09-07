@@ -59,10 +59,10 @@ class YaocaigouHandler(BaseHandler):
                                        "left join variety v on t.varietyid = v.id group by v.id",
                                        self.session.get("userid"))
                 # 我关注的品种，id,name,origin
-                varietys = []
-                if user["varietyids"]:
-                    varietys = self.db.query(
-                        "SELECT id,name,origin,state FROM variety WHERE id in (" + user["varietyids"] + ")")
+                #varietys = []
+                #if user["varietyids"]:
+                #    varietys = self.db.query(
+                #        "SELECT id,name,origin,state FROM variety WHERE id in (" + user["varietyids"] + ")")
                 user["name"] = user.get("name")
                 # 取上次采购单的交货地
                 purchase = self.db.get("select areaid from purchase where userid = %s order by createtime desc limit 1",
@@ -81,16 +81,29 @@ class YaocaigouHandler(BaseHandler):
                     # 所有品种变为非阳光速配
                     for item in mypurchase:
                         item.state = 0
-                    for item in varietys:
-                        item.state = 0
+                    #for item in varietys:
+                    #    item.state = 0
                 hot = self.db.query("select id ,name from variety where state=1")
                 if hot:
                     hot = [h.name for h in hot]
                 else:
                     hot = []
-                self.render("purchase_yaocaigou.html",provinces=provinces, city=city, district=district, area=area,hot=hot, user=user, mypurchase=mypurchase, varietys=varietys)
+                self.render("publish.html",provinces=provinces, city=city, district=district, area=area,hot=hot, user=user, mypurchase=mypurchase)
             else:
                 self.error("该用户不存在","/")
+
+    @purchase_push_trace
+    @tornado.web.authenticated
+    def post(self):
+        data = {}
+        for key,arg in self.request.arguments.iteritems():
+            if key == 'purchases':
+                data[key] = eval(arg[0])
+            else:
+                data[key] = arg[0]
+        print data
+        pass
+
 class AboutHandler(BaseHandler):
     def get(self):
         accept_purchaseinfo = self.db.query("select distinct purchaseinfoid from quote where state=1")
@@ -667,3 +680,40 @@ class UpdateQuoteStateHandler(BaseHandler):
             self.api_response({'status':'success','message':'操作成功'})
         else:
             self.api_response({'status':'fail','message':'请选择要标注的报价'})
+
+class VarinfoHandler(BaseHandler):
+    def post(self):
+        varietyid = self.get_argument("varietyid")
+        if varietyid == "":
+            self.api_response({'status':'fail','message':'请填写品种'})
+        else:
+            varietyinfo = self.db.get("SELECT id,specification,origin,unit FROM variety WHERE id = %s", varietyid)
+            if len(varietyinfo) == 0:
+                self.api_response({'status':'fail','message':'没有该品种'})
+            else:
+                spec = []
+                for s in varietyinfo['specification'].split(","):
+                    val = {}
+                    val["val"] = s
+                    val["text"] = s
+                    spec.append(val)
+                units = varietyinfo['unit'].split(",")
+                unit = []
+                for u in units:
+                    val = {}
+                    val["val"] = u
+                    val["text"] = u
+                    unit.append(val)
+                self.api_response({'status':'success','message':'请求成功','rank':spec,'unit':unit,'txt':units[0] if units else ""})
+
+class GetParentAreaHandler(BaseHandler):
+    def get(self):
+        pass
+
+    def post(self):
+        parentid = self.get_argument("parentid")
+        if parentid == "":
+            self.api_response({'status':'fail','message':'请选择区域'})
+        else:
+            areas = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", parentid)
+            self.api_response({'status':'success','message':'请求成功','data':areas})

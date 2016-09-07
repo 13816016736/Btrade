@@ -6,22 +6,14 @@ $(function() {
 
 	var getparentarea = function(pid, $el, callback) {
 		$.ajax({
-			url: '',
+			url: ajaxUrl,
 			data: {'parentid': pid},
-			// dataType: 'json',
-			// type: 'POST',
+			dataType: 'json',
+			type: 'POST',
+		    beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+            },
 			success: function(data) {
-				data = {
-					'status': 'success',
-					'message': '\u8bf7\u6c42\u6210\u529f',
-					'data' : [
-						{
-							'id': '120100',
-							'areaname': '\u5929\u6d25\u5e02'
-						}
-
-					]
-				}
 				if(data.status == "success"){
 					var options = [];
 					$el.empty();
