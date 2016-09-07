@@ -8,7 +8,8 @@ $(function() {
 	    $unit = $('#nUnit'), // 采购数量单位
 	    $quality = $('#nQuality'), // 质量要求
 	    $area = $('#nArea'), // 产地要求
-	    $price = $('#nPrice'); // 封顶价
+	    $price = $('#nPrice'), // 封顶价,
+	    $address = $('#area'); // 交货地址
 
 	$suggest.on('click', function(e) {
 	    e.stopPropagation();
@@ -251,7 +252,7 @@ $(function() {
 		$(this).next().hide();
 	})
 
-	var offset = [$quantity.offset().top, $rank.offset().top, $variety.offset().top];
+	var offset = [$quantity.offset().top, $rank.offset().top, $variety.offset().top, $address.offset().top];
 
 	var checkForm = function() {
 		var result = {
@@ -286,16 +287,25 @@ $(function() {
 			return result;
 		}
 
+		if($address.val()) {
+			$address.next().hide();
+		} else {
+			$address.next().show().html('请选择交货地址');
+			result.pass = false;
+			window.scrollTo(offset[3], 0);
+			return result;
+		}
 
-	result.address = $('#area').val();
+
+	result.address = $address.val();
 	if($(".icbx").is(':checked')){
 	    result.address = 0
 	}else{
-	if (result.address==0){
+		if (result.address==0){
 	        $(".icbx").next().show().html('请填写地址');
 			result.pass = false;
 			return result;
-	}
+		}
 	}
 
 	result.paytype = $('#jPaytype input:radio:checked').val() || '';
