@@ -328,7 +328,7 @@ $(function() {
 		 		nQuality: val5,
 		 		nArea: val6,
 		 		nPrice: $('#nPrice').val(),
-		 		nUrl: $('#uploadImg').next().find('img').attr('src') || '',
+		 		nUrl: $('#uploadDiv').find('img').data('src') || '',
 		 	};
 		 	result.purchases[0] = purchase;
 		 }
