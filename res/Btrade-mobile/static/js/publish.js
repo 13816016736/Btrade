@@ -309,23 +309,7 @@ $(function() {
 			result.payinfo = $('#jPaytype .ipt-other').val();
 			break;
 	}
-	result.demand = $('#jDemand').val();
-	if ($('#jSample').prop('checked')) {
-		result.sample = 1
-		result.contact = $('#jContact').val();
-	} else {
-		result.sample = 0
-		result.contact = '';
-	}
-	result.replenish = $('#jReplenish').val();
-	result.permit = '';
-	$('#jPermit input').each(function() {
-		result.permit += this.checked ? (this.value + '&') : '';
-	})
 	result.deadline = $('#jDeadline input:radio:checked').val() || '';
-	result.others = $('#jOthers').val();
-
-
 		 if (result.pass) {
 		 	var val5 = [$quality.val()];
 		 	$('#qualityList').find('input:checked').each(function() {
