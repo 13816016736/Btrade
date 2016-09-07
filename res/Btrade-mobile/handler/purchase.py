@@ -124,7 +124,7 @@ class PurchaseInfoHandler(BaseHandler):
         #"p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
         #"pi.views from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s) t left join area a on a.id = t.areaid",id)
         #获取采购单详细信息
-
+        show=self.get_argument("show",0)
         purchaseinfo =self.db.get("select p.id,p.userid,p.pay,p.payday,p.payinfo,p.accept,p.send,p.receive,p.other,p.supplier,p.remark,p.createtime,"
         "p.term,p.status,p.areaid,p.invoice,pi.id pid,pi.name,pi.price,pi.quantity,pi.unit,pi.quality,pi.origin,pi.specification,"
         "pi.views,pi.status,pi.shine from purchase p,purchase_info pi where p.id = pi.purchaseid and pi.id = %s",id)
@@ -141,6 +141,12 @@ class PurchaseInfoHandler(BaseHandler):
             purchaseinfo["parentid"] = areainfo.parentid
         else:
             purchaseinfo["position"] =""
+        userid=self.session.get("userid")
+        if userid and str(self.session.get("userid"))==str(purchaseinfo.userid) and int(show)==1:
+            show=1
+        else:
+            show=0
+
 
 
 
@@ -241,7 +247,7 @@ class PurchaseInfoHandler(BaseHandler):
 
         self.render("purchaseinfo.html", user=user, purchase=purchaseinfo, others=len(others), purchases=purchases,purchasesinfocout=purchasesinfocout,
                     quotes=quotes, reply=int((float(reply)/float(len(purchaser_quotes))*100) if len(purchaser_quotes) != 0 else 0),accept=accept,
-                    accept_quantity=accept_quantity,accept_price=int(accept_price/10000),quoteaccept=quoteaccept)
+                    accept_quantity=accept_quantity,accept_price=int(accept_price/10000),quoteaccept=quoteaccept,show=show)
 
     def post(self):
         pass
@@ -698,5 +704,16 @@ class PurchaseSuccessHandler(BaseHandler):
     @purchase_push_trace
     @tornado.web.authenticated
     def get(self):
-        self.render("purchase_success.html")
-        pass
+        pid = self.get_argument("pid", "")
+        purchaseinfo=self.db.query("select id from purchase_info where purchaseid=%s",pid)
+        if len(purchaseinfo)>0:
+            pid=purchaseinfo[0].id
+        user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
+        supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
+        total = user_count + supplier_count
+        ua = self.request.headers['User-Agent']
+        if ua.lower().find("micromessenger") != -1:
+            self.redirect(
+                    "/checkfans?state=purchasesuccess&pid=%s"%pid)
+        else:
+            self.render("purchase_success_C.html",total=total)

@@ -370,9 +370,7 @@ $(function() {
 				isSubmit = false;
 				$('.loading').remove();
 				if(data.status == "success"){
-					$("#varids").val(data.data.join(","));
-					$("#purchaseid").val(data.purchaseid);
-					location.href=encodeURI("/purchasesuccess")
+					location.href=encodeURI("/purchasesuccess?pid="+data.purchaseid)
 				}else{
 					alert(data.message);
 				}

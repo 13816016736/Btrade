@@ -301,6 +301,10 @@
     $("#other").html("{{"-".join(purchase.other.split())}}".split("-").join("<br>"));
     $("#remark").html("{{"-".join(purchase.remark.split())}}".split("-").join("<br>"));
     var isWeChat = is_weixn();
+    var show={{show}};
+    if (isWeChat&&show==1) {
+            $('#jwxShare').show();
+     }
     // 发给朋友
     $('.share').on('click', function() {
         if (isWeChat) {

@@ -256,13 +256,15 @@ class CheckFansHandler(BaseHandler):
     def get(self):
         is_fans=False
         state= self.get_argument("state",None)
+        pid= self.get_argument("pid", "")
         ret=self.db.get("select openid,name,username,registertype,openid2 from users where id=%s",self.session.get("userid"))
         name=ret["name"]
         username=ret["username"]
         openid=ret["openid"]
         registertype=ret["registertype"]
-        if int(registertype)==2:
+        if int(registertype)==2 or state=="purchasesuccess":
             openid=ret["openid2"]
+            registertype=2
         purchaseinfonum = self.db.execute_rowcount("select id from purchase_info where status!=0")
         if openid!="":
             openid = openid .strip("\r\n")
@@ -308,6 +310,16 @@ class CheckFansHandler(BaseHandler):
                                 purchaseinfonum=purchaseinfonum,total=total,purchase_user=purchase_user,accept_quote=accept_quote,registertype=registertype)
             elif state =="quotesuccess":
                 self.render("quote_success_A.html",purchaseinfonum=purchaseinfonum)
+            elif state =="purchasesuccess":
+                supplier_num=100
+                variety=""
+                purchaseinfo=self.db.get("select varietyid,name from purchase_info where id=%s",pid)
+                if purchaseinfo:
+                    variety=purchaseinfo["name"]
+                    user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9) and find_in_set(%s,varietyids)",purchaseinfo["varietyid"])
+                    supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2 and  find_in_set(%s,variety)",purchaseinfo["varietyid"])
+                    supplier_num = user_count + supplier_count
+                self.render("purchase_success_A.html",supplier_num=supplier_num,variety=variety,pid=pid)
             else:
                 self.redirect("/")
         else:
@@ -315,6 +327,12 @@ class CheckFansHandler(BaseHandler):
                 self.render("register_B.html",purchaseinfonum=purchaseinfonum,registertype=registertype)
             elif state =="quotesuccess":
                 self.render("quote_success_B.html",purchaseinfonum=purchaseinfonum)
+            elif state =="purchasesuccess":
+                user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
+                supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
+                total = user_count + supplier_count
+
+                self.render("purchase_success_B.html",total=total)
             else:
                 self.redirect("/")
 
