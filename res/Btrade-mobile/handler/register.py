@@ -319,7 +319,19 @@ class CheckFansHandler(BaseHandler):
                     user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9) and find_in_set(%s,varietyids)",purchaseinfo["varietyid"])
                     supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2 and  find_in_set(%s,variety)",purchaseinfo["varietyid"])
                     supplier_num = user_count + supplier_count
-                self.render("purchase_success_A.html",supplier_num=supplier_num,variety=variety,pid=pid)
+                    suppliers=[]
+                    if user_count>=10:
+                        suppliers=self.db.query("select id,name,nickname from users where type not in(1,2,9) and find_in_set(%s,varietyids) limit 10",purchaseinfo["varietyid"])
+                    else:
+                         users=self.db.query("select id,name,nickname from users where type not in(1,2,9) and find_in_set(%s,varietyids)",purchaseinfo["varietyid"])
+                         suppliers=users
+                         sp=self.db.query("select id,name,address as nickname from supplier where pushstatus!=2 and  find_in_set(%s,variety) limit %s",purchaseinfo["varietyid"],(10-len(users)))
+                         suppliers=suppliers+sp
+
+
+
+
+                self.render("purchase_success_A.html",supplier_num=supplier_num,variety=variety,pid=pid,suppliers=suppliers)
             else:
                 self.redirect("/")
         else:
