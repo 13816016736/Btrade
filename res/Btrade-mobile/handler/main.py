@@ -111,6 +111,11 @@ class YaocaigouHandler(BaseHandler):
         data['demand']=""
         data['replenish']=""
         data['others']=""
+        if data['purchases']['0']["nUrl"]=="":
+            uploadfiles = self.session.get("uploadfiles")
+            del uploadfiles
+            self.session["uploadfiles"] = {}
+            self.session.save()
         status, purchaseid, varids = purchasetransaction(self, data)
         if status:
             # 为采购商积分：
