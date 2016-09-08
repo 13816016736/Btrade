@@ -227,7 +227,7 @@ $(function(){
 	})
 
 	// 看大图
-	gallery(true);
+	gallery();
 
 	// 折叠菜单
 	$('.yc-floor .icon-fold').on('click', function() {
