@@ -407,14 +407,14 @@ em,i{font-style:normal;}
 
 /* 成功/失败信息 */
 .yc-message{font-size:1.4rem;}
-.yc-message .head{position:relative;padding:20px;background-color:#fca31d;text-align:center;color:#fff;}
-.yc-message .head:after{content:"";position:absolute;left:50%;bottom:-20px;display:inline-block;width:0;height:0;margin-left:-10px;border:10px solid #eee;border-top:10px solid #fca31d;}
+.yc-message .head{position:relative;padding:24px 20px 40px;background-color:#fca31d;text-align:center;color:#fff;}
+.yc-message .head:after{content:"";position:absolute;left:50%;bottom:-20px;display:inline-block;width:0;height:0;margin-left:-10px;border:10px dashed transparent;border-top:10px solid #fca31d;}
 .yc-message .head .title{margin:0;font-size:2rem;}
-.yc-message .head .title i{display:block;font-size:6rem;margin-bottom:20px;color:#fff;}
+.yc-message .head .title i{display:block;line-height:1;font-size:6rem;margin-bottom:20px;color:#fff;}
 .yc-message .head .text{margin-top:6px;}
 .yc-message .success{background-color:#11c211;}
 .yc-message .success:after{border-top-color:#11c211;}
-.yc-message .main{padding:26px 30px;}
+.yc-message .main{padding:26px 13px;}
 .yc-message .main .thank{position:relative;padding:10px 10px 10px 40px;border:1px solid #fca31d;background-color:#fff;}
 .yc-message .main .thank p{margin:0 0 5px;}
 .yc-message .main .thank i{position:absolute;top:50%;left:10px;font-size:2rem;color:#11c211;-webkit-transform:translate(0,-50%);transform:translate(0,-50%);}
@@ -437,6 +437,16 @@ em,i{font-style:normal;}
 .yc-message .main .wechat{padding-top:10px;text-align:center;}
 .yc-message .main .wechat img{margin-bottom:20px;}
 .yc-message .main .title{line-height:1.4;margin:0;text-align:left;font-size:1.6rem;color:#fca31d;}
+.yc-message .main .floor{margin-bottom:15px;padding:19px 15px;line-height:24px;background:#fff;border:1px solid #e7e7e7;}
+.yc-message .main .floor .f12{font-size:1.2rem;}
+.yc-message .main .floor p{margin:0;}
+.yc-message .main .floor em{color:#fca31d;}
+.yc-message .main .floor b{color:#fca31d;}
+.yc-message .main .floor span{color:#3cae94;}
+.yc-message .main .floor li{display:inline-block;width:48%;height:30px;line-height:30px;font-size:1.2rem;white-space:nowrap;color:#666;vertical-align:top;overflow:hidden;text-overflow:ellipsis;}
+.yc-message .main .floor .total{margin-top:10px;padding-top:10px;border-top:1px solid #e7e7e7;text-align:center;}
+.yc-message .main .button{margin:25px 0 -6px;}
+.yc-message .main .button .quote{display:inline-block;margin-top:20px;color:#3cae94;font-size:1.2rem;}
 
 /* 微信公众号 */
 .yc-weixin{padding:20px;font-size:1.4rem;}
