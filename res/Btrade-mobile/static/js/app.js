@@ -52,9 +52,8 @@ function getQueryStringArgs() {
 
 /** 
  * @description 看大图 
- * @param {Boolen}  微信 Webview 中调用微信的图片浏览器
  */
-function gallery(weChatImagePreview) {
+function gallery() {
 	function initGallery() {
 		var html = [];
 		html.push('<div class="gallery-box">');
@@ -76,10 +75,11 @@ function gallery(weChatImagePreview) {
 		$('body').on('click', '.thumb img', function() {
             var index = $(this).index();
             var imgUrls = [];
+            var wx = $(this).parent().data('wx') || 0; // 微信 Webview 中调用微信的图片浏览器
             $(this).parent().find('img').each(function() {
                 imgUrls.push($(this).data('src'));
             });
-            if (weChatImagePreview && window.WeixinJSBridge) {
+            if (!wx && window.WeixinJSBridge) {
                 window.WeixinJSBridge.invoke('imagePreview', {
                     current: imgUrls[index],
                     urls: imgUrls

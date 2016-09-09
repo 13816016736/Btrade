@@ -713,7 +713,7 @@ em,i{font-style:normal;}
 
 
 /* 画廊 */
-.gallery-box{display:none;position:fixed;left:0;top:0;z-index:9;width:100%;height:100%;background:rgba(0,0,0,.95);overflow:hidden;}
+.gallery-box{display:none;position:fixed;left:0;top:0;z-index:9;width:100%;height:102%;background:rgba(0,0,0,.95);overflow:hidden;}
 .gallery{position:absolute;left:50%;top:50%;width:100%;max-width:640px;overflow:hidden;-webkit-transform:translate(0,-50%);transform:translate(-50%,-50%);}
 .gallery:after{content:'';display:block;width:100%;padding-top:100%;}
 .gallery ul{position:absolute;left:0;top:0;width:100%;height:100%;-webkit-transform:translate3d(0px, 0px, 0px);transform:translate3d(0px, 0px, 0px);}
@@ -935,6 +935,8 @@ em,i{font-style:normal;}
 
 .form .file{position:relative;width:3rem;height:3rem;font-size:2.4rem;line-height:3.3rem;color:#fca41c;overflow:hidden;}
 .form .file input{position:absolute;right:0;bottom:0;font-size:9em;opacity:0;}
+.form .loading{position:absolute;left:100px;top:50%;height:20px;line-height:20px;margin-left:3.5rem;padding-left:20px;font-size:1.2rem;-webkit-transform:translate(0, -50%);transform:translate(0, -50%);display:none;}
+.form .loading:after{content:"";position:absolute;top:3px;left:0;width:14px;height:14px;border-radius:100%;border:2px solid #fca41c;border-bottom-color:transparent;vertical-align:middle;-webkit-animation:rotate 0.75s linear infinite;animation:rotate 0.75s linear infinite;}
 .form .thumb{position:absolute;top:0;left:0;width:100%;height:100%;}
 .form .thumb img{width:100%;height:100%;}
 

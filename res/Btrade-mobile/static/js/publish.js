@@ -9,7 +9,8 @@ $(function() {
 	    $quality = $('#nQuality'), // 质量要求
 	    $area = $('#nArea'), // 产地要求
 	    $price = $('#nPrice'), // 封顶价,
-	    $address = $('#area'); // 交货地址
+	    $address = $('#area'), // 交货地址
+	    $picWrap = $('#uploadDiv'); // 图片
 
 	$suggest.on('click', function(e) {
 	    e.stopPropagation();
@@ -178,12 +179,14 @@ $(function() {
 	    setOriginArea(origins);
 	});
 
+	var FILEINPUT = '<input type="file" >'; // 图片上传文件域，每次使用用都会重新生成一个新的，保证change事件正常执行
     var uploadimgfunc=function(control){
     	    //图片lrz压缩上传
 	    lrz(control.get(0).files[0], {
 	        width: 800
 	    }).then(function (rst) {
-	        base64 = rst.base64;
+	        var htmlText = '';
+	        var base64 = rst.base64;
 	        base64 = base64.substr(base64.indexOf(',') + 1);
 	        $.ajax({
 	            url: "/uploadfile",
@@ -194,21 +197,21 @@ $(function() {
 	            },
 	            type: 'post',
 	            dataType: 'json',
-	            beforeSend: function(jqXHR, settings) {
-	                lpPopover('图片正在上传，请稍后...');
-	            },
 	            success: function(data) {
 	                if (data.status === 'success') {
-	                    //lpPopover('上传图片成功，稍后会自动跳转回报价页面！');
-	                    var htmlText='<p class="thumb"><img src="'+data.thumb+'" data-src="'+data.path+'"></p>';
-	                   $('#uploadDiv').html(htmlText);
+	                    htmlText = '<p class="thumb" data-wx="0"><img src="'+data.thumb+'" data-src="'+data.path+'"></p>';
 	                } else {
-	                    lpPopover('上传图片失败，请刷新页面重试！');
+	                	htmlText = FILEINPUT;
+	                    lpPopover('上传图片失败，请重新上传！');
 	                }
 
 	            },
 	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            	htmlText = FILEINPUT;
 	                lpPopover('网络连接超时，请您稍后重试！');
+	            },
+	            complete: function() {
+	                $picWrap.html(htmlText).next().hide();
 	            }
 	        })
 	    }).catch(function (err) {
@@ -216,33 +219,32 @@ $(function() {
 	        lpPopover(err);
 	    }).always(function () {
 	        // 不管是成功失败，都会执行
+	    	$picWrap.html(FILEINPUT).next().hide();
 	    });;
 
     }
 
 	// 上传图片
-	$('#uploadImg').on('change', function(ev) {
+	$picWrap.on('change', 'input', function(ev) {
+		$picWrap.next().show();
 	    uploadimgfunc($(this));
 	})
 
 	// 删除图片
 	$('.gallery-box').append('<div class="gallery-button"><button class="ubtn ubtn-red gallery-ubtn">删除</button></div>');
 	$('.gallery-box').on('touchstart', '.gallery-ubtn', function(e) {
-	    var imgurl=$('#uploadDiv').find("img").data("src");
+	    var imgurl = $picWrap.find('img').data('src');
 	    $.ajax({
             url: '/delfile',
             dataType: 'json',
-            data: {"upload":"2",'url':imgurl},
+            data: {'upload':'2','url':imgurl},
             type: 'POST',
             beforeSend: function(jqXHR, settings) {
-                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+                jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match('\\b_xsrf=([^;]*)\\b')[1]);
             },
             success: function(data) {
                 if (data.status === 'success') {
-                    $('#uploadDiv').html('<input type="file" id="uploadImg">')
-                    $('#uploadImg').on('change', function(ev) {
-	                        uploadimgfunc($(this));
-	                        })
+                    $picWrap.html(FILEINPUT);
                 } else {
                     lpPopover(data.message);
                 }
