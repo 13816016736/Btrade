@@ -51,12 +51,12 @@ class RegisterHandler(BaseHandler):
                 if purchaseinfo:
                     quoteinfo=self.db.get("select price from quote where purchaseinfoid=%s and state=1 order by price desc limit 0,1",item)
                     if purchaseinfo["unit"]==u"公斤":
-                        sum_quantity+=int(purchaseinfo["quantity"])/1000
-                        sum_price+=int(purchaseinfo["quantity"])*float(quoteinfo["price"])
+                        sum_quantity+=float(purchaseinfo["quantity"])/1000
+                        sum_price+=float(purchaseinfo["quantity"])*float(quoteinfo["price"])
 
                     elif purchaseinfo["unit"]==u"吨":
-                        sum_quantity += int(purchaseinfo["quantity"])
-                        sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])*1000
+                        sum_quantity += float(purchaseinfo["quantity"])
+                        sum_price += float(purchaseinfo["quantity"]) * float(quoteinfo["price"])*1000
 
             if int(registertype)==2:
                 user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
@@ -221,11 +221,11 @@ class GetSmsCodeHandler(BaseHandler):
             self.api_response({'status':'fail','message':'此手机号已被使用'})
             return
         smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
-        print smscode
-        message={}
-        message["result"]="112"
-        #message = getSmsCode(phone, smscode)
-        #message = json.loads(message.encode("utf-8"))
+        #print smscode
+        #message={}
+        #message["result"]="112"
+        message = getSmsCode(phone, smscode)
+        message = json.loads(message.encode("utf-8"))
         if message["result"]:
             self.session["smscode"] = smscode
             self.session.save()
