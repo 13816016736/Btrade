@@ -130,7 +130,6 @@ class RegisterHandler(BaseHandler):
             self.session["openid"] = openid
             self.session["city"] = city
             self.session.save()
-            #print phone,openid
             self.api_response({'status': 'success', 'message': '验证成功'})
         elif step== '2':
             password = self.get_argument("password")
