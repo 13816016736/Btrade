@@ -71,11 +71,11 @@ class RegisterHandler(BaseHandler):
 
 
                 show_data = {"total": total, "accept_purchaseinfo_num": len(accept_purchaseinfo),
-                             "averge_quote_num": averge_quote_num, "sum_quantity": sum_quantity,
+                             "averge_quote_num": averge_quote_num, "sum_quantity": int(sum_quantity),
                              "sum_price": int(sum_price / 10000)}
             else:
                 show_data={"accept_company_num":accept_company_num,"accept_quote_user_num":accept_quote_user_num,
-                   "accept_num":accept_num,"sum_quantity":sum_quantity,"sum_price":int(sum_price/10000)}
+                   "accept_num":accept_num,"sum_quantity":int(sum_quantity),"sum_price":int(sum_price/10000)}
         elif step=="3":
             if int(registertype)==2:
                 self.redirect("/regsuccess?next_url=%s"%next_url)
