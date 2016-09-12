@@ -184,7 +184,7 @@ class RegisterHandler(BaseHandler):
                 self.session["notification"] = len(notification)
                 self.session.save()
                 # 发短信通知用户注册成功
-                #regSuccess(phone, name, username,int(registertype))
+                regSuccess(phone, name, username,int(registertype))
                 self.api_response({'status': 'success', 'message': '注册成功'})
             else:
                 self.api_response({'status': 'fail', 'message': 'session过期'})
