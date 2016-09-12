@@ -25,12 +25,12 @@ class RegisterHandler(BaseHandler):
                 quoteinfo = self.db.get(
                     "select price from quote where purchaseinfoid=%s and state=1 order by price desc limit 0,1", item)
                 if purchaseinfo["unit"] == u"公斤":
-                    sum_quantity += int(purchaseinfo["quantity"]) / 1000
-                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"])
+                    sum_quantity += float(purchaseinfo["quantity"]) / 1000
+                    sum_price += float(purchaseinfo["quantity"]) * float(quoteinfo["price"])
 
                 elif purchaseinfo["unit"] == u"吨":
-                    sum_quantity += int(purchaseinfo["quantity"])
-                    sum_price += int(purchaseinfo["quantity"]) * float(quoteinfo["price"]) * 1000
+                    sum_quantity += float(purchaseinfo["quantity"])
+                    sum_price += float(purchaseinfo["quantity"]) * float(quoteinfo["price"]) * 1000
 
         user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
         supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
@@ -44,7 +44,7 @@ class RegisterHandler(BaseHandler):
 
         #data = {"total": total, "accept_purchaseinfo_num": len(accept_purchaseinfo),"averge_quote_num": averge_quote_num, "sum_quantity": sum_quantity,"sum_price": int(sum_price / 10000)}
 	    self.render("register_wx.html",total=total,accept_purchaseinfo_num=len(accept_purchaseinfo),
-                    averge_quote_num=averge_quote_num,sum_quantity=sum_quantity,sum_price=int(sum_price / 10000)
+                    averge_quote_num=averge_quote_num,sum_quantity=int(sum_quantity),sum_price=int(sum_price / 10000)
                     )
 
     def post(self):
