@@ -66,31 +66,31 @@ class IdentifyUserHandler(BaseHandler):
                 img_path = rpath[0:rpath.find("static")] + url[url.find("static/"):]  # 服务器绝对路径
                 item={"path":img_path,"describe":describe}
                 piclist.append(item)
-        if qid!="":
-            transaction=self.db.get("select * from quality_supplier where id=%s",qid)
-            if transaction:
-                #修改操作
-                self.db.execute("update quality_supplier set type=%s,name=%s,identifiers=%s,company=%s,address=%s where id=%s"
+        transaction=self.db.get("select * from quality_supplier where id=%s or userid=%s",qid,id)
+        if transaction:
+            #修改操作
+            qid=transaction.id
+            self.db.execute("update quality_supplier set type=%s,name=%s,identifiers=%s,company=%s,address=%s where id=%s"
                                 ,usertype,name,identifiers,compny,address,qid)
-                attachments=self.db.query("select * from quality_attachment where quality_id=%s and type=1",qid)
-                plist=[item["path"]for item in piclist]
-                for item in attachments:#删除不要的图片文件
-                    if item["attachment"] in plist:
-                        continue
-                    try:
-                        rpath = config.img_path
-                        base, ext = os.path.splitext(os.path.basename(item["attachment"]))
-                        thumbpath = item["attachment"][item["attachment"].find("static"):].replace(base, base + "_thumb")
-                        thumbpath = rpath[0:rpath.find("static")] + thumbpath[thumbpath.find("static"):]
-                        os.remove(item["attachment"])
-                        os.remove(thumbpath)
-                    except:
-                         pass
-                self.db.execute("delete from quality_attachment where quality_id=%s and type=1",qid)
-                for picitem in piclist:
-                    self.db.execute("insert into quality_attachment (type,quality_id,describeinfo,attachment) value(%s,%s,%s,%s)",1,qid,picitem["describe"],picitem["path"])
-                self.api_response(
-                    {'status': 'success', 'message': '修改成功'})
+            attachments=self.db.query("select * from quality_attachment where quality_id=%s and type=1",qid)
+            plist=[item["path"]for item in piclist]
+            for item in attachments:#删除不要的图片文件
+                if item["attachment"] in plist:
+                    continue
+                try:
+                    rpath = config.img_path
+                    base, ext = os.path.splitext(os.path.basename(item["attachment"]))
+                    thumbpath = item["attachment"][item["attachment"].find("static"):].replace(base, base + "_thumb")
+                    thumbpath = rpath[0:rpath.find("static")] + thumbpath[thumbpath.find("static"):]
+                    os.remove(item["attachment"])
+                    os.remove(thumbpath)
+                except:
+                    pass
+            self.db.execute("delete from quality_attachment where quality_id=%s and type=1",qid)
+            for picitem in piclist:
+                self.db.execute("insert into quality_attachment (type,quality_id,describeinfo,attachment) value(%s,%s,%s,%s)",1,qid,picitem["describe"],picitem["path"])
+            self.api_response(
+                {'status': 'success', 'message': '修改成功'})
         else:
             lastrowid = self.db.execute_lastrowid(
                 "insert into quality_supplier (userid, type, name,identifiers,company,address,createtime)"
@@ -100,7 +100,7 @@ class IdentifyUserHandler(BaseHandler):
             for picitem in piclist:
                 self.db.execute("insert into quality_attachment (type,quality_id,describeinfo,attachment) value(%s,%s,%s,%s)",1,lastrowid,picitem["describe"],picitem["path"])
             self.api_response(
-                {'status': 'success', 'message': '提交成功'})
+            {'status': 'success', 'message': '提交成功'})
         pass
 
 class QualityUploadHandler(BaseHandler):
