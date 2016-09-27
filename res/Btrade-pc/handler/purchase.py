@@ -697,16 +697,17 @@ class MyPurchaseUpdateHandler(BaseHandler):
             if status:
                 # 为采购商积分：
                 self.db.execute("update users set pushscore=pushscore+1 where id=%s", self.session.get("userid"))
-                try:
-                    purchaseinfo=self.db.query("select id,status from purchase_info where purchaseid=%s",id)
-                    for item in purchaseinfo:
-                        if item["status"]!=0:
-                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
-                            task_generate.apply_async(args=[task])
-                            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
-                            task_generate.apply_async(args=[task])
-                except Exception,ex:
-                     self.log.info("purchaseinfo task_generate error %s",str(ex))
+                #暂时不推送，修改会导致短信大量发送
+                #try:
+                #    purchaseinfo=self.db.query("select id,status from purchase_info where purchaseid=%s",id)
+                #    for item in purchaseinfo:
+                #        if item["status"]!=0:
+                #            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 1}
+                #            task_generate.apply_async(args=[task])
+                #            task = {"purchaseinfoid": item["id"], "tasktype": 1, "channel": 2}
+                #            task_generate.apply_async(args=[task])
+                #except Exception,ex:
+                #     self.log.info("purchaseinfo task_generate error %s",str(ex))
                 self.api_response({'status':'success','message':'请求成功','data':varids,'purchaseid':id})
             else:
                 self.api_response({'status':'fail','message':'修改失败请刷新页面重试'})
