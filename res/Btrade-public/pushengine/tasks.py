@@ -60,7 +60,7 @@ def task_generate(task):#生成发送任务
             if filtersend != []:
                 phonecondition = " and mobile not in(%s)" % ",".join(filtersend)
             yt = sqldb.query(
-                    "select mobile from supplier where find_in_set(%s,variety) and mobile != '' and pushstatus=1 and maxpush<3 " + phonecondition + " order by pushscore  limit 0, %s",
+                    "select mobile from supplier where find_in_set(%s,variety) and mobile != '' and pushstatus=1 " + phonecondition + " order by pushscore  limit 0, %s",
                     purchaseinfo["varietyid"], max_phone_num)
             for i in userphones:
                 sendids.add(str(i["phone"]))
