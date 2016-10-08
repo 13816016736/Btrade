@@ -45,8 +45,6 @@ def sendPush(rdd):
                         sendstatus = 0  # 0,未发送，1:发送成功,2:失败
                         colleciton = mongodb.transform_rate
                         createtime = int(time.time())
-                        if channel==1 and  purchaseinfo["openid"]=="" and purchaseinfo["maxpush"]>3:
-                            return
                         push_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"varietyname":purchaseinfo["variety"],"order":count,"quote":"","type":channel,"createtime":createtime})
                         for send in sendlist:
                             uuid = md5(str(time.time())+ str(send))[8:-8]
@@ -69,13 +67,18 @@ def sendPush(rdd):
                                 if userinfo and userinfo["openid"]!="":
                                     attentions.append(phone)
                                 else:
-                                    notattentions.append(phone)
-                                    sqldb.execute("update users set maxpush=maxpush+1 where phone=%s",
-                                                  phone)
+                                    if userinfo:
+                                        notattentions.append(phone)
+                                        sqldb.execute("update users set maxpush=maxpush+1 where phone=%s",
+                                                      phone)
+                                    else:
+                                        #supplierb表里面的
+                                        attentions.append(phone)
+
                             if len(notattentions)!=0:
-                                thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap,2))
+                                thread.start_new_thread(pushPurchase, (notattentions, purchaseinfo, uuidmap,2))
                             if len(attentions) != 0:
-                                thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
+                                thread.start_new_thread(pushPurchase, (attentions, purchaseinfo, uuidmap))
                         else:
                             print sendlist, purchaseinfo,uuidmap
                             #pushPurchaseWx(sendlist, purchaseinfo,uuidmap)
