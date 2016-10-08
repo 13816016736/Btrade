@@ -37,14 +37,18 @@ def sendPush(rdd):
                     sendlist=taskinfo["sendlist"].split(",")
                     if tasktype==1:
                         purchaseinfo = sqldb.get("select pi.id purchaseinfoid,pi.varietyid,pi.name variety,pi.specification,pi.quantity,pi.unit,pi.quality,pi.origin,pi.pushcount,p.userid,p.createtime from purchase_info pi left join purchase p on pi.purchaseid = p.id where pi.id = %s", purchaseinfoid)
-                        u = sqldb.get("select name,nickname from users where id = %s", purchaseinfo["userid"])
+                        u = sqldb.get("select name,nickname,openid,maxpush from users where id = %s", purchaseinfo["userid"])
                         purchaseinfo["name"] = u["name"]
                         purchaseinfo["nickname"] = u["nickname"]
+                        purchaseinfo["openid"] = u["openid"]
+                        purchaseinfo["maxpush"] = u["maxpush"]
                         push_user_infos = []
                         uuidmap={}
                         sendstatus = 0  # 0,未发送，1:发送成功,2:失败
                         colleciton = mongodb.transform_rate
                         createtime = int(time.time())
+                        if channel==1 and  purchaseinfo["openid"]=="" and purchaseinfo["maxpush"]>3:
+                            return
                         push_id=colleciton.insert({"purchaseinfoid":purchaseinfoid ,"varietyname":purchaseinfo["variety"],"order":count,"quote":"","type":channel,"createtime":createtime})
                         for send in sendlist:
                             uuid = md5(str(time.time())+ str(send))[8:-8]
@@ -59,7 +63,11 @@ def sendPush(rdd):
                         if channel==1:
                             print sendlist, purchaseinfo, uuidmap
                             #pushPurchase(sendlist, purchaseinfo, uuidmap)
-                            thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
+                            if purchaseinfo["openid"]=="":
+                                sqldb.execute("update users set maxpush=maxpush+1 where id=%s",purchaseinfo["userid"])
+                                thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap,2))
+                            else:
+                                thread.start_new_thread(pushPurchase, (sendlist, purchaseinfo, uuidmap))
                         else:
                             print sendlist, purchaseinfo,uuidmap
                             #pushPurchaseWx(sendlist, purchaseinfo,uuidmap)

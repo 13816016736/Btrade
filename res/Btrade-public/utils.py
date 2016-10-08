@@ -184,10 +184,13 @@ def rejectQuote(phone, name, variety, price, unit, message):
     vars = '{"%name%":"'+name+'","%variety%":"'+variety+'","%price%":"'+price+'","%unit%":"'+unit+'","%message%":"'+message+'"}'
     thread.start_new_thread(send, (templateId, phone, vars))
 
-def pushPurchase(phones, purchase,uuidmap):
+def pushPurchase(phones, purchase,uuidmap,sendtype=1):
     if 'Linux' not in platform.system():
         return
-    templateId = 870
+    if sendtype==1:
+        templateId = 870
+    else:
+        templateId = 2712
     for (k,v) in purchase.items():
         purchase[k] = purchase[k].encode('utf-8') if isinstance(purchase[k], unicode) else purchase[k]
     #vars = '{"%purchaseinfoid%":"'+str(purchase["purchaseinfoid"])+'","%variety%":"'+purchase["variety"]+'","%name%":"'+purchase["name"]+'","%specification%":"'+purchase["specification"]+'","%quantity%":"'+purchase["quantity"]+'","%unit%":"'+purchase["unit"]+'"}'

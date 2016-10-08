@@ -55,12 +55,12 @@ def task_generate(task):#生成发送任务
             task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": 1, "order": order,
                         "status": 0,"createtime":int(time.time())}
             userphones = sqldb.query(
-                    "select phone from users where find_in_set(%s,varietyids)" + phonecondition + " order by pushscore  limit 0,%s",
+                    "select phone from users where find_in_set(%s,varietyids) and maxpush<3" + phonecondition + " order by pushscore  limit 0,%s",
                     purchaseinfo["varietyid"], max_wx_num)
             if filtersend != []:
                 phonecondition = " and mobile not in(%s)" % ",".join(filtersend)
             yt = sqldb.query(
-                    "select mobile from supplier where find_in_set(%s,variety) and mobile != '' and pushstatus=1" + phonecondition + " order by pushscore  limit 0, %s",
+                    "select mobile from supplier where find_in_set(%s,variety) and mobile != '' and pushstatus=1 and maxpush<3 " + phonecondition + " order by pushscore  limit 0, %s",
                     purchaseinfo["varietyid"], max_phone_num)
             for i in userphones:
                 sendids.add(str(i["phone"]))
