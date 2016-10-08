@@ -27,6 +27,11 @@ CELERYBEAT_SCHEDULE = {
         'schedule':  crontab(hour=10,minute=0),
         'args': ()
     },
+    'monitor_click': {
+        'task': 'pushengine.tasks.monitor_click',
+        'schedule': crontab(hour=10, minute=0),
+        'args': ()
+    },
 
 }
 CELERY_TIMEZONE = 'Asia/Shanghai'

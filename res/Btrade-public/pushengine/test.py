@@ -1,6 +1,6 @@
 #coding:utf8
 #from datetime import timedelta,datetime
-import time
+#import time
 import sys,os
 sys.path.append(os.path.join(sys.path[0],".."))
 #r = analysis_record.apply_async()
@@ -29,7 +29,75 @@ sys.path.append(os.path.join(sys.path[0],".."))
 
 #print '\xe4\xba\xb3\xe5\xb7\x9e'
 #regSuccessWx("oTEeNweXKZh8FXoP3Fwu_y3AGPkk", "肖先生", "ycg")
-from pushengine.tasks import task_generate
-task = {"purchaseinfoid": str("525"), "tasktype": 2, "channel": 2}
-print task
-task_generate.apply_async(args=[task])
+#from pushengine.tasks import task_generate
+##print task
+#task_generate.apply_async(args=[task])
+from mongodb import PymongoDateBase
+from database import database
+import pymongo
+from datetime import timedelta,datetime
+import time
+'''
+print "start analysis_record start"
+def update(phone,list):
+    for item in list:
+        if item["phone"]==phone:
+            item["notclick"]+=1
+    return
+mongodb = PymongoDateBase.instance().get_db()
+sqldb = database.instance().get_session()
+# items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
+format = "%Y-%m-%d"
+todaystr = datetime.now().strftime("%Y-%m-%d")
+print todaystr
+today = datetime.strptime(todaystr, format)
+yesterday = today - timedelta(days=7)
+
+todayStamp = time.mktime(today.timetuple())
+yesterdayStamp = time.mktime(yesterday.timetuple())
+print todayStamp
+print yesterdayStamp
+yesterdayStamp=0
+
+ret = mongodb.push_record.find({"createtime": {"$gt": int(yesterdayStamp), "$lt": int(todayStamp)},"type":1})
+alluser=set()
+for item in ret:
+    alluser.add(item["sendid"])
+alluser=list(alluser)
+totalcount=len(alluser)
+notclick=[]
+for item in alluser:
+    user={"phone":item,"notclick":0}
+    notclick.append(user)
+ret = mongodb.push_record.find({"createtime": {"$gt": int(yesterdayStamp), "$lt": int(todayStamp)},"type":1})
+for item in ret:
+    if item["click"]==0:
+        update(item["sendid"],notclick)
+
+notnum=0
+for item in notclick:
+    if item["notclick"]>3:
+        notnum+=1
+print totalcount
+print notnum
+'''
+mongodb = PymongoDateBase.instance().get_db()
+sqldb = database.instance().get_session()
+# items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
+format = "%Y-%m-%d"
+todaystr = datetime.now().strftime("%Y-%m-%d")
+print todaystr
+todaystr="2016-09-28"
+today = datetime.strptime(todaystr, format)
+yesterday = today - timedelta(days=4)
+
+todayStamp = time.mktime(today.timetuple())
+yesterdayStamp = time.mktime(yesterday.timetuple())
+print todayStamp
+print yesterdayStamp
+
+ret = mongodb.push_record.find({"createtime": {"$gt": int(yesterdayStamp), "$lt": int(todayStamp)}, "type": 1})
+for item in ret:
+    if item["click"] == 0:
+        sqldb.execute("update supplier set maxpush=maxpush+1 where mobile=%s",
+                      item["sendid"])

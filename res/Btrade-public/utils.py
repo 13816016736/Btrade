@@ -618,6 +618,8 @@ def verify(appkey, token, timestamp, signature):
 
 
 def reply_quote_notify(phone, num, name, price, unit,pid,uuid):
+    if 'Linux' not in platform.system():
+        return
     num = num.encode('utf-8') if isinstance(num, unicode) else num
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     price = price.encode('utf-8') if isinstance(price, unicode) else price
@@ -628,6 +630,8 @@ def reply_quote_notify(phone, num, name, price, unit,pid,uuid):
     print vars
     send(templateId, phone, vars)
 def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid,uuid,sendtype=1):
+    if 'Linux' not in platform.system():
+        return
     openid = openid.encode('utf-8') if isinstance(openid, unicode) else openid
     name = name.encode('utf-8') if isinstance(name, unicode) else name
     unit = unit.encode('utf-8') if isinstance(unit, unicode) else unit

@@ -64,6 +64,7 @@ def sendPush(rdd):
                             for phone in sendlist:
                                 userinfo = None
                                 userinfo=sqldb.get("select id,maxpush,openid from users where phone=%s",phone)
+                                print userinfo
                                 if userinfo and userinfo["openid"]!="":
                                     attentions.append(phone)
                                 else:
@@ -76,11 +77,13 @@ def sendPush(rdd):
                                         attentions.append(phone)
 
                             if len(notattentions)!=0:
+                                print notattentions, purchaseinfo
                                 thread.start_new_thread(pushPurchase, (notattentions, purchaseinfo, uuidmap,2))
                             if len(attentions) != 0:
+                                print attentions, purchaseinfo
                                 thread.start_new_thread(pushPurchase, (attentions, purchaseinfo, uuidmap))
                         else:
-                            print sendlist, purchaseinfo,uuidmap
+                            #print sendlist, purchaseinfo,uuidmap
                             #pushPurchaseWx(sendlist, purchaseinfo,uuidmap)
                             thread.start_new_thread(pushPurchaseWx, (sendlist, purchaseinfo, uuidmap))
                     elif tasktype==2:

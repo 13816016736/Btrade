@@ -55,7 +55,7 @@ def task_generate(task):#生成发送任务
             task = {"purchaseinfoid": purchaseinfoid, "tasktype": tasktype, "channel": 1, "order": order,
                         "status": 0,"createtime":int(time.time())}
             userphones = sqldb.query(
-                    "select phone from users where find_in_set(%s,varietyids) and maxpush<3" + phonecondition + " order by pushscore  limit 0,%s",
+                    "select phone from users where find_in_set(%s,varietyids) and maxpush<3 " + phonecondition + " order by pushscore  limit 0,%s",
                     purchaseinfo["varietyid"], max_wx_num)
             if filtersend != []:
                 phonecondition = " and mobile not in(%s)" % ",".join(filtersend)
@@ -120,7 +120,27 @@ def task_generate(task):#生成发送任务
                 collection.insert(taskinfo)
                 sendkafka.apply_async(args=[taskid])
 
+@celerysever.task
+def monitor_click(task):  #监控点击情况
+    mongodb = PymongoDateBase.instance().get_db()
+    sqldb = database.instance().get_session()
+    # items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
+    format = "%Y-%m-%d"
+    todaystr = datetime.now().strftime("%Y-%m-%d")
+    print todaystr
+    today = datetime.strptime(todaystr, format)
+    yesterday = today - timedelta(days=1)
 
+    todayStamp = time.mktime(today.timetuple())
+    yesterdayStamp = time.mktime(yesterday.timetuple())
+    print todayStamp
+    print yesterdayStamp
+
+    ret = mongodb.push_record.find({"createtime": {"$gt": int(yesterdayStamp), "$lt": int(todayStamp)}, "type": 1})
+    for item in ret:
+        if item["click"] == 0:
+            sqldb.execute("update supplier set maxpush=maxpush+1 where mobile=%s",
+                          item["sendid"])
 
 
 #发的kafka上执行
