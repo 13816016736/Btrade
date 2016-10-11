@@ -220,9 +220,6 @@ class GetSmsCodeHandler(BaseHandler):
             self.api_response({'status':'fail','message':'此手机号已被使用'})
             return
         smscode = ''.join(random.sample(['0','1','2','3','4','5','6','7','8','9'], 6))
-        #print smscode
-        #message={}
-        #message["result"]="112"
         message = getSmsCode(phone, smscode)
         message = json.loads(message.encode("utf-8"))
         if message["result"]:
