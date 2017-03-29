@@ -2,7 +2,7 @@
 import scrapy
 from scrapy.http.request import Request
 from scrapy.selector import Selector
-from scrapy_btrade.items import YaoboItem,ZycItem
+from tradespider.items import YaoboItem,ZycItem
 
 class YaoboSpider(scrapy.Spider):
     name = "Yaobo"
