@@ -310,3 +310,21 @@ class ZycCsTPipeline(object):
                 print "-----"
                 print e
                 print "-----"
+
+
+from openpyxl import Workbook
+
+class WriteExclePipeline(object):
+    def __init__(self):
+        self.wb = Workbook()
+        self.ws = self.wb.active
+        self.ws.append(['企业名称', '地址', '电话'])  # 设置表头
+
+
+    def process_item(self, item, spider):  # 工序具体内容
+        line = [item['name'], item['address'], item['mobile']]  # 把数据中每一项整理出来
+        self.ws.append(line)  # 将数据以行的形式添加到xlsx中
+        self.wb.save(u'爬取数据.xlsx')  # 保存xlsx文件
+        return item
+
+

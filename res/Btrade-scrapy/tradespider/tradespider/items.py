@@ -71,3 +71,13 @@ class ZycItem(scrapy.Item):
     mobile = scrapy.Field()
     address = scrapy.Field()
     company=scrapy.Field()
+
+class StoreItem(scrapy.Item):
+    name = scrapy.Field()
+    mobile = scrapy.Field()
+    address = scrapy.Field()
+
+
+
+
+
