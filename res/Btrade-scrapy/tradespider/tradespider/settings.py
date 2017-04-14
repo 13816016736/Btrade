@@ -9,13 +9,16 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'sfda'
+BOT_NAME = 'purchaseSpider'
 
 SPIDER_MODULES = ['tradespider.spiders']
 NEWSPIDER_MODULE = 'tradespider.spiders'
 DEFAULT_ITEM_CLASS = 'tradespider.items.Website'
 ITEM_PIPELINES = {
-   'tradespider.pipelines.WriteExclePipeline': 200,
+   #'tradespider.pipelines.WriteExclePipeline': 200,
+   #'tradespider.pipelines.JsonWriterPipeline':200,
+   'tradespider.pipelines.PurchaseSQlPipeline':200,
+
 }
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36'

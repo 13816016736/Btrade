@@ -53,8 +53,6 @@ class SfdaSpider(scrapy.Spider):
                 },
                 callback=self.parse)
 
-
-
     @staticmethod
     def catch_item(response):
         selector = Selector(response)

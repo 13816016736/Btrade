@@ -328,3 +328,26 @@ class WriteExclePipeline(object):
         return item
 
 
+import MySQLdb
+import MySQLdb.cursors
+import sys
+
+class PurchaseSQlPipeline(object):
+    def __init__(self):
+        self.conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='yaocai',port=3306, charset="utf8")
+        self.cursor = self.conn.cursor()
+
+    # pipeline dafault function                    #这个函数是pipeline默认调用的函数
+    def process_item(self, item, spider):
+        try:
+            self.cursor.execute("insert into trader_data(name,mobile,purchaseDate,variety,spec,quantity,quality,origin,source)values (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                           (item["name"], item["mobile"], item["purchaseDate"],
+                             item["variety"], item["spec"], item["quantity"], item["quality"],item["origin"], 1))
+
+            self.conn.commit()
+        except MySQLdb.Error, e:
+            print "-----"
+            print e
+            print "-----"
+
+        return item
