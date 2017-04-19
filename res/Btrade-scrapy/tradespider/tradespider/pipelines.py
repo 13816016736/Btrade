@@ -8,7 +8,9 @@
 import json
 import codecs
 from scrapy.exceptions import DropItem
-
+from datetime import timedelta,datetime
+from time import strftime, localtime
+import time
 
 class FilterWordsPipeline(object):
     """A pipeline for filtering out items which contain certain words in their
@@ -339,15 +341,33 @@ class PurchaseSQlPipeline(object):
 
     # pipeline dafault function                    #这个函数是pipeline默认调用的函数
     def process_item(self, item, spider):
-        try:
-            self.cursor.execute("insert into trader_data(name,mobile,purchaseDate,variety,spec,quantity,quality,origin,source)values (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        year = strftime("%Y", localtime())
+        month = strftime("%m", localtime())
+        day = strftime("%d", localtime())
+        format = "%Y-%m-%d"
+        date_str = "%s-%s-%s" % (year, month, day)
+        now = datetime.strptime(date_str, format)
+        start_date = now - timedelta(days=3)
+        int_end = int(time.mktime(now.timetuple()))
+        int_start = int(time.mktime(start_date.timetuple()))
+
+        publish_time = datetime.strptime(item["purchaseDate"], format)
+        int_publish = int(time.mktime(publish_time.timetuple()))
+        if int_publish<=int_end and int_publish>int_start:
+            # 去重
+            self.cursor.execute(
+                "select * from trader_data where mobile ='%s' and variety='%s'" % (item["mobile"], item["variety"]))
+            data_result = self.cursor.fetchall()
+            if (len(data_result) == 0):
+                try:
+                    self.cursor.execute("insert into trader_data(name,mobile,purchaseDate,variety,spec,quantity,quality,origin,source)values (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                            (item["name"], item["mobile"], item["purchaseDate"],
                              item["variety"], item["spec"], item["quantity"], item["quality"],item["origin"], 1))
 
-            self.conn.commit()
-        except MySQLdb.Error, e:
-            print "-----"
-            print e
-            print "-----"
+                    self.conn.commit()
+                except MySQLdb.Error, e:
+                    print "-----"
+                    print e
+                    print "-----"
 
-        return item
+            return item
