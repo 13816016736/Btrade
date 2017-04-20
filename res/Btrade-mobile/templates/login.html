@@ -16,7 +16,7 @@
     <div class="yc-form yc-login">
         <div class="title">
             <i class="iconfont icon-face"></i>
-            <span>登录药材购，为您精准推送采购单</span>
+            <span>登录药优优，为您精准推送采购单</span>
         </div>
         <form action="/login" method="post">
             {% raw xsrf_form_html() %}
@@ -56,7 +56,7 @@
         return (/micromessenger/.test(ua)) ? true : false ;
     }
 
-    var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/register/next_url/{{next_url}}&response_type=code&scope=snsapi_userinfo&state=ycg#wechat_redirect";
+    var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaobest.com/register/next_url/{{next_url}}&response_type=code&scope=snsapi_userinfo&state=ycg#wechat_redirect";
     if(isWeixinBrowser()){
         $(".reg").attr("href", url);
         $(".yc-header-right a").attr("href", url);

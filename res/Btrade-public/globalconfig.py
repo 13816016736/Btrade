@@ -5,7 +5,7 @@ import os.path
 #显示设置
 app = {
     #应用名称
-    'name': '药采购',
+    'name': '药优优',
     #应用附加信息(简短的说明)
     'title': '药材买卖的专业助手',
     #联系邮箱
@@ -18,17 +18,17 @@ app = {
 salt = "ycg20151012"
 
 #图片服务器域名
-img_domain = "http://static.yaocai.pro/"
+img_domain = "http://static.yaobest.com/"
 #img_domain="http://127.0.0.1:8089/"
 
 #img_path = "E:/wamp/www/static/uploadfiles/"
 img_path = "/opt/resources/static/uploadfiles"
-host = "http://m.yaocai.pro"
+host = "http://m.yaobest.com"
 
 unit = "公斤"
 
-appid = "wx90e04052c49aa63e"
-secret = "b1146d3ec7e0a8a483064406f361a07b"
+appid = "wx0b6c6683f64d3cc2"
+secret = "b52e6a9abba43685cf273c6028aec69d"
 token = ""
 
 purchase_appid="wx27d7d93c3eeb22d0"
@@ -115,8 +115,8 @@ ALIPAY_KEY="f2zg8m8duuguxu9n87bnhm8263v4u7q5"
 ALIPAY_INPUT_CHARSET = 'utf-8'
 ALIPAY_SIGN_TYPE = 'MD5'
 _GATEWAY = 'https://mapi.alipay.com/gateway.do?'
-ALIPAY_RETURN_URL="http://yaocai.pro/alipay/return"#同步通知
-ALIPAY_NOTIFY_URL="http://cb.yaocai.pro/alipay/notify"#异步通知
+ALIPAY_RETURN_URL="http://www.yaobest.com/alipay/return"#同步通知
+ALIPAY_NOTIFY_URL="http://cb.yaobest.com/alipay/notify"#异步通知
 
 pay_type={
     1:"阳光匹配（采购商）保证金",
