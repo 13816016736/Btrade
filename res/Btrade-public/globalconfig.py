@@ -81,7 +81,12 @@ source_code={
     "manual_record":"人工录入",
     "manual_recommend":"人工推荐",
     "self_recommend":"自主推荐",
-    "self_register":"自主注册"
+    "self_register":"自主注册",
+    "yaoyy_1":"药优优同步 - 系统录入",
+    "yaoyy_2":"药优优同步 - 沪谯导入",
+    "yaoyy_3":"药优优同步 - 天济导入",
+    "yaoyy_4":"药优优同步 - 微信登记",
+
 }
 
 analysis_send_topic="push_monitor"#推送分析的topic

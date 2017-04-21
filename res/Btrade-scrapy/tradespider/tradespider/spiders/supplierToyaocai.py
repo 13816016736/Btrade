@@ -11,15 +11,17 @@ if __name__ == '__main__':
     conn_yaoyy = MySQLdb.connect(host='localhost', user='root', passwd='123456', db='yaoyy', port=3306, charset="utf8")
     cursor_yy = conn_yaoyy.cursor()
     yaocai_list=[]
-    n = cursor_yy.execute("select * from supplier")
+    n = cursor_yy.execute("select name,phone,address,area,enter_category,company,status,source from supplier")
     for r in cursor_yy.fetchall():
         yaocai_item = {}
-        yaocai_item["name"]=r[1]
-        yaocai_item["mobile"] = r[2]
-        yaocai_item["adress"] = r[15]
-        yaocai_item["area"] = r[6]
-        yaocai_item["variety"] = r[7]
-        yaocai_item["company"] = r[12]
+        yaocai_item["name"]=r[0]
+        yaocai_item["mobile"] = r[1]
+        yaocai_item["adress"] = r[2]
+        yaocai_item["area"] = r[3]
+        yaocai_item["variety"] = r[4]
+        yaocai_item["company"] = r[5]
+        yaocai_item["status"] = r[6]
+        yaocai_item["source"] = r[7]
         yaocai_list.append(yaocai_item)
 
     for item in yaocai_list:
@@ -55,13 +57,14 @@ if __name__ == '__main__':
         cursor_yaocai.execute("select * from supplier where mobile ='%s'" % item["mobile"])
         mobile_result =cursor_yaocai.fetchall()
         #供应商表不存在就插入
-
+        if item["source"]==None:
+            item["source"]=1
         if(len(mobile_result)==0 and item["variety"]!=""):
             try:
                 cursor_yaocai.execute(
-                    "insert into supplier(name,mobile,address,phone,businessplace,variety,company,source,sponsor)values (%s, %s, %s,%s, %s, %s,%s, %s,%s)",
+                    "insert into supplier(name,mobile,address,phone,businessplace,variety,company,source,sponsor,yaoyy_status)values (%s, %s, %s,%s, %s, %s,%s, %s,%s,%s)",
                     (item["name"], item["mobile"], item["adress"],"",
-                     item["area"], item["variety"], item["company"] if item["company"]!=None else "","yaoyy",""))
+                     item["area"], item["variety"], item["company"] if item["company"]!=None else "","yaoyy_"+str(item["source"]),"",item["status"]))
 
                 conn_yaocai.commit()
             except MySQLdb.Error, e:
