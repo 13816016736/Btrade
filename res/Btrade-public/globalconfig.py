@@ -31,10 +31,11 @@ appid = "wx0b6c6683f64d3cc2"
 secret = "b52e6a9abba43685cf273c6028aec69d"
 token = ""
 
-purchase_appid="wx27d7d93c3eeb22d0"
-purchase_secret="a580e8f5259f3019113c79f23b8763b9"
+#purchase_appid="wx27d7d93c3eeb22d0"
+#purchase_secret="a580e8f5259f3019113c79f23b8763b9"
 
-
+purchase_appid="wx0b6c6683f64d3cc2"
+purchase_secret="b52e6a9abba43685cf273c6028aec69d"
 
 
 usertype={
