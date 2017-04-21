@@ -299,7 +299,7 @@ def quoteWx(openid, purchaseinfoid, variety, name, price, unit, quality, qtime,s
     templateId = 'sqrMpnalF0sxxywrN5y_fIR27HaXsjBps_B81GB2kVk'
     #if sendtype==2:
     #     templateId="H99pLHOlhHtGHL9ycFdxo5Y32FivityMW-ZY23r9D-I"
-    link = 'http://m.yaocai.pro/replydetail?pid=%s' % purchaseinfoid
+    link = 'http://m.yaobest.com/replydetail?pid=%s' % purchaseinfoid
     data = {
         "first": {
            "value":"您好，%s收到新报价" % variety,
@@ -380,7 +380,7 @@ def acceptQuoteWx(openid, quoteid, name, variety, price, nickname, phone, qtime,
     templateId = 'LW25qypUzmobr9qkxlRfvqV5d4Tg9Tphg9Yv_rJXxkk'
     #if sendtype == 2:
     #    templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
-    link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
+    link = 'http://m.yaobest.com/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
            "value":"报价被认可，请尽快联系",
@@ -416,7 +416,7 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime,sendtype
     templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
     if sendtype == 2:
         templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
-    link = 'http://m.yaocai.pro/quotedetail/quoteid/%s/nid/0' % quoteid
+    link = 'http://m.yaobest.com/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {
            "value":"报价被拒绝",
@@ -448,7 +448,7 @@ def pushPurchaseWx(openids, purchase,uuidmap,sendtype=1):
     templateId = 'FsfroTOrMI_yvbByrKQikIYzxaDvY-p0VMfw6ehpa7M'
     #if sendtype == 2:
     #    templateId = "lRRAoLj5-udp8NvSY3IY-tuRQbJb53Ca_FbAU30SdGo"
-    link = 'http://m.yaocai.pro/purchase/purchaseinfo/%s' % purchase["purchaseinfoid"]
+    link = 'http://m.yaobest.com/purchase/purchaseinfo/%s' % purchase["purchaseinfoid"]
     qtime = int(purchase["createtime"])
     purchase["name"] = purchase["name"].encode('utf-8') if isinstance(purchase["name"], unicode) else purchase["name"]
     purchase["variety"] = purchase["variety"].encode('utf-8') if isinstance(purchase["variety"], unicode) else purchase["variety"]
@@ -640,7 +640,7 @@ def reply_wx_notify(openid,num, name, price, unit,pid,purchaseid,uuid,sendtype=1
     templateId = 'U_H7dwgBKRjknc99s7rf2RlDI5iOqX4XPox4alA7Vbs'
     #if sendtype == 2:
     #    templateId = "-RvagrAIVd4mA8Q8dgWQT7--nVLmP7jFR3BVBBojS2Q"
-    link = 'http://m.yaocai.pro/replydetail?pid=%s'% pid+"&uuid="+uuid
+    link = 'http://m.yaobest.com/replydetail?pid=%s'% pid+"&uuid="+uuid
     data = {
         "first": {
            "value":"报价未回复通知",
