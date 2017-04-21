@@ -266,7 +266,7 @@ class PaymentHandler(BaseHandler):
                 self.db.execute(
                     "insert into payment (userid,paytype,paymode,money,payid,createtime) value(%s,%s,%s,%s,%s,%s)", userid,
                     1, 1,config.deposit,payid,int(time.time()) )
-                subject = u'（药材购）阳光速配诚信保证金'
+                subject = u'（药优优）阳光速配诚信保证金'
                 body = ''
                 bank = ""
                 tf = '%.2f' % config.deposit

@@ -260,7 +260,7 @@ def regSuccessWx(openid, name, username,sendtype=1):
     templateId = 'FXcnNCZql9pE0Mpyp5D6YA2voByFhEdzX_VDNX2cMFQ'
     #if  sendtype==2:
     #     templateId ="ZJDQ6nL1ttl__IAZ0ezqumplUbJiliUuRusBLvDWjnw"
-    link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect'
+    link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect'
     data = {
         "first": {
            "value":"%s，欢迎成为药优优会员！" % name,
@@ -284,7 +284,7 @@ def regSuccessWx(openid, name, username,sendtype=1):
            "value":"点击“详情”，立即发布采购需求，自动对接全国13000余供货商，极速获取报价。",
            "color":"#173177"
         }
-        link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx?next_url=yaocaigou&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect'
+        link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/bindwx?next_url=yaocaigou&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect'
     thread.start_new_thread(sendwx, (templateId, openid, link, data,sendtype))
 
 
@@ -364,7 +364,7 @@ def quoteSuccessWx(openid, name, variety, spec, quantity, price, unit, quality, 
            "color":"#173177"
         },
         "remark":{
-           "value":"药材购已通知采购商尽快查看并给您答复！点击“详情”可以查看更多您在经营品种的采购单，立刻报价",
+           "value":"药优优已通知采购商尽快查看并给您答复！点击“详情”可以查看更多您在经营品种的采购单，立刻报价",
            "color":"#173177"
         }
     }
