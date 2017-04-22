@@ -199,7 +199,7 @@ footer .links a.bright{color:#b47e15;}
 footer .links a.bright:hover{color:#fa901c;}
 footer .links span{margin:0 10px;}
 footer .container{position:relative;}
-footer .logo-mini{position:absolute;top:-25px;right:15px;}
+footer .logo-mini{position:absolute;top:4px;right:15px;}
 
 /* select */
 .yc-select{position:relative;width:100px;height:28px;margin:0;border:1px solid #999;cursor:pointer;}
