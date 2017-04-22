@@ -18,7 +18,7 @@ class LoginHandler(BaseHandler):
                 ua = self.request.headers['User-Agent']
                 if ua.lower().find("micromessenger") != -1 and author.openid2=="":  # 微信中并且没有openid2
                     self.redirect(
-                        "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
+                        "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
                     return
                 else:
                     self.redirect("/center?type=2")
@@ -65,14 +65,14 @@ class LoginHandler(BaseHandler):
                     self.session.save()
                     if binwx and binwx=='1':
                         self.redirect(
-                            "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
+                            "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
                         return
                     else:
                         if author.registertype==1:
-                            self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx90e04052c49aa63e&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect")
+                            self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/bindwx&response_type=code&scope=snsapi_base&state=ycg#wechat_redirect")
                         else:
                             self.redirect(
-                            "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx27d7d93c3eeb22d0&redirect_uri=http://m.yaocai.pro/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
+                            "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
 
                 else:
                     self.redirect(self.get_argument("next_url", "/"))

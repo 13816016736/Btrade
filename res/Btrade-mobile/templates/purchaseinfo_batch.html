@@ -199,7 +199,7 @@ $(function(){
             title: '【{{ time.strftime("%m月%d日", time.localtime(int(purchase["createtime"]))) }}采购单】{{user.name}} 采购 {% for purchaseinfo in purchase.purchaseinfo%}{{purchaseinfo.name}} {% end %}',
             desc: '{% for index,purchaseinfo in enumerate(purchase.purchaseinfo)%}{{purchaseinfo.name}} {{ purchaseinfo.specification }} {{ purchaseinfo.quantity }}{{purchaseinfo.unit}}{% if (index+1) <> len(purchase.purchaseinfo)%} | {%end%}{% end %}',
             link: window.location.href,
-            imgUrl: 'http://m.yaocai.pro/static/images/getheadimg.jpg',
+            imgUrl: 'http://m.yaobest.com/static/images/getheadimg.jpg',
             type: '',
             dataUrl: '',
             success: function () {

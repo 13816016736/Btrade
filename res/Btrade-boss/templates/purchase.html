@@ -125,7 +125,7 @@
                                 {% if (purchase.term != 0 and purchase.has_key("timedelta") and purchase.timedelta > 0) or purchase.term == 0%}
                                 <span class="fa fa-share-square-o jshare" data-pid="{{purchaseinfo.id}}" data-sharerel="{{purchase.name}}采购{{purchaseinfo.name}}{{purchaseinfo.quantity}}{{purchaseinfo.unit}}，{{purchaseinfo.specification}}，产地{{purchaseinfo.origin}}，{{purchaseinfo.quality}}。请速报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}}"></span>
                                 &nbsp;
-                                <span class="fa fa-envelope-o jsend" data-pid="{{purchaseinfo.id}}" data-purchaser="{{purchase.name}}" data-sharerel="【药材购】{{purchase.name}}采购{{purchaseinfo.name}}（{{purchaseinfo.specification}}）{{purchaseinfo.quantity}}{{purchaseinfo.unit}}。邀请您立即报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}} 退订回T"></span>
+                                <span class="fa fa-envelope-o jsend" data-pid="{{purchaseinfo.id}}" data-purchaser="{{purchase.name}}" data-sharerel="【药优优】{{purchase.name}}采购{{purchaseinfo.name}}（{{purchaseinfo.specification}}）{{purchaseinfo.quantity}}{{purchaseinfo.unit}}。邀请您立即报价：{{config.host}}/purchase/purchaseinfo/{{purchaseinfo.id}} 退订回T"></span>
                                 {% end %}
                             </td>
                         </tr>
