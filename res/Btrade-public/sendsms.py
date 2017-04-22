@@ -15,10 +15,10 @@ def generate_md5(fp):
     return m.hexdigest()
 
 def send(templateId, phone, vars):
-    #除注册验证码之外的短信都不发
-    #2017/01/10
-    if templateId!=776:
-        return ""
+    # #除注册验证码之外的短信都不发
+    # #2017/01/10
+    # if templateId!=776:
+    #     return ""
 
 
 
@@ -49,8 +49,8 @@ def send(templateId, phone, vars):
 
 def sendx(templateId, tos):
     url = 'http://sendcloud.sohu.com/smsapi/sendx'
-    if templateId!=776:
-        return ""
+    # if templateId!=776:
+    #     return ""
     param = {
         'smsUser': SMS_USER,
         'templateId' : templateId,
