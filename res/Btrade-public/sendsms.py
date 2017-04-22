@@ -76,8 +76,8 @@ def sendx(templateId, tos):
     return res.text
 
 if __name__ == '__main__':
-    templateId = 776
-    phone = 15002781007
-    vars = '{"%code%":"123456"}'
-    send(templateId, phone, vars)
+    templateId = 5641
+    phone = 18971437973
+    vars = '{}'
+    print send(templateId, phone, vars)
     # sendx()
