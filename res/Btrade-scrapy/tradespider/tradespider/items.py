@@ -76,6 +76,16 @@ class StoreItem(scrapy.Item):
     name = scrapy.Field()
     mobile = scrapy.Field()
     address = scrapy.Field()
+class PurchaseItem(scrapy.Item):
+    name=scrapy.Field()
+    mobile = scrapy.Field()
+    purchaseDate=scrapy.Field()
+    variety=scrapy.Field()
+    spec=scrapy.Field()
+    quantity=scrapy.Field()
+    quality=scrapy.Field()
+    origin=scrapy.Field()
+
 
 
 

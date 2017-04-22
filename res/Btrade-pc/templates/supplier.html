@@ -19,7 +19,7 @@
                     <ul class="yc-ul">
                         {% if transactions %}
                         {% for item in transactions %}
-                        <li><span>{{ item["createtime"] }}</span> 在药材购平台与{{ item["purchasename"] }}完成 {{ item["varietyname"] }}的交易。</li>
+                        <li><span>{{ item["createtime"] }}</span> 在药优优平台与{{ item["purchasename"] }}完成 {{ item["varietyname"] }}的交易。</li>
                         {% end %}
                         {% else %}
                         暂无供货记录
@@ -47,7 +47,7 @@
         <div class="sp-text">
             <h2>实力展示</h2>
             <p style="margin:0px 290px;">{% if user.introduce=="" %}{{user.nickname}}常年来以价格低，药材质量稳定，送货及时等优势取得了客户的信赖。
-                现已入驻药材购平台，希望依托该平台为更多客户提供服务！{% else %}{{ user.introduce }} {% end %}</p>
+                现已入驻药优优平台，希望依托该平台为更多客户提供服务！{% else %}{{ user.introduce }} {% end %}</p>
         </div>
 
         <div class="sp-pro">
@@ -95,7 +95,7 @@
 
         <div class="sp-text">
             <h2>即刻采购</h2>
-            <p>每一个药销通会员都经过药材购工作人员的实地考查，从药材质量、药材价格以及按时供货率等各方面对供货商进行严格审核。</p>
+            <p>每一个药销通会员都经过药优优工作人员的实地考查，从药材质量、药材价格以及按时供货率等各方面对供货商进行严格审核。</p>
             <p>这样，才能确保您的每次采购都放心无忧！</p>
             <div class="button">
                 <a href="/purchase" class="btn btn-orange">立即邀请报价</a>

@@ -58,7 +58,7 @@
                             <div class="txt">交易及付款：</div>
                             <div class="cont">
                                 {% if purchaseinfo.pay == 1%}
-                                药采购"安心交易"(预付全款)
+                                药优优"安心交易"(预付全款)
                                 {% elif purchaseinfo.pay == 2%}
                                 双方直接交易，验证合格后<b class="red">{{purchaseinfo.payday}}天</b>内付款
                                 {% else %}
@@ -180,7 +180,7 @@
                         <div class="group">
                             <div class="txt">付款约定</div>
                             <div class="cont" id="jPaytype">
-                                <label><input type="radio" name="paytype" value="1"{% if transaction["pay"]==1 %} checked {% end %} >药材购“安心交易”（预付全款）<i class="iconfont icon-question"></i></label>
+                                <label><input type="radio" name="paytype" value="1"{% if transaction["pay"]==1 %} checked {% end %} >药优优“安心交易”（预付全款）<i class="iconfont icon-question"></i></label>
                                 <label><input type="radio" name="paytype" value="2" {% if transaction["pay"]==2 %} checked {% end %} >双方直接交易，验证合格后<input class="yc-ipt day" name="payday" type="text" value="{{transaction["payday"]}}">天内付款</label>
                                 <label><input type="radio" name="paytype" value="3"{% if transaction["pay"]==3 %} checked {% end %}>其他 <input class="yc-ipt" name="payinfo" type="text" value="{{transaction["payinfo"]}}"></label>
                             </div>

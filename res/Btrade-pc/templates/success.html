@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-发采购_自动对接全国货源极速报价_药材购
+发采购_自动对接全国货源极速报价_药优优
 {% end %}
 {% block container %}
 {% import config,time %}
@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="recommend">
-                    <p>药材购优选了<span>{{len(suppliers)}}</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" alt=""></p>
+                    <p>药优优优选了<span>{{len(suppliers)}}</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" alt=""></p>
                     {% set i = 1%}
                     {% for supplier in suppliers %}
                     {% if i < 4 %}
@@ -68,10 +68,10 @@
                 </div>
 
                 <div class="bd">
-                    <h3><i class="icons icons-mobile"></i>关注药材购微信公众号</h3>
+                    <h3><i class="icons icons-mobile"></i>关注药优优微信公众号</h3>
                     <p>随时发布找货需求，第一时间查看报价，随时随地轻松洽谈</p>
                     <p class="qrcode"><img width="114" height="114" src="{{ static_url('images/qrcode.jpg')}}" alt=""></p>
-                    <!--<h3><i class="icons icons-mobile"></i>下载药材购手机APP</h3>
+                    <!--<h3><i class="icons icons-mobile"></i>下载药优优手机APP</h3>
                     <p>随时发布找货需求，第一时间查看报价，随时随地轻松洽谈</p>
                     <div class="sms">
                         <input class="ipt" type="text" id="jMobile">
