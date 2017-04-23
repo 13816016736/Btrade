@@ -57,32 +57,10 @@ function checkMobile() {
         $mobile.next().html('手机号码格式错误');
     } else {
         $mobile.next().html('');
-        ajaxCheckMobile(val);
         return true;
     }
     $focus = $mobile;
     return false;
-}
-function ajaxCheckMobile(val) {
-    $.ajax({
-    	url: 'php/checkMobile.php',
-    	type: 'POST',
-    	data: {mobile: val},
-    	dataType: 'json',
-    	beforeSend: function() {
-    		$mobile.next().html('<img src="images/loading.gif" />');
-    	},
-    	success: function(res) {
-    // 		res = {
-				// msg:"此手机号已被占用",
-				// status:"isused"
-    // 		}
-    		if (res.status === 'isused') {
-    			$mobile.next().html(res.msg + '<a href="login.html?url='+encodeURI(window.location+'&username=' + val) + '">立即登录</a>');
-    		} else {
-    		}
-    	}
-    })
 }
 function checkCode() {
     var val = $code.val();
@@ -124,13 +102,15 @@ $('#jCreate').on('click', function() {
 
 // 验证码
 $send.prop('disabled', false).on('click', function() {
+    var mobile = $mobile.val();
     if(checkMobile() && timeout === 0) {
     	$.ajax({
 			url: "/getsmscode",
-			data: { phone: $mobile.val()},
+			data: { phone: mobile},
 			dataType: 'json',
 			type: 'POST',
 			beforeSend: function(jqXHR, settings) {
+        		$mobile.next().html('<img src="/static/images/loading.gif" />');
 				jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
 			},
 			success: function(data) {
@@ -139,7 +119,7 @@ $send.prop('disabled', false).on('click', function() {
         			$send.text(timeout + txt).prop('disabled', true).prev().focus();
         			_clock();
 				}else{
-					$mobile.next().html(data.message);
+					$mobile.next().html(data.message + '<a href="/login?next='+encodeURI(window.location+'&username=' + mobile) + '">立即登录</a>');
 				}
 			},
 			error: function(data) {
@@ -894,4 +874,4 @@ $('#jCity').on('click', 'span', function() {
 	 });
 })
 
-})
+})(jQuery);
