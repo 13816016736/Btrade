@@ -93,7 +93,7 @@ class PurchaseHandler(BaseHandler):
             self.session["user"] = username
             self.session.save()
             #发短信告知用户登陆名和密码
-            regInfo(data['phone'], username, password)
+            regInfo(data['name'], data['phone'], username, password)
 
         data['invoice'] = data['invoice'] if data.has_key('invoice') and data['invoice'] != "" else "0"
         data['paytype'] = data['paytype'] if data.has_key("paytype") and data['paytype'] != "" else "0"

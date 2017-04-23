@@ -148,10 +148,10 @@ def sendRegInfo(phone, username, password):
     phone = phone
     vars = '{"%username%":"'+username+'","%password%":"'+password+'"}'
     thread.start_new_thread(send, (templateId, phone, vars))
-def regInfo(phone, name, password):
+def regInfo(name, phone, username, password):
     templateId = 861
     phone = phone
-    vars = '{"%name%":"'+name+'","%password%":"'+password+'"}'
+    vars = '{"%name%":"'+name+'","%username%":"'+username+'","%password%":"'+password+'"}'
     thread.start_new_thread(send, (templateId, phone, vars.encode("utf-8")))
 def regSuccess(phone, name, username,registertype=1):
     if registertype==1:
