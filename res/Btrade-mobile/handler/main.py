@@ -749,3 +749,20 @@ class GetParentAreaHandler(BaseHandler):
         else:
             areas = self.db.query("SELECT id,areaname FROM area WHERE parentid = %s", parentid)
             self.api_response({'status':'success','message':'请求成功','data':areas})
+
+
+class CodeHandler(BaseHandler):
+    def get(self):
+        redirect_url = self.get_argument("redirect_url",None)
+        if redirect_url!=None:
+            self.session["redirect_url"] = redirect_url
+            self.session.save()
+            self.redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/callBackCode&response_type=code&scope=snsapi_base&state=yyyCode#wechat_redirect")
+class CallBackHandler(BaseHandler):
+    def get(self):
+        redirect_url = self.session.get("redirect_url",None)
+        code = self.get_argument("code", None)
+        state = self.get_argument("state", None)
+
+        if code and state=="yyyCode" and redirect_url:
+            self.redirect(redirect_url+"&code="+code)
