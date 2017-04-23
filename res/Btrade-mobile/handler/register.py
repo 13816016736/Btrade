@@ -236,6 +236,9 @@ class RegSuccessHandler(BaseHandler):
         purchaseinfonum=self.db.execute_rowcount("select id from purchase_info where status!=0")
         userId=self.session["userid"]
         user=self.db.get("select *from users where id =%s",userId)
+        user_count = self.db.execute_rowcount("select id from users where type not in(1,2,9)")
+        supplier_count = self.db.execute_rowcount("select id from supplier where pushstatus!=2")
+        total = user_count + supplier_count
         if next_url.find("/quote/purchaseinfoid/")==0:
             self.render("register_A.html",type=1,url=next_url,registertype=user["registertype"],username=self.session.get("user"),purchaseinfonum=purchaseinfonum)
         else:
@@ -243,7 +246,7 @@ class RegSuccessHandler(BaseHandler):
             if ua.lower().find("micromessenger") != -1:
                 self.redirect("/checkfans?state=regsuccess")
             else:
-                self.render("register_C.html",purchaseinfonum=purchaseinfonum)
+                self.render("register_C.html",purchaseinfonum=total)
 
     @purchase_push_trace
     def post(self):
