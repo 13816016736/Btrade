@@ -84,7 +84,7 @@ class PurchaseHandler(BaseHandler):
             if data['smscode'] != self.session.get("smscode"):
                 self.api_response({'status':'fail','message':'短信验证码不正确','data':data['phone']})
                 return
-            username = "ycg" + time.strftime("%y%m%d%H%M%S")
+            username = "yyy" + time.strftime("%y%m%d%H%M%S")
             password = str(random.randint(100000, 999999))
             lastrowid = self.db.execute_lastrowid("insert into users (username, password, phone, type, name, nickname, createtime)"
                              "value(%s, %s, %s, %s, %s, %s, %s)", username, md5(str(password + config.salt)), data['phone']

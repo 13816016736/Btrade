@@ -135,7 +135,7 @@ class RegisterHandler(BaseHandler):
             password = self.get_argument("password")
             if password=="":
                 password = str(random.randint(100000, 999999))
-            username = "ycg" + time.strftime("%y%m%d%H%M%S")
+            username = "yyy" + time.strftime("%y%m%d%H%M%S")
             type = self.get_argument("type")
             name = self.get_argument("name")
             registertype=self.get_argument("registertype",1)
