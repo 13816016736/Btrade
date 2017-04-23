@@ -29,7 +29,7 @@ if __name__ == '__main__':
             try:
                 cursor_yaocai.execute(
                     "insert into users(username,password,type,phone,name,nickname,areaid,createtime)values (%s, %s,%s, %s,%s,%s,%s,%s)",
-                    ("ycg" + time.strftime("%y%m%d%H%M%S"), "",item["type"] if (item["type"]!=None and item["type"]!=0) else 8,item["phone"],item["company"] if item["company"]!=None else "",item["nickname"]if item["nickname"]!=None else "药优优用户",item["area"] if item["area"]!=None else 0 ,int(time.time())))
+                    ("yyy" + time.strftime("%y%m%d%H%M%S"), "",item["type"] if (item["type"]!=None and item["type"]!=0) else 8,item["phone"],item["company"] if item["company"]!=None else "",item["nickname"]if item["nickname"]!=None else "药优优用户",item["area"] if item["area"]!=None else 0 ,int(time.time())))
 
                 conn_yaocai.commit()
             except MySQLdb.Error, e:

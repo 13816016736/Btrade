@@ -26,6 +26,8 @@ settings = {
 }
 
 handlers = [
+    (r"/getCode", CodeHandler),
+    (r"/callBackCode", CallBackHandler),
     (r"/", MainHandler),
     (r"/purchase/purchaselist", PurchaseHandler),
     (r"/purchase/purchaselist/number/([0-9]+)", PurchaseHandler),

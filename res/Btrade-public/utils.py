@@ -413,9 +413,9 @@ def rejectQuoteWx(openid, quoteid, name, variety, price, message, qtime,sendtype
     variety = variety.encode('utf-8') if isinstance(variety, unicode) else variety
     price = price.encode('utf-8') if isinstance(price, unicode) else price
     message = message.encode('utf-8') if isinstance(message, unicode) else message
-    templateId = 'cMVE072AVpbdV03yKQMTRPc619n8JmtGuUgOpiaFkdA'
-    if sendtype == 2:
-        templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
+    templateId = 'LW25qypUzmobr9qkxlRfvqV5d4Tg9Tphg9Yv_rJXxkk'
+    #if sendtype == 2:
+    #    templateId = "eJBOCwLQWG8rXxebzcdiUbFbxwQrJKETh4kpOQMEvsk"
     link = 'http://m.yaobest.com/quotedetail/quoteid/%s/nid/0' % quoteid
     data = {
         "first": {

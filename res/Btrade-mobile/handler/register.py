@@ -135,7 +135,7 @@ class RegisterHandler(BaseHandler):
             password = self.get_argument("password")
             if password=="":
                 password = str(random.randint(100000, 999999))
-            username = "ycg" + time.strftime("%y%m%d%H%M%S")
+            username = "yyy" + time.strftime("%y%m%d%H%M%S")
             type = self.get_argument("type")
             name = self.get_argument("name")
             registertype=self.get_argument("registertype",1)
@@ -234,8 +234,10 @@ class RegSuccessHandler(BaseHandler):
     def get(self):
         next_url=self.get_argument("next_url", "/")
         purchaseinfonum=self.db.execute_rowcount("select id from purchase_info where status!=0")
+        userId=self.session["userid"]
+        user=self.db.get("select *from users where id =%s",userId)
         if next_url.find("/quote/purchaseinfoid/")==0:
-            self.render("register_A.html",type=1,url=next_url,username=self.session.get("user"),purchaseinfonum=purchaseinfonum)
+            self.render("register_A.html",type=1,url=next_url,registertype=user["registertype"],username=self.session.get("user"),purchaseinfonum=purchaseinfonum)
         else:
             ua = self.request.headers['User-Agent']
             if ua.lower().find("micromessenger") != -1:

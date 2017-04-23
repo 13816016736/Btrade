@@ -50,7 +50,7 @@ if __name__ == '__main__':
             try:
                 cursor_yaocai.execute(
                     "insert into users(username,password,type,phone,name,nickname,createtime)values (%s, %s,%s, %s,%s,%s,%s)",
-                    ("ycg" + time.strftime("%y%m%d%H%M%S"), md5(str(item["mobile"][-6:] +salt)),8,item["mobile"],"",item["name"] ,int(time.time())))
+                    ("yyy" + time.strftime("%y%m%d%H%M%S"), md5(str(item["mobile"][-6:] +salt)),8,item["mobile"],"",item["name"] ,int(time.time())))
 
                 conn_yaocai.commit()
             except MySQLdb.Error, e:
