@@ -29,6 +29,7 @@
 .yc-purchase-form .bd .company .verify{margin:0 4px;font-size:14px;}
 .yc-purchase-form .bd .company .verify i{color:#4cc035;}
 .yc-purchase-form .bd .company .category{padding:1px 5px;font-size:12px;color:#ffa902;border:1px solid #ffa902;-webkit-border-radius:3px;border-radius:3px;}
+
 .yc-purchase-form .bd .userinfo{padding-left:120px;font-size:14px;}
 .yc-purchase-form .bd .userinfo span{margin-right:20px;vertical-align:middle;}
 .yc-purchase-form .bd .userinfo i{line-height:1;color:#999;vertical-align:middle;}
@@ -44,6 +45,8 @@
 .yc-purchase-form .group .cont .fold{color:#337ab7;cursor:pointer;}
 .yc-purchase-form .group .tips{display:block;margin-top:4px;color:#999;}
 .yc-purchase-form .group .cont .error{color:#c3272b;vertical-align:middle;}
+.yc-purchase-form .group .cont .error a{margin-left:16px;}
+.yc-purchase-form .group .cont .error img{width:16px;height:16px;}
 .yc-purchase-form .group .yc-select{width:150px;margin-right:4px;}
 .yc-purchase-form .group .block{display:inline-block;margin:0 0 0 20px;padding:9px 20px;color:#999;vertical-align:middle;}
 .yc-purchase-form .submit{min-width:160px;height:40px;margin-left:110px;}

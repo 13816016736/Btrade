@@ -1,8 +1,26 @@
+function getParams() {
+    var ret = {},
+        params = window.location.search.replace(/^\?/,'').split('&'),
+        len = params.length, i = 0, s;
+
+    for (;i<len;i++) {
+        if (!params[i]) { 
+            continue; 
+        }
+        s = params[i].split('=');
+        ret[s[0]] = s[1];
+    }
+    return ret;
+}
 $(function() {
     var $username = $('#username'),
         $pwd = $('#pwd'),
         $submit = $('#submit'),
-        $msg = $('#msg');
+        $msg = $('#msg'),
+        params = getParams();
+
+    // 填入用户名
+    params['username'] && $username.val(params['username']);
 
     var _showMsg = function(txt) {
         $msg.html(txt);
@@ -36,6 +54,7 @@ $(function() {
     $pwd.on('blur', _checkPassword);
 
     $submit.on('click', function() {
+        // params['url'] && window.location.href = params['url']; // 返回原地址
         return _checkForm();      
     })
 })

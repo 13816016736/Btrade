@@ -1,4 +1,4 @@
-$(function(){
+!(function($){
 // 注册验证
 var $username = $('#jUsername'),
     $mobile = $('#jMobile'),
@@ -57,10 +57,32 @@ function checkMobile() {
         $mobile.next().html('手机号码格式错误');
     } else {
         $mobile.next().html('');
+        ajaxCheckMobile(val);
         return true;
     }
     $focus = $mobile;
     return false;
+}
+function ajaxCheckMobile(val) {
+    $.ajax({
+    	url: 'php/checkMobile.php',
+    	type: 'POST',
+    	data: {mobile: val},
+    	dataType: 'json',
+    	beforeSend: function() {
+    		$mobile.next().html('<img src="images/loading.gif" />');
+    	},
+    	success: function(res) {
+    // 		res = {
+				// msg:"此手机号已被占用",
+				// status:"isused"
+    // 		}
+    		if (res.status === 'isused') {
+    			$mobile.next().html(res.msg + '<a href="login.html?url='+encodeURI(window.location+'&username=' + val) + '">立即登录</a>');
+    		} else {
+    		}
+    	}
+    })
 }
 function checkCode() {
     var val = $code.val();
