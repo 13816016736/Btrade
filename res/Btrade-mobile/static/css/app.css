@@ -427,9 +427,13 @@ em,i{font-style:normal;}
 .yc-message .main .qrcode{display:inline-block;width:150px;height:150px;}
 .yc-message .main .back{display:inline-block;width:70px;margin-top:10px;line-height:28px;border:1px solid #aaa;color:#aaa;}
 .yc-message .main .link{margin-top:20px;text-align:center;font-size:1.6rem;}
+.yc-message .main .link span{display:block;color:#999;text-align:center;font-size:1.4rem;}
 .yc-message .main .link a{display:block;line-height:44px;border:1px solid #fca31d;-webkit-border-radius:4px;border-radius:4px;color:#fca31d;background:#fff;}
 .yc-message .main .link p{padding:30px 0 10px;}
 .yc-message .main .link .primany{margin-bottom:20px;background:#fca31d;color:#fff;}
+@media(max-width:320px){
+  .yc-message .main .link .primany{font-size:1.4rem;}
+}
 .yc-message .main .tips{margin:20px 0;}
 .yc-message .main .tips p{margin:0;}
 .yc-message .main .tips i{margin-right:10px;color:#fca31d;font-size:20px;vertical-align:middle;}
