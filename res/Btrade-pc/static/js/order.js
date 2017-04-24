@@ -117,6 +117,7 @@ $send.prop('disabled', false).on('click', function() {
 				if(data.status=="success") {
 					timeout = delay;
         			$send.text(timeout + txt).prop('disabled', true).prev().focus();
+					$mobile.next().html('');
         			_clock();
 				}else{
 					$mobile.next().html(data.message + '<a href="/login?next='+encodeURI(window.location+'&username=' + mobile) + '">立即登录</a>');
