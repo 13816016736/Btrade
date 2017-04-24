@@ -121,7 +121,7 @@ def task_generate(task):#生成发送任务
                 sendkafka.apply_async(args=[taskid])
 
 @celerysever.task
-def monitor_click(task):  #监控点击情况
+def monitor_click():  #监控点击情况
     mongodb = PymongoDateBase.instance().get_db()
     sqldb = database.instance().get_session()
     # items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
