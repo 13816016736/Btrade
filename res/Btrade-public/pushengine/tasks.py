@@ -10,7 +10,7 @@ from pushengine.engineconfig import *
 import pymongo
 from datetime import timedelta,datetime
 import time
-
+from bson.objectid import ObjectId
 
 #任务
 @celerysever.task
@@ -89,7 +89,7 @@ def task_generate(task):#生成发送任务
             taskinfo = {"taskid": taskid, "sendlist": ",".join(sendids)}
             collection = mongodb.celery_task_info
             collection.insert(taskinfo)
-            sendkafka.apply_async(args=[taskid])
+            sendkafka.apply_async(args=[str(taskid)])
     else:
         #提醒采购商
         if order!=1:
@@ -118,10 +118,10 @@ def task_generate(task):#生成发送任务
                 taskinfo = {"taskid": taskid, "sendlist": sendid}
                 collection = mongodb.celery_task_info
                 collection.insert(taskinfo)
-                sendkafka.apply_async(args=[taskid])
+                sendkafka.apply_async(args=[str(taskid)])
 
 @celerysever.task
-def monitor_click(task):  #监控点击情况
+def monitor_click():  #监控点击情况
     mongodb = PymongoDateBase.instance().get_db()
     sqldb = database.instance().get_session()
     # items =mongodb.transform_rate.find()#检测发送超过一天的统计记录 条件通过createtime
@@ -147,7 +147,7 @@ def monitor_click(task):  #监控点击情况
 @celerysever.task
 def sendkafka(taskid):
     producer_server = KafkaProduceServer(send_task_topic, kafka_server)
-    producer_server.sendJson("data", {"taskid":str(taskid),"messagetype": 2})
+    producer_server.sendJson("data", {"taskid":taskid,"messagetype": 2})
     producer_server.close()
     pass
 
