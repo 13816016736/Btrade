@@ -1,0 +1,88 @@
+Btrade-public
+pushengine文件夹里面文件主要是celery框架的py文件
+config.py是celery的配置文件
+可以配置定时任务：
+pushengine.tasks.analysis_record 每天分析昨天的推送记录生成新的推送任务
+pushengine.tasks.analysis_notify 对报价回复进行分析生成报价回复提醒
+pushengine.tasks.monitor_click   每天分析昨天的点击情况
+
+clelry的存储是放在mongodb
+
+task.py是主要的任务的逻辑的文件
+
+task_generate 生成推送任务
+monitor_click  分析点击情况
+sendkafka 发送kafka工spark获取进行分析
+analysis_record  分析推送记录，调用task_generate继续生成推送任务
+analysis_notify  查询报价回复情况，对没有及时回复的用户生成提醒任务，也是调用task_generate继续生成推送任务
+
+spark里面是提交到spark执行的py文件
+都是从kafka里面读取数据
+kafkaspark.py 主要是将记录推送用户的点击url,并分析用户的点击情况，报价情况
+sendspark.py 专门负责对用户进行推送（短信和微信）
+
+最近写的几个脚本都放在
+Btrade-scrapy\tradespider\tradespider\spiders这个文件下
+getYtPurchase.py 是获取药通网的采购单的脚本，直接调用api不需要去爬
+purchase.py 是爬取中药材的采购单爬虫，需要在scrapy框架里执行，需要登录才能获取用户的phone，都已经写好
+
+为了去重方便我将爬来的数据都放在一个表里面
+建表sql
+CREATE TABLE `trader_data` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `mobile` varchar(255) DEFAULT NULL,
+  `purchaseDate` varchar(255) DEFAULT NULL,
+  `variety` varchar(255) DEFAULT NULL,
+  `spec` varchar(255) DEFAULT NULL,
+  `quantity` varchar(255) DEFAULT NULL,
+  `quality` varchar(255) DEFAULT NULL,
+  `origin` varchar(255) DEFAULT NULL,
+  `source` smallint(5) DEFAULT '1' COMMENT '1:中药材网2，药通网',
+  `status` smallint(5) DEFAULT '0' COMMENT '处理状态：0未生成采购单，1已经生成订单',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2722 DEFAULT CHARSET=utf8;
+
+spider_to_purchase.py 就是循环从这个表里面读数据生成采购单脚本
+
+supplierToyaocai.py 将药优优的供应商迁移到药材购的数据库的脚本
+
+userToYaocai.py 将药优优用户迁移到药材购的脚本
+
+其他脚本是以前爬供应商脚本等爬虫，看一下逻辑应该很清楚
+
+
+
+mongodb的字段内容
+数据库名称为yaocai_statistical
+
+celery_task 就是task_generate生产的任务列表。
+status 0未执行，1被执行
+order 发送第几次
+tasktype 任务类型
+    "1":"采购单推送",
+    "2":"采购单回复提醒"
+channel 推送类型-微信或是短信
+
+celery_task_info 是任务细节，要发送的手机号和微信号（关联celery_task）
+feed_back是以前做的一个需求，用户反馈，有几个选项可以选择
+
+notify_record 发送的提醒的记录 其中recordid就是关联的是push_record的id
+
+push_record 发送记录 sendstatus发送状态，cb服务就是更新这个状态的 click点击次数
+pushid 为transform_rate的id
+
+transform_rate 每一个采购单的统计记录，quote:推送带来的报价 varietyname：发布品种名称，当时为防止采购单删除
+点击数通过统计push_record的click来统计
+
+
+user_view这个是用户点击发送那个链接之后访问平台的所有url记录
+quote_id就是是否通过点击这个带来了报价
+url就是访问的url
+monitor_type={
+    "1":"短信渠道",
+    "2":"微信渠道"
+}
+
+  
+
