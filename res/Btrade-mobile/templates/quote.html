@@ -16,7 +16,7 @@
             <!--<a class="read" href="#none"><i class="iconfont icon-download"></i>读入上次黄连报价</a>-->
             <span>轻松三步，立即报价</span>
         </div>
-        <form action="/quotesuccess" method="post">
+        <form action="/quotesuccess" method="post" id="myform">
             {% raw xsrf_form_html() %}
             <input name="purchaseinfoid" type="hidden" value="{{purchase.pid}}" />
             <div class="item">
@@ -178,7 +178,7 @@
             </div>
 
             <div class="submit">
-                <button class="button" id="jSumnit" type="button">提交</button>
+                <button class="button" id="jSumnit" type="submit">提交</button>
             </div>
 
             <div class="agreement">
@@ -529,7 +529,7 @@
                 },
                 success: function(data) {
                     if (data.status === 'success') {
-                        $("form").submit();
+                        $('#myform').submit();
                     } else {
                         lpPopover(data.message);;
                     }
@@ -539,6 +539,7 @@
                 }
             })
         }
+        return false;
     });
 
     // 删除图片

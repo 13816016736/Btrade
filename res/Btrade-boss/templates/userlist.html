@@ -30,6 +30,7 @@
                         <th>会员分类</th>
                         <th>升级时间</th>
                         <th>到期时间</th>
+                        <th>绑定微信</th>
                         <th width="150" class="tc">操作</th>
                     </tr>
                 </thead>
@@ -51,6 +52,7 @@
                         <td>{{membertype[user.membertype]}}</td>
                         <td>{{user.upgradetime}}</td>
                         <td>{{user.expiredtime}}</td>
+                        <td>{{user.openid}}</td>
                         <td class="tc">
                             <!--<a class="btn btn-link" href="/users/userinfo/{{user.id}}" role="button">查看</a>-->
                             <a href="/users/userinfo/{{user.id}}" role="button">编辑</a>
