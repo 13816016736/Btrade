@@ -14,11 +14,11 @@ def md5(str):
         return ''
 if __name__ == '__main__':
     #连接yaocai
-    conn_yaocai = MySQLdb.connect(host='localhost', user='root', passwd='123456', db='yaocai', port=3306, charset="utf8")
+    conn_yaocai = MySQLdb.connect(host='localhost', user='yaocai', passwd='ycg20160401', db='yaocai', port=3306, charset="utf8")
     cursor_yaocai = conn_yaocai.cursor()
 
     #连接yaoyy
-    conn_yaoyy = MySQLdb.connect(host='localhost', user='root', passwd='123456', db='yaoyy', port=3306, charset="utf8")
+    conn_yaoyy = MySQLdb.connect(host='localhost', user='yaobest', passwd='yaobest20161110', db='yaoyy', port=3306, charset="utf8")
     cursor_yy = conn_yaoyy.cursor()
     yaocai_list=[]
     password="666666"
