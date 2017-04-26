@@ -23,7 +23,7 @@ if __name__ == '__main__':
     yaocai_list=[]
     password="666666"
     salt="ycg20151012"
-    n = cursor_yy.execute("select u.phone,u.openid,ud.nickname,ud.company,ud.area,ud.category_ids from user u left join user_detail ud on u.id=ud.user_id where u.openid is not NULL ")
+    n = cursor_yy.execute("select u.phone,u.openid,ud.name,ud.company,ud.area,ud.category_ids from user u left join user_detail ud on u.id=ud.user_id where u.openid is not NULL ")
     insert_num=0
     update_num=0
     for r in cursor_yy.fetchall():
@@ -52,16 +52,21 @@ if __name__ == '__main__':
             item["variety"]=",".join(yaocai_variety_ids)
         else:
             item["variety"] =""
-        cursor_yaocai.execute("select id,openid from users where phone ='%s'" % item["phone"])
+
+        cursor_yaocai.execute("select id,openid,name from users where phone ='%s'" % item["phone"])
         mobile_result =cursor_yaocai.fetchall()
         print item
-
+        if item["nickname"]==None:#去老供应商表去查是否有
+            cursor_yaocai.execute("select name from supplier where mobile ='%s'" % item["phone"])
+            supplier_result=cursor_yaocai.fetchall()
+            if len(supplier_result)!=0:
+                item["nickname"]=supplier_result[0][0]
         #users表不存在就插入
         if(len(mobile_result)==0):
             try:
                 cursor_yaocai.execute(
                     "insert into users(username,password,type,phone,name,nickname,areaid,openid,varietyids,createtime)values (%s, %s,%s, %s,%s,%s,%s,%s,%s,%s)",
-                    ("yyy" + time.strftime("%y%m%d%H%M%S"), md5(str(password + salt)),8,item["phone"],item["company"] if item["company"]!=None else "",item["nickname"]if item["nickname"]!=None else "",item["area"] if item["area"]!=None else 0 ,item["openid"],item["variety"],int(time.time())))
+                    ("yyy" + time.strftime("%y%m%d%H%M%S"), md5(str(password + salt)),8,item["phone"],item["nickname"]if item["nickname"]!=None else "",item["nickname"]if item["nickname"]!=None else "",item["area"] if item["area"]!=None else 0 ,item["openid"],item["variety"],int(time.time())))
 
                 conn_yaocai.commit()
                 insert_num +=1
@@ -73,9 +78,17 @@ if __name__ == '__main__':
             #修改openId
             userId = mobile_result[0][0]
             openId=mobile_result[0][1]
+            name=mobile_result[0][2]
+            if name=="" or name==None:
+                if item["nickname"]!=None:
+                    cursor_yaocai.execute(
+                        "update users set name='%s' where id=%s" % (item["nickname"], userId))
+                    cursor_yaocai.execute(
+                        "update users set nickname='%s' where id=%s" % (item["nickname"], userId))
             if openId=="" or openId==None:
                 cursor_yaocai.execute(
                     "update users set openid='%s' where id=%s" % (item["openid"], userId))
+            conn_yaocai.commit()
             update_num+=1
             pass
 
