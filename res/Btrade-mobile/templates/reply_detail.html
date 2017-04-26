@@ -309,6 +309,7 @@ $(function() {
     $('.yc-quote-receive').on('click', '.sad', function() {
         // $jModalFail.find("input[name='qid']").val($(this).attr("qid"));
         qid = $(this).data('qid');
+        $form[0].reset(); // reset form
         $jModalFail.modal();
         return false;
     });
@@ -331,13 +332,13 @@ $(function() {
         })
     });
 
-    var message = [];
     var $form = $('#jFormReason');
     $jModalFail.on('click', '.btn', function() {
+        var message = [];
+        var desc = $.trim($form.find('textarea').val());
         $form.find('input:checked').each(function() {
             message.push(this.value);
         });
-        var desc = $.trim($form.find('textarea').val());
         desc.length > 0 && message.push(desc);
         $.ajax({
             type: 'post',
