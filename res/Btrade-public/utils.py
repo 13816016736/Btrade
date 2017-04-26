@@ -219,6 +219,20 @@ def pushPurchase(phones, purchase,uuidmap,sendtype=1):
             sendx(templateId, tos)
             #print templateId, tos
 
+# #营销短信群发
+# def MassSMS(phones):
+#     # 群发给优优注册会员
+#     # templateId = 5768
+#     # 群发给药材购注册会员
+#     templateId = 5769
+#     tos = []
+#     for phone in phones:
+#         # tos.append('{"phone": "' + phone['phone'] + '"}')
+#         # thread.start_new_thread(send, (templateId, phone['phone'], vars))
+#         print send(templateId, phone['phone'], "{}")
+#     # tos = "[" + ",".join(tos) + "]"
+#
+#     # sendx(templateId, tos)
 
 
 

@@ -1,7 +1,4 @@
 @charset "utf-8";
-html,body{position:relative;height:100%;min-height:750px;}
-footer{position:absolute;bottom:0;left:0;width:100%;}
-
 .wraper{width:800px;margin:0 auto;padding-top:40px;}
 .wraper .banner{float:left;width:300px;height:400px;}
 .wraper .hd{line-height:48px;padding:0 10px;background:#fcfcfc;border-bottom:1px solid #ddd;overflow:hidden;}
@@ -59,8 +56,8 @@ footer{position:absolute;bottom:0;left:0;width:100%;}
 .reg-form .yc-bubble dd{margin-left:80px;line-height:24px;color:#666;}
 .reg-form .button{margin-left:80px;}
 .reg-form .Validform_wrong{color:#c3272b;}
-.reg-plus{width:1170px;}
-.reg-plus .reg-box{float:left;width:800px;}
+.reg-plus{width:1000px;overflow:hidden;*zoom:1;}
+.reg-plus .reg-box{float:left;width:700px;}
 .reg-wx{float:right;width:220px;padding:70px 26px 0 28px;font-size:14px;text-align:center;background:url(../images/iphone6.png) no-repeat 50% 0;}
 .reg-wx strong{display:block;margin:28px 0 10px;padding-bottom:10px;font-size:18px;font-weight:400;color:#333;border-bottom:1px solid #e7e7e7;}
 
