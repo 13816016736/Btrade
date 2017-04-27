@@ -486,8 +486,8 @@ class PurchaseSuccessHandler(BaseHandler):
         #                        "and n.sender != %s",self.session.get("userid"))
         #取采购第一个品种进行展示
 
-        varid=varids.split(",")[0]
-        suppliers = self.db.query("select id ,name ,address as areaname  from supplier where find_in_set(%s,variety)",varid)
+        # varid=varids.split(",")[0]
+        # suppliers = self.db.query("select id ,name ,address as areaname  from supplier where find_in_set(%s,variety)",varid)
 
         #if suppliers:
         #    supplyids = [str(supplier["sender"]) for supplier in suppliers]
@@ -506,7 +506,7 @@ class PurchaseSuccessHandler(BaseHandler):
         purchaseinfo = self.db.query("select p.id,p.createtime,pi.name,pi.specification from purchase p left join purchase_info pi on "
                                  "p.id = pi.purchaseid where p.id = %s limit 4", self.get_argument("purchaseid"))
         if purchaseinfo:
-            self.render("success.html", varname=",".join(varname), suppliers=suppliers, user=user, purchaseinfo=purchaseinfo, varids=varids)
+            self.render("success.html", varname=",".join(varname), user=user, purchaseinfo=purchaseinfo, varids=varids)
         else:
             self.failure("采购单不存在","/")
 
