@@ -16,7 +16,7 @@
         <span>共发布<b>{{len(purchaseinfos)}}</b>个采购批次，收到<b>{{len(quotes)}}</b>个报价</span>
     </div>
     <div class="yc-reply-list">
-        <ul></ul>
+        <ul id="jlist"></ul>
     </div>
 
 </section><!-- /yc-content -->
@@ -69,11 +69,12 @@
 <script>
 $(function() {
     var $jModalDelete = $('#jModalDelete');
-    var $ol = $('.yc-reply-list ul');
+    var $ol = $('#jlist');
     var pid = 0;
     var isDel = false;
     var lateest = 0;
     var timer = 0;
+    var PAGECOUNT = 5;
     var $ft;
     // 关闭整个采购单
     $ol.on('click', '.tools .fl', function() {
@@ -256,23 +257,13 @@ $(function() {
                     jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
                 },
                 success: function(data){
-                    if (!data.list) {
-                        return false;
-                    }
-                    var result = toHtml(data.list);
-                    var msg = '暂无新的采购单推荐';
-                    if (lateest > 0) {
-                        msg = '药优优为您新推荐' + data.list.length + '个采购单';
-                    }
-                    $ol.html(result);
-                    me.$domUp.html('<div class="dropload-msg">' + msg + '</div>');
+                    data.list && $ol.html(toHtml(data.list));
+                    me.resetload();
                     me.unlock();
                     me.noData(false);
                 },
                 error: function(xhr, type){
-                    lpPopover('网络连接超时，请您稍后重试!');
-                },
-                complete: function() {
+                    lpPopover('加载失败，请您稍后重试!');
                     me.resetload();
                 }
             });
@@ -286,16 +277,15 @@ $(function() {
                     jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
                 },
                 success: function(data){
-                    if(data.status === 'nomore' || data.isLastpage === true){
+                    data.list && $ol.append(toHtml(data.list));
+                    if(data.status === 'nomore' || data.list && data.list.length < PAGECOUNT) {
                         me.lock();
                         me.noData();
                     }
-                    data.list && $ol.append(toHtml(data.list));
+                    me.resetload();
                 },
                 error: function(xhr, type){
-                    lpPopover('网络连接超时，请您稍后重试!');
-                },
-                complete: function() {
+                    lpPopover('加载失败，请您稍后重试!');
                     me.resetload();
                 }
             });
@@ -304,6 +294,5 @@ $(function() {
     });
 
 })
-
 </script>
 {% end %}
