@@ -516,12 +516,14 @@ class GetSupplierHandler(BaseHandler):
     def post(self):
         varids = self.get_argument("varids").split(",")
         suppliers = []
+        count = 0
         for varid in varids:
             s = self.db.query("select id ,name ,address as areaname  from supplier where find_in_set(%s,variety)",varid)
             suppliers.extend(s)
+            count += len(s)
 
         self.api_response(
-            {'status': 'success', 'message': '请求成功', 'supplier': suppliers})
+            {'status': 'success', 'message': '请求成功', 'supplier': suppliers[0:4], 'count': count})
 
 class RemovePurchaseHandler(BaseHandler):
 
