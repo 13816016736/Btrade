@@ -12,11 +12,11 @@
                 <h2><i class="iconfont icon-radio-yes"></i>发布采购计划/找货需求成功！</h2>
                 {% if suppliers %}
                 <div class="desc">
-                    <p>目前共有{{varname}}相关品种的供应商<span id="jcount"><img src="{{ static_url('images/loading.gif')}}" class="loader"><!-- {{len(suppliers)}} --></span>位，您的采购计划/找货需求将公开给他们</p>
+                    <p>目前共有{{varname}}相关品种的供应商<span class="jcount"><img src="{{ static_url('images/loading.gif')}}" class="loader"></span>位，您的采购计划/找货需求将公开给他们</p>
                 </div>
 
                 <div class="recommend">
-                    <p>药优优优选了<span>{{len(suppliers)}}</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" class="loader"></p>
+                    <p>药优优优选了<span class="jcount"><img src="{{ static_url('images/loading.gif')}}" class="loader"></span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" class="loader"></p>
                     {% set i = 1%}
                     {% for supplier in suppliers %}
                     {% if i < 4 %}
@@ -126,9 +126,9 @@ function getRecommend() {
             jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
         },
         success: function(res) {
-            var surplus = res.count - res.list.length;
+            var surplus = res.count - res.supplier.length;
             var model = [];
-            $.each(res.list, function(i, item) {
+            $.each(res.supplier, function(i, item) {
                 model.push('<dl>');
                 model.push('<dt><img src="', item.avatar,'" width="30" height="30" /></dt>');
                 model.push('<dd>');
@@ -136,18 +136,17 @@ function getRecommend() {
                 model.push('<address>', item.areaname, '<i class="iconfont icon-pass"></i></address>');
                 model.push('</dd>');
                 model.push('</dl>');
+                if (i > 3) {
+                    return false;
+                }
             })
             if (surplus > 4) {
                 model.push('<div class="more">以及其他', surplus, '家</div>');
             }
             $('.recommend').append(model.join(''));
-            $('#jcount').html(res.count);
+            $('.jcount').html(res.count);
         },
-        error: function() {
-            setTimeout(function() {
-                getRecommend();
-            }, 200);
-        }
+        error: function() {}
     })
 }
 getRecommend();
