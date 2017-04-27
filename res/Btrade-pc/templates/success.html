@@ -34,7 +34,6 @@
                     {% end %}
                     {% if len(suppliers) - 4 > 0%}
                     <!-- <div class="more">以及其他{{len(suppliers) - 4}}家</div> -->
-                    <div class="more">以及其他<i id="jmore">1</i>家</div>
                     {% end %}
                 </div>
                 {% end %}
@@ -123,8 +122,22 @@ function getRecommend() {
         data: {},
         dataType: 'json',
         success: function(res) {
+            var surplus = res.count - res.list.length;
+            var model = [];
+            $.each(res.list, function(i, item) {
+                model.push('<dl>');
+                model.push('<dt><img src="', item.avatar,'" width="30" height="30" /></dt>');
+                model.push('<dd>');
+                model.push('<strong>', item.name, '<i class="iconfont icon-pass"></i></strong>');
+                model.push('<address>', item.areaname, '<i class="iconfont icon-pass"></i></address>');
+                model.push('</dd>');
+                model.push('</dl>');
+            })
+            if (surplus > 4) {
+                model.push('<div class="more">以及其他', surplus, '家</div>');
+            }
+            $('.recommend').append(model.join(''));
             $('#jcount').html(res.count);
-            $('#jmore').html(res.count - $('.recommend').find('dl').length);
         },
         error: function() {
             setTimeout(function() {
