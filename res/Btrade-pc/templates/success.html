@@ -12,11 +12,11 @@
                 <h2><i class="iconfont icon-radio-yes"></i>发布采购计划/找货需求成功！</h2>
                 {% if suppliers %}
                 <div class="desc">
-                    <p>目前共有{{varname}}相关品种的供应商<span>{{len(suppliers)}}</span>位，您的采购计划/找货需求将公开给他们</p>
+                    <p>目前共有{{varname}}相关品种的供应商<span id="jcount"><img src="{{ static_url('images/loading.gif')}}" class="loader"><!-- {{len(suppliers)}} --></span>位，您的采购计划/找货需求将公开给他们</p>
                 </div>
 
                 <div class="recommend">
-                    <p>药优优优选了<span>{{len(suppliers)}}</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" alt=""></p>
+                    <p>药优优优选了<span>{{len(suppliers)}}</span>家供应商，正将您的采购计划/找货需求推送给他们<img src="{{ static_url('images/loading.gif')}}" class="loader"></p>
                     {% set i = 1%}
                     {% for supplier in suppliers %}
                     {% if i < 4 %}
@@ -33,7 +33,8 @@
                     {% set i = i + 1 %}
                     {% end %}
                     {% if len(suppliers) - 4 > 0%}
-                    <div class="more">以及其他{{len(suppliers) - 4}}家</div>
+                    <!-- <div class="more">以及其他{{len(suppliers) - 4}}家</div> -->
+                    <div class="more">以及其他<i id="jmore">1</i>家</div>
                     {% end %}
                 </div>
                 {% end %}
@@ -115,5 +116,23 @@ $('#jMsm').on('click', function() {
         $(this).next().fadeOut(100);
     }
 })
+
+function getRecommend() {
+    $.ajax({
+        url: '',
+        data: {},
+        dataType: 'json',
+        success: function(res) {
+            $('#jcount').html(res.count);
+            $('#jmore').html(res.count - $('.recommend').find('dl').length);
+        },
+        error: function() {
+            setTimeout(function() {
+                getRecommend();
+            }, 200);
+        }
+    })
+}
+getRecommend();
 </script>
 {% end %}

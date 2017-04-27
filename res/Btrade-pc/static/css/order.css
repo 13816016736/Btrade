@@ -131,7 +131,6 @@
 .pch-success .desc{font-size:14px;}
 .pch-success .desc span{margin:0 5px;font-size:16px;font-weight:700;color:#ffa902;}
 .pch-success .recommend{margin-top:40px;overflow:hidden;}
-.pch-success .recommend p img{margin-left:10px;width:16px;height:16px;}
 .pch-success .recommend span{margin:0 5px;font-size:16px;font-weight:700;color:#ffa902;}
 .pch-success .recommend dl{float:left;width:25%;margin:10px 0 0;}
 .pch-success .recommend dt{float:left;width:30px;height:30px;}
@@ -144,6 +143,7 @@
 .pch-success .tips span{color:#333;}
 .pch-success .buttons{padding:40px 0;}
 .pch-success .buttons .btn{width:120px;margin-right:20px;padding:9px 14px;}
+.pch-success .loader{width:16px;height:16px;}
 
 .pch-success .side{position:absolute;top:0;right:0;width:300px;padding:10px;border:1px solid #ddd;}
 .pch-success .side .bd{margin-bottom:20px;}
