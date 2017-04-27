@@ -20,8 +20,8 @@ class LoginHandler(BaseHandler):
                     self.redirect(
                         "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0b6c6683f64d3cc2&redirect_uri=http://m.yaobest.com/bindwx&response_type=code&scope=snsapi_base&state=ycgpurchase#wechat_redirect")
                     return
-                else:
-                    self.redirect("/center?type=2")
+                # else:#身份是供应商，登录后跳转到供应商页面type为2的是供应商
+                #     self.redirect("/center?type=2")
             self.redirect('/')
         else:
             self.render("login.html", next_url=self.get_argument("next", "/"))
@@ -133,8 +133,8 @@ class BindWxHandler(BaseHandler):
                          else:
                              self.db.execute("update users set openid2=%s where id=%s", openid,
                                              self.session.get("userid"))
-            if logintype==2:
-                nexturl="/center?type=2"
+            # if logintype==2:跳转到供应商个人中心页面type为2
+            #     nexturl="/center?type=2"
 
         self.redirect(self.get_argument("next_url", nexturl))
     def post(self):

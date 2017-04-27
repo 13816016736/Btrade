@@ -119,9 +119,10 @@ $('#jMsm').on('click', function() {
 
 function getRecommend() {
     $.ajax({
-        url: '',
-        data: {},
+        url: '/getSupplier',
+        data: {'varids', {{varids}}},
         dataType: 'json',
+        type: 'post',
         success: function(res) {
             $('#jcount').html(res.count);
             $('#jmore').html(res.count - $('.recommend').find('dl').length);

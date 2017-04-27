@@ -506,9 +506,22 @@ class PurchaseSuccessHandler(BaseHandler):
         purchaseinfo = self.db.query("select p.id,p.createtime,pi.name,pi.specification from purchase p left join purchase_info pi on "
                                  "p.id = pi.purchaseid where p.id = %s limit 4", self.get_argument("purchaseid"))
         if purchaseinfo:
-            self.render("success.html", varname=",".join(varname), suppliers=suppliers, user=user, purchaseinfo=purchaseinfo)
+            self.render("success.html", varname=",".join(varname), suppliers=suppliers, user=user, purchaseinfo=purchaseinfo, varids=varids)
         else:
             self.failure("采购单不存在","/")
+
+class GetSupplierHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def post(self):
+        varids = self.get_argument("varids").split(",")
+        suppliers = []
+        for varid in varids:
+            s = self.db.query("select id ,name ,address as areaname  from supplier where find_in_set(%s,variety)",varid)
+            suppliers.extend(s)
+
+        self.api_response(
+            {'status': 'success', 'message': '请求成功', 'supplier': suppliers})
 
 class RemovePurchaseHandler(BaseHandler):
 
