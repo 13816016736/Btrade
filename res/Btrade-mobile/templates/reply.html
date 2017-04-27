@@ -248,6 +248,7 @@ $(function() {
     // dropload
     $ol.parent().dropload({
         scrollArea : window,
+        threshold : 200,
         loadUpFn : function(me){
             $.ajax({
                 type: 'post',
@@ -289,8 +290,7 @@ $(function() {
                     me.resetload();
                 }
             });
-        },
-        threshold : 50
+        }
     });
 
 })
