@@ -119,9 +119,12 @@ $('#jMsm').on('click', function() {
 function getRecommend() {
     $.ajax({
         url: '/getSupplier',
-        data: {'varids', {{varids}}},
+        data: {'varids': '{{varids}}'},
         dataType: 'json',
         type: 'post',
+        beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader('X-Xsrftoken', document.cookie.match("\\b_xsrf=([^;]*)\\b")[1]);
+        },
         success: function(res) {
             var surplus = res.count - res.list.length;
             var model = [];
