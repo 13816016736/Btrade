@@ -158,33 +158,7 @@ LOCK TABLES `follow_record` WRITE;
 /*!40000 ALTER TABLE `follow_record` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `member`
---
 
-DROP TABLE IF EXISTS `member`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `member` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` int(5) NOT NULL,
-  `userid` int(11) NOT NULL,
-  `upgradetime` varchar(20) NOT NULL,
-  `expiredtime` varchar(20) NOT NULL,
-  `term` int(5) NOT NULL,
-  `status` int(2) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `member`
---
-
-LOCK TABLES `member` WRITE;
-/*!40000 ALTER TABLE `member` DISABLE KEYS */;
-/*!40000 ALTER TABLE `member` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `notification`
